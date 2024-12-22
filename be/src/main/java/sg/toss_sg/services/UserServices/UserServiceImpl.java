@@ -1,4 +1,4 @@
-package sg.toss_sg.services;
+package sg.toss_sg.services.UserServices;
 
 import org.springframework.stereotype.Service;
 
@@ -14,9 +14,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public String getUserSettingJson() {
+    public String getUserPreferenceJson() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUserSettingJson'");
+        throw new UnsupportedOperationException("Unimplemented method 'getUserPreferenceJson'");
     }
 
     @Override

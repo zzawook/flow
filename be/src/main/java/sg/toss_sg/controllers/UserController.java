@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import sg.toss_sg.models.user.UpdateUserProfile;
-import sg.toss_sg.services.UserService;
+import sg.toss_sg.services.UserServices.UserService;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +25,9 @@ public class UserController {
         return userService.getUserProfile();
     }
     
-    @GetMapping(USER + "/getUserSettingJson")
-    public String getUserSettingJson() {
-        return userService.getUserSettingJson();
+    @GetMapping(USER + "/getUserPreferenceJson")
+    public String getUserPreferenceJson() {
+        return userService.getUserPreferenceJson();
     }
     
     @PostMapping(USER + "/updateUserProfile")

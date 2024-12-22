@@ -1,6 +1,6 @@
 package sg.toss_sg.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
 
@@ -23,5 +23,6 @@ public class User {
 
     private String identificationNumber; // NRIC or FIN or Singpass ID
     private String phoneNumber;
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
+    private String settingJson;
 }

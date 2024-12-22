@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import sg.toss_sg.models.account.BriefAccount;
 import sg.toss_sg.models.account.FullAccount;
-import sg.toss_sg.services.AccountService;
+import sg.toss_sg.services.AccountServices.AccountService;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 

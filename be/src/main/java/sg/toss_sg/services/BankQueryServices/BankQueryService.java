@@ -1,4 +1,4 @@
-package sg.toss_sg.services;
+package sg.toss_sg.services.BankQueryServices;
 
 import java.time.LocalDateTime;
 

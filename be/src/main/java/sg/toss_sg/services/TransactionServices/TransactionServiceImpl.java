@@ -1,4 +1,4 @@
-package sg.toss_sg.services;
+package sg.toss_sg.services.TransactionServices;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +14,7 @@ import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
 import sg.toss_sg.models.transaction.send.SendRecepient;
 import sg.toss_sg.models.transaction.send.SendRequestBody;
 import sg.toss_sg.repositories.TransactionHistoryRepository;
+import sg.toss_sg.services.BankQueryServices.BankQueryService;
 
 
 @Service

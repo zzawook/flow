@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
-import sg.toss_sg.services.BankQueryService;
 
 @Service
 public class DBSQueryService implements BankQueryService{
