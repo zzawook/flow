@@ -1,5 +1,5 @@
 package sg.toss_sg.services;
 
-public interface AccountServices {
+public interface AuthService {
     
 }
