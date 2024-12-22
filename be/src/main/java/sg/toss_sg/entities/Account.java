@@ -1,5 +1,7 @@
 package sg.toss_sg.entities;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Id;
 
 import jakarta.persistence.Table;
@@ -23,4 +25,6 @@ public class Account {
     private Double balance;
     private String accountName;
     private AccountType accountType;
+
+    private LocalDateTime lastUpdated;
 }
