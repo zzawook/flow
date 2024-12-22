@@ -22,5 +22,8 @@ public interface TransactionService {
     SendResult sendTransaction(SendRequestBody sendRequestBody);
 
     MonthlyHistoryList getLast30DaysHistoryList();
+
+    MonthlyHistoryList getTransactionWithinRange(int startYear, int startMonth, int startDay, int endYear, int endMonth,
+            int endDay);
     
 }

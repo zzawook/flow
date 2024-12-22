@@ -10,5 +10,9 @@ public interface AccountService {
     List<BriefAccount> getAccounts();
 
     List<FullAccount> getFullAccounts();
+
+    BriefAccount getAccount(String accountId);
+
+    FullAccount getFullAccount(String accountId);
     
 }

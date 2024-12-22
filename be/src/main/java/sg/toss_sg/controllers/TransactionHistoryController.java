@@ -45,5 +45,10 @@ public class TransactionHistoryController extends TransactionController{
     public HistoryDetail getTransactionDetails(@RequestParam String bank_code, @RequestParam String transaction_id) {
         return transactionService.getTransactionDetails(bank_code, transaction_id);
     }
+
+    @GetMapping(TRANSACTION + HISTORY + "/transactionWithinRange")
+    public MonthlyHistoryList getTransactionWithinRange(@RequestParam int startYear, @RequestParam int startMonth, @RequestParam int startDay, @RequestParam int endYear, @RequestParam int endMonth, @RequestParam int endDay) {
+        return transactionService.getTransactionWithinRange(startYear, startMonth, startDay, endYear, endMonth, endDay);
+    }
     
 }

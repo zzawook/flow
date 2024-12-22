@@ -21,5 +21,17 @@ public class AccountServiceImpl implements AccountService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getFullAccounts'");
     }
+
+    @Override
+    public BriefAccount getAccount(String accountId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAccount'");
+    }
+
+    @Override
+    public FullAccount getFullAccount(String accountId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFullAccount'");
+    }
     
 }

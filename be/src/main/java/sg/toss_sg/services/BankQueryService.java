@@ -4,11 +4,8 @@ import java.time.LocalDateTime;
 
 import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
 
-public class BankQueryService {
+public interface BankQueryService {
 
-    public MonthlyHistoryList getTransactionHistory(int year, int month, LocalDateTime lastUpdated) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTransactionHistory'");
-    }
+    public MonthlyHistoryList getTransactionHistory(int year, int month, LocalDateTime lastUpdated);
     
 }
