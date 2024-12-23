@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import sg.toss_sg.models.transaction.history.DailyHistoryList;
 import sg.toss_sg.models.transaction.history.HistoryDetail;
 import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
-import sg.toss_sg.services.TransactionService;
+import sg.toss_sg.services.TransactionServices.TransactionService;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,6 +44,11 @@ public class TransactionHistoryController extends TransactionController{
     @GetMapping(TRANSACTION + HISTORY + "/transactionDetails")
     public HistoryDetail getTransactionDetails(@RequestParam String bank_code, @RequestParam String transaction_id) {
         return transactionService.getTransactionDetails(bank_code, transaction_id);
+    }
+
+    @GetMapping(TRANSACTION + HISTORY + "/transactionWithinRange")
+    public MonthlyHistoryList getTransactionWithinRange(@RequestParam int startYear, @RequestParam int startMonth, @RequestParam int startDay, @RequestParam int endYear, @RequestParam int endMonth, @RequestParam int endDay) {
+        return transactionService.getTransactionWithinRange(startYear, startMonth, startDay, endYear, endMonth, endDay);
     }
     
 }

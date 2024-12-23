@@ -1,4 +1,4 @@
-package sg.toss_sg.services;
+package sg.toss_sg.services.TransactionServices;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,14 +13,16 @@ import sg.toss_sg.models.transaction.history.HistoryDetail;
 import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
 import sg.toss_sg.models.transaction.send.SendRecepient;
 import sg.toss_sg.models.transaction.send.SendRequestBody;
-import sg.toss_sg.repositories.HistoryRepository;
+import sg.toss_sg.repositories.TransactionHistoryRepository;
+import sg.toss_sg.services.BankQueryServices.BankQueryService;
+
 
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService{
 
     @Autowired
-    private final HistoryRepository historyRepository;
+    private final TransactionHistoryRepository historyRepository;
 
     @Autowired
     private final BankQueryService bankQueryService;
@@ -72,6 +74,13 @@ public class TransactionServiceImpl implements TransactionService{
     public SendResult sendTransaction(SendRequestBody sendRequestBody) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'sendTransaction'");
+    }
+
+    @Override
+    public MonthlyHistoryList getTransactionWithinRange(int startYear, int startMonth, int startDay, int endYear,
+            int endMonth, int endDay) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTransactionWithinRange'");
     }
 
     

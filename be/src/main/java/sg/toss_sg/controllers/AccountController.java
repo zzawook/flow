@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import sg.toss_sg.models.account.BriefAccount;
 import sg.toss_sg.models.account.FullAccount;
-import sg.toss_sg.services.AccountService;
+import sg.toss_sg.services.AccountServices.AccountService;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -32,4 +35,16 @@ public class AccountController {
     public List<FullAccount> getFullAccounts() {
         return accountService.getFullAccounts();
     }
+
+    @GetMapping(ACCOUNTS + "/getAccount")
+    public BriefAccount getAccount(@RequestParam String accountId) {
+        return accountService.getAccount(accountId);
+    }
+
+    @GetMapping(ACCOUNTS + "/getFullAccount")
+    public FullAccount getMethodName(@RequestParam String accountId) {
+        return accountService.getFullAccount(accountId);
+    }
+    
+    
 }

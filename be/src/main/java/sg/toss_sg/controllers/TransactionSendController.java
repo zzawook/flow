@@ -8,7 +8,8 @@ import jakarta.websocket.SendResult;
 import lombok.RequiredArgsConstructor;
 import sg.toss_sg.models.transaction.send.SendRecepient;
 import sg.toss_sg.models.transaction.send.SendRequestBody;
-import sg.toss_sg.services.TransactionService;
+import sg.toss_sg.services.TransactionServices.TransactionService;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

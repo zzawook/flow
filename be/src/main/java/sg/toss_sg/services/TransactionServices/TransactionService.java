@@ -1,4 +1,4 @@
-package sg.toss_sg.services;
+package sg.toss_sg.services.TransactionServices;
 
 import jakarta.websocket.SendResult;
 import sg.toss_sg.models.transaction.history.DailyHistoryList;
@@ -22,5 +22,8 @@ public interface TransactionService {
     SendResult sendTransaction(SendRequestBody sendRequestBody);
 
     MonthlyHistoryList getLast30DaysHistoryList();
+
+    MonthlyHistoryList getTransactionWithinRange(int startYear, int startMonth, int startDay, int endYear, int endMonth,
+            int endDay);
     
 }

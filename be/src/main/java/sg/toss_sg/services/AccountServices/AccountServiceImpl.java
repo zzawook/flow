@@ -1,4 +1,4 @@
-package sg.toss_sg.services;
+package sg.toss_sg.services.AccountServices;
 
 import java.util.List;
 
@@ -20,6 +20,18 @@ public class AccountServiceImpl implements AccountService {
     public List<FullAccount> getFullAccounts() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getFullAccounts'");
+    }
+
+    @Override
+    public BriefAccount getAccount(String accountId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAccount'");
+    }
+
+    @Override
+    public FullAccount getFullAccount(String accountId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFullAccount'");
     }
     
 }

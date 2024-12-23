@@ -1,4 +1,4 @@
-package sg.toss_sg.services;
+package sg.toss_sg.services.AccountServices;
 
 import java.util.List;
 
@@ -10,5 +10,9 @@ public interface AccountService {
     List<BriefAccount> getAccounts();
 
     List<FullAccount> getFullAccounts();
+
+    BriefAccount getAccount(String accountId);
+
+    FullAccount getFullAccount(String accountId);
     
 }
