@@ -3,7 +3,6 @@ package sg.toss_sg.services.TransactionServices;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.websocket.SendResult;
@@ -16,15 +15,11 @@ import sg.toss_sg.models.transaction.send.SendRequestBody;
 import sg.toss_sg.repositories.TransactionHistoryRepository;
 import sg.toss_sg.services.BankQueryServices.BankQueryService;
 
-
 @Service
 @RequiredArgsConstructor
-public class TransactionServiceImpl implements TransactionService{
+public class TransactionServiceImpl implements TransactionService {
 
-    @Autowired
-    private final TransactionHistoryRepository historyRepository;
-
-    @Autowired
+    private final TransactionHistoryRepository transactionHistoryRepository;
     private final BankQueryService bankQueryService;
 
     @Override
@@ -35,12 +30,12 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public MonthlyHistoryList getMonthlyTransaction(int year, int month) {
         LocalDate currentMonth = LocalDate.now().withMonth(month);
-        MonthlyHistoryList monthlyHistoryList = historyRepository.getMonthlyTransaction(year, month);
+        MonthlyHistoryList monthlyHistoryList = transactionHistoryRepository.getMonthlyTransaction(year, month);
         if (currentMonth.isBefore(LocalDate.now())) {
             return monthlyHistoryList;
         }
 
-        LocalDateTime lastUpdated = historyRepository.getLastUpdatedDate();
+        LocalDateTime lastUpdated = transactionHistoryRepository.getLastUpdatedDate();
         MonthlyHistoryList additionalHistoryList = bankQueryService.getTransactionHistory(year, month, lastUpdated);
         monthlyHistoryList.add(additionalHistoryList);
         return monthlyHistoryList;
@@ -83,6 +78,4 @@ public class TransactionServiceImpl implements TransactionService{
         throw new UnsupportedOperationException("Unimplemented method 'getTransactionWithinRange'");
     }
 
-    
-    
 }

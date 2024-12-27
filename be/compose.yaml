@@ -2,9 +2,9 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=zen_dev'
+      - 'POSTGRES_PASSWORD=airbusa380861'
+      - 'POSTGRES_USER=zen_developer'
     ports:
       - '5432'
   redis:

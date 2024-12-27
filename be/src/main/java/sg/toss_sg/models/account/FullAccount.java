@@ -2,8 +2,8 @@ package sg.toss_sg.models.account;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
 
-import jakarta.persistence.Id;
 import lombok.Data;
 import sg.toss_sg.entities.Bank;
 import sg.toss_sg.entities.Card;
