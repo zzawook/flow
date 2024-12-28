@@ -19,14 +19,13 @@ import sg.toss_sg.entities.TransactionHistory;
 import sg.toss_sg.entities.User;
 import sg.toss_sg.entities.utils.AccountType;
 import sg.toss_sg.entities.utils.CardType;
-import sg.toss_sg.repositories.AccountRepository;
-import sg.toss_sg.repositories.BankRepository;
-import sg.toss_sg.repositories.CardRepository;
-import sg.toss_sg.repositories.TransactionHistoryRepository;
-import sg.toss_sg.repositories.UserRepository;
+import sg.toss_sg.repositories.account.AccountRepository;
+import sg.toss_sg.repositories.bank.BankRepository;
+import sg.toss_sg.repositories.card.CardRepository;
+import sg.toss_sg.repositories.transactionHistory.TransactionHistoryRepository;
+import sg.toss_sg.repositories.user.UserRepository;
 
 @RequiredArgsConstructor
-@Profile("dev")
 public class InjectTestData implements CommandLineRunner {
 
     @Autowired

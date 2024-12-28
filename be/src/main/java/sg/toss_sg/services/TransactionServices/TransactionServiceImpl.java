@@ -12,15 +12,15 @@ import sg.toss_sg.models.transaction.history.HistoryDetail;
 import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
 import sg.toss_sg.models.transaction.send.SendRecepient;
 import sg.toss_sg.models.transaction.send.SendRequestBody;
-import sg.toss_sg.repositories.TransactionHistoryRepository;
-import sg.toss_sg.services.BankQueryServices.BankQueryService;
+import sg.toss_sg.repositories.transactionHistory.TransactionHistoryRepository;
+import sg.toss_sg.services.BankQueryServices.DBSQueryService;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionHistoryRepository transactionHistoryRepository;
-    private final BankQueryService bankQueryService;
+    private final DBSQueryService bankQueryService;
 
     @Override
     public MonthlyHistoryList getLast30DaysHistoryList() {
