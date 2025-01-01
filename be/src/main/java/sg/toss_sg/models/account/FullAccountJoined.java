@@ -5,21 +5,23 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 
 import lombok.Data;
+import sg.toss_sg.entities.Bank;
+import sg.toss_sg.entities.Card;
+import sg.toss_sg.entities.TransactionHistory;
 import sg.toss_sg.entities.utils.AccountType;
 
 @Data
-public class FullAccount {
+public class FullAccountJoined {
 
     @Id
     private Long id;
 
     private String accountNumber;
-    private Integer bankId;
+    private Bank bank;
     private Double balance;
     private String accountName;
     private AccountType accountType;
 
-    private List<Integer> cardIds;
-    private List<Long> recentTransactionHistoryIds;
-
+    private List<Card> cards;
+    private List<TransactionHistory> recentTransactionHistories;
 }

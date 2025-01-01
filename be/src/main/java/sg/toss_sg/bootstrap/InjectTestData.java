@@ -1,8 +1,8 @@
 package sg.toss_sg.bootstrap;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,6 +10,9 @@ import java.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import sg.toss_sg.entities.Account;
@@ -26,6 +29,9 @@ import sg.toss_sg.repositories.transactionHistory.TransactionHistoryRepository;
 import sg.toss_sg.repositories.user.UserRepository;
 
 @RequiredArgsConstructor
+@Profile("!prod")
+@Component
+@Order(2)
 public class InjectTestData implements CommandLineRunner {
 
     @Autowired
@@ -45,16 +51,27 @@ public class InjectTestData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        clearTestData();
         injectUserData();
+        injectBankData();
         injectAccountData();
         injectCardData();
-        injectBankData();
         injectTransactionData();
+    }
+
+    private void clearTestData() {
+        transactionRepository.deleteAll();
+        cardRepository.deleteAll();
+        accountRepository.deleteAll();
+        userRepository.deleteAll();
+        bankRepository.deleteAll();
     }
 
     private BufferedReader readCSVFile(String csvFile) {
         BufferedReader br = null;
-        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(csvFile))) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(new ClassPathResource(csvFile).getInputStream()));
             br = bufferedReader;
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,16 +80,21 @@ public class InjectTestData implements CommandLineRunner {
     }
 
     private void injectUserData() {
-        BufferedReader br = readCSVFile("testDataCsv/users.csv");
+        BufferedReader br = readCSVFile("testdata/users.csv");
         if (br == null) {
             System.out.println("Error reading user data file");
             return;
         }
         String line;
         try (br) {
+            boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
                 String[] data = line.split(",");
-                Long id = Long.parseLong(data[0]);
+                Integer id = Integer.parseInt(data[0]);
                 String name = data[1];
                 String email = data[2];
                 String identificationNumber = data[3];
@@ -81,14 +103,14 @@ public class InjectTestData implements CommandLineRunner {
                 String settingJson = data[6];
 
                 User currentUser = User.builder()
-                    .id(id)
-                    .name(name)
-                    .email(email)
-                    .identificationNumber(identificationNumber)
-                    .phoneNumber(phoneNumber)
-                    .dateOfBirth(dateOfBirth)
-                    .settingJson(settingJson)
-                    .build();
+                        .id(id)
+                        .name(name)
+                        .email(email)
+                        .identificationNumber(identificationNumber)
+                        .phoneNumber(phoneNumber)
+                        .dateOfBirth(dateOfBirth)
+                        .settingJson(settingJson)
+                        .build();
 
                 userRepository.save(currentUser);
             }
@@ -98,14 +120,19 @@ public class InjectTestData implements CommandLineRunner {
     }
 
     private void injectAccountData() {
-        BufferedReader br = readCSVFile("testDataCsv/accounts.csv");
+        BufferedReader br = readCSVFile("testdata/accounts.csv");
         if (br == null) {
             System.out.println("Error reading account data file");
             return;
         }
         String line;
         try (br) {
+            boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
                 String[] data = line.split(",");
                 Long id = Long.parseLong(data[0]);
                 String accountNumber = data[1];
@@ -117,15 +144,15 @@ public class InjectTestData implements CommandLineRunner {
                 LocalDateTime lastUpdated = LocalDateTime.parse(data[7]);
 
                 Account currentAccount = Account.builder()
-                    .id(id)
-                    .accountNumber(accountNumber)
-                    .bank(bankRepository.findById(bankId).get())
-                    .owner(userRepository.findById(ownerId).get())
-                    .balance(balance)
-                    .accountName(accountName)
-                    .accountType(AccountType.valueOf(accountType))
-                    .lastUpdated(lastUpdated)
-                    .build();
+                        .id(id)
+                        .accountNumber(accountNumber)
+                        .bank(bankRepository.findById(bankId).get())
+                        .owner(userRepository.findById(ownerId).get())
+                        .balance(balance)
+                        .accountName(accountName)
+                        .accountType(AccountType.valueOf(accountType))
+                        .lastUpdated(lastUpdated)
+                        .build();
 
                 accountRepository.save(currentAccount);
             }
@@ -135,14 +162,19 @@ public class InjectTestData implements CommandLineRunner {
     }
 
     private void injectCardData() {
-        BufferedReader br = readCSVFile("testDataCsv/cards.csv");
+        BufferedReader br = readCSVFile("testdata/cards.csv");
         if (br == null) {
             System.out.println("Error reading card data file");
             return;
         }
         String line;
         try (br) {
+            boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
                 String[] data = line.split(",");
                 Long id = Long.parseLong(data[0]);
                 Long ownerId = Long.parseLong(data[1]);
@@ -150,15 +182,43 @@ public class InjectTestData implements CommandLineRunner {
                 Long issuingBankId = Long.parseLong(data[3]);
                 Long linkedAccountId = Long.parseLong(data[4]);
                 String cardType = data[5];
+                LocalDate cardExpiryDate = LocalDate.parse(data[6]);
+                String cardCvc = data[7];
+                String cardPin = data[8];
+                String cardStatus = data[9];
+                String addressLine1 = data[10];
+                String addressLine2 = data[11];
+                String city = data[12];
+                String state = data[13];
+                String country = data[14];
+                String zipCode = data[15];
+                String phone = data[16];
+                Double dailyLimit = Double.parseDouble(data[17]);
+                Double monthlyLimit = Double.parseDouble(data[18]);
+                String cardHolderName = data[19];
 
                 Card currentCard = Card.builder()
-                    .id(id)
-                    .owner(userRepository.findById(ownerId).get())
-                    .card_number(cardNumber)
-                    .issuing_bank(bankRepository.findById(issuingBankId).get())
-                    .linked_account(accountRepository.findById(linkedAccountId).get())
-                    .card_type(CardType.valueOf(cardType))
-                    .build();
+                        .id(id)
+                        .owner(userRepository.findById(ownerId).get())
+                        .cardNumber(cardNumber)
+                        .issuingBank(bankRepository.findById(issuingBankId).get())
+                        .linkedAccount(accountRepository.findById(linkedAccountId).get())
+                        .cardType(CardType.valueOf(cardType))
+                        .cardHolderName(cardHolderName)
+                        .expiryDate(cardExpiryDate)
+                        .cvv(cardCvc)
+                        .pin(cardPin)
+                        .cardStatus(cardStatus)
+                        .addressLine1(addressLine1)
+                        .addressLine2(addressLine2)
+                        .city(city)
+                        .state(state)
+                        .country(country)
+                        .zipCode(zipCode)
+                        .phone(phone)
+                        .dailyLimit(dailyLimit)
+                        .monthlyLimit(monthlyLimit)
+                        .build();
 
                 cardRepository.save(currentCard);
             }
@@ -168,24 +228,29 @@ public class InjectTestData implements CommandLineRunner {
     }
 
     private void injectBankData() {
-        BufferedReader br = readCSVFile("testDataCsv/cards.csv");
+        BufferedReader br = readCSVFile("testdata/banks.csv");
         if (br == null) {
             System.out.println("Error reading card data file");
             return;
         }
         String line;
         try (br) {
+            boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
                 String[] data = line.split(",");
-                Long id = Long.parseLong(data[0]);
+                Integer id = Integer.parseInt(data[0]);
                 String name = data[1];
                 String bankCode = data[2];
 
                 Bank currentBank = Bank.builder()
-                    .id(id)
-                    .name(name)
-                    .bank_code(bankCode)
-                    .build();
+                        .id(id)
+                        .name(name)
+                        .bankCode(bankCode)
+                        .build();
 
                 bankRepository.save(currentBank);
             }
@@ -195,38 +260,64 @@ public class InjectTestData implements CommandLineRunner {
     }
 
     private void injectTransactionData() {
-        BufferedReader br = readCSVFile("testDataCsv/cards.csv");
+        BufferedReader br = readCSVFile("testdata/processed_transaction_history.csv");
         if (br == null) {
             System.out.println("Error reading card data file");
             return;
         }
         String line;
         try (br) {
+            boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
                 String[] data = line.split(",");
                 Long id = Long.parseLong(data[0]);
                 Long accountId = Long.parseLong(data[1]);
-                Long toAccountId = Long.parseLong(data[2]);
-                Long fromAccountId = Long.parseLong(data[3]);
-                Long cardId = Long.parseLong(data[4]);
+
+                Long toAccountId, fromAccountId;
+                if (data[2].length() == 0) {
+                    toAccountId = null;
+                } else {
+                    toAccountId = Long.parseLong(data[2]);
+                }
+
+                if (data[3].length() == 0) {
+                    fromAccountId = null;
+                } else {
+                    fromAccountId = Long.parseLong(data[3]);
+                }
+
+                Long cardId;
+
+                if (data[4].length() == 0) {
+                    cardId = null;
+                } else {
+                    cardId = Long.parseLong(data[4]);
+                }
+
                 LocalDate transactionDate = LocalDate.parse(data[5]);
                 LocalTime transactionTime = LocalTime.parse(data[6]);
                 String description = data[7];
                 Double amount = Double.parseDouble(data[8]);
                 String transactionType = data[9];
+                String transactionStatus = data[10];
 
                 TransactionHistory currentTransaction = TransactionHistory.builder()
-                    .id(id)
-                    .account(accountRepository.findById(accountId).get())
-                    .toAccount(accountRepository.findById(toAccountId).get())
-                    .fromAccount(accountRepository.findById(fromAccountId).get())
-                    .card(cardRepository.findById(cardId).get())
-                    .transactionDate(transactionDate)
-                    .transactionTime(transactionTime)
-                    .description(description)
-                    .amount(amount)
-                    .transactionType(transactionType)
-                    .build();
+                        .id(id)
+                        .account(accountRepository.findById(accountId).get())
+                        .toAccount(accountRepository.findById(toAccountId).orElse(null))
+                        .fromAccount(accountRepository.findById(fromAccountId).orElse(null))
+                        .card(cardRepository.findById(cardId).orElse(null))
+                        .transactionDate(transactionDate)
+                        .transactionTime(transactionTime)
+                        .description(description)
+                        .amount(amount)
+                        .transactionType(transactionType)
+                        .transactionStatus(transactionStatus)
+                        .build();
 
                 transactionRepository.save(currentTransaction);
             }

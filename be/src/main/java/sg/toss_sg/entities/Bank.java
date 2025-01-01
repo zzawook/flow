@@ -3,6 +3,7 @@ package sg.toss_sg.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +13,13 @@ import lombok.Data;
 @Builder
 @Table(name = "banks")
 public class Bank {
-    
-    @Id
-    private Long id;
 
+    @Id
+    private Integer id;
+
+    @NotNull
     private String name;
-    private String bank_code;
+
+    @NotNull
+    private String bankCode;
 }

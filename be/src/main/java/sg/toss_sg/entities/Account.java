@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import jakarta.persistence.JoinColumn;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,16 +20,24 @@ public class Account {
     @Id
     private Long id;
 
+    @NotNull
     private String accountNumber;
 
-    @JoinColumn(name = "bank_id")
+    @NotNull
     private Bank bank;
 
-    @JoinColumn(name = "owner_id")
+    @NotNull
     private User owner;
+
+    @NotNull
     private Double balance;
+
+    @NotNull
     private String accountName;
+
+    @NotNull
     private AccountType accountType;
 
+    @NotNull
     private LocalDateTime lastUpdated;
 }

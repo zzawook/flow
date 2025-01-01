@@ -26,7 +26,7 @@ public class DatabaseConnectionPool {
         config.setPassword("airbusa380861"); // Database password
 
         // HikariCP settings
-        config.setMaximumPoolSize(10); // Maximum number of connections
+        config.setMaximumPoolSize(100); // Maximum number of connections
         config.setMinimumIdle(2); // Minimum number of idle connections
         config.setIdleTimeout(30000); // Idle timeout in ms
         config.setMaxLifetime(1800000); // Max lifetime of a connection in ms

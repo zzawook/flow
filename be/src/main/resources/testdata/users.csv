@@ -1,0 +1,6 @@
+id,name,email,identificationNumber,phoneNumber,dateOfBirth,settingJson
+1,User1,user1@example.com,S1234001A,"+65 98128073",2004-07-06,"{}"
+2,User2,user2@example.com,S1234002A,"+65 97245110",2001-08-19,"{}"
+3,User3,user3@example.com,S1234003A,"+65 98883627",2002-06-29,"{}"
+4,User4,user4@example.com,S1234004A,"+65 99593017",1999-02-25,"{}"
+5,User5,user5@example.com,S1234005A,"+65 95112703",1999-09-04,"{}"
