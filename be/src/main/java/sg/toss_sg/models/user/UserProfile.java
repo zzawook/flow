@@ -8,17 +8,19 @@ import lombok.Data;
 public class UserProfile {
     
     private String name;
-    private String emailString;
+    private String email;
     private String phoneNumber;
     private LocalDate dateOfBirth;
     private String identificationNumber;
+    private String address;
 
-    public UserProfile(String name, String emailString, String phoneNumber, LocalDate dateOfBirth,
-            String identificationNumber) {
+    public UserProfile(String name, String email, String phoneNumber, LocalDate dateOfBirth,
+            String identificationNumber, String address) {
         this.name = name;
-        this.emailString = emailString;
+        this.email = email;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.identificationNumber = identificationNumber;
+        this.address = address;
     }
 }

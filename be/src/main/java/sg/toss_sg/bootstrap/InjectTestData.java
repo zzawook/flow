@@ -100,7 +100,8 @@ public class InjectTestData implements CommandLineRunner {
                 String identificationNumber = data[3];
                 String phoneNumber = data[4];
                 LocalDate dateOfBirth = LocalDate.parse(data[5]);
-                String settingJson = data[6];
+                String address = data[6];
+                String settingJson = data[7];
 
                 User currentUser = User.builder()
                         .id(id)
@@ -109,6 +110,7 @@ public class InjectTestData implements CommandLineRunner {
                         .identificationNumber(identificationNumber)
                         .phoneNumber(phoneNumber)
                         .dateOfBirth(dateOfBirth)
+                        .address(address)
                         .settingJson(settingJson)
                         .build();
 

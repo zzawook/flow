@@ -35,6 +35,9 @@ public class User {
     @NotNull
     private LocalDate dateOfBirth;
 
+    @NotNull
+    private String address;
+
     @Default
     private String settingJson = "{}";
 }

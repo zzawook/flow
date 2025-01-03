@@ -14,20 +14,20 @@ import sg.toss_sg.entities.Account;
 import sg.toss_sg.entities.Bank;
 import sg.toss_sg.entities.User;
 import sg.toss_sg.entities.utils.AccountType;
-import sg.toss_sg.repositories.utils.QueryStore;
+import sg.toss_sg.repositories.utils.AccountQueryStore;
 
 @Repository
 public class AccountRepositoryImpl implements AccountRepository {
 
     DatabaseConnectionPool databaseConnectionPool;
 
-    private final String SAVE = QueryStore.SAVE_ACCOUNT;
+    private final String SAVE = AccountQueryStore.SAVE_ACCOUNT;
 
-    private final String SAVE_WITH_ID = QueryStore.SAVE_ACCOUNT_WITH_ID;
+    private final String SAVE_WITH_ID = AccountQueryStore.SAVE_ACCOUNT_WITH_ID;
 
-    private final String FIND_BY_ID = QueryStore.FIND_ACCOUNT_BY_ID;
+    private final String FIND_BY_ID = AccountQueryStore.FIND_ACCOUNT_BY_ID;
 
-    private final String DELETE_ALL = QueryStore.DELETE_ALL_ACCOUNTS;
+    private final String DELETE_ALL = AccountQueryStore.DELETE_ALL_ACCOUNTS;
 
     public AccountRepositoryImpl(DatabaseConnectionPool databaseConnectionPool) {
         this.databaseConnectionPool = databaseConnectionPool;

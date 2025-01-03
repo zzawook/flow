@@ -1,13 +1,13 @@
 package sg.toss_sg.services.UserServices;
 
 import sg.toss_sg.models.user.UpdateUserProfile;
+import sg.toss_sg.models.user.UserProfile;
 
 public interface UserService {
 
-    String getUserProfile();
+    UserProfile getUserProfile(Integer userId);
 
-    String getUserPreferenceJson();
+    String getUserPreferenceJson(Integer userId);
 
-    String updateUserProfile(UpdateUserProfile userProfile);
-    
+    UserProfile updateUserProfile(Integer userId, UpdateUserProfile userProfile);
 }

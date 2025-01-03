@@ -4,12 +4,9 @@ import lombok.Data;
 
 @Data
 public class UpdateUserProfile {
-    
+
     private String email;
     private String phoneNumber;
+    private String address;
 
-    public UpdateUserProfile(String email, String phoneNumber) {
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-    }
 }

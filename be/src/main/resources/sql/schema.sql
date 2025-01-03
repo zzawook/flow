@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     identification_number VARCHAR(255) NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
     date_of_birth DATE NOT NULL,
+    address VARCHAR(255) NOT NULL,
     setting_json JSONB DEFAULT '{}'
 );
 

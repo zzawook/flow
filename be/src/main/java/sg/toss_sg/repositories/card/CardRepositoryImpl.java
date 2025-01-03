@@ -16,20 +16,20 @@ import sg.toss_sg.entities.Card;
 import sg.toss_sg.entities.User;
 import sg.toss_sg.entities.utils.AccountType;
 import sg.toss_sg.entities.utils.CardType;
-import sg.toss_sg.repositories.utils.QueryStore;
+import sg.toss_sg.repositories.utils.CardQueryStore;
 
 @Repository
 public class CardRepositoryImpl implements CardRepository {
 
     DatabaseConnectionPool databaseConnectionPool;
 
-    private final String SAVE = QueryStore.SAVE_CARD;
+    private final String SAVE = CardQueryStore.SAVE_CARD;
 
-    private final String SAVE_WITH_ID = QueryStore.SAVE_CARD_WITH_ID;
+    private final String SAVE_WITH_ID = CardQueryStore.SAVE_CARD_WITH_ID;
 
-    private final String FIND_BY_ID = QueryStore.FIND_CARD_BY_ID;
+    private final String FIND_BY_ID = CardQueryStore.FIND_CARD_BY_ID;
 
-    private final String DELETE_ALL = QueryStore.DELETE_ALL_CARDS;
+    private final String DELETE_ALL = CardQueryStore.DELETE_ALL_CARDS;
 
     public CardRepositoryImpl(DatabaseConnectionPool databaseConnectionPool) {
         this.databaseConnectionPool = databaseConnectionPool;

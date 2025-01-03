@@ -10,20 +10,20 @@ import org.springframework.stereotype.Repository;
 
 import sg.toss_sg.configs.DatabaseConnectionPool;
 import sg.toss_sg.entities.Bank;
-import sg.toss_sg.repositories.utils.QueryStore;
+import sg.toss_sg.repositories.utils.BankQueryStore;
 
 @Repository
 public class BankRepositoryImpl implements BankRepository {
 
     DatabaseConnectionPool databaseConnectionPool;
 
-    private final String SAVE = QueryStore.SAVE_BANK;
+    private final String SAVE = BankQueryStore.SAVE_BANK;
 
-    private final String SAVE_WITH_ID = QueryStore.SAVE_BANK_WITH_ID;
+    private final String SAVE_WITH_ID = BankQueryStore.SAVE_BANK_WITH_ID;
 
-    private final String FIND_BY_ID = QueryStore.FIND_BANK_BY_ID;
+    private final String FIND_BY_ID = BankQueryStore.FIND_BANK_BY_ID;
 
-    private final String DELETE_ALL = QueryStore.DELETE_ALL_BANKS;
+    private final String DELETE_ALL = BankQueryStore.DELETE_ALL_BANKS;
 
     public BankRepositoryImpl(DatabaseConnectionPool databaseConnectionPool) {
         this.databaseConnectionPool = databaseConnectionPool;

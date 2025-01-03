@@ -20,20 +20,21 @@ import sg.toss_sg.entities.User;
 import sg.toss_sg.entities.utils.AccountType;
 import sg.toss_sg.entities.utils.CardType;
 import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
-import sg.toss_sg.repositories.utils.QueryStore;
+import sg.toss_sg.repositories.utils.TransactionHistoryQueryStore;
+
 
 @Repository
 public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepository {
 
     private final DatabaseConnectionPool databaseConnectionPool;
 
-    private final String SAVE = QueryStore.SAVE_TRANSACTION_HISTORY;
+    private final String SAVE = TransactionHistoryQueryStore.SAVE_TRANSACTION_HISTORY;
 
-    private final String SAVE_WITH_ID = QueryStore.SAVE_TRANSACTION_HISTORY_WITH_ID;
+    private final String SAVE_WITH_ID = TransactionHistoryQueryStore.SAVE_TRANSACTION_HISTORY_WITH_ID;
 
-    private final String FIND_BY_ID = QueryStore.FIND_TRANSACTION_HISTORY_BY_ID;
+    private final String FIND_BY_ID = TransactionHistoryQueryStore.FIND_TRANSACTION_HISTORY_BY_ID;
 
-    private final String DELETE_ALL = QueryStore.DELETE_ALL_TRANSACTION_HISTORIES;
+    private final String DELETE_ALL = TransactionHistoryQueryStore.DELETE_ALL_TRANSACTION_HISTORIES;
 
     public TransactionHistoryRepositoryImpl(DatabaseConnectionPool databaseConnectionPool) {
         this.databaseConnectionPool = databaseConnectionPool;
