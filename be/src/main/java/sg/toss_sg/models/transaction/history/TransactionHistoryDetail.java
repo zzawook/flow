@@ -9,7 +9,7 @@ import sg.toss_sg.entities.Account;
 import sg.toss_sg.entities.Card;
 
 @Data
-public class HistoryDetail {
+public class TransactionHistoryDetail {
     
     private Long id;
 

@@ -3,48 +3,81 @@ package sg.toss_sg.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import sg.toss_sg.models.account.BriefAccount;
-import sg.toss_sg.models.account.FullAccount;
+import sg.toss_sg.models.account.AccountWithTransactionHistory;
 import sg.toss_sg.services.AccountServices.AccountService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-
 @RestController
 @RequestMapping("accounts")
 @RequiredArgsConstructor
 public class AccountController {
-    
+
     private final String ACCOUNTS = "/accounts";
 
     @Autowired
     private final AccountService accountService;
 
     @GetMapping(ACCOUNTS + "/getAccounts")
-    public List<BriefAccount> getAccounts() {
-        return accountService.getAccounts();
+    public ResponseEntity<List<BriefAccount>> getAccounts(@AuthenticationPrincipal Integer userId) {
+        return ResponseEntity.ok(accountService.getBriefAccounts(userId));
     }
 
-    @GetMapping(ACCOUNTS + "/getFullAccounts")
-    public List<FullAccount> getFullAccounts() {
-        return accountService.getFullAccounts();
+    @GetMapping(ACCOUNTS + "/getAccountWithTransactionHistorys")
+    public ResponseEntity<List<AccountWithTransactionHistory>> getAccountWithTransactionHistorys(
+            @AuthenticationPrincipal Integer userId) {
+        return ResponseEntity.ok(accountService.getAccountWithTransactionHistorys(userId));
     }
 
     @GetMapping(ACCOUNTS + "/getAccount")
-    public BriefAccount getAccount(@RequestParam String accountId) {
-        return accountService.getAccount(accountId);
+    public ResponseEntity<BriefAccount> getAccount(@AuthenticationPrincipal Integer userId,
+            @RequestParam Long accountId) {
+        BriefAccount briefAccount;
+
+        try {
+            briefAccount = accountService.getBriefAccount(userId, accountId);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().equals("Account does not belong to user")) {
+                return ResponseEntity.status(HttpStatusCode.valueOf(403)).build();
+            }
+            return ResponseEntity.status(HttpStatusCode.valueOf(500)).build();
+        }
+
+        if (briefAccount == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(briefAccount);
     }
 
-    @GetMapping(ACCOUNTS + "/getFullAccount")
-    public FullAccount getMethodName(@RequestParam String accountId) {
-        return accountService.getFullAccount(accountId);
+    @GetMapping(ACCOUNTS + "/getAccountWithTransactionHistory")
+    public ResponseEntity<AccountWithTransactionHistory> getMethodName(@AuthenticationPrincipal Integer userId,
+            @RequestParam Long accountId) {
+        AccountWithTransactionHistory accountWithTransactionHistory;
+
+        try {
+            accountWithTransactionHistory = accountService.getAccountWithTransactionHistory(userId, accountId);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().equals("Account does not belong to user")) {
+                return ResponseEntity.status(HttpStatusCode.valueOf(403)).build();
+            }
+            return ResponseEntity.status(HttpStatusCode.valueOf(500)).build();
+        }
+
+        if (accountWithTransactionHistory == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(accountWithTransactionHistory);
     }
-    
-    
+
 }

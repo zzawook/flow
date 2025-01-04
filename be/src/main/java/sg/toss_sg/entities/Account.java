@@ -39,5 +39,8 @@ public class Account {
     private AccountType accountType;
 
     @NotNull
+    private Double interestRatePerAnnum;
+
+    @NotNull
     private LocalDateTime lastUpdated;
 }

@@ -143,7 +143,8 @@ public class InjectTestData implements CommandLineRunner {
                 Double balance = Double.parseDouble(data[4]);
                 String accountName = data[5];
                 String accountType = data[6];
-                LocalDateTime lastUpdated = LocalDateTime.parse(data[7]);
+                Double interestRatePerAnnum = Double.parseDouble(data[7]);
+                LocalDateTime lastUpdated = LocalDateTime.parse(data[8]);
 
                 Account currentAccount = Account.builder()
                         .id(id)
@@ -153,6 +154,7 @@ public class InjectTestData implements CommandLineRunner {
                         .balance(balance)
                         .accountName(accountName)
                         .accountType(AccountType.valueOf(accountType))
+                        .interestRatePerAnnum(interestRatePerAnnum)
                         .lastUpdated(lastUpdated)
                         .build();
 

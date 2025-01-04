@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     balance DECIMAL(10,2) NOT NULL DEFAULT 0,
     account_name VARCHAR(255) NOT NULL,
     account_type VARCHAR(255) NOT NULL,
+    interest_rate_per_annum DECIMAL(10,5) NOT NULL DEFAULT 0,
     last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

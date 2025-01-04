@@ -5,7 +5,7 @@ import java.util.List;
 
 import sg.toss_sg.entities.TransactionHistory;
 
-public class DailyHistoryList {
+public class DailyTransactionHistoryList {
     LocalDate date;
     List<TransactionHistory> historyList;
 }

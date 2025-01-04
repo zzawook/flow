@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -19,9 +20,9 @@ import sg.toss_sg.entities.TransactionHistory;
 import sg.toss_sg.entities.User;
 import sg.toss_sg.entities.utils.AccountType;
 import sg.toss_sg.entities.utils.CardType;
-import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
+import sg.toss_sg.models.transaction.history.MonthlyTransactionHistoryList;
+import sg.toss_sg.models.transaction.history.TransactionHistoryDetail;
 import sg.toss_sg.repositories.utils.TransactionHistoryQueryStore;
-
 
 @Repository
 public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepository {
@@ -41,7 +42,7 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
     }
 
     @Override
-    public MonthlyHistoryList getMonthlyTransaction(int year, int month) {
+    public MonthlyTransactionHistoryList getMonthlyTransaction(int year, int month) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getMonthlyTransaction'");
     }
@@ -184,6 +185,12 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
                 e1.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public List<TransactionHistoryDetail> findRecentTransactionHistoryDetailOfAccount(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findRecentTransactionHistoryDetailOfAccount'");
     }
 
 }

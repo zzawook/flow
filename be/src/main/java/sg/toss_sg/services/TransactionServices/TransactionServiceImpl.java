@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import jakarta.websocket.SendResult;
 import lombok.RequiredArgsConstructor;
-import sg.toss_sg.models.transaction.history.DailyHistoryList;
-import sg.toss_sg.models.transaction.history.HistoryDetail;
-import sg.toss_sg.models.transaction.history.MonthlyHistoryList;
+import sg.toss_sg.models.transaction.history.DailyTransactionHistoryList;
+import sg.toss_sg.models.transaction.history.MonthlyTransactionHistoryList;
+import sg.toss_sg.models.transaction.history.TransactionHistoryDetail;
 import sg.toss_sg.models.transaction.send.SendRecepient;
 import sg.toss_sg.models.transaction.send.SendRequestBody;
 import sg.toss_sg.repositories.transactionHistory.TransactionHistoryRepository;
@@ -23,32 +23,34 @@ public class TransactionServiceImpl implements TransactionService {
     private final DBSQueryService bankQueryService;
 
     @Override
-    public MonthlyHistoryList getLast30DaysHistoryList() {
+    public MonthlyTransactionHistoryList getLast30DaysHistoryList() {
         return this.getMonthlyTransaction(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
     }
 
     @Override
-    public MonthlyHistoryList getMonthlyTransaction(int year, int month) {
+    public MonthlyTransactionHistoryList getMonthlyTransaction(int year, int month) {
         LocalDate currentMonth = LocalDate.now().withMonth(month);
-        MonthlyHistoryList monthlyHistoryList = transactionHistoryRepository.getMonthlyTransaction(year, month);
+        MonthlyTransactionHistoryList monthlyHistoryList = transactionHistoryRepository.getMonthlyTransaction(year,
+                month);
         if (currentMonth.isBefore(LocalDate.now())) {
             return monthlyHistoryList;
         }
 
         LocalDateTime lastUpdated = transactionHistoryRepository.getLastUpdatedDate();
-        MonthlyHistoryList additionalHistoryList = bankQueryService.getTransactionHistory(year, month, lastUpdated);
+        MonthlyTransactionHistoryList additionalHistoryList = bankQueryService.getTransactionHistory(year, month,
+                lastUpdated);
         monthlyHistoryList.add(additionalHistoryList);
         return monthlyHistoryList;
     }
 
     @Override
-    public DailyHistoryList getDailyTransaction(int year, int month, int day) {
+    public DailyTransactionHistoryList getDailyTransaction(int year, int month, int day) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getDailyTransaction'");
     }
 
     @Override
-    public HistoryDetail getTransactionDetails(String bank_code, String transaction_id) {
+    public TransactionHistoryDetail getTransactionDetails(String bank_code, String transaction_id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTransactionDetails'");
     }
@@ -72,7 +74,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public MonthlyHistoryList getTransactionWithinRange(int startYear, int startMonth, int startDay, int endYear,
+    public MonthlyTransactionHistoryList getTransactionWithinRange(int startYear, int startMonth, int startDay,
+            int endYear,
             int endMonth, int endDay) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTransactionWithinRange'");

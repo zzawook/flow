@@ -2,17 +2,17 @@ package sg.toss_sg.services.AccountServices;
 
 import java.util.List;
 
+import sg.toss_sg.models.account.AccountWithTransactionHistory;
 import sg.toss_sg.models.account.BriefAccount;
-import sg.toss_sg.models.account.FullAccount;
 
 public interface AccountService {
 
-    List<BriefAccount> getAccounts();
+    List<BriefAccount> getBriefAccounts(Integer userId);
 
-    List<FullAccount> getFullAccounts();
+    List<AccountWithTransactionHistory> getAccountWithTransactionHistorys(Integer userId);
 
-    BriefAccount getAccount(String accountId);
+    BriefAccount getBriefAccount(Integer userId, Long accountId);
 
-    FullAccount getFullAccount(String accountId);
-    
+    AccountWithTransactionHistory getAccountWithTransactionHistory(Integer userId, Long accountId);
+
 }
