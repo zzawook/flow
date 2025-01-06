@@ -13,7 +13,6 @@ public class TransactionHistoryDetail {
     
     private Long id;
 
-    private Account account;
     private Account toAccount;
     private Account fromAccount;
 

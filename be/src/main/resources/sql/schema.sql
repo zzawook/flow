@@ -52,7 +52,6 @@ CREATE TABLE IF NOT EXISTS cards (
 
 CREATE TABLE IF NOT EXISTS transaction_histories (
     id BIGSERIAL PRIMARY KEY, 
-    account_id INT REFERENCES accounts(id) NOT NULL,
     to_account_id INT REFERENCES accounts(id),
     from_account_id INT REFERENCES accounts(id),
     card_id INT REFERENCES cards(id),

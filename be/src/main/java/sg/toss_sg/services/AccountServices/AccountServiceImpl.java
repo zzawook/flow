@@ -19,7 +19,7 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
 
-    private final TransactionHistoryRepository transactionRepository;
+    private final TransactionHistoryRepository transactionHistoryRepository;
 
     @Override
     public List<BriefAccount> getBriefAccounts(Integer userId) {
@@ -66,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
                         .interestRatePerAnnum(account.getInterestRatePerAnnum())
                         .build();
                 
-                List<TransactionHistoryDetail> recentTransactionDetails = transactionRepository.findRecentTransactionHistoryDetailOfAccount(accountId);
+                List<TransactionHistoryDetail> recentTransactionDetails = transactionHistoryRepository.findRecentTransactionHistoryDetailOfAccount(accountId);
                 accountWithTransactionHistory.setRecentTransactionHistoryDetails(recentTransactionDetails);
 
                 return accountWithTransactionHistory;

@@ -264,7 +264,7 @@ public class InjectTestData implements CommandLineRunner {
     }
 
     private void injectTransactionData() {
-        BufferedReader br = readCSVFile("testdata/processed_transaction_history.csv");
+        BufferedReader br = readCSVFile("testdata/transaction_history.csv");
         if (br == null) {
             System.out.println("Error reading card data file");
             return;
@@ -279,39 +279,26 @@ public class InjectTestData implements CommandLineRunner {
                 }
                 String[] data = line.split(",");
                 Long id = Long.parseLong(data[0]);
-                Long accountId = Long.parseLong(data[1]);
-
-                Long toAccountId, fromAccountId;
-                if (data[2].length() == 0) {
-                    toAccountId = null;
-                } else {
-                    toAccountId = Long.parseLong(data[2]);
-                }
-
-                if (data[3].length() == 0) {
-                    fromAccountId = null;
-                } else {
-                    fromAccountId = Long.parseLong(data[3]);
-                }
+                Long toAccountId = Long.parseLong(data[1]);
+                Long fromAccountId = Long.parseLong(data[2]);
 
                 Long cardId;
 
-                if (data[4].length() == 0) {
+                if (data[3].length() == 0) {
                     cardId = null;
                 } else {
-                    cardId = Long.parseLong(data[4]);
+                    cardId = Long.parseLong(data[3]);
                 }
 
-                LocalDate transactionDate = LocalDate.parse(data[5]);
-                LocalTime transactionTime = LocalTime.parse(data[6]);
-                String description = data[7];
-                Double amount = Double.parseDouble(data[8]);
-                String transactionType = data[9];
-                String transactionStatus = data[10];
+                LocalDate transactionDate = LocalDate.parse(data[4]);
+                LocalTime transactionTime = LocalTime.parse(data[5]);
+                String description = data[6];
+                Double amount = Double.parseDouble(data[7]);
+                String transactionType = data[8];
+                String transactionStatus = data[9];
 
                 TransactionHistory currentTransaction = TransactionHistory.builder()
                         .id(id)
-                        .account(accountRepository.findById(accountId).get())
                         .toAccount(accountRepository.findById(toAccountId).orElse(null))
                         .fromAccount(accountRepository.findById(fromAccountId).orElse(null))
                         .card(cardRepository.findById(cardId).orElse(null))

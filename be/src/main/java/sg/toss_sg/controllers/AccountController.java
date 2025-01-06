@@ -6,19 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import lombok.RequiredArgsConstructor;
-import sg.toss_sg.models.account.BriefAccount;
-import sg.toss_sg.models.account.AccountWithTransactionHistory;
-import sg.toss_sg.services.AccountServices.AccountService;
-
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@RestController
-@RequestMapping("accounts")
+import lombok.RequiredArgsConstructor;
+import sg.toss_sg.models.account.AccountWithTransactionHistory;
+import sg.toss_sg.models.account.BriefAccount;
+import sg.toss_sg.services.AccountServices.AccountService;
+
+@Controller
 @RequiredArgsConstructor
 public class AccountController {
 
@@ -28,19 +25,20 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping(ACCOUNTS + "/getAccounts")
-    public ResponseEntity<List<BriefAccount>> getAccounts(@AuthenticationPrincipal Integer userId) {
+    public ResponseEntity<List<BriefAccount>> getAccounts(
+            @AuthenticationPrincipal(expression = "userId") Integer userId) {
         return ResponseEntity.ok(accountService.getBriefAccounts(userId));
     }
 
     @GetMapping(ACCOUNTS + "/getAccountWithTransactionHistorys")
     public ResponseEntity<List<AccountWithTransactionHistory>> getAccountWithTransactionHistorys(
-            @AuthenticationPrincipal Integer userId) {
+            @AuthenticationPrincipal(expression = "userId") Integer userId) {
         return ResponseEntity.ok(accountService.getAccountWithTransactionHistorys(userId));
     }
 
     @GetMapping(ACCOUNTS + "/getAccount")
-    public ResponseEntity<BriefAccount> getAccount(@AuthenticationPrincipal Integer userId,
-            @RequestParam Long accountId) {
+    public ResponseEntity<BriefAccount> getAccount(@AuthenticationPrincipal(expression = "userId") Integer userId,
+            @RequestParam(name = "accountId") Long accountId) {
         BriefAccount briefAccount;
 
         try {
@@ -60,8 +58,9 @@ public class AccountController {
     }
 
     @GetMapping(ACCOUNTS + "/getAccountWithTransactionHistory")
-    public ResponseEntity<AccountWithTransactionHistory> getMethodName(@AuthenticationPrincipal Integer userId,
-            @RequestParam Long accountId) {
+    public ResponseEntity<AccountWithTransactionHistory> getMethodName(
+            @AuthenticationPrincipal(expression = "userId") Integer userId,
+            @RequestParam(name = "accountId") Long accountId) {
         AccountWithTransactionHistory accountWithTransactionHistory;
 
         try {

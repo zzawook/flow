@@ -16,4 +16,5 @@ with open(input_file, mode='r', newline='') as infile, open(output_file, mode='w
     for row in reader:
         transaction_status = random.choice(['PENDING', 'COMPLETE'])
         row.append(transaction_status)
+        row.pop(1)
         writer.writerow(row)

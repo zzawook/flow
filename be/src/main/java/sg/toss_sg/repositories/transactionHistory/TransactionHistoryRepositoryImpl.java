@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,8 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
 
     private final String DELETE_ALL = TransactionHistoryQueryStore.DELETE_ALL_TRANSACTION_HISTORIES;
 
+    private final String FIND_RECENT_TRANSACTION_HISTORY_DETAIL_OF_ACCOUNT = TransactionHistoryQueryStore.FIND_RECENT_TRANSACTION_HISTORY_DETAIL_OF_ACCOUNT;
+
     public TransactionHistoryRepositoryImpl(DatabaseConnectionPool databaseConnectionPool) {
         this.databaseConnectionPool = databaseConnectionPool;
     }
@@ -63,35 +66,23 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
             if (hasId) {
                 pstm.setLong(parameterStart, entity.getId());
             }
-            pstm.setLong(parameterStart + 1, entity.getAccount().getId());
 
-            Account toAccount = entity.getToAccount();
-            if (toAccount != null) {
-                pstm.setLong(parameterStart + 2, toAccount.getId());
-            } else {
-                pstm.setNull(parameterStart + 2, java.sql.Types.BIGINT);
-            }
+            pstm.setLong(parameterStart + 1, entity.getToAccount().getId());
+            pstm.setLong(parameterStart + 2, entity.getFromAccount().getId());
 
-            Account fromAccount = entity.getFromAccount();
-            if (fromAccount != null) {
-                pstm.setLong(parameterStart + 3, fromAccount.getId());
+            Card card = entity.getCard();
+            if (card != null) {
+                pstm.setLong(parameterStart + 3, card.getId());
             } else {
                 pstm.setNull(parameterStart + 3, java.sql.Types.BIGINT);
             }
 
-            Card card = entity.getCard();
-            if (card != null) {
-                pstm.setLong(parameterStart + 4, card.getId());
-            } else {
-                pstm.setNull(parameterStart + 4, java.sql.Types.BIGINT);
-            }
-
-            pstm.setDate(parameterStart + 5, Date.valueOf(entity.getTransactionDate()));
-            pstm.setTime(parameterStart + 6, Time.valueOf(entity.getTransactionTime()));
-            pstm.setDouble(parameterStart + 7, entity.getAmount());
-            pstm.setString(parameterStart + 8, entity.getTransactionType().toString());
-            pstm.setString(parameterStart + 9, entity.getDescription());
-            pstm.setString(parameterStart + 10, entity.getTransactionStatus().toString());
+            pstm.setDate(parameterStart + 4, Date.valueOf(entity.getTransactionDate()));
+            pstm.setTime(parameterStart + 5, Time.valueOf(entity.getTransactionTime()));
+            pstm.setDouble(parameterStart + 6, entity.getAmount());
+            pstm.setString(parameterStart + 7, entity.getTransactionType().toString());
+            pstm.setString(parameterStart + 8, entity.getDescription());
+            pstm.setString(parameterStart + 9, entity.getTransactionStatus().toString());
 
             pstm.executeUpdate();
 
@@ -124,29 +115,36 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
             }
             if (resultSet.next()) {
                 TransactionHistory transactionHistory = TransactionHistory.builder()
-                        .id(resultSet.getLong("transaction_id"))
-                        .account(Account.builder()
-                                .id(resultSet.getLong("account_id"))
-                                .accountNumber(resultSet.getString("account_number"))
-                                .balance(resultSet.getDouble("balance"))
-                                .accountName(resultSet.getString("account_name"))
-                                .accountType(AccountType.valueOf(resultSet.getString("account_type")))
-                                .lastUpdated(resultSet.getTimestamp("last_updated").toLocalDateTime())
-                                .owner(User.builder()
-                                        .id(resultSet.getInt("user_id"))
-                                        .name(resultSet.getString("user_name"))
-                                        .email(resultSet.getString("user_email"))
-                                        .build())
-                                .bank(Bank.builder()
-                                        .id(resultSet.getInt("bank_id"))
-                                        .name(resultSet.getString("bank_name"))
-                                        .build())
+                        .id(resultSet.getLong("id"))
+                        .toAccount(Account.builder()
+                            .id(resultSet.getLong("to_account_id"))
+                            .accountNumber(resultSet.getString("to_account_number"))
+                            .balance(resultSet.getDouble("to_account_balance"))
+                            .accountName(resultSet.getString("to_account_name"))
+                            .accountType(AccountType.valueOf(resultSet.getString("to_account_type")))
+                            .lastUpdated(resultSet.getTimestamp("to_account_last_updated").toLocalDateTime())
+                            .bank(Bank.builder()
+                                .id(resultSet.getInt("to_bank_id"))
+                                .name(resultSet.getString("to_bank_name"))
                                 .build())
-                        .card(Card.builder()
-                                .id(resultSet.getLong("card_id"))
-                                .cardNumber(resultSet.getString("card_number"))
-                                .cardType(CardType.valueOf(resultSet.getString("card_type")))
+                            .build())
+                        .fromAccount(Account.builder()
+                            .id(resultSet.getLong("from_account_id"))
+                            .accountNumber(resultSet.getString("from_account_number"))
+                            .balance(resultSet.getDouble("from_account_balance"))
+                            .accountName(resultSet.getString("from_account_name"))
+                            .accountType(AccountType.valueOf(resultSet.getString("from_account_type")))
+                            .lastUpdated(resultSet.getTimestamp("from_account_last_updated").toLocalDateTime())
+                            .bank(Bank.builder()
+                                .id(resultSet.getInt("from_bank_id"))
+                                .name(resultSet.getString("from_bank_name"))
                                 .build())
+                            .build())
+                        .card(resultSet.getObject("card_id") != null ? Card.builder()
+                            .id(resultSet.getLong("card_id"))
+                            .cardNumber(resultSet.getString("card_number"))
+                            .cardType(CardType.valueOf(resultSet.getString("card_type")))
+                            .build() : null)
                         .transactionDate(resultSet.getDate("transaction_date").toLocalDate())
                         .transactionTime(resultSet.getTime("transaction_time").toLocalTime())
                         .amount(resultSet.getDouble("amount"))
@@ -189,8 +187,59 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
 
     @Override
     public List<TransactionHistoryDetail> findRecentTransactionHistoryDetailOfAccount(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findRecentTransactionHistoryDetailOfAccount'");
+        Connection connection = databaseConnectionPool.getConnection();
+        try (PreparedStatement pstm = connection.prepareStatement(FIND_RECENT_TRANSACTION_HISTORY_DETAIL_OF_ACCOUNT)) {
+            pstm.setLong(1, id);
+
+            List<TransactionHistoryDetail> transactionHistoryDetails = new ArrayList<>();;
+
+            ResultSet resultSet = pstm.executeQuery();
+            if (resultSet.isLast()) {
+                return transactionHistoryDetails;
+            }
+
+            while (resultSet.next()) {
+                TransactionHistoryDetail transactionHistoryDetail = new TransactionHistoryDetail();
+                    transactionHistoryDetail.setId(resultSet.getLong("id"));
+                    transactionHistoryDetail.setToAccount(Account.builder()
+                        .id(resultSet.getLong("to_account_id"))
+                        .accountNumber(resultSet.getString("to_account_number"))
+                        .balance(resultSet.getDouble("balance"))
+                        .accountName(resultSet.getString("account_name"))
+                        .accountType(AccountType.valueOf(resultSet.getString("account_type")))
+                        .lastUpdated(resultSet.getTimestamp("last_updated").toLocalDateTime())
+                        .build());
+                    transactionHistoryDetail.setFromAccount(Account.builder()
+                        .id(resultSet.getLong("from_account_id"))
+                        .accountNumber(resultSet.getString("account_number"))
+                        .balance(resultSet.getDouble("balance"))
+                        .accountName(resultSet.getString("account_name"))
+                        .accountType(AccountType.valueOf(resultSet.getString("account_type")))
+                        .lastUpdated(resultSet.getTimestamp("last_updated").toLocalDateTime())
+                        .build());
+                    transactionHistoryDetail.setCard(resultSet.getObject("card_id") != null ? Card.builder()
+                        .id(resultSet.getLong("card_id"))
+                        .cardNumber(resultSet.getString("card_number"))
+                        .cardType(CardType.valueOf(resultSet.getString("card_type")))
+                        .build() : null);
+                    transactionHistoryDetail.setTransactionDate(resultSet.getDate("transaction_date").toLocalDate());
+                    transactionHistoryDetail.setTransactionTime(resultSet.getTime("transaction_time").toLocalTime());
+                    transactionHistoryDetail.setAmount(resultSet.getDouble("amount"));
+                    transactionHistoryDetail.setTransactionType(resultSet.getString("transaction_type"));
+                    transactionHistoryDetails.add(transactionHistoryDetail);   
+            }
+            return transactionHistoryDetails;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
 }

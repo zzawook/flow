@@ -22,16 +22,13 @@ public class TransactionHistory {
     @Id
     private Long id;
 
-    @NotNull 
-    private Account account;
-
-    @Nullable // Nullable annotation is largely for notational purpose
+    @NotNull
     private Account toAccount;
 
-    @Nullable
+    @NotNull
     private Account fromAccount;
 
-    @Nullable
+    @Nullable // Nullable annotation is largely for notational purpose
     private Card card;
 
     @NotNull
