@@ -21,10 +21,10 @@ FROM openjdk:21-jre-slim
 WORKDIR /app
 
 # Copy the executable JAR file from the build stage to the container
-COPY --from=build /app/build/libs/*.jar toss_sg_backend.jar
+COPY --from=build /app/build/libs/*.jar flow_backend.jar
 
 # Expose the port the app runs on
 EXPOSE 8080
 
 # Run the JAR file
-ENTRYPOINT ["java", "-jar", "toss_sg_backend.jar"]
+ENTRYPOINT ["java", "-jar", "flowbackend.jar"]

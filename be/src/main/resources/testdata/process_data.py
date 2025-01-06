@@ -1,7 +1,7 @@
 import csv
 
-input_file = 'C:/Users/kjaeh/Desktop/dev/zen/be/src/main/resources/testdata/transaction_history.csv'
-output_file = 'C:/Users/kjaeh/Desktop/dev/zen/be/src/main/resources/testdata/processed_transaction_history.csv'
+input_file = 'C:/Users/kjaeh/Desktop/dev/flow/be/src/main/resources/testdata/transaction_history.csv'
+output_file = 'C:/Users/kjaeh/Desktop/dev/flow/be/src/main/resources/testdata/processed_transaction_history.csv'
 
 import os
 import random
