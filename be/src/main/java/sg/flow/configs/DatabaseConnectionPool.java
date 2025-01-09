@@ -21,9 +21,9 @@ public class DatabaseConnectionPool {
         HikariConfig config = new HikariConfig();
 
         // Database settings
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/zen_dev"); // Database URL
-        config.setUsername("zen_developer"); // Database username
-        config.setPassword("airbusa380861"); // Database password
+        config.setJdbcUrl("jdbc:postgresql://localhost:5432/flow_dev"); // Database URL
+        config.setUsername("flow_developer"); // Database username
+        config.setPassword("flowdev123"); // Database password
 
         // HikariCP settings
         config.setMaximumPoolSize(100); // Maximum number of connections

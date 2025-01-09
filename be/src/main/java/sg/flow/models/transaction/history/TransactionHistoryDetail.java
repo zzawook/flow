@@ -12,9 +12,9 @@ import sg.flow.entities.Card;
 public class TransactionHistoryDetail {
     
     private Long id;
+    private String transactionReference;
 
-    private Account toAccount;
-    private Account fromAccount;
+    private Account account;
 
     private Card card;
     private LocalDate transactionDate;
@@ -22,4 +22,6 @@ public class TransactionHistoryDetail {
     private String description;
     private Double amount;
     private String transactionType;
+    private String transactionStatus;
+    private String friendlyDescription;
 }

@@ -7,6 +7,7 @@ public enum AccountType {
     SAVINGS("SAVINGS"),
     CURRENT("CURRENT"),
     FIXED_DEPOSIT("FIXED_DEPOSIT"),
+    FOREIGN_CURRENCY("FOREIGN_CURRENCY"),
     OTHERS("OTHERS");
 
     private final String value;

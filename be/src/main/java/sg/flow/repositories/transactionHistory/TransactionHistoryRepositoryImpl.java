@@ -38,7 +38,7 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
 
     private final String DELETE_ALL = TransactionHistoryQueryStore.DELETE_ALL_TRANSACTION_HISTORIES;
 
-    private final String FIND_RECENT_TRANSACTION_HISTORY_DETAIL_OF_ACCOUNT = TransactionHistoryQueryStore.FIND_RECENT_TRANSACTION_HISTORY_DETAIL_OF_ACCOUNT;
+    private final String FIND_RECENT_TRANSACTION_HISTORY_DETAIL_OF_ACCOUNT = TransactionHistoryQueryStore.FIND_RECENT_TRANSACTION_HISTORY_BY_ACCOUNT_ID;
 
     public TransactionHistoryRepositoryImpl(DatabaseConnectionPool databaseConnectionPool) {
         this.databaseConnectionPool = databaseConnectionPool;
@@ -67,8 +67,8 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
                 pstm.setLong(parameterStart, entity.getId());
             }
 
-            pstm.setLong(parameterStart + 1, entity.getToAccount().getId());
-            pstm.setLong(parameterStart + 2, entity.getFromAccount().getId());
+            pstm.setString(parameterStart + 1, entity.getTransactionReference());
+            pstm.setLong(parameterStart + 2, entity.getAccount().getId());
 
             Card card = entity.getCard();
             if (card != null) {
@@ -83,6 +83,7 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
             pstm.setString(parameterStart + 7, entity.getTransactionType().toString());
             pstm.setString(parameterStart + 8, entity.getDescription());
             pstm.setString(parameterStart + 9, entity.getTransactionStatus().toString());
+            pstm.setString(parameterStart + 10, entity.getFriendlyDescription());
 
             pstm.executeUpdate();
 
@@ -116,28 +117,18 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
             if (resultSet.next()) {
                 TransactionHistory transactionHistory = TransactionHistory.builder()
                         .id(resultSet.getLong("id"))
-                        .toAccount(Account.builder()
-                            .id(resultSet.getLong("to_account_id"))
-                            .accountNumber(resultSet.getString("to_account_number"))
-                            .balance(resultSet.getDouble("to_account_balance"))
-                            .accountName(resultSet.getString("to_account_name"))
-                            .accountType(AccountType.valueOf(resultSet.getString("to_account_type")))
-                            .lastUpdated(resultSet.getTimestamp("to_account_last_updated").toLocalDateTime())
+                        .transactionReference(resultSet.getString("transaction_reference"))
+                        .account(Account.builder()
+                            .id(resultSet.getLong("account_id"))
+                            .accountNumber(resultSet.getString("account_number"))
+                            .balance(resultSet.getDouble("balance"))
+                            .accountName(resultSet.getString("account_name"))
+                            .accountType(AccountType.valueOf(resultSet.getString("account_type")))
+                            .lastUpdated(resultSet.getTimestamp("last_updated").toLocalDateTime())
                             .bank(Bank.builder()
-                                .id(resultSet.getInt("to_bank_id"))
-                                .name(resultSet.getString("to_bank_name"))
-                                .build())
-                            .build())
-                        .fromAccount(Account.builder()
-                            .id(resultSet.getLong("from_account_id"))
-                            .accountNumber(resultSet.getString("from_account_number"))
-                            .balance(resultSet.getDouble("from_account_balance"))
-                            .accountName(resultSet.getString("from_account_name"))
-                            .accountType(AccountType.valueOf(resultSet.getString("from_account_type")))
-                            .lastUpdated(resultSet.getTimestamp("from_account_last_updated").toLocalDateTime())
-                            .bank(Bank.builder()
-                                .id(resultSet.getInt("from_bank_id"))
-                                .name(resultSet.getString("from_bank_name"))
+                                .id(resultSet.getInt("bank_id"))
+                                .name(resultSet.getString("bank_name"))
+                                .bankCode(resultSet.getString("bank_code"))
                                 .build())
                             .build())
                         .card(resultSet.getObject("card_id") != null ? Card.builder()
@@ -151,6 +142,7 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
                         .transactionType(resultSet.getString("transaction_type"))
                         .description(resultSet.getString("description"))
                         .transactionStatus(resultSet.getString("transaction_status"))
+                        .friendlyDescription(resultSet.getString("friendly_description"))
                         .build();
                 return Optional.of(transactionHistory);
             }
@@ -201,22 +193,19 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
             while (resultSet.next()) {
                 TransactionHistoryDetail transactionHistoryDetail = new TransactionHistoryDetail();
                     transactionHistoryDetail.setId(resultSet.getLong("id"));
-                    transactionHistoryDetail.setToAccount(Account.builder()
-                        .id(resultSet.getLong("to_account_id"))
-                        .accountNumber(resultSet.getString("to_account_number"))
-                        .balance(resultSet.getDouble("balance"))
-                        .accountName(resultSet.getString("account_name"))
-                        .accountType(AccountType.valueOf(resultSet.getString("account_type")))
-                        .lastUpdated(resultSet.getTimestamp("last_updated").toLocalDateTime())
-                        .build());
-                    transactionHistoryDetail.setFromAccount(Account.builder()
-                        .id(resultSet.getLong("from_account_id"))
+                    transactionHistoryDetail.setAccount(resultSet.getObject("account_id") != null ? Account.builder()
+                        .id(resultSet.getLong("account_id"))
                         .accountNumber(resultSet.getString("account_number"))
-                        .balance(resultSet.getDouble("balance"))
+                        .balance(resultSet.getDouble("account_balance"))
                         .accountName(resultSet.getString("account_name"))
                         .accountType(AccountType.valueOf(resultSet.getString("account_type")))
-                        .lastUpdated(resultSet.getTimestamp("last_updated").toLocalDateTime())
-                        .build());
+                        .lastUpdated(resultSet.getTimestamp("account_last_updated").toLocalDateTime())
+                        .bank(Bank.builder()
+                            .id(resultSet.getInt("bank_id"))
+                            .name(resultSet.getString("bank_name"))
+                            .bankCode(resultSet.getString("bank_code"))
+                            .build())
+                        .build() : null);
                     transactionHistoryDetail.setCard(resultSet.getObject("card_id") != null ? Card.builder()
                         .id(resultSet.getLong("card_id"))
                         .cardNumber(resultSet.getString("card_number"))

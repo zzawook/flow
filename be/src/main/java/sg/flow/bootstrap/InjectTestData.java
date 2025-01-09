@@ -279,8 +279,8 @@ public class InjectTestData implements CommandLineRunner {
                 }
                 String[] data = line.split(",");
                 Long id = Long.parseLong(data[0]);
-                Long toAccountId = Long.parseLong(data[1]);
-                Long fromAccountId = Long.parseLong(data[2]);
+                String transactionReference = data[1];
+                Long accountId = Long.parseLong(data[2]);
 
                 Long cardId;
 
@@ -292,15 +292,16 @@ public class InjectTestData implements CommandLineRunner {
 
                 LocalDate transactionDate = LocalDate.parse(data[4]);
                 LocalTime transactionTime = LocalTime.parse(data[5]);
-                String description = data[6];
-                Double amount = Double.parseDouble(data[7]);
-                String transactionType = data[8];
+                Double amount = Double.parseDouble(data[6]);
+                String transactionType = data[7];
+                String description = data[8];
                 String transactionStatus = data[9];
+                String friendlyDescription = data[10];
 
                 TransactionHistory currentTransaction = TransactionHistory.builder()
                         .id(id)
-                        .toAccount(accountRepository.findById(toAccountId).orElse(null))
-                        .fromAccount(accountRepository.findById(fromAccountId).orElse(null))
+                        .transactionReference(transactionReference)
+                        .account(accountRepository.findById(accountId).orElse(null))
                         .card(cardRepository.findById(cardId).orElse(null))
                         .transactionDate(transactionDate)
                         .transactionTime(transactionTime)
@@ -308,6 +309,7 @@ public class InjectTestData implements CommandLineRunner {
                         .amount(amount)
                         .transactionType(transactionType)
                         .transactionStatus(transactionStatus)
+                        .friendlyDescription(friendlyDescription)
                         .build();
 
                 transactionRepository.save(currentTransaction);

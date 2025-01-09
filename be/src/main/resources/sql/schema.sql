@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS banks (
 );
 
 CREATE TABLE IF NOT EXISTS accounts (
-    id SERIAL PRIMARY KEY, 
+    id BIGSERIAL PRIMARY KEY, 
     account_number VARCHAR(255) NOT NULL,
     bank_id INT REFERENCES banks(id) NOT NULL,
     user_id INT REFERENCES users(id) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 CREATE TABLE IF NOT EXISTS cards (
     id SERIAL PRIMARY KEY, 
     owner_id INT REFERENCES users(id) NOT NULL,
-    linked_account_id INT REFERENCES accounts(id) NOT NULL, 
+    linked_account_id BIGINT REFERENCES accounts(id) NOT NULL, 
     issuing_bank_id INT REFERENCES banks(id) NOT NULL,
     card_number VARCHAR(255) NOT NULL, 
     card_type VARCHAR(255) NOT NULL,
@@ -52,13 +52,14 @@ CREATE TABLE IF NOT EXISTS cards (
 
 CREATE TABLE IF NOT EXISTS transaction_histories (
     id BIGSERIAL PRIMARY KEY, 
-    to_account_id INT REFERENCES accounts(id),
-    from_account_id INT REFERENCES accounts(id),
-    card_id INT REFERENCES cards(id),
+    transaction_reference VARCHAR(255) NOT NULL,
+    account_id BIGINT REFERENCES accounts(id) DEFAULT NULL,
+    card_id INT REFERENCES cards(id) DEFAULT NULL,
     transaction_date DATE NOT NULL,
-    transaction_time TIME,
+    transaction_time TIME DEFAULT NULL,
     amount DECIMAL(10,2) NOT NULL,
     transaction_type VARCHAR(255) NOT NULL,
     description VARCHAR(255) DEFAULT '',
-    transaction_status VARCHAR(255) NOT NULL
+    transaction_status VARCHAR(255) NOT NULL,
+    friendly_description VARCHAR(255) DEFAULT ''
 );

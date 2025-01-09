@@ -23,22 +23,19 @@ public class TransactionHistory {
     private Long id;
 
     @NotNull
-    private Account toAccount;
+    private String transactionReference;
 
-    @NotNull
-    private Account fromAccount;
+    @Nullable
+    private Account account;
 
-    @Nullable // Nullable annotation is largely for notational purpose
+    @Nullable
     private Card card;
 
     @NotNull
     private LocalDate transactionDate;
 
-    @NotNull
+    @Nullable
     private LocalTime transactionTime;
-
-    @Default
-    private String description = "";
 
     @NotNull
     private Double amount;
@@ -46,6 +43,12 @@ public class TransactionHistory {
     @NotNull
     private String transactionType;
 
+    @Default
+    private String description = "";
+
     @NotNull
     private String transactionStatus;
+
+    @Default
+    private String friendlyDescription = "";
 }
