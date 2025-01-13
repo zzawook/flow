@@ -27,7 +27,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountWithTransactionHistory> getAccountWithTransactionHistorys(Integer userId) {
+    public List<AccountWithTransactionHistory> getAccountWithTransactionHistory(Integer userId) {
         return accountRepository.findAccountWithTransactionHistorysOfUser(userId);
     }
 
@@ -67,6 +67,7 @@ public class AccountServiceImpl implements AccountService {
                         .build();
                 
                 List<TransactionHistoryDetail> recentTransactionDetails = transactionHistoryRepository.findRecentTransactionHistoryDetailOfAccount(accountId);
+                System.out.println(recentTransactionDetails);
                 accountWithTransactionHistory.setRecentTransactionHistoryDetails(recentTransactionDetails);
 
                 return accountWithTransactionHistory;

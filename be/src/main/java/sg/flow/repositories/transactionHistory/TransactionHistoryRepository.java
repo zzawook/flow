@@ -1,18 +1,20 @@
 package sg.flow.repositories.transactionHistory;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import sg.flow.entities.TransactionHistory;
-import sg.flow.models.transaction.history.MonthlyTransactionHistoryList;
+import sg.flow.models.transaction.history.TransactionHistoryList;
 import sg.flow.models.transaction.history.TransactionHistoryDetail;
 import sg.flow.repositories.Repository;
 
 public interface TransactionHistoryRepository extends Repository<TransactionHistory, Long> {
 
-    MonthlyTransactionHistoryList getMonthlyTransaction(int year, int month);
+    List<TransactionHistoryDetail> findRecentTransactionHistoryDetailOfAccount(Long accountId);
 
-    LocalDateTime getLastUpdatedDate();
+    TransactionHistoryList findTransactionBetweenDates(int userId, LocalDate startDate, LocalDate endDate);
 
-    List<TransactionHistoryDetail> findRecentTransactionHistoryDetailOfAccount(Long id);
+    TransactionHistoryList findTransactionBetweenDates(int userId, LocalDate startDate, LocalDate endDate, int limit);
+
+    TransactionHistoryDetail findTransactionDetailById(long long1);
 }

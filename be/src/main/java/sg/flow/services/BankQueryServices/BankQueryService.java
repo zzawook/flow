@@ -1,11 +1,11 @@
 package sg.flow.services.BankQueryServices;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-import sg.flow.models.transaction.history.MonthlyTransactionHistoryList;
+import sg.flow.models.transaction.history.TransactionHistoryList;
 
 public interface BankQueryService {
 
-    public MonthlyTransactionHistoryList getTransactionHistory(int year, int month, LocalDateTime lastUpdated);
+    public TransactionHistoryList getTransactionHistoryBetween(int userId, LocalDate startDate, LocalDate endDate);
 
 }

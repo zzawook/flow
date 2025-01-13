@@ -1,18 +1,17 @@
 package sg.flow.services.TransactionServices;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.websocket.SendResult;
 import lombok.RequiredArgsConstructor;
-import sg.flow.models.transaction.history.DailyTransactionHistoryList;
-import sg.flow.models.transaction.history.MonthlyTransactionHistoryList;
+import sg.flow.models.transaction.history.TransactionHistoryList;
 import sg.flow.models.transaction.history.TransactionHistoryDetail;
 import sg.flow.models.transaction.send.SendRecepient;
 import sg.flow.models.transaction.send.SendRequestBody;
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository;
+import sg.flow.services.BankQueryServices.BankQueryService;
 import sg.flow.services.BankQueryServices.DBSQueryService;
 
 @Service
@@ -23,36 +22,41 @@ public class TransactionServiceImpl implements TransactionService {
     private final DBSQueryService bankQueryService;
 
     @Override
-    public MonthlyTransactionHistoryList getLast30DaysHistoryList() {
-        return this.getMonthlyTransaction(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+    public TransactionHistoryList getLast30DaysHistoryList(int userId) {
+        return transactionHistoryRepository.findTransactionBetweenDates(userId, LocalDate.now().minusDays(30),
+                LocalDate.now());
     }
 
     @Override
-    public MonthlyTransactionHistoryList getMonthlyTransaction(int year, int month) {
-        LocalDate currentMonth = LocalDate.now().withMonth(month);
-        MonthlyTransactionHistoryList monthlyHistoryList = transactionHistoryRepository.getMonthlyTransaction(year,
-                month);
-        if (currentMonth.isBefore(LocalDate.now())) {
-            return monthlyHistoryList;
-        }
+    public TransactionHistoryList getMonthlyTransaction(int userId, int year, int month) {
+        LocalDate currentMonthFirstDay = LocalDate.of(year, month, 1);
+        LocalDate currentMonthLastDay = LocalDate.of(year, month, currentMonthFirstDay.lengthOfMonth());
 
-        LocalDateTime lastUpdated = transactionHistoryRepository.getLastUpdatedDate();
-        MonthlyTransactionHistoryList additionalHistoryList = bankQueryService.getTransactionHistory(year, month,
-                lastUpdated);
-        monthlyHistoryList.add(additionalHistoryList);
+        TransactionHistoryList monthlyHistoryList = transactionHistoryRepository.findTransactionBetweenDates(userId,
+                currentMonthFirstDay, currentMonthLastDay);
+
         return monthlyHistoryList;
     }
 
     @Override
-    public DailyTransactionHistoryList getDailyTransaction(int year, int month, int day) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDailyTransaction'");
+    public TransactionHistoryList getDailyTransaction(int userId, LocalDate date) {
+        TransactionHistoryList dailyHistoryList = transactionHistoryRepository.findTransactionBetweenDates(userId, date,
+                date);
+        // if (date.isBefore(currentDate)) {
+        // return dailyHistoryList;
+        // }
+
+        // LocalDateTime lastUpdated =
+        // transactionHistoryRepository.getLastUpdatedDate();
+        // TransactionHistoryList additionalHistoryList =
+        // bankQueryService.getTransactionHistory(userId, );
+        // dailyHistoryList.add(additionalHistoryList);
+        return dailyHistoryList;
     }
 
     @Override
-    public TransactionHistoryDetail getTransactionDetails(String bank_code, String transaction_id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTransactionDetails'");
+    public TransactionHistoryDetail getTransactionDetails(int userId, String transaction_id) {
+        return transactionHistoryRepository.findTransactionDetailById(Long.parseLong(transaction_id));
     }
 
     @Override
@@ -74,11 +78,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public MonthlyTransactionHistoryList getTransactionWithinRange(int startYear, int startMonth, int startDay,
-            int endYear,
-            int endMonth, int endDay) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTransactionWithinRange'");
+    public TransactionHistoryList getTransactionWithinRange(int userId, LocalDate startDate, LocalDate endDate) {
+        return transactionHistoryRepository.findTransactionBetweenDates(userId, startDate, endDate);
     }
 
 }

@@ -4,9 +4,10 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +19,10 @@ import sg.flow.entities.Account;
 import sg.flow.entities.Bank;
 import sg.flow.entities.Card;
 import sg.flow.entities.TransactionHistory;
-import sg.flow.entities.User;
 import sg.flow.entities.utils.AccountType;
 import sg.flow.entities.utils.CardType;
-import sg.flow.models.transaction.history.MonthlyTransactionHistoryList;
 import sg.flow.models.transaction.history.TransactionHistoryDetail;
+import sg.flow.models.transaction.history.TransactionHistoryList;
 import sg.flow.repositories.utils.TransactionHistoryQueryStore;
 
 @Repository
@@ -36,24 +36,16 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
 
     private final String FIND_BY_ID = TransactionHistoryQueryStore.FIND_TRANSACTION_HISTORY_BY_ID;
 
+    private final String FIND_DETAIL_BY_ID = TransactionHistoryQueryStore.FIND_TRANSACTION_DETAIL_BY_ID;
+
     private final String DELETE_ALL = TransactionHistoryQueryStore.DELETE_ALL_TRANSACTION_HISTORIES;
 
     private final String FIND_RECENT_TRANSACTION_HISTORY_DETAIL_OF_ACCOUNT = TransactionHistoryQueryStore.FIND_RECENT_TRANSACTION_HISTORY_BY_ACCOUNT_ID;
 
+    private final String FIND_TRANSACTION_BETWEEN_DATES = TransactionHistoryQueryStore.FIND_TRANSACTION_BETWEEN_DATES;
+
     public TransactionHistoryRepositoryImpl(DatabaseConnectionPool databaseConnectionPool) {
         this.databaseConnectionPool = databaseConnectionPool;
-    }
-
-    @Override
-    public MonthlyTransactionHistoryList getMonthlyTransaction(int year, int month) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMonthlyTransaction'");
-    }
-
-    @Override
-    public LocalDateTime getLastUpdatedDate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLastUpdatedDate'");
     }
 
     @Override
@@ -178,10 +170,10 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
     }
 
     @Override
-    public List<TransactionHistoryDetail> findRecentTransactionHistoryDetailOfAccount(Long id) {
+    public List<TransactionHistoryDetail> findRecentTransactionHistoryDetailOfAccount(Long accountId) {
         Connection connection = databaseConnectionPool.getConnection();
         try (PreparedStatement pstm = connection.prepareStatement(FIND_RECENT_TRANSACTION_HISTORY_DETAIL_OF_ACCOUNT)) {
-            pstm.setLong(1, id);
+            pstm.setLong(1, accountId);
 
             List<TransactionHistoryDetail> transactionHistoryDetails = new ArrayList<>();;
 
@@ -229,6 +221,139 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
                 e1.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public TransactionHistoryList findTransactionBetweenDates(int userId, LocalDate start, LocalDate end) {
+        return findTransactionBetweenDates(userId, start, end, 30);
+    }
+
+    @Override
+    public TransactionHistoryList findTransactionBetweenDates(int userId, LocalDate start, LocalDate end, int limit) {
+        Connection connection = databaseConnectionPool.getConnection();
+        try (PreparedStatement pstm = connection.prepareStatement(FIND_TRANSACTION_BETWEEN_DATES)) {
+            pstm.setDate(1, Date.valueOf(start));
+            pstm.setDate(2, Date.valueOf(end));
+            pstm.setInt(3, userId);
+            pstm.setInt(4, limit);
+
+            TransactionHistoryList transactionHistoryList = new TransactionHistoryList(start, end);
+
+            ResultSet resultSet = pstm.executeQuery();
+            if (resultSet.isLast()) {
+                return transactionHistoryList;
+            }
+
+            while (resultSet.next()) {
+                TransactionHistoryDetail transactionHistoryDetail = new TransactionHistoryDetail();
+                transactionHistoryDetail.setId(resultSet.getLong("id"));
+                transactionHistoryDetail.setTransactionReference(resultSet.getString("transaction_reference"));
+                transactionHistoryDetail.setAccount(resultSet.getObject("account_id") != null ? Account.builder()
+                        .id(resultSet.getLong("account_id"))
+                        .accountNumber(resultSet.getString("account_number"))
+                        .balance(resultSet.getDouble("account_balance"))
+                        .accountName(resultSet.getString("account_name"))
+                        .accountType(AccountType.valueOf(resultSet.getString("account_type")))
+                        .lastUpdated(resultSet.getTimestamp("account_last_updated").toLocalDateTime())
+                        .bank(Bank.builder()
+                                .id(resultSet.getInt("bank_id"))
+                                .name(resultSet.getString("bank_name"))
+                                .bankCode(resultSet.getString("bank_code"))
+                                .build())
+                        .build() : null);
+                transactionHistoryDetail.setCard(resultSet.getObject("card_id") != null ? Card.builder()
+                        .id(resultSet.getLong("card_id"))
+                        .cardNumber(resultSet.getString("card_number"))
+                        .cardType(CardType.valueOf(resultSet.getString("card_type")))
+                        .build() : null);
+                transactionHistoryDetail.setTransactionDate(resultSet.getDate("transaction_date").toLocalDate());
+                transactionHistoryDetail.setTransactionTime(resultSet.getTime("transaction_time").toLocalTime());
+                transactionHistoryDetail.setAmount(resultSet.getDouble("amount"));
+                transactionHistoryDetail.setTransactionType(resultSet.getString("transaction_type"));
+                transactionHistoryDetail.setDescription(resultSet.getString("description"));
+                transactionHistoryDetail.setTransactionStatus(resultSet.getString("transaction_status"));
+                transactionHistoryDetail.setFriendlyDescription(resultSet.getString("friendly_description"));
+                transactionHistoryList.add(transactionHistoryDetail);
+            }
+            return transactionHistoryList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public TransactionHistoryDetail findTransactionDetailById(long long1) {
+        Connection connection = databaseConnectionPool.getConnection();
+        try (PreparedStatement pstm = connection.prepareStatement(FIND_DETAIL_BY_ID)) {
+            pstm.setLong(1, long1);
+
+            ResultSet resultSet = pstm.executeQuery();
+            if (resultSet.isLast()) {
+                return null;
+            }
+            if (resultSet.next()) {
+                TransactionHistoryDetail transactionHistoryDetail = new TransactionHistoryDetail();
+                transactionHistoryDetail.setId(resultSet.getLong("id"));
+                transactionHistoryDetail.setTransactionReference(resultSet.getString("transaction_reference"));
+                transactionHistoryDetail.setAccount(resultSet.getObject("account_id") != null ? Account.builder()
+                        .id(resultSet.getLong("account_id"))
+                        .accountNumber(resultSet.getString("account_number"))
+                        .balance(resultSet.getDouble("account_balance"))
+                        .accountName(resultSet.getString("account_name"))
+                        .accountType(AccountType.valueOf(resultSet.getString("account_type")))
+                        .lastUpdated(resultSet.getTimestamp("account_last_updated").toLocalDateTime())
+                        .bank(Bank.builder()
+                                .id(resultSet.getInt("bank_id"))
+                                .name(resultSet.getString("bank_name"))
+                                .bankCode(resultSet.getString("bank_code"))
+                                .build())
+                        .build() : null);
+                transactionHistoryDetail.setCard(resultSet.getObject("card_id") != null ? Card.builder()
+                        .id(resultSet.getLong("card_id"))
+                        .cardNumber(resultSet.getString("card_number"))
+                        .cardType(CardType.valueOf(resultSet.getString("card_type")))
+                        .build() : null);
+                transactionHistoryDetail.setTransactionDate(resultSet.getDate("transaction_date").toLocalDate());
+                transactionHistoryDetail.setTransactionTime(resultSet.getTime("transaction_time").toLocalTime());
+                transactionHistoryDetail.setAmount(resultSet.getDouble("amount"));
+                transactionHistoryDetail.setTransactionType(resultSet.getString("transaction_type"));
+                transactionHistoryDetail.setDescription(resultSet.getString("description"));
+                transactionHistoryDetail.setTransactionStatus(resultSet.getString("transaction_status"));
+                transactionHistoryDetail.setFriendlyDescription(resultSet.getString("friendly_description"));
+                return transactionHistoryDetail;
+            }
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public boolean containsColumnLabel(ResultSet resultSet, String columnName) throws SQLException{
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        for (int i = 1; i <= columnCount; i++) {
+            String columnLabel = metaData.getColumnLabel(i);
+            if (columnLabel.equals(columnName)) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
 }

@@ -1,19 +1,20 @@
 package sg.flow.services.TransactionServices;
 
+import java.time.LocalDate;
+
 import jakarta.websocket.SendResult;
-import sg.flow.models.transaction.history.DailyTransactionHistoryList;
-import sg.flow.models.transaction.history.MonthlyTransactionHistoryList;
+import sg.flow.models.transaction.history.TransactionHistoryList;
 import sg.flow.models.transaction.history.TransactionHistoryDetail;
 import sg.flow.models.transaction.send.SendRecepient;
 import sg.flow.models.transaction.send.SendRequestBody;
 
 public interface TransactionService {
 
-    MonthlyTransactionHistoryList getMonthlyTransaction(int year, int month);
+    TransactionHistoryList getMonthlyTransaction(int userId, int year, int month);
 
-    DailyTransactionHistoryList getDailyTransaction(int year, int month, int day);
+    TransactionHistoryList getDailyTransaction(int userId, LocalDate date);
 
-    TransactionHistoryDetail getTransactionDetails(String bank_code, String transaction_id);
+    TransactionHistoryDetail getTransactionDetails(int userId, String transaction_id);
 
     SendRecepient getRelevantRecepient(String keyword);
 
@@ -21,10 +22,8 @@ public interface TransactionService {
 
     SendResult sendTransaction(SendRequestBody sendRequestBody);
 
-    MonthlyTransactionHistoryList getLast30DaysHistoryList();
+    TransactionHistoryList getLast30DaysHistoryList(int userId);
 
-    MonthlyTransactionHistoryList getTransactionWithinRange(int startYear, int startMonth, int startDay, int endYear,
-            int endMonth,
-            int endDay);
+    TransactionHistoryList getTransactionWithinRange(int userId, LocalDate startDate, LocalDate endDate);
 
 }

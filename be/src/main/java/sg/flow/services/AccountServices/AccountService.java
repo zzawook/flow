@@ -9,7 +9,7 @@ public interface AccountService {
 
     List<BriefAccount> getBriefAccounts(Integer userId);
 
-    List<AccountWithTransactionHistory> getAccountWithTransactionHistorys(Integer userId);
+    List<AccountWithTransactionHistory> getAccountWithTransactionHistory(Integer userId);
 
     BriefAccount getBriefAccount(Integer userId, Long accountId);
 

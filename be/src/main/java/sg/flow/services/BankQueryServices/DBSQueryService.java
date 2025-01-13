@@ -1,16 +1,16 @@
 package sg.flow.services.BankQueryServices;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 
-import sg.flow.models.transaction.history.MonthlyTransactionHistoryList;
+import sg.flow.models.transaction.history.TransactionHistoryList;
 
 @Service
 public class DBSQueryService implements BankQueryService {
 
     @Override
-    public MonthlyTransactionHistoryList getTransactionHistory(int year, int month, LocalDateTime lastUpdated) {
+    public TransactionHistoryList getTransactionHistoryBetween(int userId, LocalDate startDate, LocalDate endDate) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTransactionHistory'");
     }

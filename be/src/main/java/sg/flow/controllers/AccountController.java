@@ -2,7 +2,6 @@ package sg.flow.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +20,6 @@ public class AccountController {
 
     private final String ACCOUNTS = "/accounts";
 
-    @Autowired
     private final AccountService accountService;
 
     @GetMapping(ACCOUNTS + "/getAccounts")
@@ -30,10 +28,10 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getBriefAccounts(userId));
     }
 
-    @GetMapping(ACCOUNTS + "/getAccountWithTransactionHistorys")
-    public ResponseEntity<List<AccountWithTransactionHistory>> getAccountWithTransactionHistorys(
+    @GetMapping(ACCOUNTS + "/getAccountsWithTransactionHistory")
+    public ResponseEntity<List<AccountWithTransactionHistory>> getAccountsWithTransactionHistory(
             @AuthenticationPrincipal(expression = "userId") Integer userId) {
-        return ResponseEntity.ok(accountService.getAccountWithTransactionHistorys(userId));
+        return ResponseEntity.ok(accountService.getAccountWithTransactionHistory(userId));
     }
 
     @GetMapping(ACCOUNTS + "/getAccount")
@@ -58,7 +56,7 @@ public class AccountController {
     }
 
     @GetMapping(ACCOUNTS + "/getAccountWithTransactionHistory")
-    public ResponseEntity<AccountWithTransactionHistory> getMethodName(
+    public ResponseEntity<AccountWithTransactionHistory> getAccountWithTransactionHistory(
             @AuthenticationPrincipal(expression = "userId") Integer userId,
             @RequestParam(name = "accountId") Long accountId) {
         AccountWithTransactionHistory accountWithTransactionHistory;
