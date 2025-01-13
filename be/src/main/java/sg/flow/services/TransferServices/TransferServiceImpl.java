@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.websocket.SendResult;
 import lombok.RequiredArgsConstructor;
 import sg.flow.entities.Bank;
 import sg.flow.models.transfer.TransferRecepient;

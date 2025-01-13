@@ -8,7 +8,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.websocket.SendResult;
 import lombok.RequiredArgsConstructor;
 import sg.flow.entities.Bank;
 import sg.flow.models.transfer.TransferRecepient;
