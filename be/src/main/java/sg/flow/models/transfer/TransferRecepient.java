@@ -1,16 +1,18 @@
-package sg.flow.models.transaction.send;
+package sg.flow.models.transfer;
 
+import lombok.Builder;
 import lombok.Data;
 import sg.flow.entities.Bank;
 
 @Data
-public class SendRecepient {
+@Builder
+public class TransferRecepient {
     
     private String name;
     private Bank bank;
     private String accountNumber;
 
-    public SendRecepient(String name, Bank bank, String accountNumber) {
+    public TransferRecepient(String name, Bank bank, String accountNumber) {
         this.name = name;
         this.bank = bank;
         this.accountNumber = accountNumber;

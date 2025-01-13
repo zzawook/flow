@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import sg.flow.entities.Account;
 import sg.flow.models.account.AccountWithTransactionHistory;
 import sg.flow.models.account.BriefAccount;
-import sg.flow.models.transaction.history.TransactionHistoryDetail;
+import sg.flow.models.transaction.TransactionHistoryDetail;
 import sg.flow.repositories.account.AccountRepository;
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository;
 

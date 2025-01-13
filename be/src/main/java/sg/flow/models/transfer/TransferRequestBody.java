@@ -1,10 +1,10 @@
-package sg.flow.models.transaction.send;
+package sg.flow.models.transfer;
 
 import lombok.Data;
 import sg.flow.entities.Account;
 
 @Data
-public class SendRequestBody {
+public class TransferRequestBody {
 
     private Double amount;
     private String currency;
@@ -13,7 +13,7 @@ public class SendRequestBody {
     private Account toAccount;
     private String transactionType;
 
-    public SendRequestBody(String jsonString) {
+    public TransferRequestBody(String jsonString) {
         this.parseJson(jsonString);
     }
 
@@ -21,7 +21,7 @@ public class SendRequestBody {
         //TODO: Implement this method
     }
 
-    public SendRequestBody(Double amount, String currency, String description, Account fromAccount, Account toAccount, String transactionType) {
+    public TransferRequestBody(Double amount, String currency, String description, Account fromAccount, Account toAccount, String transactionType) {
         this.amount = amount;
         this.currency = currency;
         this.description = description;

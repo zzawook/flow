@@ -1,4 +1,4 @@
-package sg.flow.models.transaction.history;
+package sg.flow.models.transaction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import sg.flow.entities.Bank;
 import sg.flow.entities.utils.AccountType;
-import sg.flow.models.transaction.history.TransactionHistoryDetail;
+import sg.flow.models.transaction.TransactionHistoryDetail;
 
 @Data
 @Builder

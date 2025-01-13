@@ -1,4 +1,4 @@
-package sg.flow.services.TransactionServices;
+package sg.flow.services.TransactionHistoryServices;
 
 import java.time.LocalDate;
 
@@ -6,17 +6,16 @@ import org.springframework.stereotype.Service;
 
 import jakarta.websocket.SendResult;
 import lombok.RequiredArgsConstructor;
-import sg.flow.models.transaction.history.TransactionHistoryList;
-import sg.flow.models.transaction.history.TransactionHistoryDetail;
-import sg.flow.models.transaction.send.SendRecepient;
-import sg.flow.models.transaction.send.SendRequestBody;
+import sg.flow.models.transaction.TransactionHistoryDetail;
+import sg.flow.models.transaction.TransactionHistoryList;
+import sg.flow.models.transfer.TransferRecepient;
+import sg.flow.models.transfer.TransferRequestBody;
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository;
-import sg.flow.services.BankQueryServices.BankQueryService;
 import sg.flow.services.BankQueryServices.DBSQueryService;
 
 @Service
 @RequiredArgsConstructor
-public class TransactionServiceImpl implements TransactionService {
+public class TransactionHistoryServiceImpl implements TransactionHistoryService {
 
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final DBSQueryService bankQueryService;
@@ -60,7 +59,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public SendRecepient getRelevantRecepient(String keyword) {
+    public TransferRecepient getRelevantRecepient(String keyword) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getRelevantRecepient'");
     }
@@ -72,7 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public SendResult sendTransaction(SendRequestBody sendRequestBody) {
+    public SendResult sendTransaction(TransferRequestBody sendRequestBody) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'sendTransaction'");
     }

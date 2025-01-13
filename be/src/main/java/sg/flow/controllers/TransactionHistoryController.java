@@ -10,40 +10,40 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
-import sg.flow.models.transaction.history.TransactionHistoryList;
-import sg.flow.models.transaction.history.TransactionHistoryDetail;
-import sg.flow.services.TransactionServices.TransactionService;
+import sg.flow.models.transaction.TransactionHistoryDetail;
+import sg.flow.models.transaction.TransactionHistoryList;
+import sg.flow.services.TransactionHistoryServices.TransactionHistoryService;
 
 @Controller
 @RequiredArgsConstructor
-public class TransactionHistoryController extends TransactionController {
+public class TransactionHistoryController {
 
-    private final String HISTORY = "/history";
+    private final String TRANSACTION_HISTORY = "/transaction_history";
 
     @Autowired
-    private final TransactionService transactionService;
+    private final TransactionHistoryService transactionService;
 
-    @GetMapping(TRANSACTION + HISTORY + "/lastMonthTransaction")
+    @GetMapping(TRANSACTION_HISTORY + "/lastMonthTransaction")
     public ResponseEntity<TransactionHistoryList> getLast30DaysHistoryList(
             @AuthenticationPrincipal(expression = "userId") int userId) {
         return ResponseEntity.ok(transactionService.getLast30DaysHistoryList(userId));
     }
 
-    @GetMapping(TRANSACTION + HISTORY + "/monthlyTransaction")
+    @GetMapping(TRANSACTION_HISTORY + "/monthlyTransaction")
     public ResponseEntity<TransactionHistoryList> getMonthlyTransaction(
             @AuthenticationPrincipal(expression = "userId") int userId, @RequestParam(name = "year") int year,
             @RequestParam(name = "month") int month) {
         return ResponseEntity.ok(transactionService.getMonthlyTransaction(userId, year, month));
     }
 
-    @GetMapping(TRANSACTION + HISTORY + "/dailyTransaction")
+    @GetMapping(TRANSACTION_HISTORY + "/dailyTransaction")
     public ResponseEntity<TransactionHistoryList> getDailyTransaction(
             @AuthenticationPrincipal(expression = "userId") int userId, @RequestParam(name = "year") int year,
             @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
         return ResponseEntity.ok(transactionService.getDailyTransaction(userId, LocalDate.of(year, month, day)));
     }
 
-    @GetMapping(TRANSACTION + HISTORY + "/transactionDetails")
+    @GetMapping(TRANSACTION_HISTORY + "/transactionDetails")
     public ResponseEntity<TransactionHistoryDetail> getTransactionDetails(
             @AuthenticationPrincipal(expression = "userId") int userId,
             @RequestParam(name = "transaction_id") String transaction_id) {
@@ -51,7 +51,7 @@ public class TransactionHistoryController extends TransactionController {
         return ResponseEntity.ok(transactionService.getTransactionDetails(userId, transaction_id));
     }
 
-    @GetMapping(TRANSACTION + HISTORY + "/transactionWithinRange")
+    @GetMapping(TRANSACTION_HISTORY + "/transactionWithinRange")
     public ResponseEntity<TransactionHistoryList> getTransactionWithinRange(
             @AuthenticationPrincipal(expression = "userId") int userId, @RequestParam(name = "startYear") int startYear,
             @RequestParam(name = "startMonth") int startMonth, @RequestParam(name = "startDay") int startDay,

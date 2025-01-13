@@ -21,8 +21,8 @@ import sg.flow.entities.Card;
 import sg.flow.entities.TransactionHistory;
 import sg.flow.entities.utils.AccountType;
 import sg.flow.entities.utils.CardType;
-import sg.flow.models.transaction.history.TransactionHistoryDetail;
-import sg.flow.models.transaction.history.TransactionHistoryList;
+import sg.flow.models.transaction.TransactionHistoryDetail;
+import sg.flow.models.transaction.TransactionHistoryList;
 import sg.flow.repositories.utils.TransactionHistoryQueryStore;
 
 @Repository
