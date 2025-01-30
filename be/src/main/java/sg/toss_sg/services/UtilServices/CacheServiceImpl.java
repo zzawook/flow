@@ -9,5 +9,11 @@ public class CacheServiceImpl implements CacheService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUserIdByAccessToken'");
     }
+
+    @Override
+    public void storeAccessToken(int userId, String accessToken) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'storeAccessToken'");
+    }
     
 }

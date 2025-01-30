@@ -12,8 +12,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import sg.toss_sg.models.auth.FlowUserDetails;
+import sg.toss_sg.services.AuthServices.FlowTokenService;
 
 public class MockAuthenticationFilter extends GenericFilterBean {
+
+    FlowTokenService tokenService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) {
@@ -33,5 +36,4 @@ public class MockAuthenticationFilter extends GenericFilterBean {
             e.printStackTrace();
         }
     }
-
 }

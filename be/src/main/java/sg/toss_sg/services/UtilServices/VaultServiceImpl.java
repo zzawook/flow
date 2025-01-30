@@ -15,5 +15,17 @@ public class VaultServiceImpl implements VaultService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUserIdByRefreshToken'");
     }
+
+    @Override
+    public void storeAccessToken(int userId, String accessToken) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'storeAccessToken'");
+    }
+
+    @Override
+    public void storeRefreshToken(Integer userId, String refreshToken) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'storeRefreshToken'");
+    }
     
 }
