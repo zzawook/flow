@@ -2,9 +2,9 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=zen_dev'
-      - 'POSTGRES_PASSWORD=airbusa380861'
-      - 'POSTGRES_USER=zen_developer'
+      - 'POSTGRES_DB=flow_dev'
+      - 'POSTGRES_PASSWORD=flowdev123'
+      - 'POSTGRES_USER=flow_developer'
     ports:
       - '5432'
   redis:
