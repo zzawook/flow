@@ -23,8 +23,6 @@ public class MockAuthenticationFilter extends GenericFilterBean {
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
                 .build();
 
-        System.out.println(user);
-
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user,
                 "somepassword",
                 user.getAuthorities());

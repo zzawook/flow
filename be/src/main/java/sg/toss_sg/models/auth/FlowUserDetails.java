@@ -40,5 +40,4 @@ public class FlowUserDetails implements UserDetails {
     public int getUserId() {
         return userId;
     }
-
 }

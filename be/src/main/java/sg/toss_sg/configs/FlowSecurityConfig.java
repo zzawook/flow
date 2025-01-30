@@ -15,17 +15,17 @@ import sg.toss_sg.auth.MockAuthenticationFilter;
 public class FlowSecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .addFilterBefore(mockAuthenticationFilter(), AnonymousAuthenticationFilter.class); // 필터 추가
+                .addFilterBefore(mockAuthenticationFilter(), AnonymousAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
-    public Filter mockAuthenticationFilter() {
+    Filter mockAuthenticationFilter() {
         return new MockAuthenticationFilter();
     }
 }
