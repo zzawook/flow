@@ -2,6 +2,9 @@ package sg.flow.services.UtilServices;
 
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class CacheServiceImpl implements CacheService {
 
     @Override

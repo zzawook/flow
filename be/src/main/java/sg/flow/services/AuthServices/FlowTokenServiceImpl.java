@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import sg.flow.models.auth.FlowUserDetails;
@@ -15,6 +16,7 @@ import sg.flow.services.UtilServices.JwtTokenProvider;
 import sg.flow.services.UtilServices.VaultService;
 
 @RequiredArgsConstructor
+@Service
 public class FlowTokenServiceImpl implements FlowTokenService {
 
     private final CacheService cacheService;
