@@ -7,12 +7,12 @@ import sg.flow.models.auth.TokenSet;
 
 public interface FlowTokenService {
 
-    Optional<FlowUserDetails> getUserDetailByAccessToken(String token);
+    Optional<FlowUserDetails> getUserDetailByAccessToken(String accessToken);
 
-    Optional<TokenSet> getAccessTokenByRefreshToken(String token);
+    Optional<TokenSet> getAccessTokenByRefreshToken(String refreshToken);
 
-    String generateAndStoreAccessToken(Integer userId);
+    Optional<TokenSet> generateAndStoreAccessToken(String refreshToken);
 
-    String generateAndStoreRefreshToken(Integer userId);
+    Optional<TokenSet> generateAndStoreRefreshToken(Integer userId);
 
 }

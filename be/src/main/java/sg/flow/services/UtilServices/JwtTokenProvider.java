@@ -46,12 +46,12 @@ public class JwtTokenProvider {
      * Generate an Access Token containing user info.
      * Typically valid for a short period (e.g. 15 minutes).
      */
-    public String generateAccessToken(int userId) {
+    public String generateAccessToken(String refreshToken) {
         long now = System.currentTimeMillis();
         long expiry = now + accessTokenValidity;
 
         return JWT.create()
-                .withSubject(String.valueOf(userId))
+                .withSubject(refreshToken)
                 .withIssuedAt(new Date(now))
                 .withExpiresAt(new Date(expiry))
                 .sign(algorithm);

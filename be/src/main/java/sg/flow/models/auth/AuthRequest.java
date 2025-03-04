@@ -3,7 +3,7 @@ package sg.flow.models.auth;
 import lombok.Data;
 
 @Data
-public class SignInRequest {
+public class AuthRequest {
     private String username;
     private String password;
 

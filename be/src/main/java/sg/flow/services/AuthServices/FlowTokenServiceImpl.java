@@ -25,10 +25,10 @@ public class FlowTokenServiceImpl implements FlowTokenService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public Optional<FlowUserDetails> getUserDetailByAccessToken(String token) {
-        Optional<Integer> maybeUserId = cacheService.getUserIdByAccessToken(token);
+    public Optional<FlowUserDetails> getUserDetailByAccessToken(String accessToken) {
+        Optional<Integer> maybeUserId = cacheService.getUserIdByAccessToken(accessToken);
         if (!maybeUserId.isPresent()) {
-            maybeUserId = VaultService.getUserIdByAccessToken(token);
+            maybeUserId = VaultService.getUserIdByAccessToken(accessToken);
             if (!maybeUserId.isPresent()) {
                 return Optional.empty();
             }
@@ -44,30 +44,46 @@ public class FlowTokenServiceImpl implements FlowTokenService {
     }
 
     @Override
-    public Optional<TokenSet> getAccessTokenByRefreshToken(String token) {
-        Optional<Integer> maybeUserId = VaultService.getUserIdByRefreshToken(token);
+    public Optional<TokenSet> getAccessTokenByRefreshToken(String refreshToken) {
+        Optional<Integer> maybeUserId = VaultService.getUserIdByRefreshToken(refreshToken);
         if (!maybeUserId.isPresent()) {
             return Optional.empty();
         }
         Integer userId = maybeUserId.get();
-        String newAccessToken = this.generateAndStoreAccessToken(userId);
-        String newRefreshToken = this.generateAndStoreRefreshToken(userId);
-        return Optional.of(new TokenSet(newAccessToken, newRefreshToken));
+        Optional<TokenSet> maybeTokenSet = this.generateAndStoreRefreshToken(userId);
+        if (!maybeTokenSet.isPresent()) {
+            return Optional.empty();
+        }
+        return maybeTokenSet;
     }
 
     @Override
-    public String generateAndStoreAccessToken(Integer userId) {
-        String accessToken = jwtTokenProvider.generateAccessToken(userId);
-        VaultService.storeAccessToken(userId, accessToken);
-        cacheService.storeAccessToken(userId, accessToken);
-        return accessToken;
+    public Optional<TokenSet> generateAndStoreAccessToken(String refreshToken) {
+        Optional<Integer> maybeUserId = VaultService.getUserIdByRefreshToken(refreshToken);
+        if (!maybeUserId.isPresent()) {
+            return null;
+        }
+        Integer userId = maybeUserId.get();
+        Optional<TokenSet> maybeTokenSet = this.generateAndStoreRefreshToken(userId);
+        if (!maybeTokenSet.isPresent()) {
+            return null;
+        }
+        return maybeTokenSet;
     }
 
     @Override
-    public String generateAndStoreRefreshToken(Integer userId) {
+    public Optional<TokenSet> generateAndStoreRefreshToken(Integer userId) {
         String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
+        String accessToken = jwtTokenProvider.generateAccessToken(refreshToken);
+
+        cacheService.storeAccessToken(userId, accessToken);
+        VaultService.storeAccessToken(userId, accessToken);
         VaultService.storeRefreshToken(userId, refreshToken);
-        return refreshToken;
+
+        return Optional.of(TokenSet.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build());
     }
 
 }

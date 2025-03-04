@@ -37,15 +37,19 @@ public class RefreshTokenAuthentcationFilter extends AbstractAuthenticationProce
             throw new BadCredentialsException("No Bearer token found in request headers");
         }
         String refreshToken = header.substring(7);
-        Authentication auth = handleRefreshToken(refreshToken);
+        Authentication auth = handleRefreshToken(response, refreshToken);
 
         return auth;
     }
 
-    private Authentication handleRefreshToken(String refreshToken) {
+    private Authentication handleRefreshToken(HttpServletResponse response, String refreshToken) {
         Optional<TokenSet> maybeNewTokenSet = tokenService.getAccessTokenByRefreshToken(refreshToken);
         if (!maybeNewTokenSet.isPresent()) {
-            throw new BadCredentialsException("Refresh token invalid");
+            try {
+                sendUnauthorizedResponse(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         TokenSet newtokenSet = maybeNewTokenSet.get();
         String newAccessToken = newtokenSet.getAccessToken();
@@ -56,5 +60,9 @@ public class RefreshTokenAuthentcationFilter extends AbstractAuthenticationProce
         authentication.setDetails(new TokenSet(newAccessToken, newRefreshToken));
 
         return authentication;
+    }
+
+    private void sendUnauthorizedResponse(HttpServletResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
 }
