@@ -21,10 +21,8 @@ import sg.flow.services.AuthServices.FlowTokenService;
 public class FlowSecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http, FlowTokenService flowTokenService) throws Exception {
-        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        AuthenticationManager authManager = authBuilder.build();
-
+    SecurityFilterChain filterChain(HttpSecurity http, FlowTokenService flowTokenService,
+            AuthenticationManager authManager) throws Exception {
         RefreshTokenAuthentcationFilter refreshTokenFilter = tokenAuthenticationFilter(flowTokenService, authManager);
         refreshTokenFilter.setAuthenticationSuccessHandler(new FlowAccessTokenAuthenticationSuccessHandler());
 
@@ -33,13 +31,18 @@ public class FlowSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/getAccessToken").permitAll()
-                        .requestMatchers("/auth/register").permitAll()
+                        .requestMatchers("/auth/signin").permitAll()
+                        .requestMatchers("/auth/signup").permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(accessTokenValidationFilter, RefreshTokenAuthentcationFilter.class)
-                .addFilterBefore(refreshTokenFilter, AnonymousAuthenticationFilter.class);
+                .addFilterBefore(refreshTokenFilter, AnonymousAuthenticationFilter.class)
+                .addFilterBefore(accessTokenValidationFilter, RefreshTokenAuthentcationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class).build();
     }
 
     @Bean
@@ -47,13 +50,11 @@ public class FlowSecurityConfig {
         return new MockAuthenticationFilter();
     }
 
-    @Bean
     RefreshTokenAuthentcationFilter tokenAuthenticationFilter(FlowTokenService flowTokenService,
             AuthenticationManager authManager) {
         return new RefreshTokenAuthentcationFilter(flowTokenService, authManager);
     }
 
-    @Bean
     AccessTokenValidationFilter accessTokenValidationFilter(FlowTokenService flowTokenService) {
         return new AccessTokenValidationFilter(flowTokenService);
     }

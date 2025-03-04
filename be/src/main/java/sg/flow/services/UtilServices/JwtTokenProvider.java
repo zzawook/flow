@@ -4,6 +4,8 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 
+import org.springframework.stereotype.Service;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -12,6 +14,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import sg.flow.configs.JwtProperties;
 
+@Service
 public class JwtTokenProvider {
 
     private final RSAPublicKey publicKey;
@@ -23,6 +26,11 @@ public class JwtTokenProvider {
 
     public JwtTokenProvider(JwtProperties jwtProperties) {
         try {
+            String publicKeyString = jwtProperties.getPublicKey();
+            String privateKeyString = jwtProperties.getPrivateKey();
+
+            System.out.println(publicKeyString);
+            System.out.println(privateKeyString);
             this.publicKey = RSAKeyUtil.loadPublicKey(jwtProperties.getPublicKey());
             this.privateKey = RSAKeyUtil.loadPrivateKey(jwtProperties.getPrivateKey());
         } catch (Exception e) {

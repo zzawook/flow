@@ -33,5 +33,4 @@ public class FlowAccessTokenAuthenticationSuccessHandler implements Authenticati
             response.getWriter().flush();
         }
     }
-
 }
