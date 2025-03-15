@@ -2,7 +2,7 @@
 /*                           QuickTransferSection                             */
 /* -------------------------------------------------------------------------- */
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// A placeholder section for a "Quick Transfer" feature.
 class QuickTransferCard extends StatelessWidget {
@@ -23,13 +23,13 @@ class QuickTransferCard extends StatelessWidget {
             child: Text(
               'Quick transfer',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 21,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: Color(0xFF000000),
               ),
             ),
           ),
-          Icon(Icons.arrow_forward_ios, color: Color(0x7B7A7A7A)),
+          Image.asset('assets/icons/vector.png', width: 17, height: 17),
         ],
       ),
     );

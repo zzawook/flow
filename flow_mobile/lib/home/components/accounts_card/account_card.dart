@@ -50,12 +50,18 @@ class AccountsCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'See more about my accounts',
+                    'See more about my accounts ',
                     textDirection: TextDirection.ltr,
                     style: TextStyle(
                       color: Color(0xFFA6A6A6),
-                      decoration: TextDecoration.underline,
+                      fontSize: 16,
                     ),
+                  ),
+                  Image.asset(
+                    'assets/icons/vector.png',
+                    width: 12,
+                    height: 12,
+                    color: Color(0xFFA19F9F),
                   ),
                 ],
               ),
