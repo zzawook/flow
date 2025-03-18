@@ -1,0 +1,102 @@
+/* -------------------------------------------------------------------------- */
+/*                                AccountRow                                  */
+/* -------------------------------------------------------------------------- */
+
+import 'package:flow_mobile/common/flow_button.dart';
+import 'package:flutter/widgets.dart';
+
+/// A single row displaying account info and a button to view the balance.
+class AccountRow extends StatelessWidget {
+  final String bankName;
+  final String accountType;
+  final VoidCallback onViewBalance;
+
+  const AccountRow({
+    super.key,
+    required this.bankName,
+    required this.accountType,
+    required this.onViewBalance,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // Bank logo and text button with constrained width
+        Flexible(
+          child: FlowButton(
+            onPressed: onViewBalance,
+            child: Container(
+              padding: EdgeInsets.only(top: 8, bottom: 8, left: 24),
+              child: Row(
+                children: [
+                  Container(
+                    width: 55,
+                    height: 55,
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(right: 20),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFE8E8E8),
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Image.asset(
+                      'assets/bank_logos/$bankName.png',
+                      width: 55,
+                      height: 55,
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            accountType,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Color(0xFF565656),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'View Balance',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF000000),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        // Spacing between the two buttons
+        SizedBox(width: 8),
+        // Transfer icon button with fixed size
+        FlowButton(
+          onPressed: onViewBalance,
+          child: Container(
+            padding: EdgeInsets.all(8),
+            width: 65,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Color(0xFFEFEFEF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Image.asset(
+              'assets/icons/transfer_icon.png',
+              width: 65,
+              height: 40,
+            ),
+          ),
+        ),
+        SizedBox(width: 24),
+      ],
+    );
+  }
+}

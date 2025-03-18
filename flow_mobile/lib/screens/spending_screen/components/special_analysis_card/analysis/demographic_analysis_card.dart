@@ -1,0 +1,153 @@
+import 'package:flow_mobile/common/flow_separator_box.dart';
+import 'package:flutter/widgets.dart';
+
+class DemographicAnalysisCard extends StatelessWidget {
+  final String demographic;
+  final double demographicAmount;
+  final double myAmount;
+
+  const DemographicAnalysisCard({
+    super.key,
+    required this.demographic,
+    required this.demographicAmount,
+    required this.myAmount,
+  });
+
+  double getDemographicHeight() {
+    if (demographicAmount > myAmount) {
+      return 100.0;
+    } else {
+      return (demographicAmount / myAmount) * 100;
+    }
+  }
+
+  double getMyHeight() {
+    if (myAmount > demographicAmount) {
+      return 100.0;
+    } else {
+      return (myAmount / demographicAmount) * 100;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Color(0xFFF9F9F9),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$demographic spent',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                  color: Color(0xFF565656),
+                ),
+              ),
+              SizedBox(height: 4),
+              Row(
+                children: [
+                  Text(
+                    '\$${demographicAmount.toStringAsFixed(2)} ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF00C864),
+                    ),
+                  ),
+                  Text(
+                    'on average',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal,
+                      color: Color(0xFF565656),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 16),
+                height: 155,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          demographicAmount.toStringAsFixed(2),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF565656),
+                          ),
+                        ),
+                        Container(
+                          width: 40,
+                          height: getDemographicHeight(),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFC6C6C6),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              topRight: Radius.circular(12),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          '20-24 Male',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF565656),
+                          ),
+                        ),
+                      ],
+                    ),
+                    FlowSeparatorBox(width: 40),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          myAmount.toStringAsFixed(2),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF565656),
+                          ),
+                        ),
+                        Container(
+                          width: 40,
+                          height: getMyHeight(),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF50C878),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              topRight: Radius.circular(12),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'You',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF565656),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}

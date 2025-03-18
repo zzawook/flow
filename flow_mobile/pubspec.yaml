@@ -34,10 +34,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  hive_flutter: ^1.1.0
+  flutter_secure_storage: ^9.2.4
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.4.5
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -52,15 +56,11 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
-  uses-material-design: true
-
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
     - assets/icons/
+    - assets/icons/transaction_icons/
     - assets/bank_logos/
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -88,3 +88,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/FLOW.png
+  android_12:
+    icon_background_color: "#FFFFFF"
+    image: assets/FLOW_splash.png

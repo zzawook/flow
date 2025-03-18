@@ -1,7 +1,7 @@
-import 'package:flow_mobile/home/components/accounts_card/account_card.dart';
-import 'package:flow_mobile/home/components/balance_card/balance_card.dart';
-import 'package:flow_mobile/home/components/flow_top_bar.dart';
-import 'package:flow_mobile/home/components/quick_transfer_card/quick_transfer_card.dart';
+import 'package:flow_mobile/screens/home_screen/components/accounts_card/account_card.dart';
+import 'package:flow_mobile/screens/home_screen/components/balance_card/balance_card.dart';
+import 'package:flow_mobile/common/flow_top_bar.dart';
+import 'package:flow_mobile/screens/home_screen/components/quick_transfer_card/quick_transfer_card.dart';
 import 'package:flutter/widgets.dart';
 
 /// The main screen that holds state and composes smaller widgets.
