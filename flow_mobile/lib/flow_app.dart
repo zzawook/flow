@@ -1,8 +1,10 @@
 import 'package:flow_mobile/common/flow_bottom_nav_bar.dart';
-import 'package:flow_mobile/common/route_observer_service.dart';
-import 'package:flow_mobile/screens/home_screen/flow_home_screen.dart';
-import 'package:flow_mobile/screens/spending_screen/spending_screen.dart';
+import 'package:flow_mobile/domain/redux/actions/screen_actions.dart';
+import 'package:flow_mobile/domain/redux/app_state.dart';
+import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
+import 'package:flow_mobile/presentation/spending_screen/spending_screen.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 class FlowApp extends StatefulWidget {
   const FlowApp({super.key});
@@ -13,18 +15,10 @@ class FlowApp extends StatefulWidget {
 
 class FlowAppState extends State<FlowApp> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  int _selectedIndex = 0;
 
-  final List<String> _routes = ['/home', '/spending', '/transaction'];
-
-  void _onTabTapped(int index) {
-    _navigatorKey.currentState!.pushReplacementNamed(_routes[index]);
-    setState(() {
-      _selectedIndex = index;
-    });
+  void _onTabTapped(String routeName) {
+    _navigatorKey.currentState!.pushReplacementNamed(routeName);
   }
-
-  final routeObserver = RouteObserverService();
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +27,20 @@ class FlowAppState extends State<FlowApp> {
         Expanded(
           child: Navigator(
             key: _navigatorKey,
-            observers: [routeObserver],
             initialRoute: '/home',
             onGenerateRoute: (RouteSettings settings) {
               Widget page;
               switch (settings.name) {
                 case '/home':
+                  StoreProvider.of<FlowState>(context).dispatch(NavigateToScreenAction("Home"));
                   page = FlowHomeScreen();
                   break;
                 case '/spending':
+                  StoreProvider.of<FlowState>(context).dispatch(NavigateToScreenAction("Spending"));
                   page = SpendingScreen();
                   break;
                 case '/transaction':
+                  StoreProvider.of<FlowState>(context).dispatch(NavigateToScreenAction("Transaction"));
                   page = FlowHomeScreen();
                   break;
                 default:
@@ -58,9 +54,7 @@ class FlowAppState extends State<FlowApp> {
           ), // Display current screen
         ),
         FlowBottomNavBar(
-          selectedIndex: _selectedIndex,
           onItemSelected: _onTabTapped,
-          routeObserver: routeObserver,
         ),
       ],
     );

@@ -1,18 +1,15 @@
 // 📌 Custom Bottom Navigation Bar
 import 'package:flow_mobile/common/flow_button.dart';
-import 'package:flow_mobile/common/route_observer_service.dart';
+import 'package:flow_mobile/domain/redux/app_state.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 class FlowBottomNavBar extends StatefulWidget {
-  final int selectedIndex;
-  final Function(int) onItemSelected;
-  final RouteObserverService routeObserver;
+  final Function(String) onItemSelected;
 
   const FlowBottomNavBar({
     super.key,
-    required this.selectedIndex,
     required this.onItemSelected,
-    required this.routeObserver,
   });
 
   @override
@@ -22,46 +19,41 @@ class FlowBottomNavBar extends StatefulWidget {
 class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
   @override
   Widget build(BuildContext context) {
-    final routeObserver = widget.routeObserver;
     return Container(
       height: 70,
       color: Color(0xFFEEEEEE), // Light grey background
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(
-            child: navItem(
-              0,
-              "home",
-              routeObserver.currentRouteName == '/home',
-              widget.onItemSelected,
-            ),
-          ),
-          Expanded(
-            child: navItem(
-              1,
-              "spending",
-              routeObserver.currentRouteName == '/spending',
-              widget.onItemSelected,
-            ),
-          ),
-          Expanded(
-            child: navItem(
-              2,
-              "analysis",
-              routeObserver.currentRouteName == '/analysis',
-              widget.onItemSelected,
-            ),
-          ),
-        ],
+      child: StoreConnector<FlowState, String>(
+        converter: (store) => store.state.screenState.screenName,
+        builder: (context, screenName) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: navItem("home", screenName == 'Home', () {
+                  widget.onItemSelected("/home");
+                }),
+              ),
+              Expanded(
+                child: navItem("spending", screenName == 'Spending', () {
+                  widget.onItemSelected("/spending");
+                }),
+              ),
+              Expanded(
+                child: navItem("analysis", screenName == 'Analysis', () {
+                  widget.onItemSelected("/analysis");
+                }),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget navItem(int index, String icon, bool isSelected, Function(int) onTap) {
+  Widget navItem(String icon, bool isSelected, Function() onTap) {
     return FlowButton(
-      onPressed: () => onTap(index),
+      onPressed: () => onTap(),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10),
         child: Image.asset(

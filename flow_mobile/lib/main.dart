@@ -1,7 +1,11 @@
+import 'package:flow_mobile/domain/redux/app_state.dart';
+import 'package:flow_mobile/domain/redux/reducers.dart';
 import 'package:flow_mobile/flow_app.dart';
-import 'utils/secure_storage.dart';
-import 'utils/secure_hive.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'data/source/local_secure_storage.dart';
+import 'data/source/local_secure_hive.dart';
 import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
 
 void main() async {
   SecureStorage.init();
@@ -21,19 +25,27 @@ void main() async {
     'other': 1002.23,
   });
 
-  runApp(const FlowApplication());
+  runApp(FlowApplication());
 }
 
 class FlowApplication extends StatelessWidget {
-  const FlowApplication({super.key});
+  FlowApplication({super.key});
+
+  final Store<FlowState> store = Store<FlowState>(
+    flowReducer,
+    initialState: FlowState.initial(),
+  );
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return WidgetsApp(
-      title: 'Flow',
-      builder: (context, child) => FlowApp(),
-      color: const Color(0xFFFFFFFF),
+    return StoreProvider<FlowState>(
+      store: store,
+      child: WidgetsApp(
+        title: 'Flow',
+        builder: (context, child) => FlowApp(),
+        color: const Color(0xFFFFFFFF),
+      ),
     );
   }
 }
