@@ -5,5 +5,8 @@ ScreenState screenReducer(ScreenState state, dynamic action) {
   if (action is NavigateToScreenAction) {
     return state.copyWith(screenName: action.screenName);
   }
+  if (action is NavigateToPreviousScreenAction) {
+    return state.copyWith(screenName: state.previousScreenName);
+  }
   return state;
 }

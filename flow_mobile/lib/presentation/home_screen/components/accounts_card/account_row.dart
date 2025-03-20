@@ -27,7 +27,7 @@ class AccountRow extends StatelessWidget {
           child: FlowButton(
             onPressed: onViewBalance,
             child: Container(
-              padding: EdgeInsets.only(top: 8, bottom: 8, left: 24),
+              padding: EdgeInsets.only(top: 12, bottom: 12, left: 24),
               child: Row(
                 children: [
                   Container(
@@ -79,7 +79,9 @@ class AccountRow extends StatelessWidget {
         SizedBox(width: 8),
         // Transfer icon button with fixed size
         FlowButton(
-          onPressed: onViewBalance,
+          onPressed: () {
+            Navigator.pushNamed(context, '/transfer/amount');
+          },
           child: Container(
             padding: EdgeInsets.all(8),
             width: 65,

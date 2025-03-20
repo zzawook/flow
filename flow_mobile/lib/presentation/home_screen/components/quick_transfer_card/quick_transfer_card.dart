@@ -9,12 +9,13 @@ import 'package:flutter/widgets.dart';
 class QuickTransferCard extends StatelessWidget {
   const QuickTransferCard({super.key});
 
-  void handleTap() {}
 
   @override
   Widget build(BuildContext context) {
     return FlowButton(
-      onPressed: handleTap,
+      onPressed: () {
+        Navigator.pushNamed(context, '/transfer');
+      },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 25, horizontal: 24),
         margin: EdgeInsets.only(bottom: 15),

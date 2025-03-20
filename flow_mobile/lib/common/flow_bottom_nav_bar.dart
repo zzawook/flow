@@ -20,33 +20,42 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 70,
-      color: Color(0xFFEEEEEE), // Light grey background
-      child: StoreConnector<FlowState, String>(
-        converter: (store) => store.state.screenState.screenName,
-        builder: (context, screenName) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                child: navItem("home", screenName == 'Home', () {
-                  widget.onItemSelected("/home");
-                }),
-              ),
-              Expanded(
-                child: navItem("spending", screenName == 'Spending', () {
-                  widget.onItemSelected("/spending");
-                }),
-              ),
-              Expanded(
-                child: navItem("analysis", screenName == 'Analysis', () {
-                  widget.onItemSelected("/analysis");
-                }),
-              ),
-            ],
-          );
-        },
+      color: Color(0xFFF5F5F5), // Light grey background
+      child: Container(
+        height: 65,
+        decoration: BoxDecoration(
+          color: Color(0xFFEEEEEE), // Light grey background
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+          ),
+        ),
+        child: StoreConnector<FlowState, String>(
+          converter: (store) => store.state.screenState.screenName,
+          builder: (context, screenName) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: navItem("home", screenName == '/home', () {
+                    widget.onItemSelected("/home");
+                  }),
+                ),
+                Expanded(
+                  child: navItem("spending", screenName == '/spending', () {
+                    widget.onItemSelected("/spending");
+                  }),
+                ),
+                Expanded(
+                  child: navItem("analysis", screenName == '/transfer', () {
+                    widget.onItemSelected("/transfer");
+                  }),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

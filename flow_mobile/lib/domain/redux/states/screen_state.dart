@@ -1,14 +1,18 @@
 class ScreenState {
   final String screenName;
+  final String previousScreenName;
 
-  ScreenState({required this.screenName});
+  ScreenState({required this.screenName, this.previousScreenName = "/home"});
 
   ScreenState copyWith({required String screenName}) {
-    return ScreenState(screenName: screenName);
+    return ScreenState(
+      screenName: screenName,
+      previousScreenName: this.screenName,
+    );
   }
 
   static ScreenState initial() {
-    return ScreenState(screenName: "Home");
+    return ScreenState(screenName: "/home", previousScreenName: "/home");
   }
 
   @override
