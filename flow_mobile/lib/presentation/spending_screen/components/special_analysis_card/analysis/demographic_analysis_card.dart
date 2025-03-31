@@ -1,4 +1,4 @@
-import 'package:flow_mobile/common/flow_separator_box.dart';
+import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/widgets.dart';
 
 class DemographicAnalysisCard extends StatelessWidget {
@@ -46,6 +46,7 @@ class DemographicAnalysisCard extends StatelessWidget {
               Text(
                 '$demographic spent',
                 style: TextStyle(
+                  fontFamily: 'Inter', 
                   fontSize: 16,
                   fontWeight: FontWeight.normal,
                   color: Color(0xFF565656),
@@ -57,6 +58,7 @@ class DemographicAnalysisCard extends StatelessWidget {
                   Text(
                     '\$${demographicAmount.toStringAsFixed(2)} ',
                     style: TextStyle(
+                      fontFamily: 'Inter', 
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF00C864),
@@ -65,6 +67,7 @@ class DemographicAnalysisCard extends StatelessWidget {
                   Text(
                     'on average',
                     style: TextStyle(
+                      fontFamily: 'Inter', 
                       fontSize: 18,
                       fontWeight: FontWeight.normal,
                       color: Color(0xFF565656),
@@ -84,6 +87,7 @@ class DemographicAnalysisCard extends StatelessWidget {
                         Text(
                           demographicAmount.toStringAsFixed(2),
                           style: TextStyle(
+                            fontFamily: 'Inter', 
                             fontSize: 11,
                             color: Color(0xFF565656),
                           ),
@@ -103,6 +107,7 @@ class DemographicAnalysisCard extends StatelessWidget {
                         Text(
                           '20-24 Male',
                           style: TextStyle(
+                            fontFamily: 'Inter', 
                             fontSize: 12,
                             color: Color(0xFF565656),
                           ),
@@ -116,6 +121,7 @@ class DemographicAnalysisCard extends StatelessWidget {
                         Text(
                           myAmount.toStringAsFixed(2),
                           style: TextStyle(
+                            fontFamily: 'Inter', 
                             fontSize: 11,
                             color: Color(0xFF565656),
                           ),
@@ -135,6 +141,7 @@ class DemographicAnalysisCard extends StatelessWidget {
                         Text(
                           'You',
                           style: TextStyle(
+                            fontFamily: 'Inter', 
                             fontSize: 12,
                             color: Color(0xFF565656),
                           ),

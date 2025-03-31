@@ -1,5 +1,6 @@
-import 'package:flow_mobile/common/flow_top_bar.dart';
-import 'package:flow_mobile/common/flow_separator_box.dart';
+import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/special_analysis_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/statistics_card/statistics_card.dart';
@@ -19,23 +20,34 @@ class _SpendingScreenState extends State<SpendingScreen> {
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xFFF5F5F5), // Background color
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 32.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FlowTopBar(onNotificationTap: _handleNotificationTap),
-            const MonthlySpendingOverview(),
-
-            FlowSeparatorBox(height: 16),
-
-            const StatisticsCard(),
-
-            FlowSeparatorBox(height: 16),
-
-            const SpecialAnalysisCard(),
-          ],
-        ),
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+                vertical: 32.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FlowTopBar(onNotificationTap: _handleNotificationTap),
+                  const MonthlySpendingOverview(),
+            
+                  FlowSeparatorBox(height: 16),
+            
+                  const StatisticsCard(),
+            
+                  FlowSeparatorBox(height: 16),
+            
+                  const SpecialAnalysisCard(),
+            
+                ],
+              ),
+            ),
+          ),
+          FlowBottomNavBar(),
+        ],
       ),
     );
   }

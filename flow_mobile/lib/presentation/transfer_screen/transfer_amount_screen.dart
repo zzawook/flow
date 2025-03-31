@@ -1,7 +1,10 @@
-import 'package:flow_mobile/common/flow_button.dart';
-import 'package:flow_mobile/presentation/trsansfer_screen/transfer_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/transfer_screen/transfer_top_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 class TransferAmountScreen extends StatefulWidget {
   const TransferAmountScreen({super.key});
@@ -13,6 +16,13 @@ class TransferAmountScreen extends StatefulWidget {
 class TransferAmountScreenState extends State<TransferAmountScreen> {
   /// Holds the user-entered amount in cents. (e.g., 123 => $1.23)
   int _amountInCents = 0;
+
+  void onTransferButtonPressed() {
+    StoreProvider.of<FlowState>(
+      context,
+    ).dispatch(EnterAmountAction(_amountInCents));
+    Navigator.pushNamed(context, '/transfer/confirm');
+  }
 
   /// Returns a string like "0.00" or "123.45" for display.
   String get _formattedAmount {
@@ -70,6 +80,7 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
                   child: Text(
                     '\$ $_formattedAmount',
                     style: const TextStyle(
+                      fontFamily: 'Inter',
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF000000),
@@ -79,7 +90,11 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
               ),
 
               _amountInCents > 0
-                  ? Row(children: const [TransferButton()])
+                  ? Row(
+                    children: [
+                      TransferButton(onPressed: onTransferButtonPressed),
+                    ],
+                  )
                   : const SizedBox(height: 60),
 
               // The custom 3×4 keypad
@@ -147,12 +162,14 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
                           style: () {
                             if (label == 'X' || label == '<') {
                               return const TextStyle(
+                                fontFamily: 'Inter',
                                 fontSize: 24,
                                 color: Color(0xFFB0B0B0),
                                 fontWeight: FontWeight.w500,
                               );
                             } else {
                               return const TextStyle(
+                                fontFamily: 'Inter',
                                 fontSize: 24,
                                 color: Color(0xFF000000),
                               );
@@ -169,16 +186,14 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
 }
 
 class TransferButton extends StatelessWidget {
-  const TransferButton({super.key});
+  final Function onPressed;
+  const TransferButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: FlowButton(
-        onPressed: () {
-          // Transfer logic
-          Navigator.pushNamed(context, '/transfer/to');
-        },
+        onPressed: onPressed,
         child: Container(
           height: 60,
           alignment: Alignment.center,
@@ -189,6 +204,7 @@ class TransferButton extends StatelessWidget {
           child: const Text(
             'Transfer',
             style: TextStyle(
+              fontFamily: 'Inter',
               fontSize: 20,
               color: Color(0xFFFFFFFF),
               fontWeight: FontWeight.bold,
@@ -220,6 +236,7 @@ class CancelButton extends StatelessWidget {
           child: const Text(
             'Cancel',
             style: TextStyle(
+              fontFamily: 'Inter',
               fontSize: 20,
               color: Color(0x88000000),
               fontWeight: FontWeight.w500,

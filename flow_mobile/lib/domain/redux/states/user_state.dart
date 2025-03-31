@@ -1,18 +1,9 @@
+import 'package:flow_mobile/domain/entities/user.dart';
+
 class UserState {
-  final String username;
-  final String email;
+  final User user;
 
-  UserState({required this.username, required this.email});
+  UserState({required this.user});
 
-  factory UserState.initial() => UserState(username: "Guest", email: "");
+  factory UserState.initial() => UserState(user: User.initial());
 }
-
-// Action
-class UpdateUserAction {
-  final String username;
-  final String email;
-
-  UpdateUserAction(this.username, this.email);
-}
-
-// Reducer

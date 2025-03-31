@@ -42,6 +42,7 @@ class TransactionItem extends StatelessWidget {
                       child: Text(
                         amount,
                         style: TextStyle(
+                          fontFamily: 'Inter', 
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: color,
@@ -51,6 +52,7 @@ class TransactionItem extends StatelessWidget {
                     Text(
                       name,
                       style: TextStyle(
+                        fontFamily: 'Inter', 
                         fontSize: 12,
                         fontWeight: FontWeight.normal,
                         color: Color(0xFF565656),

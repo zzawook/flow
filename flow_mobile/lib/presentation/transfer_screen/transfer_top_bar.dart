@@ -1,4 +1,4 @@
-import 'package:flow_mobile/common/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
 
 class TransferTopBar extends StatelessWidget {
@@ -25,6 +25,7 @@ class TransferTopBar extends StatelessWidget {
             child: Text(
               'Transfer',
               style: const TextStyle(
+                fontFamily: 'Inter',
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF000000),

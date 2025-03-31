@@ -1,5 +1,9 @@
+import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_data.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 class BalanceDetail extends StatelessWidget {
   const BalanceDetail({super.key, required this.balanceData});
@@ -8,21 +12,25 @@ class BalanceDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        IncomeContainer(balanceData: balanceData),
-        SpendingContainer(balanceData: balanceData),
-        TotalBalanceContainer(balanceData: balanceData),
-      ],
+    return StoreConnector<FlowState, TransactionState>(
+      converter: (store) => store.state.transactionState,
+      builder:
+          (context, transactionState) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IncomeContainer(transactionState: transactionState),
+              SpendingContainer(transactionState: transactionState),
+              TotalBalanceContainer(transactionState: transactionState),
+            ],
+          ),
     );
   }
 }
 
 class IncomeContainer extends StatelessWidget {
-  const IncomeContainer({super.key, required this.balanceData});
+  const IncomeContainer({super.key, required this.transactionState});
 
-  final BalanceData balanceData;
+  final TransactionState transactionState;
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +44,17 @@ class IncomeContainer extends StatelessWidget {
             'Income',
             textDirection: TextDirection.ltr,
             style: TextStyle(
+              fontFamily: 'Inter', 
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF555555),
             ),
           ),
           Text(
-            '${balanceData.income.toStringAsFixed(2)} SGD',
+            '${transactionState.getIncomeInCentsForMonth(DateTime(DateTime.now().year, DateTime.now().month)).toStringAsFixed(2)} SGD',
             textDirection: TextDirection.ltr,
             style: TextStyle(
+              fontFamily: 'Inter', 
               fontSize: 16,
               color: Color(0xFF555555),
               fontWeight: FontWeight.w500,
@@ -57,9 +67,9 @@ class IncomeContainer extends StatelessWidget {
 }
 
 class SpendingContainer extends StatelessWidget {
-  const SpendingContainer({super.key, required this.balanceData});
+  const SpendingContainer({super.key, required this.transactionState});
 
-  final BalanceData balanceData;
+  final TransactionState transactionState;
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +77,8 @@ class SpendingContainer extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 10),
       child: Column(
         children: [
-          SpendingTotal(balanceData: balanceData),
-          SpendingDetails(balanceData: balanceData),
+          SpendingTotal(transactionState: transactionState),
+          SpendingDetails(transactionState: transactionState),
         ],
       ),
     );
@@ -76,9 +86,9 @@ class SpendingContainer extends StatelessWidget {
 }
 
 class TotalBalanceContainer extends StatelessWidget {
-  const TotalBalanceContainer({super.key, required this.balanceData});
+  const TotalBalanceContainer({super.key, required this.transactionState});
 
-  final BalanceData balanceData;
+  final TransactionState transactionState;
 
   @override
   Widget build(BuildContext context) {
@@ -91,15 +101,17 @@ class TotalBalanceContainer extends StatelessWidget {
             'Total Balance:',
             textDirection: TextDirection.ltr,
             style: TextStyle(
+              fontFamily: 'Inter', 
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF555555),
             ),
           ),
           Text(
-            '${(balanceData.income - (balanceData.card + balanceData.transfer + balanceData.other)).toStringAsFixed(2)} SGD',
+            '${transactionState.getBalanceInCentsForMonth(DateTime(DateTime.now().year, DateTime.now().month)).toStringAsFixed(2)} SGD',
             textDirection: TextDirection.ltr,
             style: TextStyle(
+              fontFamily: 'Inter', 
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF00C864), // Green color
@@ -112,9 +124,9 @@ class TotalBalanceContainer extends StatelessWidget {
 }
 
 class SpendingTotal extends StatelessWidget {
-  const SpendingTotal({super.key, required this.balanceData});
+  const SpendingTotal({super.key, required this.transactionState});
 
-  final BalanceData balanceData;
+  final TransactionState transactionState;
 
   @override
   Widget build(BuildContext context) {
@@ -127,15 +139,17 @@ class SpendingTotal extends StatelessWidget {
             'Spending',
             textDirection: TextDirection.ltr,
             style: TextStyle(
+              fontFamily: 'Inter', 
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF555555),
             ),
           ),
           Text(
-            '${(balanceData.card + balanceData.transfer + balanceData.other).toStringAsFixed(2)} SGD',
+            '${transactionState.getExpenseInCentsForMonth(DateTime(DateTime.now().year, DateTime.now().month)).abs().toStringAsFixed(2)} SGD',
             textDirection: TextDirection.ltr,
             style: TextStyle(
+              fontFamily: 'Inter', 
               fontSize: 16,
               color: Color(0xFF555555),
               fontWeight: FontWeight.w500,
@@ -148,9 +162,19 @@ class SpendingTotal extends StatelessWidget {
 }
 
 class SpendingDetails extends StatelessWidget {
-  const SpendingDetails({super.key, required this.balanceData});
+  const SpendingDetails({super.key, required this.transactionState});
 
-  final BalanceData balanceData;
+  final TransactionState transactionState;
+
+  String processMethod(String method) {
+    if (method == 'Credit Card' || method == 'Debit Card') {
+      return 'Debit + Credit card';
+    } else if (method == 'Transfer' || method == 'PayNow') {
+      return 'Transfer';
+    } else {
+      return 'Others';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,13 +190,35 @@ class SpendingDetails extends StatelessWidget {
               margin: EdgeInsets.only(right: 12),
             ),
             Expanded(
-              child: Column(
-                children: [
-                  CardSpending(balanceData: balanceData),
-                  TransferSpending(balanceData: balanceData),
-                  OtherSpending(balanceData: balanceData),
-                ],
-              ),
+              child: () {
+                List<Transaction> transactions = transactionState.transactions;
+                Map<String, List<Transaction>> categorizedTransactions = {};
+
+                for (var transaction in transactions) {
+                  if (transaction.amount >= 0) {
+                    continue;
+                  }
+                  String method = processMethod(transaction.method);
+                  if (!categorizedTransactions.containsKey(method)) {
+                    categorizedTransactions[method] = [];
+                  }
+                  categorizedTransactions[method]!.add(transaction);
+                }
+                return Column(
+                  children: [
+                    CardSpending(
+                      transactions:
+                          categorizedTransactions['Debit + Credit card'] ?? [],
+                    ),
+                    TransferSpending(
+                      transactions: categorizedTransactions['Transfer'] ?? [],
+                    ),
+                    OtherSpending(
+                      transactions: categorizedTransactions['Others'] ?? [],
+                    ),
+                  ],
+                );
+              }(),
             ),
           ],
         ),
@@ -182,12 +228,16 @@ class SpendingDetails extends StatelessWidget {
 }
 
 class OtherSpending extends StatelessWidget {
-  const OtherSpending({super.key, required this.balanceData});
+  const OtherSpending({super.key, required this.transactions});
 
-  final BalanceData balanceData;
+  final List<Transaction> transactions;
 
   @override
   Widget build(BuildContext context) {
+    double otherSpending = 0;
+    for (var transaction in transactions) {
+      otherSpending += transaction.amount;
+    }
     return Container(
       padding: EdgeInsets.only(bottom: 3),
       child: Row(
@@ -195,11 +245,19 @@ class OtherSpending extends StatelessWidget {
         children: [
           Text(
             'Others:',
-            style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              color: Color(0xFF666666),
+            ),
           ),
           Text(
-            '${balanceData.other.toStringAsFixed(2)} SGD',
-            style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+            '${otherSpending.abs().toStringAsFixed(2)} SGD',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              color: Color(0xFF666666),
+            ),
           ),
         ],
       ),
@@ -208,12 +266,16 @@ class OtherSpending extends StatelessWidget {
 }
 
 class TransferSpending extends StatelessWidget {
-  const TransferSpending({super.key, required this.balanceData});
+  const TransferSpending({super.key, required this.transactions});
 
-  final BalanceData balanceData;
+  final List<Transaction> transactions;
 
   @override
   Widget build(BuildContext context) {
+    double transferSpending = 0;
+    for (var transaction in transactions) {
+      transferSpending += transaction.amount;
+    }
     return Container(
       padding: EdgeInsets.only(bottom: 7),
       child: Row(
@@ -221,11 +283,19 @@ class TransferSpending extends StatelessWidget {
         children: [
           Text(
             'Transfer:',
-            style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              color: Color(0xFF666666),
+            ),
           ),
           Text(
-            '${balanceData.transfer.toStringAsFixed(2)} SGD',
-            style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+            '${transferSpending.abs().toStringAsFixed(2)} SGD',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              color: Color(0xFF666666),
+            ),
           ),
         ],
       ),
@@ -234,12 +304,16 @@ class TransferSpending extends StatelessWidget {
 }
 
 class CardSpending extends StatelessWidget {
-  const CardSpending({super.key, required this.balanceData});
+  const CardSpending({super.key, required this.transactions});
 
-  final BalanceData balanceData;
+  final List<Transaction> transactions;
 
   @override
   Widget build(BuildContext context) {
+    double cardSpending = 0;
+    for (var transaction in transactions) {
+      cardSpending += transaction.amount;
+    }
     return Container(
       padding: EdgeInsets.only(bottom: 10),
       child: Row(
@@ -247,11 +321,19 @@ class CardSpending extends StatelessWidget {
         children: [
           Text(
             'Debit + Credit card:',
-            style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              color: Color(0xFF666666),
+            ),
           ),
           Text(
-            '${balanceData.card.toStringAsFixed(2)} SGD',
-            style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+            '${cardSpending.abs().toStringAsFixed(2)} SGD',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              color: Color(0xFF666666),
+            ),
           ),
         ],
       ),

@@ -1,15 +1,12 @@
-// 📌 Custom Bottom Navigation Bar
-import 'package:flow_mobile/common/flow_button.dart';
-import 'package:flow_mobile/domain/redux/app_state.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class FlowBottomNavBar extends StatefulWidget {
-  final Function(String) onItemSelected;
 
   const FlowBottomNavBar({
     super.key,
-    required this.onItemSelected,
   });
 
   @override
@@ -17,14 +14,15 @@ class FlowBottomNavBar extends StatefulWidget {
 }
 
 class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFFF5F5F5), // Light grey background
+      color: Color(0xFFF5F5F5),
       child: Container(
         height: 65,
         decoration: BoxDecoration(
-          color: Color(0xFFEEEEEE), // Light grey background
+          color: Color(0xFFEEEEEE),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(15),
             topRight: Radius.circular(15),
@@ -39,17 +37,18 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
               children: [
                 Expanded(
                   child: navItem("home", screenName == '/home', () {
-                    widget.onItemSelected("/home");
+                    Navigator.pushNamed(context, '/home');
+                    
                   }),
                 ),
                 Expanded(
                   child: navItem("spending", screenName == '/spending', () {
-                    widget.onItemSelected("/spending");
+                    Navigator.pushNamed(context, '/spending');
                   }),
                 ),
                 Expanded(
                   child: navItem("analysis", screenName == '/transfer', () {
-                    widget.onItemSelected("/transfer");
+                    Navigator.pushNamed(context, '/transfer');
                   }),
                 ),
               ],

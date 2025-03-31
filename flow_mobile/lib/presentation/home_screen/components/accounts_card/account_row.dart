@@ -2,19 +2,20 @@
 /*                                AccountRow                                  */
 /* -------------------------------------------------------------------------- */
 
-import 'package:flow_mobile/common/flow_button.dart';
+import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
-
+import 'package:flutter_redux/flutter_redux.dart';
 /// A single row displaying account info and a button to view the balance.
 class AccountRow extends StatelessWidget {
-  final String bankName;
-  final String accountType;
+  final BankAccount bankAccount;
   final VoidCallback onViewBalance;
 
   const AccountRow({
     super.key,
-    required this.bankName,
-    required this.accountType,
+    required this.bankAccount,
     required this.onViewBalance,
   });
 
@@ -40,7 +41,7 @@ class AccountRow extends StatelessWidget {
                       borderRadius: BorderRadius.circular(28),
                     ),
                     child: Image.asset(
-                      'assets/bank_logos/$bankName.png',
+                      'assets/bank_logos/${bankAccount.bank.name}.png',
                       width: 55,
                       height: 55,
                     ),
@@ -52,8 +53,9 @@ class AccountRow extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: Text(
-                            accountType,
+                            bankAccount.accountName,
                             style: TextStyle(
+                              fontFamily: 'Inter', 
                               fontSize: 15,
                               color: Color(0xFF565656),
                             ),
@@ -62,6 +64,7 @@ class AccountRow extends StatelessWidget {
                         Text(
                           'View Balance',
                           style: TextStyle(
+                            fontFamily: 'Inter', 
                             fontSize: 18,
                             color: Color(0xFF000000),
                             fontWeight: FontWeight.bold,
@@ -80,7 +83,10 @@ class AccountRow extends StatelessWidget {
         // Transfer icon button with fixed size
         FlowButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/transfer/amount');
+            StoreProvider.of<FlowState>(
+              context,
+            ).dispatch(SelectFromBankAccountAction(bankAccount));
+            Navigator.pushNamed(context, '/transfer/to');
           },
           child: Container(
             padding: EdgeInsets.all(8),

@@ -112,6 +112,7 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                     Text(
                       dayName,
                       style: const TextStyle(
+                        fontFamily: 'Inter', 
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                         color: Color(0xFF000000),
@@ -155,6 +156,7 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                         child: Text(
                           dateNumber.toString(),
                           style: TextStyle(
+                            fontFamily: 'Inter', 
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF000000),
@@ -169,6 +171,7 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                           ? expenseText
                           : incomeText,
                       style: TextStyle(
+                        fontFamily: 'Inter', 
                         fontSize: 12,
                         color:
                             onlyHasExpense(income, expense)
@@ -179,6 +182,7 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                     Text(
                       expenseText,
                       style: TextStyle(
+                        fontFamily: 'Inter', 
                         fontSize: 12,
                         color:
                             onlyHasExpense(income, expense)

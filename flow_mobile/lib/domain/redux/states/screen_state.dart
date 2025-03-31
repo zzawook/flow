@@ -1,18 +1,20 @@
+import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
+
 class ScreenState {
   final String screenName;
-  final String previousScreenName;
+  final SpendingScreenState spendingScreenState;
 
-  ScreenState({required this.screenName, this.previousScreenName = "/home"});
+  ScreenState({required this.screenName, required this.spendingScreenState});
 
-  ScreenState copyWith({required String screenName}) {
+  ScreenState copyWith({required String screenName, required SpendingScreenState spendingScreenState}) {
     return ScreenState(
       screenName: screenName,
-      previousScreenName: this.screenName,
+      spendingScreenState: spendingScreenState,
     );
   }
 
   static ScreenState initial() {
-    return ScreenState(screenName: "/home", previousScreenName: "/home");
+    return ScreenState(screenName: "/home", spendingScreenState: SpendingScreenState.initial());
   }
 
   @override
@@ -20,7 +22,8 @@ class ScreenState {
       identical(this, other) ||
       other is ScreenState &&
           runtimeType == other.runtimeType &&
-          screenName == other.screenName;
+          screenName == other.screenName && 
+          spendingScreenState == other.spendingScreenState;
 
   @override
   int get hashCode => screenName.hashCode;

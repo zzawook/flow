@@ -1,9 +1,10 @@
+import 'package:flow_mobile/shared/utils/spending_category_util.dart';
 import 'package:flutter/widgets.dart';
 
 class CategoryLegend extends StatelessWidget {
-  final Map<String, dynamic> categories;
+  final List<MapEntry<String, dynamic>> entries;
 
-  const CategoryLegend({super.key, required this.categories});
+  const CategoryLegend({super.key, required this.entries});
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +12,8 @@ class CategoryLegend extends StatelessWidget {
       spacing: 16,
       runSpacing: 12,
       children:
-          categories.entries.map((entry) {
-            final colorHex = entry.value['color'] as String;
+          entries.map((entry) {
+            final colorHex = SpendingCategoryUtil.getCategoryColor(entry.key);
             final color = _parseColor(colorHex);
             final categoryName = entry.key; // e.g. "transfer", "food", etc.
 
@@ -23,7 +24,11 @@ class CategoryLegend extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   capitalize(categoryName),
-                  style: TextStyle(fontSize: 14, color: color),
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    color: color,
+                  ),
                 ),
               ],
             );

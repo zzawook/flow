@@ -1,12 +1,26 @@
-import 'package:flow_mobile/common/flow_button.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/spending/spending_header.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/insight_sentences/spending_compareto_last_month_insight.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_list.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/weekly_spending_calendar.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 /// Monthly Spending Overview Section
-class MonthlySpendingOverview extends StatelessWidget {
+class MonthlySpendingOverview extends StatefulWidget {
   const MonthlySpendingOverview({super.key});
+
+  @override
+  State<MonthlySpendingOverview> createState() =>
+      _MonthlySpendingOverviewState();
+}
+
+class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
+  DateTime currentMonthYear = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -20,87 +34,33 @@ class MonthlySpendingOverview extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(right: 8),
-                                child: FlowButton(
-                                  onPressed: () {}, // Previous Month
-                                  child: Image.asset(
-                                    'assets/icons/prevMonth.png',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'January',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 8),
-                                child: FlowButton(
-                                  onPressed: () {},
-                                  child: Image.asset(
-                                    'assets/icons/nextMonth.png',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(top: 15),
-                            child: Text(
-                              '\$ 3734.35',
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF00C864),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFE8E8E8),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.all(8),
-                      alignment: Alignment.center,
-                      child: Text('Graph Placeholder'), // Placeholder for graph
-                    ),
-                  ],
-                ),
-                SpendingComparetoLastMonthInsight(),
+            child: StoreConnector<FlowState, DateTime>(
+              converter:
+                  (store) =>
+                      store
+                          .state
+                          .screenState
+                          .spendingScreenState
+                          .displayedMonth,
+              builder:
+                  (context, displayedMonth) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SpendingHeader(displayMonthYear: displayedMonth),
 
-                WeeklySpendingCalendar(),
+                      SpendingComparetoLastMonthInsight(),
 
-                const TransactionsList(),
-              ],
+                      WeeklySpendingCalendar(),
+
+                      const TransactionsList(),
+                    ],
+                  ),
             ),
           ),
 
           FlowButton(
             onPressed: () {
-              // Handle navigation or show more account details.
+              Navigator.pushNamed(context, '/spending/detail');
             },
             child: Container(
               padding: const EdgeInsets.only(top: 15, bottom: 15),
@@ -113,7 +73,11 @@ class MonthlySpendingOverview extends StatelessWidget {
                   const Text(
                     'View Transactions ',
                     textDirection: TextDirection.ltr,
-                    style: TextStyle(color: Color(0xFFA6A6A6), fontSize: 18),
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      color: Color(0xFFA6A6A6),
+                      fontSize: 18,
+                    ),
                   ),
                   Image.asset(
                     'assets/icons/vector.png',

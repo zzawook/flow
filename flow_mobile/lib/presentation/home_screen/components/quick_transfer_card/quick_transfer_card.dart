@@ -2,7 +2,7 @@
 /*                           QuickTransferSection                             */
 /* -------------------------------------------------------------------------- */
 
-import 'package:flow_mobile/common/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
 
 /// A placeholder section for a "Quick Transfer" feature.
@@ -29,6 +29,7 @@ class QuickTransferCard extends StatelessWidget {
               child: Text(
                 'Quick transfer',
                 style: TextStyle(
+                  fontFamily: 'Inter', 
                   fontSize: 21,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF000000),

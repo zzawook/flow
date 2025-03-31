@@ -1,6 +1,7 @@
+import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/presentation/home_screen/components/accounts_card/account_card.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
-import 'package:flow_mobile/common/flow_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/home_screen/components/quick_transfer_card/quick_transfer_card.dart';
 import 'package:flutter/widgets.dart';
 
@@ -32,26 +33,38 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xFFF5F5F5),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 32.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Bar
-              FlowTopBar(onNotificationTap: _handleNotificationTap),
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 18.0,
+                  right: 18,
+                  top: 32.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Top Bar
+                    FlowTopBar(onNotificationTap: _handleNotificationTap),
 
-              // Accounts Section
-              AccountsCard(onToggleBalance: _toggleBalance),
+                    // Accounts Section
+                    AccountsCard(onToggleBalance: _toggleBalance),
 
-              // Quick Transfer Section
-              QuickTransferCard(),
+                    // Quick Transfer Section
+                    QuickTransferCard(),
 
-              // Balance Section
-              BalanceCard(showBalance: _showBalance),
-            ],
+                    // Balance Section
+                    BalanceCard(showBalance: _showBalance),
+                    
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
+          FlowBottomNavBar(),
+        ],
       ),
     );
   }

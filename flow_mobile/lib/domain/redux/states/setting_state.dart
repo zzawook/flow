@@ -1,9 +1,10 @@
+import 'package:flow_mobile/domain/entities/setting.dart';
+
 class SettingsState {
-  final String currency;
-  final bool darkMode;
+  final Settings settings;
 
-  SettingsState({required this.currency, required this.darkMode});
+  SettingsState({required this.settings});
 
-  factory SettingsState.initial() => SettingsState(currency: "SGD", darkMode: false);
+  factory SettingsState.initial() =>
+      SettingsState(settings: Settings.initial());
 }
-

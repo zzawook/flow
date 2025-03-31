@@ -1,23 +1,14 @@
+import 'package:flow_mobile/shared/utils/spending_category_util.dart';
 import 'package:flutter/material.dart';
 
 class StackedBar extends StatelessWidget {
-  final Map<String, dynamic> categories;
+  final double total;
+  final List<MapEntry<String, dynamic>> entries;
 
-  const StackedBar({super.key, required this.categories});
+  const StackedBar({super.key, required this.total, required this.entries});
 
   @override
   Widget build(BuildContext context) {
-    // Calculate total amount
-    final double total = categories.values.fold(0.0, (
-      double sum,
-      dynamic item,
-    ) {
-      return sum + (item['amount'] as num).toDouble();
-    });
-
-    // Convert entries to a list so we can access by index
-    final entries = categories.entries.toList();
-
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
@@ -29,12 +20,12 @@ class StackedBar extends StatelessWidget {
           child: Row(
             children: List.generate(entries.length, (index) {
               final entry = entries[index];
-              final amount = (entry.value['amount'] as num).toDouble();
-              final colorHex = entry.value['color'] as String;
+              final amount = entry.value;
+              final colorHex = SpendingCategoryUtil.getCategoryColor(entry.key);
               final color = _parseColor(colorHex);
 
               // Calculate width for this segment
-              final fraction = total > 0 ? (amount / total) : 0.0;
+              final fraction = total > 0 ? (amount.abs() / total) : 0.0;
               final segmentWidth = constraints.maxWidth * fraction;
 
               // Determine border radius for first and last segments

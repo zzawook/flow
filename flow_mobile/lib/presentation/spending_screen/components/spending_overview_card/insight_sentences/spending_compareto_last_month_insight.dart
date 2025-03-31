@@ -11,11 +11,16 @@ class SpendingComparetoLastMonthInsight extends StatelessWidget {
         children: [
           Text(
             'Spending ',
-            style: TextStyle(fontSize: 14, color: Color(0x88000000)),
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 14,
+              color: Color(0x88000000),
+            ),
           ),
           Text(
             'S\$469.68',
             style: TextStyle(
+              fontFamily: 'Inter', 
               fontSize: 14,
               color: Color(0xFF50C878),
               fontWeight: FontWeight.bold,
@@ -23,7 +28,11 @@ class SpendingComparetoLastMonthInsight extends StatelessWidget {
           ),
           Text(
             ' less than last month',
-            style: TextStyle(fontSize: 14, color: Color(0x88000000)),
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 14,
+              color: Color(0x88000000),
+            ),
           ),
         ],
       ),

@@ -12,8 +12,8 @@ class TransactionTag extends StatelessWidget {
       'textColor': Color(0xFF9747FF),
     },
     'Groceries': {
-      'containerColor': Color.fromARGB(255, 9, 77, 204),
-      'textColor': Color(0xFF0951CC),
+      'containerColor': Color.fromARGB(120, 9, 77, 204),
+      'textColor': Color.fromARGB(255, 9, 77, 204),
     },
     'Utilities': {
       'containerColor': Color(0xFF00C864),
@@ -24,8 +24,8 @@ class TransactionTag extends StatelessWidget {
       'textColor': Color(0xFF00C864),
     },
     'Entertainment': {
-      'containerColor': Color(0xFF00C864),
-      'textColor': Color(0xFF00C864),
+      'containerColor': Color.fromARGB(120, 200, 0, 0),
+      'textColor': Color.fromARGB(255, 200, 0, 0),
     },
     'Transfer': {
       'containerColor': Color(0x48BDBDBD),
@@ -51,6 +51,7 @@ class TransactionTag extends StatelessWidget {
         child: Text(
           tag,
           style: TextStyle(
+            fontFamily: 'Inter', 
             fontSize: 12,
             fontWeight: FontWeight.bold,
             color: tagColorMap[tag]?['textColor'],

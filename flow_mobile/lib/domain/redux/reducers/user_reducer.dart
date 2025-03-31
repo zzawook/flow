@@ -1,8 +1,11 @@
+import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/states/user_state.dart';
 
 UserState userReducer(UserState state, dynamic action) {
   if (action is UpdateUserAction) {
-    return UserState(username: action.username, email: action.email);
+    return UserState(
+      user: action.user,
+    );
   }
   return state;
 }

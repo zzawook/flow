@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-import 'package:flow_mobile/common/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_data.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_detail.dart';
 import 'package:flow_mobile/data/source/local_secure_hive.dart';
@@ -94,7 +94,11 @@ class _BalanceCardState extends State<BalanceCard> {
                   children: [
                     Text(
                       'Find out more ',
-                      style: TextStyle(color: Color(0xFFA6A6A6), fontSize: 18),
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        color: Color(0xFFA6A6A6),
+                        fontSize: 18,
+                      ),
                     ),
                     Container(
                       padding: EdgeInsets.only(top: 2),
@@ -130,7 +134,11 @@ class AsOfDateText extends StatelessWidget {
       child: Text(
         'As of 15 January',
         textDirection: TextDirection.ltr,
-        style: TextStyle(fontSize: 13, color: Color(0xFF000000)),
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 13,
+          color: Color(0xFF000000),
+        ),
       ),
     );
   }
@@ -149,6 +157,7 @@ class BalanceCardTitle extends StatelessWidget {
         "This month's Balance",
         textDirection: TextDirection.ltr,
         style: TextStyle(
+          fontFamily: 'Inter', 
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Color(0xFF000000),
