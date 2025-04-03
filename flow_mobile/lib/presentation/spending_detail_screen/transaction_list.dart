@@ -28,6 +28,7 @@ class TransactionList extends StatelessWidget {
     }
     return ListView.builder(
       padding: const EdgeInsets.only(top: 0),
+      // shrinkWrap: true,
       itemCount: sortedTransaction.length,
       itemBuilder: (context, index) {
         final transaction = sortedTransaction[index];

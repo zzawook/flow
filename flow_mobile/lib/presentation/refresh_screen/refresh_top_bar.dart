@@ -1,0 +1,24 @@
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flutter/widgets.dart';
+
+class RefreshTopBar extends StatelessWidget {
+  const RefreshTopBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        FlowButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Image.asset(
+            'assets/icons/previous.png',
+            height: 20,
+            width: 20,
+          ),
+        ),
+      ],
+    );
+  }
+}

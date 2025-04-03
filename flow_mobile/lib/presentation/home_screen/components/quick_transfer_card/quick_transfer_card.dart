@@ -36,7 +36,7 @@ class QuickTransferCard extends StatelessWidget {
                 ),
               ),
             ),
-            Image.asset('assets/icons/vector.png', width: 17, height: 17),
+            Image.asset('assets/icons/arrow_right.png', width: 17, height: 17),
           ],
         ),
       ),

@@ -3,3 +3,7 @@ class NavigateToScreenAction {
 
   NavigateToScreenAction(this.screenName);
 }
+
+class InitiateRefreshAction {
+  InitiateRefreshAction();
+}

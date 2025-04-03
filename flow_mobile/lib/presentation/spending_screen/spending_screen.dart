@@ -4,7 +4,7 @@ import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/special_analysis_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/statistics_card/statistics_card.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class SpendingScreen extends StatefulWidget {
   const SpendingScreen({super.key});
@@ -23,26 +23,30 @@ class _SpendingScreenState extends State<SpendingScreen> {
       child: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: 32.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FlowTopBar(onNotificationTap: _handleNotificationTap),
-                  const MonthlySpendingOverview(),
-            
-                  FlowSeparatorBox(height: 16),
-            
-                  const StatisticsCard(),
-            
-                  FlowSeparatorBox(height: 16),
-            
-                  const SpecialAnalysisCard(),
-            
-                ],
+            child: RefreshIndicator.adaptive(
+              onRefresh: () {
+                return Future.delayed(const Duration(seconds: 1));
+              },
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 32.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FlowTopBar(onNotificationTap: _handleNotificationTap),
+                    const MonthlySpendingOverview(),
+
+                    FlowSeparatorBox(height: 16),
+
+                    const StatisticsCard(),
+
+                    FlowSeparatorBox(height: 16),
+
+                    const SpecialAnalysisCard(),
+                  ],
+                ),
               ),
             ),
           ),

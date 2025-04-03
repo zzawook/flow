@@ -103,7 +103,7 @@ class _BalanceCardState extends State<BalanceCard> {
                     Container(
                       padding: EdgeInsets.only(top: 2),
                       child: Image.asset(
-                        'assets/icons/vector.png',
+                        'assets/icons/arrow_right.png',
                         width: 12,
                         height: 12,
                         color: Color(0xFFA19F9F),

@@ -71,6 +71,7 @@ class AccountTile extends StatelessWidget {
                 ],
               ),
             ),
+            Image.asset("assets/icons/arrow_right.png", width: 16, height: 16),
           ],
         ),
       ),

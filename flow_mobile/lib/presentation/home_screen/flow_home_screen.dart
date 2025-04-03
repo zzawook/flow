@@ -3,7 +3,7 @@ import 'package:flow_mobile/presentation/home_screen/components/accounts_card/ac
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/home_screen/components/quick_transfer_card/quick_transfer_card.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 /// The main screen that holds state and composes smaller widgets.
 class FlowHomeScreen extends StatefulWidget {
@@ -36,29 +36,35 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
       child: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 18.0,
-                  right: 18,
-                  top: 32.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Top Bar
-                    FlowTopBar(onNotificationTap: _handleNotificationTap),
+            child: RefreshIndicator(
+              onRefresh: () {
+                Navigator.pushNamed(context, "/refresh");
+                return Future.delayed(const Duration(microseconds: 1));
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 18.0,
+                    right: 18,
+                    top: 32.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top Bar
+                      FlowTopBar(onNotificationTap: _handleNotificationTap),
 
-                    // Accounts Section
-                    AccountsCard(onToggleBalance: _toggleBalance),
+                      // Accounts Section
+                      AccountsCard(onToggleBalance: _toggleBalance),
 
-                    // Quick Transfer Section
-                    QuickTransferCard(),
+                      // Quick Transfer Section
+                      QuickTransferCard(),
 
-                    // Balance Section
-                    BalanceCard(showBalance: _showBalance),
-                    
-                  ],
+                      // Balance Section
+                      BalanceCard(showBalance: _showBalance),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -131,7 +131,7 @@ class TransferConfirmationScreen extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8),
                                   child: Image.asset(
-                                    "assets/icons/vector.png",
+                                    "assets/icons/arrow_right.png",
                                     height: 12,
                                     width: 12,
                                   ),
@@ -166,7 +166,7 @@ class TransferConfirmationScreen extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8),
                                   child: Image.asset(
-                                    "assets/icons/vector.png",
+                                    "assets/icons/arrow_right.png",
                                     height: 12,
                                     width: 12,
                                   ),

@@ -80,7 +80,7 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
                     ),
                   ),
                   Image.asset(
-                    'assets/icons/vector.png',
+                    'assets/icons/arrow_right.png',
                     width: 12,
                     height: 12,
                     color: const Color(0xFFA19F9F),
