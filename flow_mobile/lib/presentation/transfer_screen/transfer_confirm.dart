@@ -64,7 +64,7 @@ class TransferConfirmationScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                '\$${(transferState.amountInCents / 100).toStringAsFixed(2)}',
+                                '\$${(transferState.amount / 100).toStringAsFixed(2)}',
                                 style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 28,

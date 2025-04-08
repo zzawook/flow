@@ -39,6 +39,12 @@ SpendingScreenState spendingScreenReducer(
         state.displayedMonth.month + 1,
       ),
     );
+  } else if (action is SetDisplayedMonthAction) {
+    return state.copyWith(displayedMonth: action.displayMonthYear);
+  } else if (action is SetSelectedDateAction) {
+    return state.copyWith(selectedDate: action.selectedDate);
+  } else if (action is SetCalendarSelectedDateAction) {
+    return state.copyWith(calendarSelectedDate: action.calendarSelectedDate);
   }
   return state;
 }

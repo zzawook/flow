@@ -15,19 +15,19 @@ class TransferAmountScreen extends StatefulWidget {
 
 class TransferAmountScreenState extends State<TransferAmountScreen> {
   /// Holds the user-entered amount in cents. (e.g., 123 => $1.23)
-  int _amountInCents = 0;
+  int _amount = 0;
 
   void onTransferButtonPressed() {
     StoreProvider.of<FlowState>(
       context,
-    ).dispatch(EnterAmountAction(_amountInCents));
+    ).dispatch(EnterAmountAction(_amount));
     Navigator.pushNamed(context, '/transfer/confirm');
   }
 
   /// Returns a string like "0.00" or "123.45" for display.
   String get _formattedAmount {
-    final dollars = _amountInCents ~/ 100;
-    final cents = _amountInCents % 100;
+    final dollars = _amount ~/ 100;
+    final cents = _amount % 100;
     return '$dollars.${cents.toString().padLeft(2, '0')}';
   }
 
@@ -36,8 +36,8 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
     setState(() {
       // Shift current value left and add the new digit.
       // This example caps at 999,999,999 cents (~$9,999,999.99).
-      if (_amountInCents < 999999999) {
-        _amountInCents = _amountInCents * 10 + int.parse(digit);
+      if (_amount < 999999999) {
+        _amount = _amount * 10 + int.parse(digit);
       }
     });
   }
@@ -46,14 +46,14 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
     HapticFeedback.vibrate();
     setState(() {
       // Remove the last digit by integer division.
-      _amountInCents = _amountInCents ~/ 10;
+      _amount = _amount ~/ 10;
     });
   }
 
   void _onClearPressed() {
     HapticFeedback.vibrate();
     setState(() {
-      _amountInCents = 0;
+      _amount = 0;
     });
   }
 
@@ -89,7 +89,7 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
                 ),
               ),
 
-              _amountInCents > 0
+              _amount > 0
                   ? Row(
                     children: [
                       TransferButton(onPressed: onTransferButtonPressed),

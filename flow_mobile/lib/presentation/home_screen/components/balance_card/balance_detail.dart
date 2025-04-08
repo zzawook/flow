@@ -44,17 +44,17 @@ class IncomeContainer extends StatelessWidget {
             'Income',
             textDirection: TextDirection.ltr,
             style: TextStyle(
-              fontFamily: 'Inter', 
+              fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF555555),
             ),
           ),
           Text(
-            '${transactionState.getIncomeInCentsForMonth(DateTime(DateTime.now().year, DateTime.now().month)).toStringAsFixed(2)} SGD',
+            '${transactionState.getIncomeForMonth(DateTime(DateTime.now().year, DateTime.now().month)).toStringAsFixed(2)} SGD',
             textDirection: TextDirection.ltr,
             style: TextStyle(
-              fontFamily: 'Inter', 
+              fontFamily: 'Inter',
               fontSize: 16,
               color: Color(0xFF555555),
               fontWeight: FontWeight.w500,
@@ -92,6 +92,9 @@ class TotalBalanceContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double totalBalance = transactionState.getBalanceForMonth(
+      DateTime(DateTime.now().year, DateTime.now().month),
+    );
     return Container(
       padding: EdgeInsets.only(top: 7),
       child: Row(
@@ -101,17 +104,17 @@ class TotalBalanceContainer extends StatelessWidget {
             'Total Balance:',
             textDirection: TextDirection.ltr,
             style: TextStyle(
-              fontFamily: 'Inter', 
+              fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF555555),
             ),
           ),
           Text(
-            '${transactionState.getBalanceInCentsForMonth(DateTime(DateTime.now().year, DateTime.now().month)).toStringAsFixed(2)} SGD',
+            '${totalBalance > 0 ? "+" : "-"} ${totalBalance.toStringAsFixed(2)} SGD',
             textDirection: TextDirection.ltr,
             style: TextStyle(
-              fontFamily: 'Inter', 
+              fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF00C864), // Green color
@@ -139,17 +142,17 @@ class SpendingTotal extends StatelessWidget {
             'Spending',
             textDirection: TextDirection.ltr,
             style: TextStyle(
-              fontFamily: 'Inter', 
+              fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF555555),
             ),
           ),
           Text(
-            '${transactionState.getExpenseInCentsForMonth(DateTime(DateTime.now().year, DateTime.now().month)).abs().toStringAsFixed(2)} SGD',
+            '${transactionState.getExpenseForMonth(DateTime(DateTime.now().year, DateTime.now().month)).abs().toStringAsFixed(2)} SGD',
             textDirection: TextDirection.ltr,
             style: TextStyle(
-              fontFamily: 'Inter', 
+              fontFamily: 'Inter',
               fontSize: 16,
               color: Color(0xFF555555),
               fontWeight: FontWeight.w500,
@@ -274,6 +277,10 @@ class TransferSpending extends StatelessWidget {
   Widget build(BuildContext context) {
     double transferSpending = 0;
     for (var transaction in transactions) {
+      if (transaction.date.month != DateTime.now().month ||
+          transaction.date.year != DateTime.now().year) {
+        continue;
+      }
       transferSpending += transaction.amount;
     }
     return Container(
@@ -312,6 +319,10 @@ class CardSpending extends StatelessWidget {
   Widget build(BuildContext context) {
     double cardSpending = 0;
     for (var transaction in transactions) {
+      if (transaction.date.month != DateTime.now().month ||
+          transaction.date.year != DateTime.now().year) {
+        continue;
+      }
       cardSpending += transaction.amount;
     }
     return Container(

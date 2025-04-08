@@ -1,5 +1,8 @@
+import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/analysis/demographic_analysis_card.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 class AnalysisCarousel extends StatefulWidget {
   const AnalysisCarousel({super.key});
@@ -13,32 +16,6 @@ class _AnalysisCarouselState extends State<AnalysisCarousel>
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // Example data for each card
-  final List<Widget> _cards = [
-    DemographicAnalysisCard(
-      demographic: 'Male of age 20-24',
-      demographicAmount: 2458.68,
-      myAmount: 3734.35,
-    ),
-    DemographicAnalysisCard(
-      demographic: 'Female of age 20-24',
-      demographicAmount: 1934.22,
-      myAmount: 3734.35,
-    ),
-    DemographicAnalysisCard(
-      demographic: 'Male of age 25-29',
-      demographicAmount: 2750.10,
-      myAmount: 3734.35,
-    ),
-    DemographicAnalysisCard(
-      demographic: 'Female of age 25-29',
-      demographicAmount: 2300.50,
-      myAmount: 3734.35,
-    ),
-  ];
-
-  final List<int> heights = [250, 400, 500, 600];
-
   void _onPageChanged(int index) {
     setState(() {
       _currentPage = index;
@@ -47,33 +24,50 @@ class _AnalysisCarouselState extends State<AnalysisCarousel>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Wrap with AnimatedSize to smoothly animate height changes.
-        AnimatedSize(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.easeInOut,
-          child: SizedBox(
-            height: heights[_currentPage].toDouble(),
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              children: List.generate(_cards.length, (index) {
-                // Wrap each card with a Container that has a GlobalKey.
-                return _cards[index];
+    return StoreConnector<FlowState, TransactionState>(
+      distinct: true,
+      converter: (store) => store.state.transactionState,
+      builder: (context, transactionState) {
+        List<Widget> cards = [
+          DemographicAnalysisCard(
+            myAmount:
+                transactionState
+                    .getExpenseForMonth(
+                      DateTime(DateTime.now().year, DateTime.now().month),
+                    )
+                    .abs(),
+          ),
+        ];
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Wrap with AnimatedSize to smoothly animate height changes.
+            AnimatedSize(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              child: SizedBox(
+                height: 250, // Set a fixed height for the carousel
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: _onPageChanged,
+                  children: List.generate(cards.length, (index) {
+                    // Wrap each card with a Container that has a GlobalKey.
+                    return cards[index];
+                  }),
+                ),
+              ),
+            ),
+            // Dots indicator
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(cards.length, (index) {
+                return buildDot(index);
               }),
             ),
-          ),
-        ),
-        // Dots indicator
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(_cards.length, (index) {
-            return buildDot(index);
-          }),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 

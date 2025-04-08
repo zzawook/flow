@@ -31,8 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   hive_flutter: ^1.1.0
   flutter_secure_storage: ^9.2.4
@@ -40,6 +38,8 @@ dependencies:
   flutter_redux: ^0.10.0
   redux: ^5.0.0
   flutter_native_splash: ^2.4.5
+  redux_thunk: ^0.4.0
+  fl_chart: ^0.70.2
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +66,7 @@ flutter:
     - assets/
     - assets/icons/
     - assets/icons/transaction_icons/
+    - assets/icons/category_icons/
     - assets/bank_logos/
 
   # An image asset can refer to one or more resolution-specific "variants", see

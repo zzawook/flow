@@ -38,7 +38,7 @@ class TransactionList extends StatelessWidget {
           children: [
             // Date Label
             if (index == 0 ||
-                !DateTimeUtil.sameDate(
+                !DateTimeUtil.isSameDate(
                   sortedTransaction[index - 1].date,
                   transaction.date,
                 ))
@@ -72,6 +72,10 @@ class TransactionList extends StatelessWidget {
                 amount: transaction.amount.toStringAsFixed(2),
                 category: transaction.category,
                 color: Color(0xFF000000),
+                incomeColor:
+                    transaction.amount > 0
+                        ? const Color(0xFF00C864)
+                        : const Color(0xFF000000),
               ),
             ),
           ],

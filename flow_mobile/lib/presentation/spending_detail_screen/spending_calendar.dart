@@ -1,5 +1,5 @@
+import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -67,70 +67,101 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
         day,
       );
       dayCells.add(
-        StoreConnector<FlowState, TransactionState>(
-          converter: (store) => store.state.transactionState,
-          builder: (context, transactionState) {
+        StoreConnector<FlowState, CalendarCellState>(
+          distinct: true,
+          converter: (store) {
+            final transactionState = store.state.transactionState;
             var dateStatistics = transactionState
                 .getTransactionStatisticForDate(date);
+            return CalendarCellState(
+              income: dateStatistics.income,
+              expense: dateStatistics.expense,
+              isToday: DateTimeUtil.isSameDate(date, DateTime.now()),
+              isSelected: DateTimeUtil.isSameDate(
+                date,
+                store
+                    .state
+                    .screenState
+                    .spendingScreenState
+                    .calendarSelectedDate,
+              ),
+            );
+          },
+          builder: (context, calendarCellState) {
             return Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(
-                      top: 4,
-                      bottom: 4,
-                      left: 9,
-                      right: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          DateTimeUtil.sameDate(date, DateTime.now())
-                              ? const Color(0x16000000)
-                              : null,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      "$day",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        color: Color(0xFF000000).withValues(
-                          alpha: date.isAfter(DateTime.now()) ? 0.3 : 1.0,
+              child: GestureDetector(
+                onTap: () {
+                  if (date.isAfter(DateTime.now())) {
+                    return;
+                  }
+                  StoreProvider.of<FlowState>(
+                    context,
+                  ).dispatch(SetCalendarSelectedDateAction(date));
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(
+                        top: 4,
+                        bottom: 4,
+                        left: 9,
+                        right: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            calendarCellState.isToday
+                                ? Color(0x16000000)
+                                : calendarCellState.isSelected
+                                ? Color(0x6450C878)
+                                : null,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        "$day",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          color: Color(0xFF000000).withValues(
+                            alpha: date.isAfter(DateTime.now()) ? 0.3 : 1.0,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Text(
-                    date.isAfter(DateTime.now())
-                        ? ""
-                        : dateStatistics.income > 0
-                        ? "+\$${dateStatistics.income.toStringAsFixed(2)}"
-                        : dateStatistics.expense < 0
-                        ? "\$${dateStatistics.expense.toStringAsFixed(2)}"
-                        : "",
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      color:
-                          dateStatistics.income > 0
-                              ? Color(0xFF50C878)
-                              : dateStatistics.expense < 0
-                              ? Color(0xFF757575)
-                              : Color(0xFF50C878),
-                      fontSize: 12,
+                    Text(
+                      date.isAfter(DateTime.now())
+                          ? ""
+                          : calendarCellState.income > 0
+                          ? "+\$${calendarCellState.income.toStringAsFixed(2)}"
+                          : calendarCellState.expense < 0
+                          ? "\$${calendarCellState.expense.toStringAsFixed(2)}"
+                          : "",
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        color:
+                            calendarCellState.income > 0
+                                ? Color(0xFF50C878)
+                                : calendarCellState.expense < 0
+                                ? Color(0xFF757575)
+                                : Color(0xFF50C878),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                  ),
-                  Text(
-                    date.isAfter(DateTime.now()) || (dateStatistics.income == 0)
-                        ? ""
-                        : "\$${dateStatistics.expense.toStringAsFixed(2)}",
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      color: Color(0xFF757575),
-                      fontSize: 12,
+                    Text(
+                      date.isAfter(DateTime.now()) ||
+                              (calendarCellState.income == 0)
+                          ? ""
+                          : "\$${calendarCellState.expense.toStringAsFixed(2)}",
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        color: Color(0xFF757575),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -165,4 +196,18 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
       ],
     );
   }
+}
+
+class CalendarCellState {
+  final double income;
+  final double expense;
+  final bool isToday;
+  final bool isSelected;
+
+  CalendarCellState({
+    required this.income,
+    required this.expense,
+    required this.isToday,
+    required this.isSelected,
+  });
 }

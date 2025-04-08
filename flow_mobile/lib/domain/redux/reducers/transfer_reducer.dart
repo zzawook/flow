@@ -6,7 +6,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
     return TransferState(
       fromAccount: action.bankAccount,
       toAccount: state.toAccount,
-      amountInCents: state.amountInCents,
+      amount: state.amount,
       remarks: state.remarks,
       network: state.network,
     );
@@ -15,7 +15,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
     return TransferState(
       fromAccount: action.bankAccount,
       toAccount: state.toAccount,
-      amountInCents: state.amountInCents,
+      amount: state.amount,
       remarks: state.remarks,
       network: state.network,
     );
@@ -24,7 +24,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
     return TransferState(
       fromAccount: state.fromAccount,
       toAccount: state.toAccount,
-      amountInCents: state.amountInCents,
+      amount: state.amount,
       remarks: state.remarks,
       network: action.network,
     );
@@ -33,7 +33,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
     return TransferState(
       fromAccount: state.fromAccount,
       toAccount: state.toAccount,
-      amountInCents: action.amountInCents,
+      amount: action.amount,
       remarks: state.remarks,
       network: state.network,
     );
@@ -42,7 +42,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
     return TransferState(
       fromAccount: state.fromAccount,
       toAccount: state.toAccount,
-      amountInCents: state.amountInCents,
+      amount: state.amount,
       remarks: action.remarks,
       network: state.network,
     );

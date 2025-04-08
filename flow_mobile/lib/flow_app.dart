@@ -3,6 +3,7 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_init_screen.dart';
 import 'package:flow_mobile/presentation/spending_detail_screen/spending_detail_screen.dart';
+import 'package:flow_mobile/presentation/spending_graph_screen/pie_chart_screen.dart';
 import 'package:flow_mobile/presentation/spending_screen/spending_screen.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_amount_screen.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_confirm.dart';
@@ -51,6 +52,9 @@ class FlowAppState extends State<FlowApp> {
                 break;
               case '/spending/detail':
                 page = SpendingDetailScreen();
+                break;
+              case '/spending/graph':
+                page = PieChartScreen();
                 break;
               case '/transfer':
                 page = TransferScreen();

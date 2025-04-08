@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
+import 'package:flow_mobile/shared/utils/spending_category_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/statistics_card/horizontal_stacked_bar_with_legend.dart';
@@ -14,7 +15,9 @@ class StatisticsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlowButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushNamed('/spending/graph');
+      },
       child: Container(
         padding: EdgeInsets.only(top: 24, left: 24, right: 24, bottom: 0),
         width: double.infinity,
@@ -25,17 +28,18 @@ class StatisticsCard extends StatelessWidget {
         child: StoreConnector<FlowState, TransactionState>(
           converter: (store) => store.state.transactionState,
           builder: (context, transactionState) {
+            List<String> categories = SpendingCategoryUtil.getAllCategories();
+            // Create c
             Map<String, double> categoryAmount = {
-              "Food": 0,
-              "Transport": 0,
-              "Groceries": 0,
-              "Transfer": 0,
-              "Entertainment": 0,
-              "Others": 0,
+              for (var category in categories) category: 0.0,
             };
-            for (var transaction in transactionState.transactions) {
-              categoryAmount[transaction.category] =
-                  categoryAmount[transaction.category]! + transaction.amount;
+            for (var transaction in transactionState.getTransactionsForMonth(
+              DateTime(DateTime.now().year, DateTime.now().month),
+            )) {
+              if (transaction.amount < 0) {
+                categoryAmount[transaction.category] =
+                    categoryAmount[transaction.category]! + transaction.amount;
+              }
             }
 
             // Remove categories with 0 amount
@@ -73,7 +77,7 @@ class StatisticsCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '\$ ${transactionState.getExpenseInCentsForMonth(DateTime.now()).abs().toStringAsFixed(2)}',
+                        '\$ ${transactionState.getExpenseForMonth(DateTime.now()).abs().toStringAsFixed(2)}',
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 32,

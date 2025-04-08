@@ -84,7 +84,6 @@ class SpendingDetailTopBar extends StatelessWidget {
             ],
           ),
         ),
-        Image.asset('assets/icons/camera.png', height: 25, width: 25),
       ],
     );
   }

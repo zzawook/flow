@@ -1,3 +1,4 @@
+import 'package:flow_mobile/bootstrap/bootstrap.dart';
 import 'package:flow_mobile/data/repository/auth_repository_impl.dart';
 import 'package:flow_mobile/data/repository/bank_account_repository.dart';
 import 'package:flow_mobile/data/repository/bank_account_repository_impl.dart';
@@ -215,55 +216,5 @@ void bootstrapTransactionData() async {
       await TransactionRepositoryImpl.getInstance();
 
   await transactionRepository.clearTransactions();
-
-  await transactionRepository.addTransaction(
-    Transaction(
-      date: DateTime(2025, 3, 15),
-      amount: -5.23,
-      name: 'McDonalds',
-      category: 'Food',
-      method: 'PayNow',
-      note: '',
-    ),
-  );
-  await transactionRepository.addTransaction(
-    Transaction(
-      date: DateTime(2025, 3, 15),
-      amount: -12.40,
-      name: 'Starbucks',
-      category: 'Food',
-      method: 'Credit Card',
-      note: '',
-    ),
-  );
-  await transactionRepository.addTransaction(
-    Transaction(
-      date: DateTime(2025, 3, 10),
-      amount: -2.10,
-      name: '7-Eleven',
-      category: 'Groceries',
-      method: 'Debit Card',
-      note: '',
-    ),
-  );
-  await transactionRepository.addTransaction(
-    Transaction(
-      date: DateTime(2025, 3, 5),
-      amount: -21.00,
-      name: 'Netflix',
-      category: 'Entertainment',
-      method: 'Credit Card',
-      note: '',
-    ),
-  );
-  await transactionRepository.addTransaction(
-    Transaction(
-      date: DateTime(2025, 3, 2),
-      amount: -120.50,
-      name: 'Transfer to Someone',
-      category: 'Transfer',
-      method: 'Transfer',
-      note: '',
-    ),
-  );
+  Bootstrap.populateTransactionStateWithTestData(transactionRepository);
 }

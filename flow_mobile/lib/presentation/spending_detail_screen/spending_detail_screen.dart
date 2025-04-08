@@ -21,7 +21,8 @@ class SpendingDetailScreenState extends State<SpendingDetailScreen> {
     // A simple container to hold the entire screen
     return RefreshIndicator(
       onRefresh: () {
-        return Future.delayed(const Duration(seconds: 1));
+        Navigator.pushNamed(context, "/refresh");
+        return Future.delayed(const Duration(microseconds: 1));
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),

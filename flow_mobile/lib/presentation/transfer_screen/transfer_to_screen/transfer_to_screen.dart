@@ -1,7 +1,6 @@
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/account_layout.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/paynow_layout.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_top_bar.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/widgets.dart';
 
 class TransferToScreen extends StatefulWidget {
@@ -15,9 +14,6 @@ class _TransferToScreenState extends State<TransferToScreen> {
   // Track which tab is selected: 0 => PayNow, 1 => Account
   int _selectedTabIndex = 0;
 
-  // Mock transfer amount
-  final double _transferAmount = 400.0;
-
   // Controllers for text input
   final TextEditingController _payNowController = TextEditingController();
   final TextEditingController _accountNumberController =
@@ -28,17 +24,6 @@ class _TransferToScreenState extends State<TransferToScreen> {
   final FocusNode _payNowFocus = FocusNode();
   final FocusNode _accountNumberFocus = FocusNode();
   final FocusNode _selectBankFocus = FocusNode();
-
-  // Example data for “My Accounts” and “Recent”
-  final List<Map<String, String>> _myAccounts = [
-    {"name": "Rent", "bank": "DBS 120-203101-2", "icon": "DBS.png"},
-    {"name": "Dad", "bank": "DBS 190-203101-2", "icon": "DBS.png"},
-  ];
-
-  final List<Map<String, String>> _recent = [
-    {"name": "Minsook Choi", "bank": "UOB 950-10859-0", "icon": "UOB.png"},
-    {"name": "K Jaehyeok", "bank": "OCBC 550-10859-0", "icon": "OCBC.png"},
-  ];
 
   @override
   Widget build(BuildContext context) {

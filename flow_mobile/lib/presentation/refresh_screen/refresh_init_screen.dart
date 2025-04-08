@@ -119,7 +119,7 @@ class _RefreshInitScreenContainerState
                         style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                           color: Color(0xFF50C878),
                         ),
                       ),
@@ -181,7 +181,7 @@ class _RefreshInitScreenContainerState
                       .isEmpty) {
                     return;
                   }
-                  Navigator.pushNamed(context, "/refresh/chooseBanks");
+                  Navigator.pushNamed(context, "/refresh/");
                   StoreProvider.of<FlowState>(context).dispatch(
                     InitSelectedBankAction(
                       newBankDatas

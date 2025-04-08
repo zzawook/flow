@@ -23,7 +23,10 @@ ScreenState screenReducer(ScreenState state, dynamic action) {
     );
   }
   if (action is IncrementDisplayedMonthAction ||
-      action is DecrementDisplayedMonthAction) {
+      action is DecrementDisplayedMonthAction ||
+      action is SetDisplayedMonthAction ||
+      action is SetSelectedDateAction ||
+      action is SetCalendarSelectedDateAction) {
     return state.copyWith(
       screenName: state.screenName,
       spendingScreenState: spendingScreenReducer(

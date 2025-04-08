@@ -7,6 +7,7 @@ class TransactionItem extends StatelessWidget {
   final String amount;
   final String category;
   final Color color;
+  final Color incomeColor;
 
   const TransactionItem({
     super.key,
@@ -14,6 +15,7 @@ class TransactionItem extends StatelessWidget {
     required this.amount,
     required this.category,
     required this.color,
+    required this.incomeColor,
   });
 
   @override
@@ -42,17 +44,17 @@ class TransactionItem extends StatelessWidget {
                       child: Text(
                         amount,
                         style: TextStyle(
-                          fontFamily: 'Inter', 
+                          fontFamily: 'Inter',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: color,
+                          color: double.parse(amount) > 0 ? incomeColor : color,
                         ),
                       ),
                     ),
                     Text(
                       name,
                       style: TextStyle(
-                        fontFamily: 'Inter', 
+                        fontFamily: 'Inter',
                         fontSize: 12,
                         fontWeight: FontWeight.normal,
                         color: Color(0xFF565656),

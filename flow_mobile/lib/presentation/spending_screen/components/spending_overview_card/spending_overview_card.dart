@@ -1,3 +1,4 @@
+import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/spending/spending_header.dart';
@@ -34,25 +35,39 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
         children: [
           Container(
             padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 16),
-            child: StoreConnector<FlowState, DateTime>(
+            child: StoreConnector<FlowState, SpendingOverviewState>(
+              distinct: true,
               converter:
-                  (store) =>
-                      store
-                          .state
-                          .screenState
-                          .spendingScreenState
-                          .displayedMonth,
+                  (store) {
+                    DateTime displayedMonth =
+                        store.state.screenState.spendingScreenState.displayedMonth;
+
+                    DateTime today = DateTime(
+                      DateTime.now().year,
+                      DateTime.now().month,
+                      DateTime.now().day,
+                    );
+                    DateTime lastSunday = today.subtract(
+                      Duration(days: today.weekday % 7),
+                    );
+                    List<Transaction> transactions =
+                        store.state.transactionState.getTransactionsFromTo(lastSunday, today);
+                    return SpendingOverviewState(
+                      displayedMonth: displayedMonth,
+                      transactions: transactions,
+                    );
+                  },
               builder:
-                  (context, displayedMonth) => Column(
+                  (context, spendingOverviewState) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SpendingHeader(displayMonthYear: displayedMonth),
+                      SpendingHeader(displayMonthYear: spendingOverviewState.displayedMonth),
 
                       SpendingComparetoLastMonthInsight(),
 
-                      WeeklySpendingCalendar(),
+                      WeeklySpendingCalendar(transactions: spendingOverviewState.transactions),
 
-                      const TransactionsList(),
+                      TransactionsList(transactions: spendingOverviewState.transactions),
                     ],
                   ),
             ),
@@ -93,4 +108,13 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
       ),
     );
   }
+}
+
+class SpendingOverviewState {
+  DateTime displayedMonth;
+  List<Transaction> transactions;
+  SpendingOverviewState({
+    required this.displayedMonth,
+    required this.transactions,
+  });
 }

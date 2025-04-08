@@ -23,7 +23,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<List<Transaction>> getTransactionFromTo(
+  Future<List<Transaction>> getTransactionsFromTo(
     DateTime fromDate,
     DateTime toDate,
   ) {

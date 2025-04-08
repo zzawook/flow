@@ -20,9 +20,9 @@ class SelectNetworkAction {
 }
 
 class EnterAmountAction {
-  final int amountInCents;
+  final int amount;
 
-  EnterAmountAction(this.amountInCents);
+  EnterAmountAction(this.amount);
 }
 
 class CustomizeRemarksAction {

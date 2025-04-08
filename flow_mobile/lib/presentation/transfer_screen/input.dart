@@ -37,7 +37,7 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
         key: _formKey,
         child: Material(
           child: TextFormField(
-            autofocus: false,
+            autofocus: true,
             style: const TextStyle(
               color: Color(0xFF000000),
               fontSize: 20,

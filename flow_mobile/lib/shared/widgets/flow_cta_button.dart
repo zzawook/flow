@@ -4,12 +4,12 @@ import 'package:flutter/widgets.dart';
 class FlowCTAButton extends StatelessWidget {
   final String text;
   final Function() onPressed;
-  Color color;
-  Color textColor;
-  double borderRadius;
-  FontWeight fontWeight;
+  final Color color;
+  final Color textColor;
+  final double borderRadius;
+  final FontWeight fontWeight;
 
-  FlowCTAButton({
+  const FlowCTAButton({
     super.key,
     required this.text,
     required this.onPressed,

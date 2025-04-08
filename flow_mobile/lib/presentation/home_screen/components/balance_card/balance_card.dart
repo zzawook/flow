@@ -132,7 +132,7 @@ class AsOfDateText extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(bottom: 25),
       child: Text(
-        'As of 15 January',
+        'As of today',
         textDirection: TextDirection.ltr,
         style: TextStyle(
           fontFamily: 'Inter',

@@ -25,7 +25,8 @@ class _SpendingScreenState extends State<SpendingScreen> {
           Expanded(
             child: RefreshIndicator.adaptive(
               onRefresh: () {
-                return Future.delayed(const Duration(seconds: 1));
+                Navigator.pushNamed(context, "/refresh");
+                return Future.delayed(const Duration(microseconds: 1));
               },
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(

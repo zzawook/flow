@@ -1,11 +1,9 @@
-import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/entities/transfer_receivable.dart';
 import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
 
 class ToAccountsListWidget extends StatelessWidget {
   final List<TransferReceivable> accounts;

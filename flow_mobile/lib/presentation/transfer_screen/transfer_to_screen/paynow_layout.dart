@@ -26,6 +26,7 @@ class PayNowLayoutWidget extends StatelessWidget {
             focusNode: payNowFocus,
             hintText: "Enter Phone Number / Contact Name",
             labelText: "Enter Phone Number / Contact Name",
+            
           ),
           const SizedBox(height: 24),
           const SizedBox(height: 16),

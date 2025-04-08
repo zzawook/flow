@@ -70,7 +70,7 @@ class TransferResultScreen extends StatelessWidget {
                               converter: (store) => store.state.transferState,
                               builder:
                                   (context, transferState) => Text(
-                                    '\$${(transferState.amountInCents / 100).toStringAsFixed(2)} to ${transferState.toAccount.accountHolder}',
+                                    '\$${(transferState.amount / 100).toStringAsFixed(2)} to ${transferState.toAccount.accountHolder}',
                                     style: TextStyle(
                                       fontFamily: 'Inter',
                                       fontSize: 28,

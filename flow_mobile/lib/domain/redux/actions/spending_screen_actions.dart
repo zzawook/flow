@@ -5,3 +5,21 @@ class DecrementDisplayedMonthAction {
 class IncrementDisplayedMonthAction {
   IncrementDisplayedMonthAction();
 }
+
+class SetDisplayedMonthAction {
+  final DateTime displayMonthYear;
+
+  SetDisplayedMonthAction(this.displayMonthYear);
+}
+
+class SetSelectedDateAction {
+  final DateTime selectedDate;
+
+  SetSelectedDateAction(this.selectedDate);
+}
+
+class SetCalendarSelectedDateAction {
+  final DateTime calendarSelectedDate;
+
+  SetCalendarSelectedDateAction(this.calendarSelectedDate);
+}

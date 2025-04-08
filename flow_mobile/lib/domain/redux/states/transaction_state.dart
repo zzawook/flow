@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/entities/date_spending_statistics.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/shared/utils/date_time_util.dart';
 
 class TransactionState {
   final List<Transaction> transactions;
@@ -50,7 +51,7 @@ class TransactionState {
     );
   }
 
-  double getBalanceInCentsForMonth(DateTime month) {
+  double getBalanceForMonth(DateTime month) {
     final transactionsForMonth =
         transactions.where((transaction) {
           final transactionDate = transaction.date;
@@ -63,7 +64,7 @@ class TransactionState {
     });
   }
 
-  double getIncomeInCentsForMonth(DateTime month) {
+  double getIncomeForMonth(DateTime month) {
     final transactionsForMonth =
         transactions.where((transaction) {
           final transactionDate = transaction.date;
@@ -77,7 +78,7 @@ class TransactionState {
     });
   }
 
-  double getExpenseInCentsForMonth(DateTime month) {
+  double getExpenseForMonth(DateTime month) {
     final transactionsForMonth =
         transactions.where((transaction) {
           final transactionDate = transaction.date;
@@ -96,6 +97,24 @@ class TransactionState {
       final transactionDate = transaction.date;
       return transactionDate.year == displayedMonth.year &&
           transactionDate.month == displayedMonth.month;
+    }).toList();
+  }
+
+  double getMonthlySpendingDifference() {
+    final currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
+    final previousMonth = DateTime(currentMonth.year, currentMonth.month - 1);
+
+    final currentMonthSpending = getExpenseForMonth(currentMonth);
+    final previousMonthSpending = getExpenseForMonth(previousMonth);
+
+    return currentMonthSpending - previousMonthSpending;
+  }
+
+  List<Transaction> getTransactionsFromTo(DateTime from, DateTime to) {
+    return transactions.where((transaction) {
+      return (DateTimeUtil.isSameDate(transaction.date, from) ||
+              DateTimeUtil.isSameDate(transaction.date, to)) ||
+          transaction.date.isAfter(from) && transaction.date.isBefore(to);
     }).toList();
   }
 }

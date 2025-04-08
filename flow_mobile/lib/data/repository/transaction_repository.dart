@@ -2,7 +2,7 @@ import 'package:flow_mobile/domain/entities/transaction.dart';
 
 abstract class TransactionRepository {
   Future<List<Transaction>> getTransactions(DateTime date);
-  Future<List<Transaction>> getTransactionFromTo(
+  Future<List<Transaction>> getTransactionsFromTo(
     DateTime fromDate,
     DateTime toDate,
   );
