@@ -5,7 +5,6 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
-import 'package:redux/redux.dart';
 
 class WeeklySpendingCalendar extends StatefulWidget {
   final List<Transaction> transactions;
