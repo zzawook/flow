@@ -1,47 +1,44 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction.dart';
+part of 'paynow_recipient.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionAdapter extends TypeAdapter<Transaction> {
+class PayNowRecipientAdapter extends TypeAdapter<PayNowRecipient> {
   @override
-  final int typeId = 4;
+  final int typeId = 5;
 
   @override
-  Transaction read(BinaryReader reader) {
+  PayNowRecipient read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Transaction(
+    return PayNowRecipient(
       name: fields[0] as String,
-      amount: fields[1] as double,
-      category: fields[2] as String,
-      date: fields[3] as DateTime,
-      method: fields[4] as String,
-      note: fields[5] as String,
+      phoneNumer: fields[1] as String,
+      idNumber: fields[2] as String,
+      bank: fields[3] as Bank,
+      transferCount: fields[4] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Transaction obj) {
+  void write(BinaryWriter writer, PayNowRecipient obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.amount)
+      ..write(obj.phoneNumer)
       ..writeByte(2)
-      ..write(obj.category)
+      ..write(obj.idNumber)
       ..writeByte(3)
-      ..write(obj.date)
+      ..write(obj.bank)
       ..writeByte(4)
-      ..write(obj.method)
-      ..writeByte(5)
-      ..write(obj.note);
+      ..write(obj.transferCount);
   }
 
   @override
@@ -50,7 +47,7 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TransactionAdapter &&
+      other is PayNowRecipientAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -2,6 +2,8 @@ import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/shared/widgets/spending/spending_monthly_trend_line_graph.dart';
@@ -37,7 +39,13 @@ class SpendingHeader extends StatelessWidget {
                             ),
                           ),
                         );
-                        Navigator.pushNamed(context, "/spending/detail");
+                        Navigator.pushNamed(
+                          context,
+                          "/spending/detail",
+                          arguments: CustomPageRouteArguments(
+                            transitionType: TransitionType.slideLeft,
+                          ),
+                        );
                       }, // Previous Month
                       child: Image.asset(
                         'assets/icons/prevMonth.png',
@@ -73,7 +81,13 @@ class SpendingHeader extends StatelessWidget {
                             displayMonthYear.year == DateTime.now().year) {
                           return;
                         }
-                        Navigator.pushNamed(context, "/spending/detail");
+                        Navigator.pushNamed(
+                          context,
+                          "/spending/detail",
+                          arguments: CustomPageRouteArguments(
+                            transitionType: TransitionType.slideLeft,
+                          ),
+                        );
                       },
                       child: Image.asset(
                         displayMonthYear.month < DateTime.now().month ||
@@ -146,6 +160,10 @@ class SpendingHeader extends StatelessWidget {
                 currentMonth.month,
                 i,
               );
+              // Check if the date is in the future
+              if (date.isAfter(DateTime.now())) {
+                continue;
+              }
               double todaySpending = 0;
               currentMonthTransactions
                   .where(
@@ -189,7 +207,7 @@ class SpendingHeader extends StatelessWidget {
               currentMonthSpendingByDays: currentMonthSpendingByDays,
               lastMonthSpendingByDays: lastMonthSpendingByDays,
               width: 180,
-              height: 100,
+              height: 85,
             );
           },
         ),

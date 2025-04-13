@@ -2,6 +2,7 @@ import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/models/WeeklySpendingData.dart';
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
@@ -28,10 +29,11 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
         widget.transactions
             .where(
               (t) =>
-                  t.date.isAfter(
-                    lastSunday.subtract(const Duration(days: 1)),
-                  ) &&
-                  t.date.isBefore(today.add(const Duration(days: 1))),
+                  DateTimeUtil.isSameDate(t.date, today) ||
+                  (t.date.isAfter(
+                        lastSunday.subtract(const Duration(days: 1)),
+                      ) &&
+                      t.date.isBefore(today.add(const Duration(days: 1)))),
             )
             .toList();
 
@@ -55,7 +57,12 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children:
             keys.map((dateTime) {
-              final item = last7DaysData[dateTime] ?? {};
+              DateTime dateTimeYMD = DateTime(
+                dateTime.year,
+                dateTime.month,
+                dateTime.day,
+              );
+              final item = last7DaysData[dateTimeYMD] ?? {};
               final income = item["income"] ?? 0.0;
               final expense = item["expense"] ?? 0.0;
               final isToday = _isSameDay(dateTime, today);
@@ -67,14 +74,21 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
               final incomeText =
                   income != 0 ? '+${income.toStringAsFixed(2)}' : '';
               final expenseText =
-                  expense != 0 ? '-${expense.toStringAsFixed(2)}' : '';
+                  expense != 0 ? "-${expense.abs().toStringAsFixed(2)}" : '';
 
               return Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(dayName, style: const TextStyle(fontSize: 12)),
+                    Text(
+                      dayName,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        // fontWeight: FontWeight.w900,
+                      ),
+                    ),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () {
                         if (dateTime.isAfter(today)) {
                           return;
@@ -106,6 +120,7 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                           dateNumber.toString(),
                           style: TextStyle(
                             fontSize: 16,
+                            fontWeight: FontWeight.w900,
                             color:
                                 dateTime.isAfter(today)
                                     ? Color(0xFFB0B0B0)
@@ -119,17 +134,23 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                           ? expenseText
                           : incomeText,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
                         color:
                             onlyHasExpense(income, expense)
                                 ? expenseTextColor
                                 : incomeTextColor,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
                     ),
                     Text(
                       expenseText,
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 10,
                         color:
                             onlyHasExpense(income, expense)
                                 ? const Color(0xFFFFFFFF)

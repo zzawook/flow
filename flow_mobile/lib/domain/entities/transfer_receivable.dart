@@ -6,4 +6,5 @@ abstract class TransferReceivable {
   bool get isPayNow;
   bool get isAccount;
   String get identifier;
+  int get transferCount;
 }

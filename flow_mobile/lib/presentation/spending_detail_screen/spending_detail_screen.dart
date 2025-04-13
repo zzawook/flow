@@ -1,3 +1,5 @@
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_detail_screen/spending_calendar.dart';
 import 'package:flow_mobile/presentation/spending_detail_screen/spending_detail_top_bar.dart';
 import 'package:flow_mobile/presentation/spending_detail_screen/transaction_list.dart';
@@ -21,7 +23,13 @@ class SpendingDetailScreenState extends State<SpendingDetailScreen> {
     // A simple container to hold the entire screen
     return RefreshIndicator(
       onRefresh: () {
-        Navigator.pushNamed(context, "/refresh");
+        Navigator.pushNamed(
+          context,
+          "/refresh",
+          arguments: CustomPageRouteArguments(
+            transitionType: TransitionType.slideTop,
+          ),
+        );
         return Future.delayed(const Duration(microseconds: 1));
       },
       child: SingleChildScrollView(

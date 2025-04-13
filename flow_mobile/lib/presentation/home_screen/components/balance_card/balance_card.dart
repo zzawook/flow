@@ -4,6 +4,8 @@
 
 import 'dart:async';
 
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_data.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_detail.dart';
@@ -64,7 +66,13 @@ class _BalanceCardState extends State<BalanceCard> {
   Widget build(BuildContext context) {
     return FlowButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/spending');
+        Navigator.pushNamed(
+          context,
+          '/spending',
+          arguments: CustomPageRouteArguments(
+            transitionType: TransitionType.slideLeft,
+          ),
+        );
       },
       child: Container(
         padding: EdgeInsets.only(top: 24, left: 24, right: 24),

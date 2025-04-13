@@ -1,3 +1,5 @@
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_horizontal_divider.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
@@ -17,7 +19,13 @@ class TransferScreen extends StatelessWidget {
     // Use Directionality so text is laid out properly (LTR or RTL).
     return RefreshIndicator(
       onRefresh: () {
-        Navigator.pushNamed(context, "/refresh");
+        Navigator.pushNamed(
+          context,
+          "/refresh",
+          arguments: CustomPageRouteArguments(
+            transitionType: TransitionType.slideTop,
+          ),
+        );
         return Future.delayed(const Duration(microseconds: 1));
       },
       child: SingleChildScrollView(

@@ -7,11 +7,14 @@ class PayNowLayoutWidget extends StatelessWidget {
   final TextEditingController payNowController;
   final FocusNode payNowFocus;
   final List<PayNowRecipient> recommended;
+  final List<PayNowRecipient> fromContact;
+
   const PayNowLayoutWidget({
     super.key,
     required this.payNowController,
     required this.payNowFocus,
     required this.recommended,
+    required this.fromContact,
   });
 
   @override
@@ -26,7 +29,6 @@ class PayNowLayoutWidget extends StatelessWidget {
             focusNode: payNowFocus,
             hintText: "Enter Phone Number / Contact Name",
             labelText: "Enter Phone Number / Contact Name",
-            
           ),
           const SizedBox(height: 24),
           const SizedBox(height: 16),
@@ -40,7 +42,18 @@ class PayNowLayoutWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ToAccountsListWidget(accounts: recommended),
+          ToAccountsListWidget(transferReceivables: recommended),
+          const SizedBox(height: 8),
+          const Text(
+            "Contacts",
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF000000),
+            ),
+          ),
+          ToAccountsListWidget(transferReceivables: fromContact),
         ],
       ),
     );

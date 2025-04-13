@@ -17,10 +17,9 @@ class SpendingMonthlyTrendLineGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // You can wrap this in any other containers, paddings, or layout widgets.
     return SizedBox(
       width: width,
-      height: height, 
+      height: height,
       child: SpendingMonthlyTrendLineGraphContent(
         currentMonthSpendingByDays: currentMonthSpendingByDays,
         lastMonthSpendingByDays: lastMonthSpendingByDays,
@@ -43,49 +42,17 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return LineChart(
       LineChartData(
-        // Hide or customize grid lines
         gridData: FlGridData(show: false),
-
-        // Hide or customize titles/labels on axes
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
-
-        // Adjust chart padding if needed
         borderData: FlBorderData(show: false),
 
-        // Pass in lines for green and gray data
         lineBarsData: [
-          // Green line
-          LineChartBarData(
-            // Turn the data list into spots: (index -> x, value -> y)
-            spots:
-                currentMonthSpendingByDays.asMap().entries.map((entry) {
-                  final index = entry.key.toDouble();
-                  final value = entry.value;
-                  return FlSpot(index, value);
-                }).toList(),
-            isCurved: true, // curve the line
-            color: const Color(0xFF50C878), // line stroke color
-            barWidth: 2, // line thickness
-            dotData: FlDotData(show: false),
-            belowBarData: BarAreaData(
-              show: true,
-              // Create a vertical gradient from the green color to transparent
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  const Color(0xFF50C878).withOpacity(0.5),
-                  const Color(0xFF50C878).withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-          // Gray line
+          // Gray line (last month)
           LineChartBarData(
             spots:
                 lastMonthSpendingByDays.asMap().entries.map((entry) {
@@ -94,18 +61,60 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
                   return FlSpot(index, value);
                 }).toList(),
             isCurved: true,
-            color: Colors.grey[600], // or any custom gray color
+            color: Colors.grey[600],
+            // 1) Make line thicker
             barWidth: 2,
             dotData: FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
-              // Create a vertical gradient from gray to transparent
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.grey.withOpacity(0.5),
                   Colors.grey.withOpacity(0.0),
+                ],
+              ),
+            ),
+          ),
+
+          // Green line (current month)
+          LineChartBarData(
+            spots:
+                currentMonthSpendingByDays.asMap().entries.map((entry) {
+                  final index = entry.key.toDouble();
+                  final value = entry.value;
+                  return FlSpot(index, value);
+                }).toList(),
+            isCurved: true,
+            color: const Color(0xFF50C878),
+            // 1) Make line thicker
+            barWidth: 3,
+            // 2) Show a circular indicator only on the final spot
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, barData, index) {
+                // Show a dot painter only for the last spot
+                if (index == barData.spots.length - 1) {
+                  return FlDotCirclePainter(
+                    radius: 6,
+                    color: barData.color ?? const Color(0xFF50C878),
+                    strokeWidth: 2,
+                    strokeColor: Colors.white,
+                  );
+                }
+                // Hide (or make transparent) dots for other spots
+                return FlDotCirclePainter(radius: 0);
+              },
+            ),
+            belowBarData: BarAreaData(
+              show: true,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(0xFF50C878).withOpacity(1.0),
+                  const Color(0xFF50C878).withOpacity(0.0),
                 ],
               ),
             ),

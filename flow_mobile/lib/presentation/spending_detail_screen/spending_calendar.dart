@@ -122,6 +122,7 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Inter',
+                          fontWeight: FontWeight.w900,
                           color: Color(0xFF000000).withValues(
                             alpha: date.isAfter(DateTime.now()) ? 0.3 : 1.0,
                           ),
@@ -132,9 +133,9 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                       date.isAfter(DateTime.now())
                           ? ""
                           : calendarCellState.income > 0
-                          ? "+\$${calendarCellState.income.toStringAsFixed(2)}"
+                          ? "+${calendarCellState.income.toStringAsFixed(2)}"
                           : calendarCellState.expense < 0
-                          ? "\$${calendarCellState.expense.toStringAsFixed(2)}"
+                          ? calendarCellState.expense.toStringAsFixed(2)
                           : "",
                       style: TextStyle(
                         fontFamily: 'Inter',
@@ -152,7 +153,7 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                       date.isAfter(DateTime.now()) ||
                               (calendarCellState.income == 0)
                           ? ""
-                          : "\$${calendarCellState.expense.toStringAsFixed(2)}",
+                          : calendarCellState.expense.toStringAsFixed(2),
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         color: Color(0xFF757575),

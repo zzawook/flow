@@ -10,7 +10,7 @@ class WeeklySpendingData {
       DateTime.now().day,
     );
 
-    DateTime sevenDaysAgo = DateTime(
+    DateTime aWeekAgo = DateTime(
       today.year,
       today.month,
       today.day - 7,
@@ -18,9 +18,9 @@ class WeeklySpendingData {
 
     weeklySpendingData = { for (var date in List.generate(7, (index) {
       DateTime date = DateTime(
-        sevenDaysAgo.year,
-        sevenDaysAgo.month,
-        sevenDaysAgo.day + index,
+          aWeekAgo.year,
+          aWeekAgo.month,
+          aWeekAgo.day + index + 1,
       );
       return date;
       })) date : {'income': 0.0, 'expense': 0.0} };

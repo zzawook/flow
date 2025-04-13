@@ -5,6 +5,8 @@
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -86,7 +88,13 @@ class AccountRow extends StatelessWidget {
             StoreProvider.of<FlowState>(
               context,
             ).dispatch(SelectFromBankAccountAction(bankAccount));
-            Navigator.pushNamed(context, '/transfer/to');
+            Navigator.pushNamed(
+              context,
+              '/transfer/to',
+              arguments: CustomPageRouteArguments(
+                transitionType: TransitionType.slideLeft,
+              ),
+            );
           },
           child: Container(
             padding: EdgeInsets.all(8),

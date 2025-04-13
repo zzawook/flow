@@ -1,3 +1,5 @@
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/presentation/home_screen/components/accounts_card/account_card.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
@@ -38,7 +40,13 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: () {
-                Navigator.pushNamed(context, "/refresh");
+                Navigator.pushNamed(
+                  context,
+                  "/refresh",
+                  arguments: CustomPageRouteArguments(
+                    transitionType: TransitionType.slideTop,
+                  ),
+                );
                 return Future.delayed(const Duration(microseconds: 1));
               },
               child: SingleChildScrollView(

@@ -58,7 +58,9 @@ class PieChartScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 24, right: 24),
                           child: SpendingGraphTopBar(),
                         ),
-                        const FlowSeparatorBox(height: 24),
+                        const FlowSeparatorBox(
+                          height: 24 + 36,
+                        ), // Add size of badge in piechart
                         PieChartSections(sortedCategories: sortedCategories),
                         const FlowSeparatorBox(height: 24),
                         SpendingList(sortedCategories: sortedCategories),

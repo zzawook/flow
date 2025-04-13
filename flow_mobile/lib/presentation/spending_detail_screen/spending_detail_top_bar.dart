@@ -22,7 +22,7 @@ class SpendingDetailTopBar extends StatelessWidget {
       children: [
         FlowButton(
           onPressed: () {
-            Navigator.pushNamed(context, previousScreenRoute);
+            Navigator.pop(context);
           },
           child: Image.asset(
             'assets/icons/previous.png',

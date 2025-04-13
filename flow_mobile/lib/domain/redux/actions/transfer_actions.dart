@@ -7,10 +7,10 @@ class SelectFromBankAccountAction {
   SelectFromBankAccountAction(this.bankAccount);
 }
 
-class SelectToBankAccountAction {
-  final TransferReceivable bankAccount;
+class SelectTransferRecipientAction {
+  final TransferReceivable transferReceivable;
 
-  SelectToBankAccountAction(this.bankAccount);
+  SelectTransferRecipientAction(this.transferReceivable);
 }
 
 class SelectNetworkAction {

@@ -5,16 +5,16 @@ TransferState transferReducer(TransferState state, dynamic action) {
   if (action is SelectFromBankAccountAction) {
     return TransferState(
       fromAccount: action.bankAccount,
-      toAccount: state.toAccount,
+      receiving: state.receiving,
       amount: state.amount,
       remarks: state.remarks,
       network: state.network,
     );
   }
-  if (action is SelectFromBankAccountAction) {
+  if (action is SelectTransferRecipientAction) {
     return TransferState(
-      fromAccount: action.bankAccount,
-      toAccount: state.toAccount,
+      fromAccount: state.fromAccount,
+      receiving: action.transferReceivable,
       amount: state.amount,
       remarks: state.remarks,
       network: state.network,
@@ -23,7 +23,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
   if (action is SelectNetworkAction) {
     return TransferState(
       fromAccount: state.fromAccount,
-      toAccount: state.toAccount,
+      receiving: state.receiving,
       amount: state.amount,
       remarks: state.remarks,
       network: action.network,
@@ -32,7 +32,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
   if (action is EnterAmountAction) {
     return TransferState(
       fromAccount: state.fromAccount,
-      toAccount: state.toAccount,
+      receiving: state.receiving,
       amount: action.amount,
       remarks: state.remarks,
       network: state.network,
@@ -41,7 +41,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
   if (action is CustomizeRemarksAction) {
     return TransferState(
       fromAccount: state.fromAccount,
-      toAccount: state.toAccount,
+      receiving: state.receiving,
       amount: state.amount,
       remarks: action.remarks,
       network: state.network,

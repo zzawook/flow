@@ -1,20 +1,22 @@
 import 'package:flow_mobile/domain/entities/transfer_receivable.dart';
 import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class ToAccountsListWidget extends StatelessWidget {
-  final List<TransferReceivable> accounts;
-  const ToAccountsListWidget({super.key, required this.accounts});
+  final List<TransferReceivable> transferReceivables;
+  const ToAccountsListWidget({super.key, required this.transferReceivables});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children:
-          accounts.map((bankAccount) {
-            return ToAccountRow(transferReceivable: bankAccount);
+          transferReceivables.map((transferReceivable) {
+            return ToAccountRow(transferReceivable: transferReceivable);
           }).toList(),
     );
   }
@@ -31,7 +33,14 @@ class ToAccountRow extends StatelessWidget {
       onPressed: () {
         StoreProvider.of<FlowState>(
           context,
-        ).dispatch(SelectToBankAccountAction(transferReceivable));
+        ).dispatch(SelectTransferRecipientAction(transferReceivable));
+        Navigator.pushNamed(
+          context,
+          '/transfer/amount',
+          arguments: CustomPageRouteArguments(
+            transitionType: TransitionType.slideLeft,
+          ),
+        );
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
@@ -45,12 +54,19 @@ class ToAccountRow extends StatelessWidget {
             Container(
               width: 45,
               height: 45,
-              decoration: const BoxDecoration(
+              decoration:
+                  transferReceivable.isPayNow
+                      ? null
+                      : BoxDecoration(
                 color: Color(0xFFBDBDBD),
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
-              child: Image.asset(transferReceivable.bank.logoPath),
+              child: Image.asset(
+                transferReceivable.isPayNow
+                    ? "assets/bank_logos/paynow.png"
+                    : transferReceivable.bank.logoPath,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -63,11 +79,14 @@ class ToAccountRow extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 16,
                       color: Color(0xFF000000),
+                      fontWeight: FontWeight.w500
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    transferReceivable.bank.name,
+                    transferReceivable.isPayNow
+                        ? '${transferReceivable.identifier} (PayNow)'
+                        : '${transferReceivable.bank.name} - ${transferReceivable.identifier}',
                     style: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 12,

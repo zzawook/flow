@@ -69,7 +69,7 @@ class TransactionList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: TransactionItem(
                 name: transaction.name,
-                amount: transaction.amount.toStringAsFixed(2),
+                amount: transaction.amount,
                 category: transaction.category,
                 color: Color(0xFF000000),
                 incomeColor:

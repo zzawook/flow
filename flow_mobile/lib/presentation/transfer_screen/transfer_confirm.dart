@@ -1,3 +1,5 @@
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_cta_button.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
@@ -5,6 +7,7 @@ import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_top_bar.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:local_auth/local_auth.dart';
 
 /// The Transfer Confirmation screen using only WidgetsApp-compatible widgets.
 class TransferConfirmationScreen extends StatelessWidget {
@@ -82,7 +85,7 @@ class TransferConfirmationScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                transferState.toAccount.accountHolder,
+                                transferState.receiving.name,
                                 style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 28,
@@ -188,8 +191,20 @@ class TransferConfirmationScreen extends StatelessWidget {
                     ),
                     child: FlowCTAButton(
                       text: "Transfer",
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/transfer/result');
+                      onPressed: () async {
+                        bool authenticated =
+                            await _authenticateUsingLocalAuth();
+                        if (!authenticated) {
+                          print("Auth unsuccessful");
+                          return;
+                        }
+                        Navigator.pushNamed(
+                          context,
+                          '/transfer/result',
+                          arguments: CustomPageRouteArguments(
+                            transitionType: TransitionType.slideLeft,
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -198,5 +213,47 @@ class TransferConfirmationScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<bool> _authenticateUsingLocalAuth() async {
+    final LocalAuthentication auth = LocalAuthentication();
+
+    bool isDeviceSupported = false;
+    try {
+      isDeviceSupported = await auth.isDeviceSupported();
+    } catch (e) {
+      print('Error checking biometrics: $e');
+      return false;
+    }
+    if (!isDeviceSupported) {
+      print('No biometrics available');
+      return false;
+    }
+
+    List<BiometricType> availableBiometrics = [];
+    try {
+      availableBiometrics = await auth.getAvailableBiometrics();
+    } catch (e) {
+      print('Error getting available biometrics: $e');
+      return false;
+    }
+    if (availableBiometrics.isEmpty) {
+      print('No biometrics available');
+      // return false;
+      return true;
+    }
+    try {
+      return await auth.authenticate(
+        localizedReason: 'Authenticate to transfer',
+        options: const AuthenticationOptions(
+          useErrorDialogs: true,
+          stickyAuth: true,
+          biometricOnly: false,
+        ),
+      );
+    } catch (e) {
+      print('Error during authentication: $e');
+      return false;
+    }
   }
 }

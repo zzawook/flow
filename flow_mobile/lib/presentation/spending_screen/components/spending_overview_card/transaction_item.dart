@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 /// Individual Transaction Item
 class TransactionItem extends StatelessWidget {
   final String name;
-  final String amount;
+  final double amount;
   final String category;
   final Color color;
   final Color incomeColor;
@@ -42,12 +42,12 @@ class TransactionItem extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.only(bottom: 4),
                       child: Text(
-                        amount,
+                        "${amount < 0 ? '-' : '+'}${amount.abs().toStringAsFixed(2)}",
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: double.parse(amount) > 0 ? incomeColor : color,
+                          color: amount > 0 ? incomeColor : color,
                         ),
                       ),
                     ),

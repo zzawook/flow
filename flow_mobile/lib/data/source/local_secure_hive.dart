@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flow_mobile/data/source/local_secure_storage.dart';
 import 'package:flow_mobile/domain/entities/bank.dart';
 import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entities/paynow_recipient.dart';
 import 'package:flow_mobile/domain/entities/setting.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/entities/user.dart';
@@ -33,18 +34,7 @@ class SecureHive {
     Hive.registerAdapter(BankAccountAdapter());
     Hive.registerAdapter(BankAdapter());
     Hive.registerAdapter(TransactionAdapter());
-
-    // Test Transaction data
-    Box<dynamic> box = await Hive.openBox(
-      'secureBox',
-      encryptionCipher: HiveAesCipher(secureKey!),
-    );
-    await box.put('monthlyBalance', {
-      'income': 4300.00,
-      'card': 732.12,
-      'transfer': 1000.00,
-      'other': 1002.23,
-    });
+    Hive.registerAdapter(PayNowRecipientAdapter());
 
     return true;
   }

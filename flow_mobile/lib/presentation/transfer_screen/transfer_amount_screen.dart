@@ -1,3 +1,5 @@
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
@@ -21,7 +23,13 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
     StoreProvider.of<FlowState>(
       context,
     ).dispatch(EnterAmountAction(_amount));
-    Navigator.pushNamed(context, '/transfer/confirm');
+    Navigator.pushNamed(
+      context,
+      '/transfer/confirm',
+      arguments: CustomPageRouteArguments(
+        transitionType: TransitionType.slideLeft,
+      ),
+    );
   }
 
   /// Returns a string like "0.00" or "123.45" for display.
@@ -224,7 +232,13 @@ class CancelButton extends StatelessWidget {
     return Expanded(
       child: FlowButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/transfer');
+          Navigator.pushNamed(
+            context,
+            '/transfer',
+            arguments: CustomPageRouteArguments(
+              transitionType: TransitionType.slideLeft,
+            ),
+          );
         },
         child: Container(
           height: 60,

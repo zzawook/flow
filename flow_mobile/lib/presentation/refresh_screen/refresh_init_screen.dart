@@ -2,6 +2,8 @@ import 'package:flow_mobile/domain/entities/bank.dart';
 import 'package:flow_mobile/domain/redux/actions/refresh_screen_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/refresh_screen/bank_tile.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
@@ -181,7 +183,13 @@ class _RefreshInitScreenContainerState
                       .isEmpty) {
                     return;
                   }
-                  Navigator.pushNamed(context, "/refresh/");
+                  Navigator.pushNamed(
+                    context,
+                    "/refresh/",
+                    arguments: CustomPageRouteArguments(
+                      transitionType: TransitionType.slideTop,
+                    ),
+                  );
                   StoreProvider.of<FlowState>(context).dispatch(
                     InitSelectedBankAction(
                       newBankDatas

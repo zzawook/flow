@@ -1,8 +1,89 @@
 import 'package:flow_mobile/data/repository/transaction_repository.dart';
+import 'package:flow_mobile/data/repository/transfer_receiveble_repository.dart';
+import 'package:flow_mobile/domain/entities/bank.dart';
+import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entities/paynow_recipient.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
 
 class Bootstrap {
-  static void populateTransactionStateWithTestData(
+  static void populateTransferReceiableStateWithTestData(
+    TransferReceivebleRepository transferReceivableRepository,
+  ) async {
+    await transferReceivableRepository.addTransferReceivable(
+      PayNowRecipient(
+        name: "Jaebum Cho",
+        phoneNumer: "12345678",
+        idNumber: "null",
+        bank: Bank.initial(),
+        transferCount: 10,
+      ),
+    );
+
+    await transferReceivableRepository.addTransferReceivable(
+      PayNowRecipient(
+        name: "Woojin Jeon",
+        phoneNumer: "23456789",
+        idNumber: "null",
+        bank: Bank.initial(),
+        transferCount: 4,
+      ),
+    );
+
+    await transferReceivableRepository.addTransferReceivable(
+      PayNowRecipient(
+        name: "Hyeonsung Kim",
+        phoneNumer: "34567890",
+        idNumber: "null",
+        bank: Bank.initial(),
+        transferCount: 18,
+      ),
+    );
+
+    await transferReceivableRepository.addTransferReceivable(
+      PayNowRecipient(
+        name: "Park Jongeun",
+        phoneNumer: "82008109",
+        idNumber: "null",
+        bank: Bank.initial(),
+        transferCount: 3,
+      ),
+    );
+
+    await transferReceivableRepository.addTransferReceivable(
+      BankAccount(
+        id: "120912384238",
+        accountNumber: "120912384238",
+        accountHolder: "Park Jongeun",
+        accountName: "Park Jongeun",
+        bank: Bank(name: "OCBC", logoPath: "assets/bank_logos/OCBC.png"),
+        transferCount: 2,
+      ),
+    );
+
+    await transferReceivableRepository.addTransferReceivable(
+      BankAccount(
+        id: "1209987654",
+        accountNumber: "1209987654",
+        accountHolder: "Choi Minseok",
+        accountName: "Choi Minseok",
+        bank: Bank(name: "DBS", logoPath: "assets/bank_logos/DBS.png"),
+        transferCount: 2,
+      ),
+    );
+
+    await transferReceivableRepository.addTransferReceivable(
+      BankAccount(
+        id: "120934567562",
+        accountNumber: "120934567562",
+        accountHolder: "Jeon Seungbin",
+        accountName: "Jeon Seungbin",
+        bank: Bank(name: "UOB", logoPath: "assets/bank_logos/UOB.png"),
+        transferCount: 2,
+      ),
+    );
+  }
+
+  static Future<bool> populateTransactionRepositoryWithTestData(
     TransactionRepository transactionRepository,
   ) async {
     // ==============================
@@ -2064,5 +2145,7 @@ class Bootstrap {
         note: '',
       ),
     );
+
+    return true;
   }
 }

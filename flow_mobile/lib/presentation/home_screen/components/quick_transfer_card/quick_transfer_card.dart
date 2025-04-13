@@ -2,6 +2,8 @@
 /*                           QuickTransferSection                             */
 /* -------------------------------------------------------------------------- */
 
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
 
@@ -14,7 +16,13 @@ class QuickTransferCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlowButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/transfer');
+        Navigator.pushNamed(
+          context,
+          '/transfer',
+          arguments: CustomPageRouteArguments(
+            transitionType: TransitionType.slideLeft,
+          ),
+        );
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 25, horizontal: 24),

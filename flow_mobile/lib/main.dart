@@ -8,17 +8,22 @@ import 'package:flow_mobile/data/repository/setting_repository.dart';
 import 'package:flow_mobile/data/repository/setting_repository_impl.dart';
 import 'package:flow_mobile/data/repository/transaction_repository.dart';
 import 'package:flow_mobile/data/repository/transaction_repository_impl.dart';
+import 'package:flow_mobile/data/repository/transfer_receiveble_repository.dart';
+import 'package:flow_mobile/data/repository/transfer_receiveble_repository_impl.dart';
 import 'package:flow_mobile/data/repository/user_repository.dart';
 import 'package:flow_mobile/data/repository/user_repository_impl.dart';
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/entities/setting.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/entities/transfer_receivable.dart';
 import 'package:flow_mobile/domain/entities/user.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
+import 'package:flow_mobile/domain/redux/states/notification_state.dart';
 import 'package:flow_mobile/domain/redux/states/screen_state.dart';
 import 'package:flow_mobile/domain/redux/states/setting_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/domain/redux/states/transfer_receivable_state.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/domain/redux/states/user_state.dart';
 import 'package:flow_mobile/domain/redux/store.dart';
@@ -88,18 +93,22 @@ Future<bool> initializeRepositories() async {
   await SettingRepositoryImpl.getInstance();
   await UserRepositoryImpl.getInstance();
   await TransactionRepositoryImpl.getInstance();
+  await TransferReceivebleRepositoryImpl.getInstance();
 
   return true;
 }
 
 Future<FlowState> initializeFlowState() async {
+  BankAccountState bankAccountState = await getBankAccountState();
   return FlowState(
     transferState: TransferState.initial(),
     userState: await getUserState(),
     settingsState: await getSettingState(),
     screenState: ScreenState.initial(),
-    bankAccountState: await getBankAccountState(),
+    bankAccountState: bankAccountState,
     transactionState: await getTransactionState(),
+    transferReceivableState: await getTransferReceivableState(bankAccountState),
+    notificationState: NotificationState.initial(),
   );
 }
 
@@ -138,13 +147,39 @@ Future<TransactionState> getTransactionState() async {
   return TransactionState(transactions: transactions);
 }
 
+Future<TransferReceivableState> getTransferReceivableState(
+  BankAccountState bankAccountState,
+) async {
+  TransferReceivebleRepository transferReceivableRepository =
+      await TransferReceivebleRepositoryImpl.getInstance();
+  List<TransferReceivable> transferReceivables =
+      await transferReceivableRepository.getTransferReceivables();
+  List<BankAccount> myBankAccounts = bankAccountState.bankAccounts;
+  return TransferReceivableState(
+    transferReceivables: transferReceivables,
+    myBankAccounts: myBankAccounts,
+  );
+}
+
 Future<bool> bootstrapHiveWithTestData() async {
   bootstrapUserData();
   bootstrapBankAccountData();
   bootstrapSettingData();
-  bootstrapTransactionData();
+  bootstrapTransferReceivableData();
+  bool success = await bootstrapTransactionData();
 
-  return true;
+  return success;
+}
+
+void bootstrapTransferReceivableData() async {
+  TransferReceivebleRepository transferReceivableRepository =
+      await TransferReceivebleRepositoryImpl.getInstance();
+
+  await transferReceivableRepository.clearTransferReceivables();
+
+  Bootstrap.populateTransferReceiableStateWithTestData(
+    transferReceivableRepository,
+  );
 }
 
 void bootstrapUserData() async {
@@ -175,6 +210,7 @@ void bootstrapBankAccountData() async {
       accountHolder: 'Kim Jae Hyeok',
       accountName: 'Savings Account',
       bank: await bankRepository.getBank('DBS'),
+      transferCount: 0,
     ),
   );
 
@@ -186,6 +222,7 @@ void bootstrapBankAccountData() async {
       accountHolder: 'Kim Jae Hyeok',
       accountName: 'Savings Account',
       bank: await bankRepository.getBank('UOB'),
+      transferCount: 0,
     ),
   );
 
@@ -197,6 +234,7 @@ void bootstrapBankAccountData() async {
       accountHolder: 'Kim Jae Hyeok',
       accountName: 'Savings Account',
       bank: await bankRepository.getBank('Maybank'),
+      transferCount: 0,
     ),
   );
 }
@@ -211,10 +249,13 @@ void bootstrapSettingData() async {
   settingRepository.setNotification(true);
 }
 
-void bootstrapTransactionData() async {
+Future<bool> bootstrapTransactionData() async {
   TransactionRepository transactionRepository =
       await TransactionRepositoryImpl.getInstance();
 
   await transactionRepository.clearTransactions();
-  Bootstrap.populateTransactionStateWithTestData(transactionRepository);
+  bool success = await Bootstrap.populateTransactionRepositoryWithTestData(
+    transactionRepository,
+  );
+  return success;
 }

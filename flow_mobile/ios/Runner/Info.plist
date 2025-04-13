@@ -47,5 +47,11 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSContactsUsageDescription</key>  
+		<string>This app requires contacts access to load PayNow contacts.</string>
+		<key>NSFaceIDUsageDescription</key>
+		<string>This app uses Face ID to authenticate your identity on transaction.</string>
+		<key>NSBiometricsUsageDescription</key>
+		<string>This app uses biometric authentication to secure your data and transactions.</string>
 	</dict>
 </plist>

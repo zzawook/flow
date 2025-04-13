@@ -35,7 +35,7 @@ class TransactionsList extends StatelessWidget {
                 transactions.map((tx) {
                   return TransactionItem(
                     name: tx.name,
-                    amount: tx.amount.toStringAsFixed(2),
+                    amount: tx.amount,
                     category: tx.category,
                     color: Color(0xFFEB5757),
                     incomeColor: Color(0xFF50C878),

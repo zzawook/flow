@@ -9,7 +9,8 @@ class AccountLayoutWidget extends StatelessWidget {
   final TextEditingController selectBankController;
   final FocusNode selectBankFocus;
   final List<BankAccount> myAccounts;
-  final List<BankAccount> recent;
+  final List<BankAccount> recommended;
+
   const AccountLayoutWidget({
     super.key,
     required this.accountNumberController,
@@ -17,7 +18,7 @@ class AccountLayoutWidget extends StatelessWidget {
     required this.selectBankController,
     required this.selectBankFocus,
     required this.myAccounts,
-    required this.recent,
+    required this.recommended,
   });
 
   @override
@@ -53,7 +54,7 @@ class AccountLayoutWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ToAccountsListWidget(accounts: myAccounts),
+          ToAccountsListWidget(transferReceivables: myAccounts),
           const SizedBox(height: 16),
           const Text(
             "Recommended",
@@ -65,7 +66,7 @@ class AccountLayoutWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ToAccountsListWidget(accounts: recent),
+          ToAccountsListWidget(transferReceivables: recommended),
         ],
       ),
     );

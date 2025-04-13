@@ -1,5 +1,7 @@
 import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/spending/spending_header.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/insight_sentences/spending_compareto_last_month_insight.dart';
@@ -75,7 +77,13 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
 
           FlowButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/spending/detail');
+              Navigator.pushNamed(
+                context,
+                '/spending/detail',
+                arguments: CustomPageRouteArguments(
+                  transitionType: TransitionType.slideLeft,
+                ),
+              );
             },
             child: Container(
               padding: const EdgeInsets.only(top: 15, bottom: 15),

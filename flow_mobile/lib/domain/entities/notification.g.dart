@@ -1,47 +1,50 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction.dart';
+part of 'notification.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionAdapter extends TypeAdapter<Transaction> {
+class NotificationAdapter extends TypeAdapter<Notification> {
   @override
-  final int typeId = 4;
+  final int typeId = 6;
 
   @override
-  Transaction read(BinaryReader reader) {
+  Notification read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Transaction(
-      name: fields[0] as String,
-      amount: fields[1] as double,
-      category: fields[2] as String,
-      date: fields[3] as DateTime,
-      method: fields[4] as String,
-      note: fields[5] as String,
+    return Notification(
+      id: fields[0] as String,
+      title: fields[1] as String,
+      body: fields[2] as String,
+      imageUrl: fields[3] as String?,
+      action: fields[4] as String?,
+      createdAt: fields[5] as DateTime,
+      isChecked: fields[6] as bool,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Transaction obj) {
+  void write(BinaryWriter writer, Notification obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.amount)
+      ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.category)
+      ..write(obj.body)
       ..writeByte(3)
-      ..write(obj.date)
+      ..write(obj.imageUrl)
       ..writeByte(4)
-      ..write(obj.method)
+      ..write(obj.action)
       ..writeByte(5)
-      ..write(obj.note);
+      ..write(obj.createdAt)
+      ..writeByte(6)
+      ..write(obj.isChecked);
   }
 
   @override
@@ -50,7 +53,7 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TransactionAdapter &&
+      other is NotificationAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

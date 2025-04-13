@@ -1,3 +1,5 @@
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_cta_button.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
@@ -70,7 +72,7 @@ class TransferResultScreen extends StatelessWidget {
                               converter: (store) => store.state.transferState,
                               builder:
                                   (context, transferState) => Text(
-                                    '\$${(transferState.amount / 100).toStringAsFixed(2)} to ${transferState.toAccount.accountHolder}',
+                                    '\$${(transferState.amount / 100).toStringAsFixed(2)} to ${transferState.receiving.name}',
                                     style: TextStyle(
                                       fontFamily: 'Inter',
                                       fontSize: 28,
@@ -115,7 +117,13 @@ class TransferResultScreen extends StatelessWidget {
                         child: FlowCTAButton(
                           text: "OK",
                           onPressed: () {
-                            Navigator.pushNamed(context, '/home');
+                            Navigator.pushNamed(
+                              context,
+                              '/home',
+                              arguments: CustomPageRouteArguments(
+                                transitionType: TransitionType.slideLeft,
+                              ),
+                            );
                           },
                         ),
                       ),

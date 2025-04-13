@@ -1,6 +1,8 @@
 import 'package:flow_mobile/domain/redux/actions/screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_init_screen.dart';
 import 'package:flow_mobile/presentation/spending_detail_screen/spending_detail_screen.dart';
 import 'package:flow_mobile/presentation/spending_graph_screen/pie_chart_screen.dart';
@@ -71,15 +73,79 @@ class FlowAppState extends State<FlowApp> {
               case '/transfer/result':
                 page = TransferResultScreen();
                 break;
+              case '/notification':
+                page = FlowHomeScreen();
+                break;
               case '/refresh':
                 page = RefreshInitScreen();
                 break;
               default:
                 page = FlowHomeScreen();
             }
+
+            // Read the custom arguments if any.
+            final args = settings.arguments as CustomPageRouteArguments?;
+            // Use a default transition if none is passed.
+            final transition = args?.transitionType ?? TransitionType.slideLeft;
+
             return PageRouteBuilder(
               settings: settings,
+              transitionDuration:
+                  (transition == TransitionType.slideRight ||
+                          transition == TransitionType.slideLeft)
+                      ? Duration(milliseconds: 150)
+                      : Duration(milliseconds: 300),
               pageBuilder: (context, animation, secondaryAnimation) => page,
+              transitionsBuilder: (
+                context,
+                animation,
+                secondaryAnimation,
+                child,
+              ) {
+                // Choose the transition effect based on the argument.
+                switch (transition) {
+                  case TransitionType.slideLeft:
+                    // Slide in from the right side (moves leftward to center)
+                    final tween = Tween(
+                      begin: const Offset(1.0, 0.0),
+                      end: Offset.zero,
+                    ).chain(CurveTween(curve: Curves.easeInOut));
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  case TransitionType.slideRight:
+                    // Slide in from the left side (moves rightward to center)
+                    final tween = Tween(
+                      begin: const Offset(-1.0, 0.0),
+                      end: Offset.zero,
+                    ).chain(CurveTween(curve: Curves.easeInOut));
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  case TransitionType.slideTop:
+                    // Slide in from the top (moves downward to center)
+                    final tween = Tween(
+                      begin: const Offset(0.0, -1.0),
+                      end: Offset.zero,
+                    ).chain(CurveTween(curve: Curves.easeInOut));
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  case TransitionType.slideBottom:
+                    // Slide in from the bottom (moves upward to center)
+                    final tween = Tween(
+                      begin: const Offset(0.0, 1.0),
+                      end: Offset.zero,
+                    ).chain(CurveTween(curve: Curves.easeInOut));
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                }
+              },
             );
           },
         ),

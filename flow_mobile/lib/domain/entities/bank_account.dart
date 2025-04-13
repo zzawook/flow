@@ -5,7 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 part 'bank_account.g.dart';
 
 @HiveType(typeId: 2)
-class BankAccount extends TransferReceivable{
+class BankAccount extends TransferReceivable {
   @HiveField(0)
   final String id;
 
@@ -22,7 +22,12 @@ class BankAccount extends TransferReceivable{
   final String accountName;
 
   @HiveField(5)
+  @override
   final Bank bank;
+
+  @HiveField(6)
+  @override
+  final int transferCount;
 
   BankAccount({
     required this.id,
@@ -31,6 +36,7 @@ class BankAccount extends TransferReceivable{
     this.balance = 0.0,
     required this.accountName,
     required this.bank,
+    required this.transferCount,
   });
 
   factory BankAccount.initial() => BankAccount(
@@ -40,23 +46,24 @@ class BankAccount extends TransferReceivable{
     balance: 0.0,
     accountName: 'My Savings Account',
     bank: Bank.initial(),
+    transferCount: 0
   );
-  
+
   @override
   String get identifier {
     return accountNumber;
   }
-  
+
   @override
   bool get isAccount {
     return true;
   }
-  
+
   @override
   bool get isPayNow {
     return false;
   }
-  
+
   @override
   String get name {
     return accountName;

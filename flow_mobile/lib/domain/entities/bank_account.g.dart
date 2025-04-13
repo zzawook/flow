@@ -23,13 +23,14 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
       balance: fields[3] as double,
       accountName: fields[4] as String,
       bank: fields[5] as Bank,
+      transferCount: fields[6] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, BankAccount obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
       ..writeByte(4)
       ..write(obj.accountName)
       ..writeByte(5)
-      ..write(obj.bank);
+      ..write(obj.bank)
+      ..writeByte(6)
+      ..write(obj.transferCount);
   }
 
   @override
