@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flow_mobile/data/source/local_secure_storage.dart';
 import 'package:flow_mobile/domain/entities/bank.dart';
 import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entities/notification.dart';
 import 'package:flow_mobile/domain/entities/paynow_recipient.dart';
 import 'package:flow_mobile/domain/entities/setting.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
@@ -35,6 +36,7 @@ class SecureHive {
     Hive.registerAdapter(BankAdapter());
     Hive.registerAdapter(TransactionAdapter());
     Hive.registerAdapter(PayNowRecipientAdapter());
+    Hive.registerAdapter(NotificationAdapter());
 
     return true;
   }

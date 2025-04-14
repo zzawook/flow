@@ -3,6 +3,7 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/presentation/notification/notification_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_init_screen.dart';
 import 'package:flow_mobile/presentation/spending_detail_screen/spending_detail_screen.dart';
 import 'package:flow_mobile/presentation/spending_graph_screen/pie_chart_screen.dart';
@@ -74,7 +75,7 @@ class FlowAppState extends State<FlowApp> {
                 page = TransferResultScreen();
                 break;
               case '/notification':
-                page = FlowHomeScreen();
+                page = NotificationScreen();
                 break;
               case '/refresh':
                 page = RefreshInitScreen();
@@ -90,11 +91,7 @@ class FlowAppState extends State<FlowApp> {
 
             return PageRouteBuilder(
               settings: settings,
-              transitionDuration:
-                  (transition == TransitionType.slideRight ||
-                          transition == TransitionType.slideLeft)
-                      ? Duration(milliseconds: 150)
-                      : Duration(milliseconds: 300),
+              transitionDuration: Duration(milliseconds: 150),
               pageBuilder: (context, animation, secondaryAnimation) => page,
               transitionsBuilder: (
                 context,

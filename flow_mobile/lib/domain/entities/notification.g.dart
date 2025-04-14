@@ -17,7 +17,7 @@ class NotificationAdapter extends TypeAdapter<Notification> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Notification(
-      id: fields[0] as String,
+      id: fields[0] as int,
       title: fields[1] as String,
       body: fields[2] as String,
       imageUrl: fields[3] as String?,

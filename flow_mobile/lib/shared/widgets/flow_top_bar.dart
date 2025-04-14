@@ -19,7 +19,15 @@ class FlowTopBar extends StatelessWidget {
         children: [
           Image.asset('assets/FLOW.png', height: 80, width: 80),
           GestureDetector(
-            onTap: onNotificationTap,
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/notification',
+                arguments: CustomPageRouteArguments(
+                  transitionType: TransitionType.slideBottom,
+                ),
+              );
+            },
             child: Stack(
               alignment: Alignment.center,
               children: [

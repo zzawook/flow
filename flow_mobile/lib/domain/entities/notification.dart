@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'notification.g.dart';
@@ -5,7 +7,7 @@ part 'notification.g.dart';
 @HiveType(typeId: 6)
 class Notification {
   @HiveField(0)
-  final String id;
+  final int id;
 
   @HiveField(1)
   final String title;
@@ -36,7 +38,7 @@ class Notification {
   });
 
   Notification copyWith({
-    String? id,
+    int? id,
     String? title,
     String? body,
     String? imageUrl,

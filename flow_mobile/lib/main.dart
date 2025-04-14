@@ -4,6 +4,8 @@ import 'package:flow_mobile/data/repository/bank_account_repository.dart';
 import 'package:flow_mobile/data/repository/bank_account_repository_impl.dart';
 import 'package:flow_mobile/data/repository/bank_repository.dart';
 import 'package:flow_mobile/data/repository/bank_repository_impl.dart';
+import 'package:flow_mobile/data/repository/notification_repository.dart';
+import 'package:flow_mobile/data/repository/notification_repository_impl.dart';
 import 'package:flow_mobile/data/repository/setting_repository.dart';
 import 'package:flow_mobile/data/repository/setting_repository_impl.dart';
 import 'package:flow_mobile/data/repository/transaction_repository.dart';
@@ -13,6 +15,7 @@ import 'package:flow_mobile/data/repository/transfer_receiveble_repository_impl.
 import 'package:flow_mobile/data/repository/user_repository.dart';
 import 'package:flow_mobile/data/repository/user_repository_impl.dart';
 import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entities/notification.dart';
 import 'package:flow_mobile/domain/entities/setting.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/entities/transfer_receivable.dart';
@@ -31,7 +34,7 @@ import 'package:flow_mobile/flow_app.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'data/source/local_secure_hive.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Notification;
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -94,6 +97,7 @@ Future<bool> initializeRepositories() async {
   await UserRepositoryImpl.getInstance();
   await TransactionRepositoryImpl.getInstance();
   await TransferReceivebleRepositoryImpl.getInstance();
+  await NotificationRepositoryImpl.getInstance();
 
   return true;
 }
@@ -108,7 +112,7 @@ Future<FlowState> initializeFlowState() async {
     bankAccountState: bankAccountState,
     transactionState: await getTransactionState(),
     transferReceivableState: await getTransferReceivableState(bankAccountState),
-    notificationState: NotificationState.initial(),
+    notificationState: await getNotificationState(),
   );
 }
 
@@ -161,14 +165,24 @@ Future<TransferReceivableState> getTransferReceivableState(
   );
 }
 
+Future<NotificationState> getNotificationState() async {
+  NotificationRepository notificationRepository =
+      await NotificationRepositoryImpl.getInstance();
+
+  List<Notification> notifications =
+      await notificationRepository.getNotifications();
+  return NotificationState(notifications: notifications);
+}
+
 Future<bool> bootstrapHiveWithTestData() async {
   bootstrapUserData();
   bootstrapBankAccountData();
   bootstrapSettingData();
   bootstrapTransferReceivableData();
-  bool success = await bootstrapTransactionData();
+  bool transactionBootstrapSuccess = await bootstrapTransactionData();
+  bool notificationBootstrapSuccess = await bootstrapNotificationData();
 
-  return success;
+  return transactionBootstrapSuccess && notificationBootstrapSuccess;
 }
 
 void bootstrapTransferReceivableData() async {
@@ -177,8 +191,19 @@ void bootstrapTransferReceivableData() async {
 
   await transferReceivableRepository.clearTransferReceivables();
 
-  Bootstrap.populateTransferReceiableStateWithTestData(
+  Bootstrap.populateTransferReceiableRepositoryWithTestData(
     transferReceivableRepository,
+  );
+}
+
+Future<bool> bootstrapNotificationData() async {
+  NotificationRepository notificationRepository =
+      await NotificationRepositoryImpl.getInstance();
+
+  await notificationRepository.clearNotifications();
+
+  return Bootstrap.populateNotificationRepositoryWithTestData(
+    notificationRepository,
   );
 }
 
@@ -202,7 +227,7 @@ void bootstrapBankAccountData() async {
 
   await bankAccountRepository.clearBankAccounts();
 
-  bankAccountRepository.createBankAccount(
+  await bankAccountRepository.createBankAccount(
     BankAccount(
       accountNumber: '1234567890',
       balance: 1000,
@@ -214,7 +239,7 @@ void bootstrapBankAccountData() async {
     ),
   );
 
-  bankAccountRepository.createBankAccount(
+  await bankAccountRepository.createBankAccount(
     BankAccount(
       accountNumber: '23456788901',
       balance: 505.1,
@@ -226,7 +251,7 @@ void bootstrapBankAccountData() async {
     ),
   );
 
-  bankAccountRepository.createBankAccount(
+  await bankAccountRepository.createBankAccount(
     BankAccount(
       accountNumber: '3456789012',
       balance: 249.11,

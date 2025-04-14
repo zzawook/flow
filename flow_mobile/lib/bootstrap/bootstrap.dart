@@ -1,12 +1,122 @@
+import 'package:flow_mobile/data/repository/notification_repository.dart';
 import 'package:flow_mobile/data/repository/transaction_repository.dart';
 import 'package:flow_mobile/data/repository/transfer_receiveble_repository.dart';
 import 'package:flow_mobile/domain/entities/bank.dart';
 import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entities/notification.dart';
 import 'package:flow_mobile/domain/entities/paynow_recipient.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
 
 class Bootstrap {
-  static void populateTransferReceiableStateWithTestData(
+  static Future<bool> populateNotificationRepositoryWithTestData(
+    NotificationRepository notificationRepository,
+  ) async {
+    await notificationRepository.addNotification(
+      Notification(
+        id: 1,
+        title: 'New Message from Alice',
+        body: 'Hey, check out my latest photo!',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(minutes: 10)),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 2,
+        title: 'Event Reminder',
+        body: 'Don’t forget the meeting at 3 PM.',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 3,
+        title: 'Update Available',
+        body: 'A new update is available for download.',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(
+          const Duration(days: 1, minutes: 20),
+        ),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 4,
+        title: 'Promotion Alert',
+        body: 'Check out our latest promotion and save big!',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 5,
+        title: 'New Feature Available',
+        body: 'Check out the new features in the app!',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(days: 3)),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 6,
+        title: 'System Maintenance',
+        body: 'The system will be down for maintenance tonight.',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(days: 4)),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 7,
+        title: 'New Offers Available',
+        body: 'Check out the latest offers in the app!',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(days: 5)),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 8,
+        title: 'Security Alert',
+        body: 'Unusual activity detected on your account.',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(days: 6)),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 9,
+        title: 'New Payment Method Added',
+        body: 'A new payment method has been added to your account.',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(days: 7)),
+      ),
+    );
+    await notificationRepository.addNotification(
+      Notification(
+        id: 10,
+        title: 'Transaction Alert',
+        body: 'A new transaction has been made on your account.',
+        imageUrl:
+            'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
+        createdAt: DateTime.now().subtract(const Duration(days: 8)),
+      ),
+    );
+    return true;
+  }
+
+  static void populateTransferReceiableRepositoryWithTestData(
     TransferReceivebleRepository transferReceivableRepository,
   ) async {
     await transferReceivableRepository.addTransferReceivable(
