@@ -1,9 +1,11 @@
+import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/account_detail_screen/account_detail_screen.dart';
 import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/presentation/notification/notification_screen.dart';
+import 'package:flow_mobile/presentation/notification_screen/notification_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_init_screen.dart';
 import 'package:flow_mobile/presentation/spending_detail_screen/spending_detail_screen.dart';
 import 'package:flow_mobile/presentation/spending_graph_screen/pie_chart_screen.dart';
@@ -58,6 +60,12 @@ class FlowAppState extends State<FlowApp> {
                 break;
               case '/spending/graph':
                 page = PieChartScreen();
+                break;
+              case '/account_detail':
+                CustomPageRouteArguments args =
+                    settings.arguments as CustomPageRouteArguments;
+                BankAccount bankAccount = args.extraData as BankAccount;
+                page = BankAccountDetailScreen(bankAccount: bankAccount);
                 break;
               case '/transfer':
                 page = TransferScreen();

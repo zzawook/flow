@@ -1,5 +1,10 @@
+import 'package:flow_mobile/data/repository/bank_account_repository.dart';
+import 'package:flow_mobile/data/repository/bank_account_repository_impl.dart';
+import 'package:flow_mobile/data/repository/bank_repository.dart';
+import 'package:flow_mobile/data/repository/bank_repository_impl.dart';
 import 'package:flow_mobile/data/repository/notification_repository.dart';
 import 'package:flow_mobile/data/repository/transaction_repository.dart';
+import 'package:flow_mobile/data/repository/transaction_repository_impl.dart';
 import 'package:flow_mobile/data/repository/transfer_receiveble_repository.dart';
 import 'package:flow_mobile/domain/entities/bank.dart';
 import 'package:flow_mobile/domain/entities/bank_account.dart';
@@ -161,7 +166,6 @@ class Bootstrap {
 
     await transferReceivableRepository.addTransferReceivable(
       BankAccount(
-        id: "120912384238",
         accountNumber: "120912384238",
         accountHolder: "Park Jongeun",
         accountName: "Park Jongeun",
@@ -172,7 +176,6 @@ class Bootstrap {
 
     await transferReceivableRepository.addTransferReceivable(
       BankAccount(
-        id: "1209987654",
         accountNumber: "1209987654",
         accountHolder: "Choi Minseok",
         accountName: "Choi Minseok",
@@ -183,7 +186,6 @@ class Bootstrap {
 
     await transferReceivableRepository.addTransferReceivable(
       BankAccount(
-        id: "120934567562",
         accountNumber: "120934567562",
         accountHolder: "Jeon Seungbin",
         accountName: "Jeon Seungbin",
@@ -193,9 +195,53 @@ class Bootstrap {
     );
   }
 
-  static Future<bool> populateTransactionRepositoryWithTestData(
-    TransactionRepository transactionRepository,
-  ) async {
+  static Future<bool> populateBankAccountRepositoryWithTestData() async {
+    BankAccountRepository bankAccountRepository =
+        await BankAccountRepositoryImpl.getInstance();
+    BankRepository bankRepository = await BankRepositoryImpl.getInstance();
+    await bankAccountRepository.clearBankAccounts();
+
+    await bankAccountRepository.createBankAccount(
+      BankAccount(
+        accountNumber: '1234567890',
+        balance: 1000,
+        accountHolder: 'Kim Jae Hyeok',
+        accountName: 'Savings Account',
+        bank: await bankRepository.getBank('DBS'),
+        transferCount: 0,
+      ),
+    );
+
+    await bankAccountRepository.createBankAccount(
+      BankAccount(
+        accountNumber: '23456788901',
+        balance: 505.1,
+        accountHolder: 'Kim Jae Hyeok',
+        accountName: 'Savings Account',
+        bank: await bankRepository.getBank('UOB'),
+        transferCount: 0,
+      ),
+    );
+
+    await bankAccountRepository.createBankAccount(
+      BankAccount(
+        accountNumber: '3456789012',
+        balance: 249.11,
+        accountHolder: 'Kim Jae Hyeok',
+        accountName: 'Savings Account',
+        bank: await bankRepository.getBank('Maybank'),
+        transferCount: 0,
+      ),
+    );
+
+    return true;
+  }
+
+  static Future<bool> populateTransactionRepositoryWithTestData() async {
+    TransactionRepository transactionRepository =
+        await TransactionRepositoryImpl.getInstance();
+    BankAccountRepository bankAccountRepository =
+        await BankAccountRepositoryImpl.getInstance();
     // ==============================
     // MARCH 2025 TRANSACTIONS (100)
     // ==============================
@@ -206,6 +252,7 @@ class Bootstrap {
     ////////////////////////////////////////////////////////////////////////////////
 
     // DAY 1
+
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 1),
@@ -214,6 +261,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -224,6 +272,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -234,6 +283,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -244,6 +294,7 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
@@ -256,6 +307,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -266,6 +318,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -276,9 +329,9 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
-    // Since day=2 is not a multiple of 7, we'll do a typical expense
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 2),
@@ -287,10 +340,11 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 3
+    // DAY 3 (Cyclic assignment: IDs 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 3),
@@ -299,6 +353,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -309,6 +364,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -319,6 +375,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -329,10 +386,11 @@ class Bootstrap {
         category: 'Others',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 4
+    // DAY 4 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 4),
@@ -341,6 +399,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -351,6 +410,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -361,6 +421,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -371,10 +432,11 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 5
+    // DAY 5 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 5),
@@ -383,6 +445,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -393,6 +456,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -403,6 +467,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -413,10 +478,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 6
+    // DAY 6 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 6),
@@ -425,6 +491,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -435,6 +502,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -445,6 +513,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -455,10 +524,11 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 7 (multiple of 7 -> let's add a positive transaction, e.g. Salary)
+    // DAY 7 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 7),
@@ -467,6 +537,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -477,6 +548,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -487,6 +559,7 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -497,10 +570,11 @@ class Bootstrap {
         category: 'Salary',
         method: 'Transfer',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 8
+    // DAY 8 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 8),
@@ -509,6 +583,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -519,6 +594,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -529,6 +605,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -539,10 +616,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 9
+    // DAY 9 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 9),
@@ -551,6 +629,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -561,6 +640,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -571,6 +651,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -581,10 +662,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 10
+    // DAY 10 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 10),
@@ -593,6 +675,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -603,6 +686,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -613,6 +697,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -623,10 +708,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 11
+    // DAY 11 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 11),
@@ -635,6 +721,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -645,6 +732,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -655,6 +743,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -665,10 +754,11 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 12
+    // DAY 12 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 12),
@@ -677,6 +767,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -687,6 +778,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -697,6 +789,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -707,10 +800,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 13
+    // DAY 13 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 13),
@@ -719,6 +813,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -729,6 +824,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -739,6 +835,7 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -749,10 +846,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 14 (multiple of 7 -> positive transaction, e.g. Bonus)
+    // DAY 14 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 14),
@@ -761,6 +859,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -771,6 +870,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -781,6 +881,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -791,10 +892,11 @@ class Bootstrap {
         category: 'Salary',
         method: 'Transfer',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 15
+    // DAY 15 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 15),
@@ -803,6 +905,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -813,6 +916,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -823,6 +927,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -833,10 +938,11 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 16
+    // DAY 16 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 16),
@@ -845,6 +951,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -855,6 +962,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -865,6 +973,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -875,10 +984,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 17
+    // DAY 17 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 17),
@@ -887,6 +997,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -897,6 +1008,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -907,6 +1019,7 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -917,10 +1030,11 @@ class Bootstrap {
         category: 'Health',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 18
+    // DAY 18 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 18),
@@ -929,6 +1043,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -939,6 +1054,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -949,6 +1065,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -959,10 +1076,11 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 19
+    // DAY 19 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 19),
@@ -971,6 +1089,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -981,6 +1100,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -991,6 +1111,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1001,10 +1122,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 20
+    // DAY 20 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 20),
@@ -1013,6 +1135,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1023,6 +1146,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1033,6 +1157,7 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1043,10 +1168,11 @@ class Bootstrap {
         category: 'Health',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 21 (multiple of 7 -> positive transaction, e.g. Gift)
+    // DAY 21 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 21),
@@ -1055,6 +1181,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1065,6 +1192,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1075,6 +1203,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1085,10 +1214,11 @@ class Bootstrap {
         category: 'Transfer',
         method: 'Transfer',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 22
+    // DAY 22 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 22),
@@ -1097,6 +1227,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1107,6 +1238,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1117,6 +1249,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1127,10 +1260,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 23
+    // DAY 23 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 23),
@@ -1139,6 +1273,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1149,6 +1284,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1159,6 +1295,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1169,10 +1306,11 @@ class Bootstrap {
         category: 'Education',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 24
+    // DAY 24 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 24),
@@ -1181,6 +1319,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1191,6 +1330,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1201,6 +1341,7 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1211,10 +1352,11 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 25
+    // DAY 25 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 3, 25),
@@ -1223,6 +1365,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1233,6 +1376,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1243,6 +1387,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1253,22 +1398,15 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
-
-    // ------------------------------
-    // That's 4 transactions × 25 days = 100 for March!
-    // ------------------------------
 
     // ==============================
     // APRIL 2025 TRANSACTIONS (100)
     // ==============================
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Same approach: 4 transactions each day for the first 25 days of April -> 100.
-    ////////////////////////////////////////////////////////////////////////////////
-
-    // DAY 1
+    // DAY 1 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 1),
@@ -1277,6 +1415,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1287,6 +1426,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1297,6 +1437,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1307,10 +1448,11 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 2
+    // DAY 2 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 2),
@@ -1319,6 +1461,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1329,6 +1472,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1339,6 +1483,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1349,10 +1494,11 @@ class Bootstrap {
         category: 'Bills',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 3
+    // DAY 3 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 3),
@@ -1361,6 +1507,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1371,6 +1518,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1381,6 +1529,7 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1391,10 +1540,11 @@ class Bootstrap {
         category: 'Others',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 4
+    // DAY 4 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 4),
@@ -1403,6 +1553,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1413,6 +1564,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1423,6 +1575,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1433,10 +1586,11 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 5
+    // DAY 5 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 5),
@@ -1445,6 +1599,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1455,6 +1610,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1465,6 +1621,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1475,10 +1632,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 6
+    // DAY 6 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 6),
@@ -1487,6 +1645,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1497,6 +1656,7 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1507,6 +1667,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1517,10 +1678,11 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 7 (multiple of 7 -> Salary)
+    // DAY 7 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 7),
@@ -1529,6 +1691,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1539,6 +1702,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1549,6 +1713,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1559,10 +1724,11 @@ class Bootstrap {
         category: 'Salary',
         method: 'Transfer',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 8
+    // DAY 8 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 8),
@@ -1571,6 +1737,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1581,6 +1748,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1591,6 +1759,7 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1601,10 +1770,11 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 9
+    // DAY 9 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 9),
@@ -1613,6 +1783,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1623,6 +1794,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1633,6 +1805,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1643,10 +1816,11 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 10
+    // DAY 10 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 10),
@@ -1655,6 +1829,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1665,6 +1840,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1675,6 +1851,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1685,10 +1862,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 11
+    // DAY 11 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 11),
@@ -1697,6 +1875,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1707,6 +1886,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1717,6 +1897,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1727,10 +1908,11 @@ class Bootstrap {
         category: 'Education',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 12
+    // DAY 12 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 12),
@@ -1739,6 +1921,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1749,6 +1932,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1759,6 +1943,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1769,10 +1954,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 13
+    // DAY 13 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 13),
@@ -1781,6 +1967,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1791,6 +1978,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1801,6 +1989,7 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1811,10 +2000,11 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 14 (multiple of 7 -> Bonus, for instance)
+    // DAY 14 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 14),
@@ -1823,6 +2013,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1833,6 +2024,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1843,6 +2035,7 @@ class Bootstrap {
         category: 'Bills',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1853,10 +2046,11 @@ class Bootstrap {
         category: 'Salary',
         method: 'Transfer',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 15
+    // DAY 15 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 15),
@@ -1865,6 +2059,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1875,6 +2070,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1885,6 +2081,7 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1895,10 +2092,11 @@ class Bootstrap {
         category: 'Bills',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 16
+    // DAY 16 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 16),
@@ -1907,6 +2105,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1917,6 +2116,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1927,6 +2127,7 @@ class Bootstrap {
         category: 'Bills',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1937,10 +2138,11 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 17
+    // DAY 17 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 17),
@@ -1949,6 +2151,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1959,6 +2162,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1969,6 +2173,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -1979,10 +2184,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 18
+    // DAY 18 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 18),
@@ -1991,6 +2197,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2001,6 +2208,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2011,6 +2219,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2021,10 +2230,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 19
+    // DAY 19 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 19),
@@ -2033,6 +2243,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2043,6 +2254,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2053,6 +2265,7 @@ class Bootstrap {
         category: 'Others',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2063,10 +2276,11 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 20
+    // DAY 20 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 20),
@@ -2075,6 +2289,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2085,6 +2300,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2095,6 +2311,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2105,10 +2322,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 21 (multiple of 7 -> positive transaction, e.g. Gift)
+    // DAY 21 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 21),
@@ -2117,6 +2335,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2127,6 +2346,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2137,6 +2357,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2147,10 +2368,11 @@ class Bootstrap {
         category: 'Transfer',
         method: 'Transfer',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
 
-    // DAY 22
+    // DAY 22 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 22),
@@ -2159,6 +2381,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2169,6 +2392,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2179,6 +2403,7 @@ class Bootstrap {
         category: 'Groceries',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2189,10 +2414,11 @@ class Bootstrap {
         category: 'Education',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
 
-    // DAY 23
+    // DAY 23 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 23),
@@ -2201,6 +2427,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Cash',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2211,6 +2438,7 @@ class Bootstrap {
         category: 'Transport',
         method: 'EZ-Link',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2221,6 +2449,7 @@ class Bootstrap {
         category: 'Entertainment',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2231,10 +2460,11 @@ class Bootstrap {
         category: 'Shopping',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
       ),
     );
 
-    // DAY 24
+    // DAY 24 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
         date: DateTime(2025, 4, 24),
@@ -2243,6 +2473,7 @@ class Bootstrap {
         category: 'Food',
         method: 'Credit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount('3456789012'),
       ),
     );
     await transactionRepository.addTransaction(
@@ -2253,9 +2484,9 @@ class Bootstrap {
         category: 'Transport',
         method: 'Debit Card',
         note: '',
+        bankAccount: await bankAccountRepository.getBankAccount("1234567890"),
       ),
     );
-
     return true;
   }
 }

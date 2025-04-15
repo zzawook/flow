@@ -7,30 +7,26 @@ part 'bank_account.g.dart';
 @HiveType(typeId: 2)
 class BankAccount extends TransferReceivable {
   @HiveField(0)
-  final String id;
-
-  @HiveField(1)
   final String accountNumber;
 
-  @HiveField(2)
+  @HiveField(1)
   final String accountHolder;
 
-  @HiveField(3)
+  @HiveField(2)
   final double balance;
 
-  @HiveField(4)
+  @HiveField(3)
   final String accountName;
 
-  @HiveField(5)
+  @HiveField(4)
   @override
   final Bank bank;
 
-  @HiveField(6)
+  @HiveField(5)
   @override
   final int transferCount;
 
   BankAccount({
-    required this.id,
     required this.accountNumber,
     required this.accountHolder,
     this.balance = 0.0,
@@ -40,7 +36,6 @@ class BankAccount extends TransferReceivable {
   });
 
   factory BankAccount.initial() => BankAccount(
-    id: '0',
     accountNumber: '123456789',
     accountHolder: 'AccountHolder',
     balance: 0.0,

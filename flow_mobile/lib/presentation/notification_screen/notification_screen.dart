@@ -1,84 +1,30 @@
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/notification_state.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flow_mobile/domain/entities/notification.dart' as w;
 import 'package:flutter_redux/flutter_redux.dart';
 
 /// The notifications page now lists all notifications in a single column without grouping.
 class NotificationScreen extends StatelessWidget {
-  NotificationScreen({super.key});
-
-  final List<w.Notification> notifications = [
-    w.Notification(
-      id: 1,
-      title: 'New Message from Alice',
-      body: 'Hey, check out my latest photo!',
-      imageUrl: 'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
-      createdAt: DateTime.now().subtract(const Duration(minutes: 10)),
-    ),
-    w.Notification(
-      id: 2,
-      title: 'Event Reminder',
-      body: 'Don’t forget the meeting at 3 PM.',
-      imageUrl: 'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
-      createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
-    ),
-    w.Notification(
-      id: 3,
-      title: 'Update Available',
-      body: 'A new update is available for download.',
-      imageUrl: 'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
-      createdAt: DateTime.now().subtract(const Duration(days: 1, minutes: 20)),
-    ),
-    w.Notification(
-      id: 4,
-      title: 'Promotion Alert',
-      body: 'Check out our latest promotion and save big!',
-      imageUrl: 'https://img.uxcel.com/tags/notifications-1700498330224-2x.jpg',
-      createdAt: DateTime.now().subtract(const Duration(days: 2)),
-    ),
-  ];
+  const NotificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Optionally sort notifications by date descending (newest first).
-    final sortedNotifications = List<w.Notification>.from(notifications)
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
     return Container(
       color: const Color(0xFFFAFAFA),
       child: Column(
         children: [
           // Top bar with title
-          Padding(
-            padding: const EdgeInsets.only(top: 72, left: 16, right: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FlowButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Image.asset(
-                    'assets/icons/previous.png',
-                    width: 20,
-                    height: 20,
-                  ),
-                ),
-                const Expanded(
-                  child: Text(
-                    'Notifications',
-                    style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0x88000000),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Image.asset('assets/icons/setting.png', width: 22, height: 22),
-              ],
+          FlowTopBar(
+            title: Text(
+              "Notifications",
+              style: const TextStyle(
+                fontSize: 21,
+                fontWeight: FontWeight.bold,
+                color: Color(0x88000000),
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(
@@ -87,7 +33,6 @@ class NotificationScreen extends StatelessWidget {
               converter: (store) => store.state.notificationState,
               builder: (context, notificationState) {
                 final notifications = notificationState.getNotification();
-                print(notificationState.notifications);
                 final sortedNotifications = List<w.Notification>.from(
                   notifications,
                 )..sort((a, b) => b.createdAt.compareTo(a.createdAt));

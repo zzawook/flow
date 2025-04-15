@@ -1,3 +1,4 @@
+import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/entities/date_spending_statistics.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
@@ -115,6 +116,12 @@ class TransactionState {
       return (DateTimeUtil.isSameDate(transaction.date, from) ||
               DateTimeUtil.isSameDate(transaction.date, to)) ||
           transaction.date.isAfter(from) && transaction.date.isBefore(to);
+    }).toList();
+  }
+
+  List<Transaction> getTransactionsByAccount(BankAccount bankAccount) {
+    return transactions.where((transaction) {
+      return transaction.bankAccount.accountNumber == bankAccount.accountNumber;
     }).toList();
   }
 }

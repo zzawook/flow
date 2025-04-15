@@ -23,8 +23,7 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
 
   @override
   Future<BankAccount> createBankAccount(BankAccount bankAccount) async {
-    await _bankAccountBox.add(bankAccount);
-    // Optionally update bankAccount with key if needed
+    await _bankAccountBox.put(bankAccount.accountNumber, bankAccount);
     return bankAccount;
   }
 
@@ -34,10 +33,10 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
   }
 
   @override
-  Future<BankAccount> getBankAccount(int id) async {
-    final bankAccount = _bankAccountBox.get(id);
+  Future<BankAccount> getBankAccount(String accountNumber) async {
+    final bankAccount = _bankAccountBox.get(accountNumber);
     if (bankAccount == null) {
-      throw Exception('Bank account not found for id $id');
+      throw Exception('Bank account not found for id $accountNumber');
     }
     return bankAccount;
   }
@@ -49,7 +48,7 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
 
   @override
   Future<BankAccount> updateBankAccount(BankAccount bankAccount) async {
-    await _bankAccountBox.put(bankAccount.id, bankAccount);
+    await _bankAccountBox.put(bankAccount.accountNumber, bankAccount);
     return bankAccount;
   }
 

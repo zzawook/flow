@@ -1,7 +1,7 @@
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/special_analysis_card.dart';
@@ -44,7 +44,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FlowTopBar(onNotificationTap: _handleNotificationTap),
+                    FlowMainTopBar(onNotificationTap: _handleNotificationTap),
                     const MonthlySpendingOverview(),
 
                     FlowSeparatorBox(height: 16),

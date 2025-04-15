@@ -2,8 +2,6 @@ import 'package:flow_mobile/bootstrap/bootstrap.dart';
 import 'package:flow_mobile/data/repository/auth_repository_impl.dart';
 import 'package:flow_mobile/data/repository/bank_account_repository.dart';
 import 'package:flow_mobile/data/repository/bank_account_repository_impl.dart';
-import 'package:flow_mobile/data/repository/bank_repository.dart';
-import 'package:flow_mobile/data/repository/bank_repository_impl.dart';
 import 'package:flow_mobile/data/repository/notification_repository.dart';
 import 'package:flow_mobile/data/repository/notification_repository_impl.dart';
 import 'package:flow_mobile/data/repository/setting_repository.dart';
@@ -176,13 +174,15 @@ Future<NotificationState> getNotificationState() async {
 
 Future<bool> bootstrapHiveWithTestData() async {
   bootstrapUserData();
-  bootstrapBankAccountData();
+  bool bankAccountDataSuccess = await bootstrapBankAccountData();
   bootstrapSettingData();
   bootstrapTransferReceivableData();
   bool transactionBootstrapSuccess = await bootstrapTransactionData();
   bool notificationBootstrapSuccess = await bootstrapNotificationData();
 
-  return transactionBootstrapSuccess && notificationBootstrapSuccess;
+  return bankAccountDataSuccess &&
+      transactionBootstrapSuccess &&
+      notificationBootstrapSuccess;
 }
 
 void bootstrapTransferReceivableData() async {
@@ -220,48 +220,9 @@ void bootstrapUserData() async {
   );
 }
 
-void bootstrapBankAccountData() async {
-  BankAccountRepository bankAccountRepository =
-      await BankAccountRepositoryImpl.getInstance();
-  BankRepository bankRepository = await BankRepositoryImpl.getInstance();
-
-  await bankAccountRepository.clearBankAccounts();
-
-  await bankAccountRepository.createBankAccount(
-    BankAccount(
-      accountNumber: '1234567890',
-      balance: 1000,
-      id: '1',
-      accountHolder: 'Kim Jae Hyeok',
-      accountName: 'Savings Account',
-      bank: await bankRepository.getBank('DBS'),
-      transferCount: 0,
-    ),
-  );
-
-  await bankAccountRepository.createBankAccount(
-    BankAccount(
-      accountNumber: '23456788901',
-      balance: 505.1,
-      id: '2',
-      accountHolder: 'Kim Jae Hyeok',
-      accountName: 'Savings Account',
-      bank: await bankRepository.getBank('UOB'),
-      transferCount: 0,
-    ),
-  );
-
-  await bankAccountRepository.createBankAccount(
-    BankAccount(
-      accountNumber: '3456789012',
-      balance: 249.11,
-      id: '3',
-      accountHolder: 'Kim Jae Hyeok',
-      accountName: 'Savings Account',
-      bank: await bankRepository.getBank('Maybank'),
-      transferCount: 0,
-    ),
-  );
+Future<bool> bootstrapBankAccountData() async {
+  bool success = await Bootstrap.populateBankAccountRepositoryWithTestData();
+  return success;
 }
 
 void bootstrapSettingData() async {
@@ -275,12 +236,6 @@ void bootstrapSettingData() async {
 }
 
 Future<bool> bootstrapTransactionData() async {
-  TransactionRepository transactionRepository =
-      await TransactionRepositoryImpl.getInstance();
-
-  await transactionRepository.clearTransactions();
-  bool success = await Bootstrap.populateTransactionRepositoryWithTestData(
-    transactionRepository,
-  );
+  bool success = await Bootstrap.populateTransactionRepositoryWithTestData();
   return success;
 }

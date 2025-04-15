@@ -56,7 +56,7 @@ class TransactionList extends StatelessWidget {
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: Color(0xFF000000),
+                        color: Color(0xAA000000),
                       ),
                     ),
                   ),

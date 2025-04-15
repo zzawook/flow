@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'notification.g.dart';

@@ -28,7 +28,13 @@ class AccountRow extends StatelessWidget {
         // Bank logo and text button with constrained width
         Flexible(
           child: FlowButton(
-            onPressed: onViewBalance,
+            onPressed: () {
+              Navigator.pushNamed(context, "/account_detail",
+                  arguments: CustomPageRouteArguments(
+                    transitionType: TransitionType.slideLeft,
+                    extraData: bankAccount,
+                  ));
+            },
             child: Container(
               padding: EdgeInsets.only(top: 12, bottom: 12, left: 24),
               child: Row(

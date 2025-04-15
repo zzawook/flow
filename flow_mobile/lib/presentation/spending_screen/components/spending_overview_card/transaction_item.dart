@@ -57,7 +57,7 @@ class TransactionItem extends StatelessWidget {
                         fontFamily: 'Inter',
                         fontSize: 12,
                         fontWeight: FontWeight.normal,
-                        color: Color(0xFF565656),
+                        color: Color(0x88000000),
                       ),
                     ),
                   ],

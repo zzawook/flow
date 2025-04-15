@@ -3,7 +3,7 @@ import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/presentation/home_screen/components/accounts_card/account_card.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
 import 'package:flow_mobile/presentation/home_screen/components/quick_transfer_card/quick_transfer_card.dart';
 import 'package:flutter/material.dart';
 
@@ -61,7 +61,7 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Top Bar
-                      FlowTopBar(onNotificationTap: _handleNotificationTap),
+                      FlowMainTopBar(onNotificationTap: _handleNotificationTap),
 
                       // Accounts Section
                       AccountsCard(onToggleBalance: _toggleBalance),
