@@ -5,7 +5,7 @@ import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/special_analysis_card.dart';
-import 'package:flow_mobile/presentation/spending_screen/components/statistics_card/statistics_card.dart';
+import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/spending_by_category_card.dart';
 import 'package:flutter/material.dart';
 
 class SpendingScreen extends StatefulWidget {
@@ -49,7 +49,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
 
                     FlowSeparatorBox(height: 16),
 
-                    const StatisticsCard(),
+                    const SpendingByCategoryCard(),
 
                     FlowSeparatorBox(height: 16),
 

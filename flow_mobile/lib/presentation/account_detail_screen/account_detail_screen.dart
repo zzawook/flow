@@ -123,7 +123,7 @@ class BalanceSection extends StatelessWidget {
                 child: Text(
                   '\$ ${bankAccount.balance.toStringAsFixed(0)}',
                   style: const TextStyle(
-                    fontSize: 28,
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

@@ -1,5 +1,5 @@
-import 'package:flow_mobile/presentation/spending_screen/components/statistics_card/spending_category_legend.dart';
-import 'package:flow_mobile/presentation/spending_screen/components/statistics_card/stacked_bar.dart';
+import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/spending_category_legend.dart';
+import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/stacked_bar.dart';
 import 'package:flutter/widgets.dart';
 
 class HorizontalStackedBarWithLegend extends StatelessWidget {

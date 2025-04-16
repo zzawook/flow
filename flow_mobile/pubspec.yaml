@@ -43,6 +43,7 @@ dependencies:
   flutter_contacts: ^1.1.9+2
   permission_handler: ^12.0.0+1
   local_auth: ^2.3.0
+  toggle_switch: ^2.3.0 
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,8 @@ flutter:
     - assets/icons/transaction_icons/
     - assets/icons/category_icons/
     - assets/bank_logos/
+
+  uses-material-design: true
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

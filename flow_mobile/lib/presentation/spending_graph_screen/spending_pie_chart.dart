@@ -1,93 +1,40 @@
-import 'package:flow_mobile/domain/entities/transaction.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
-import 'package:flow_mobile/presentation/spending_graph_screen/spending_graph_top_bar.dart';
-import 'package:flow_mobile/presentation/spending_graph_screen/spending_pie_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flow_mobile/shared/utils/spending_category_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 
-class PieChartScreen extends StatelessWidget {
-  const PieChartScreen({super.key});
-
+class SpendingPieChart extends StatelessWidget {
+  final List<MapEntry<String, double>> sortedCategories;
+  final double radius;
+  const SpendingPieChart({
+    super.key,
+    required this.sortedCategories,
+    required this.radius,
+  });
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      decoration: const BoxDecoration(color: Color(0xFFF5F5F5)),
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 72),
-                child: StoreConnector<FlowState, TransactionState>(
-                  converter: (store) => store.state.transactionState,
-                  builder: (context, transactionState) {
-                    List<Transaction> transactions = transactionState
-                        .getTransactionsForMonth(
-                          DateTime(DateTime.now().year, DateTime.now().month),
-                        );
-                    Map<String, double> categoryAmount = {};
-
-                    // Calculate the total amount for each category
-                    for (var transaction in transactions) {
-                      if (transaction.amount > 0) {
-                        continue; // Skip income transactions
-                      }
-                      if (categoryAmount.containsKey(transaction.category)) {
-                        categoryAmount[transaction.category] =
-                            categoryAmount[transaction.category]! +
-                            transaction.amount;
-                      } else {
-                        categoryAmount[transaction.category] =
-                            transaction.amount;
-                      }
-                    }
-
-                    // Remove categories with 0 amount
-                    categoryAmount.removeWhere((key, value) => value == 0);
-
-                    final sortedCategories =
-                        categoryAmount.entries.toList()
-                          ..sort((a, b) => a.value.compareTo(b.value));
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 24, right: 24),
-                          child: SpendingGraphTopBar(),
-                        ),
-                        const FlowSeparatorBox(
-                          height: 24 + 36,
-                        ), // Add size of badge in piechart
-                        SpendingPieChart(
-                          sortedCategories: sortedCategories,
-                          radius: 160,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        PieChartSections(sortedCategories: sortedCategories, radius: radius),
+        const FlowSeparatorBox(height: 24),
+        SpendingList(sortedCategories: sortedCategories),
+      ],
     );
   }
 }
 
 /// This widget encapsulates the pie chart data and returns the PieChart widget.
 class PieChartSections extends StatelessWidget {
-  PieChartSections({super.key, required this.sortedCategories});
+  final double radius;
+  PieChartSections({
+    super.key,
+    required this.sortedCategories,
+    required this.radius,
+  });
 
   final List<MapEntry<String, double>> sortedCategories;
-
-  final radius = 160.0;
   final TextStyle titleStyle = TextStyle(
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: FontWeight.w900,
     color: Colors.white,
   );
