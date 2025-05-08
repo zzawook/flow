@@ -124,4 +124,18 @@ class TransactionState {
       return transaction.bankAccount.accountNumber == bankAccount.accountNumber;
     }).toList();
   }
+
+  List<Transaction> getTransactionByCategoryFromTo(
+    String category,
+    DateTime dateTime,
+    DateTime dateTime2,
+  ) {
+    return transactions.where((transaction) {
+      return transaction.category == category &&
+          ((DateTimeUtil.isSameDate(transaction.date, dateTime) ||
+                  DateTimeUtil.isSameDate(transaction.date, dateTime2)) ||
+              transaction.date.isAfter(dateTime) &&
+                  transaction.date.isBefore(dateTime2));
+    }).toList();
+  }
 }

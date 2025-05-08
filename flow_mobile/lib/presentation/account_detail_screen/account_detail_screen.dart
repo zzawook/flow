@@ -1,7 +1,7 @@
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
-import 'package:flow_mobile/presentation/spending_detail_screen/transaction_list.dart';
+import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +66,7 @@ class BalanceSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 32, left: 24, right: 24, bottom: 32),
+      padding: const EdgeInsets.only(top: 48, left: 24, right: 24, bottom: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

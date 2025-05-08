@@ -21,8 +21,7 @@ class StackedBar extends StatelessWidget {
             children: List.generate(entries.length, (index) {
               final entry = entries[index];
               final amount = entry.value;
-              final colorHex = SpendingCategoryUtil.getCategoryColor(entry.key);
-              final color = _parseColor(colorHex);
+              final color = SpendingCategoryUtil.getCategoryColor(entry.key);
 
               // Calculate width for this segment
               final fraction = total > 0 ? (amount.abs() / total) : 0.0;
@@ -61,14 +60,5 @@ class StackedBar extends StatelessWidget {
         );
       },
     );
-  }
-
-  // Helper method to parse a hex color like "#8BC34A" into a Flutter Color
-  Color _parseColor(String hexColor) {
-    String colorString = hexColor.replaceAll('#', '');
-    if (colorString.length == 6) {
-      colorString = 'FF$colorString'; // Add alpha if not present
-    }
-    return Color(int.parse(colorString, radix: 16));
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flow_mobile/domain/redux/states/refresh_screen_state.dart';
+import 'package:flow_mobile/domain/redux/states/spending_category_screen_state.dart';
 import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
 
 class ScreenState {
   final String screenName;
   final SpendingScreenState spendingScreenState;
   final RefreshScreenState refreshScreenState;
+  final SpendingCategoryScreenState spendingCategoryScreenState;
   final bool isRefreshing;
 
   ScreenState({
@@ -12,6 +14,7 @@ class ScreenState {
     required this.spendingScreenState,
     required this.isRefreshing,
     required this.refreshScreenState,
+    required this.spendingCategoryScreenState,
   });
 
   ScreenState copyWith({
@@ -19,12 +22,14 @@ class ScreenState {
     required SpendingScreenState spendingScreenState,
     required bool isRefreshing,
     required RefreshScreenState refreshScreenState,
+    required SpendingCategoryScreenState spendingCategoryScreenState,
   }) {
     return ScreenState(
       screenName: screenName,
       spendingScreenState: spendingScreenState,
       isRefreshing: isRefreshing,
       refreshScreenState: refreshScreenState,
+      spendingCategoryScreenState: spendingCategoryScreenState,
     );
   }
 
@@ -34,6 +39,7 @@ class ScreenState {
       spendingScreenState: SpendingScreenState.initial(),
       isRefreshing: false,
       refreshScreenState: RefreshScreenState.initial(),
+      spendingCategoryScreenState: SpendingCategoryScreenState.initial(),
     );
   }
 
@@ -43,7 +49,10 @@ class ScreenState {
       other is ScreenState &&
           runtimeType == other.runtimeType &&
           screenName == other.screenName &&
-          spendingScreenState == other.spendingScreenState;
+          spendingScreenState == other.spendingScreenState &&
+          isRefreshing == other.isRefreshing &&
+          refreshScreenState == other.refreshScreenState &&
+          spendingCategoryScreenState == other.spendingCategoryScreenState;
 
   @override
   int get hashCode => screenName.hashCode;

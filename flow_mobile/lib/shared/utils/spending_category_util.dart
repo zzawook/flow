@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class SpendingCategoryUtil {
   static Map<String, Map<String, dynamic>> categoryData = {
     "Transfer": {
@@ -32,11 +34,15 @@ class SpendingCategoryUtil {
     "Salary": {"color": "#FF98FF"},
   };
 
-  static getCategoryColor(String category) {
+  static Color getCategoryColor(String category) {
     if (!categoryData.containsKey(category)) {
-      return "#000000";
+      return const Color(0xFF000000);
     }
-    return categoryData[category]!["color"];
+    String colorString = categoryData[category]!["color"];
+    if (colorString.startsWith('#')) {
+      colorString = colorString.substring(1);
+    }
+    return Color(int.parse('FF$colorString', radix: 16));
   }
 
   static getCategoryIcon(String category) {

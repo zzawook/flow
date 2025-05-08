@@ -66,7 +66,7 @@ class TransactionItem extends StatelessWidget {
             ),
           ),
 
-          TransactionTag(tag: category),
+          TransactionTag(tag: category, fontSize: 12.0),
         ],
       ),
     );

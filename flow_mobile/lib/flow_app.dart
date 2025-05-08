@@ -7,8 +7,9 @@ import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/notification_screen/notification_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_init_screen.dart';
-import 'package:flow_mobile/presentation/spending_detail_screen/spending_detail_screen.dart';
-import 'package:flow_mobile/presentation/spending_graph_screen/pie_chart_screen.dart';
+import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar_screen.dart';
+import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
+import 'package:flow_mobile/presentation/spending_category_screen/spending_category_screen.dart';
 import 'package:flow_mobile/presentation/spending_screen/spending_screen.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_amount_screen.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_confirm.dart';
@@ -56,10 +57,23 @@ class FlowAppState extends State<FlowApp> {
                 page = SpendingScreen();
                 break;
               case '/spending/detail':
-                page = SpendingDetailScreen();
+                page = SpendingCalendarScreen();
                 break;
-              case '/spending/graph':
-                page = PieChartScreen();
+              case '/spending/category':
+                CustomPageRouteArguments args =
+                    settings.arguments as CustomPageRouteArguments;
+                DateTime month = args.extraData as DateTime;
+                page = SpendingCategoryScreen(displayMonthYear: month);
+                break;
+              case '/spending/category/detail':
+                CustomPageRouteArguments args =
+                    settings.arguments as CustomPageRouteArguments;
+                SpendingCategoryDetailScreenArguments data =
+                    args.extraData as SpendingCategoryDetailScreenArguments;
+                page = SpendingCategoryDetailScreen(
+                  category: data.category,
+                  displayMonthYear: data.displayMonthYear,
+                );
                 break;
               case '/account_detail':
                 CustomPageRouteArguments args =

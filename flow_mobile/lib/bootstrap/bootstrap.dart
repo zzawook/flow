@@ -255,7 +255,7 @@ class Bootstrap {
 
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 1),
+        date: DateTime(2025, 4, 1),
         amount: -12.30,
         name: 'Hawker Breakfast',
         category: 'Food',
@@ -266,7 +266,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 1),
+        date: DateTime(2025, 4, 1),
         amount: -2.50,
         name: 'MRT Fare',
         category: 'Transport',
@@ -277,7 +277,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 1),
+        date: DateTime(2025, 4, 1),
         amount: -25.90,
         name: 'NTUC Groceries',
         category: 'Groceries',
@@ -288,7 +288,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 1),
+        date: DateTime(2025, 4, 1),
         amount: -8.00,
         name: 'Lazada Purchase',
         category: 'Shopping',
@@ -301,7 +301,7 @@ class Bootstrap {
     // DAY 2
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 2),
+        date: DateTime(2025, 4, 2),
         amount: -7.60,
         name: 'Toast Box Lunch',
         category: 'Food',
@@ -312,7 +312,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 2),
+        date: DateTime(2025, 4, 2),
         amount: -3.20,
         name: 'Bus Fare',
         category: 'Transport',
@@ -323,7 +323,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 2),
+        date: DateTime(2025, 4, 2),
         amount: -35.50,
         name: 'FairPrice Groceries',
         category: 'Groceries',
@@ -334,7 +334,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 2),
+        date: DateTime(2025, 4, 2),
         amount: -52.90,
         name: 'Electric Bill',
         category: 'Bills',
@@ -347,7 +347,7 @@ class Bootstrap {
     // DAY 3 (Cyclic assignment: IDs 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 3),
+        date: DateTime(2025, 4, 3),
         amount: -4.00,
         name: 'Coffee Bean',
         category: 'Food',
@@ -358,7 +358,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 3),
+        date: DateTime(2025, 4, 3),
         amount: -11.20,
         name: 'Taxi Ride',
         category: 'Transport',
@@ -369,7 +369,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 3),
+        date: DateTime(2025, 4, 3),
         amount: -16.00,
         name: 'Movie Ticket',
         category: 'Entertainment',
@@ -380,7 +380,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 3),
+        date: DateTime(2025, 4, 3),
         amount: -5.50,
         name: 'Bakeries Purchase',
         category: 'Others',
@@ -393,7 +393,7 @@ class Bootstrap {
     // DAY 4 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 4),
+        date: DateTime(2025, 4, 4),
         amount: -9.90,
         name: 'Subway Meal',
         category: 'Food',
@@ -404,7 +404,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 4),
+        date: DateTime(2025, 4, 4),
         amount: -10.00,
         name: 'MRT Top-Up',
         category: 'Transport',
@@ -415,7 +415,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 4),
+        date: DateTime(2025, 4, 4),
         amount: -40.00,
         name: 'Giant Groceries',
         category: 'Groceries',
@@ -426,7 +426,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 4),
+        date: DateTime(2025, 4, 4),
         amount: -18.90,
         name: 'Grab Ride',
         category: 'Transport',
@@ -439,7 +439,7 @@ class Bootstrap {
     // DAY 5 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 5),
+        date: DateTime(2025, 4, 5),
         amount: -5.20,
         name: 'Roasted Chicken Rice',
         category: 'Food',
@@ -450,7 +450,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 5),
+        date: DateTime(2025, 4, 5),
         amount: -3.00,
         name: 'EZ-Link Top-Up',
         category: 'Transport',
@@ -461,7 +461,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 5),
+        date: DateTime(2025, 4, 5),
         amount: -12.00,
         name: 'Spotify Subscription',
         category: 'Entertainment',
@@ -472,7 +472,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 5),
+        date: DateTime(2025, 4, 5),
         amount: -33.00,
         name: 'Watsons Shopping',
         category: 'Shopping',
@@ -485,7 +485,7 @@ class Bootstrap {
     // DAY 6 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 6),
+        date: DateTime(2025, 4, 6),
         amount: -8.10,
         name: 'Mixed Rice Lunch',
         category: 'Food',
@@ -496,7 +496,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 6),
+        date: DateTime(2025, 4, 6),
         amount: -20.00,
         name: 'Grab Ride',
         category: 'Transport',
@@ -507,7 +507,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 6),
+        date: DateTime(2025, 4, 6),
         amount: -6.50,
         name: 'BreadTalk',
         category: 'Food',
@@ -518,7 +518,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 6),
+        date: DateTime(2025, 4, 6),
         amount: -19.90,
         name: 'Cinema Ticket',
         category: 'Entertainment',
@@ -531,7 +531,7 @@ class Bootstrap {
     // DAY 7 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 7),
+        date: DateTime(2025, 4, 7),
         amount: -5.90,
         name: 'Old Chang Kee Snack',
         category: 'Food',
@@ -542,7 +542,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 7),
+        date: DateTime(2025, 4, 7),
         amount: -2.50,
         name: 'Bus Fare',
         category: 'Transport',
@@ -553,7 +553,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 7),
+        date: DateTime(2025, 4, 7),
         amount: -50.00,
         name: 'Uniqlo Shopping',
         category: 'Shopping',
@@ -564,7 +564,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 7),
+        date: DateTime(2025, 4, 7),
         amount: 3000.00,
         name: 'Monthly Salary',
         category: 'Salary',
@@ -577,7 +577,7 @@ class Bootstrap {
     // DAY 8 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 8),
+        date: DateTime(2025, 4, 8),
         amount: -11.30,
         name: 'Pasta Lunch',
         category: 'Food',
@@ -588,7 +588,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 8),
+        date: DateTime(2025, 4, 8),
         amount: -18.00,
         name: 'ComfortDelGro Taxi',
         category: 'Transport',
@@ -599,7 +599,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 8),
+        date: DateTime(2025, 4, 8),
         amount: -8.50,
         name: '7-Eleven Snacks',
         category: 'Groceries',
@@ -610,7 +610,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 8),
+        date: DateTime(2025, 4, 8),
         amount: -35.00,
         name: 'Zalora Order',
         category: 'Shopping',
@@ -623,7 +623,7 @@ class Bootstrap {
     // DAY 9 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 9),
+        date: DateTime(2025, 4, 9),
         amount: -3.80,
         name: 'Toast Box Breakfast',
         category: 'Food',
@@ -634,7 +634,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 9),
+        date: DateTime(2025, 4, 9),
         amount: -2.00,
         name: 'Bus Fare',
         category: 'Transport',
@@ -645,7 +645,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 9),
+        date: DateTime(2025, 4, 9),
         amount: -15.00,
         name: 'Mobile Game Top-up',
         category: 'Entertainment',
@@ -656,7 +656,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 9),
+        date: DateTime(2025, 4, 9),
         amount: -22.00,
         name: 'EZBuy Purchase',
         category: 'Shopping',
@@ -669,7 +669,7 @@ class Bootstrap {
     // DAY 10 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 10),
+        date: DateTime(2025, 4, 10),
         amount: -8.50,
         name: 'Hawker Dinner',
         category: 'Food',
@@ -680,7 +680,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 10),
+        date: DateTime(2025, 4, 10),
         amount: -1.50,
         name: 'MRT Fare',
         category: 'Transport',
@@ -691,7 +691,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 10),
+        date: DateTime(2025, 4, 10),
         amount: -65.00,
         name: 'Movie, Dinner Out',
         category: 'Entertainment',
@@ -702,7 +702,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 10),
+        date: DateTime(2025, 4, 10),
         amount: -45.00,
         name: 'Watsons',
         category: 'Shopping',
@@ -715,7 +715,7 @@ class Bootstrap {
     // DAY 11 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 11),
+        date: DateTime(2025, 4, 11),
         amount: -6.20,
         name: 'Bubble Tea',
         category: 'Food',
@@ -726,7 +726,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 11),
+        date: DateTime(2025, 4, 11),
         amount: -15.00,
         name: 'Grocery Delivery',
         category: 'Groceries',
@@ -737,7 +737,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 11),
+        date: DateTime(2025, 4, 11),
         amount: -20.00,
         name: 'Grab Ride',
         category: 'Transport',
@@ -748,7 +748,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 11),
+        date: DateTime(2025, 4, 11),
         amount: -11.50,
         name: 'Movie Snacks',
         category: 'Entertainment',
@@ -761,7 +761,7 @@ class Bootstrap {
     // DAY 12 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 12),
+        date: DateTime(2025, 4, 12),
         amount: -5.50,
         name: 'Cai Fan Lunch',
         category: 'Food',
@@ -772,7 +772,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 12),
+        date: DateTime(2025, 4, 12),
         amount: -2.20,
         name: 'Bus Fare',
         category: 'Transport',
@@ -783,7 +783,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 12),
+        date: DateTime(2025, 4, 12),
         amount: -9.90,
         name: 'iTunes Subscription',
         category: 'Entertainment',
@@ -794,7 +794,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 12),
+        date: DateTime(2025, 4, 12),
         amount: -15.30,
         name: 'Daiso Items',
         category: 'Shopping',
@@ -807,7 +807,7 @@ class Bootstrap {
     // DAY 13 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 13),
+        date: DateTime(2025, 4, 13),
         amount: -12.00,
         name: 'Coffeeshop Lunch',
         category: 'Food',
@@ -818,7 +818,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 13),
+        date: DateTime(2025, 4, 13),
         amount: -3.50,
         name: 'Train Fare',
         category: 'Transport',
@@ -829,7 +829,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 13),
+        date: DateTime(2025, 4, 13),
         amount: -25.00,
         name: 'Singtel Bill',
         category: 'Bills',
@@ -840,7 +840,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 13),
+        date: DateTime(2025, 4, 13),
         amount: -12.00,
         name: 'H&M Sale Item',
         category: 'Shopping',
@@ -853,7 +853,7 @@ class Bootstrap {
     // DAY 14 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 14),
+        date: DateTime(2025, 4, 14),
         amount: -7.50,
         name: 'Fast Food Lunch',
         category: 'Food',
@@ -864,7 +864,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 14),
+        date: DateTime(2025, 4, 14),
         amount: -2.30,
         name: 'MRT Fare',
         category: 'Transport',
@@ -875,7 +875,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 14),
+        date: DateTime(2025, 4, 14),
         amount: -15.00,
         name: 'Golden Village Ticket',
         category: 'Entertainment',
@@ -886,7 +886,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 14),
+        date: DateTime(2025, 4, 14),
         amount: 250.00,
         name: 'Performance Bonus',
         category: 'Salary',
@@ -899,7 +899,7 @@ class Bootstrap {
     // DAY 15 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 15),
+        date: DateTime(2025, 4, 15),
         amount: -8.80,
         name: 'Bakery & Coffee',
         category: 'Food',
@@ -910,7 +910,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 15),
+        date: DateTime(2025, 4, 15),
         amount: -3.00,
         name: 'Bus Fare',
         category: 'Transport',
@@ -921,7 +921,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 15),
+        date: DateTime(2025, 4, 15),
         amount: -45.50,
         name: 'FairPrice Xtra',
         category: 'Groceries',
@@ -932,7 +932,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 15),
+        date: DateTime(2025, 4, 15),
         amount: -60.00,
         name: 'PUB Utilities Bill',
         category: 'Bills',
@@ -945,7 +945,7 @@ class Bootstrap {
     // DAY 16 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 16),
+        date: DateTime(2025, 4, 16),
         amount: -10.90,
         name: 'Economic Bee Hoon',
         category: 'Food',
@@ -956,7 +956,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 16),
+        date: DateTime(2025, 4, 16),
         amount: -2.00,
         name: 'MRT Fare',
         category: 'Transport',
@@ -967,7 +967,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 16),
+        date: DateTime(2025, 4, 16),
         amount: -13.00,
         name: 'Netflix',
         category: 'Entertainment',
@@ -978,7 +978,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 16),
+        date: DateTime(2025, 4, 16),
         amount: -30.00,
         name: 'TopShop T-Shirt',
         category: 'Shopping',
@@ -991,7 +991,7 @@ class Bootstrap {
     // DAY 17 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 17),
+        date: DateTime(2025, 4, 17),
         amount: -9.50,
         name: 'Roti Prata Breakfast',
         category: 'Food',
@@ -1002,7 +1002,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 17),
+        date: DateTime(2025, 4, 17),
         amount: -2.50,
         name: 'Bus Fare',
         category: 'Transport',
@@ -1013,7 +1013,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 17),
+        date: DateTime(2025, 4, 17),
         amount: -40.00,
         name: 'Zara Purchase',
         category: 'Shopping',
@@ -1024,10 +1024,10 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 17),
+        date: DateTime(2025, 4, 17),
         amount: -12.80,
         name: 'Doc Consultation',
-        category: 'Health',
+        category: 'Medical',
         method: 'Cash',
         note: '',
         bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
@@ -1037,7 +1037,7 @@ class Bootstrap {
     // DAY 18 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 18),
+        date: DateTime(2025, 4, 18),
         amount: -18.20,
         name: 'Dine-in Meal',
         category: 'Food',
@@ -1048,7 +1048,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 18),
+        date: DateTime(2025, 4, 18),
         amount: -3.00,
         name: 'Train Fare',
         category: 'Transport',
@@ -1059,7 +1059,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 18),
+        date: DateTime(2025, 4, 18),
         amount: -15.00,
         name: 'Snack & Drinks',
         category: 'Groceries',
@@ -1070,7 +1070,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 18),
+        date: DateTime(2025, 4, 18),
         amount: -65.90,
         name: 'Internet Bill',
         category: 'Bills',
@@ -1083,7 +1083,7 @@ class Bootstrap {
     // DAY 19 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 19),
+        date: DateTime(2025, 4, 19),
         amount: -6.50,
         name: 'Kopi & Toast',
         category: 'Food',
@@ -1094,7 +1094,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 19),
+        date: DateTime(2025, 4, 19),
         amount: -25.00,
         name: 'Grab Ride',
         category: 'Transport',
@@ -1105,7 +1105,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 19),
+        date: DateTime(2025, 4, 19),
         amount: -9.90,
         name: 'Mobile Game IAP',
         category: 'Entertainment',
@@ -1116,7 +1116,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 19),
+        date: DateTime(2025, 4, 19),
         amount: -50.00,
         name: 'Online Shopping',
         category: 'Shopping',
@@ -1129,7 +1129,7 @@ class Bootstrap {
     // DAY 20 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 20),
+        date: DateTime(2025, 4, 20),
         amount: -4.20,
         name: 'Bubble Tea',
         category: 'Food',
@@ -1140,7 +1140,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 20),
+        date: DateTime(2025, 4, 20),
         amount: -2.10,
         name: 'Bus Fare',
         category: 'Transport',
@@ -1151,7 +1151,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 20),
+        date: DateTime(2025, 4, 20),
         amount: -70.00,
         name: 'Uniqlo Clothing',
         category: 'Shopping',
@@ -1162,10 +1162,10 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 20),
+        date: DateTime(2025, 4, 20),
         amount: -40.00,
         name: 'Doctor Visit',
-        category: 'Health',
+        category: 'Medical',
         method: 'Credit Card',
         note: '',
         bankAccount: await bankAccountRepository.getBankAccount('23456788901'),
@@ -1175,7 +1175,7 @@ class Bootstrap {
     // DAY 21 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 21),
+        date: DateTime(2025, 4, 21),
         amount: -5.00,
         name: 'Local Kopitiam',
         category: 'Food',
@@ -1186,7 +1186,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 21),
+        date: DateTime(2025, 4, 21),
         amount: -1.90,
         name: 'Train Fare',
         category: 'Transport',
@@ -1197,7 +1197,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 21),
+        date: DateTime(2025, 4, 21),
         amount: -10.00,
         name: 'Golden Village',
         category: 'Entertainment',
@@ -1208,7 +1208,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 21),
+        date: DateTime(2025, 4, 21),
         amount: 50.00,
         name: 'Gift from Cousin',
         category: 'Transfer',
@@ -1221,7 +1221,7 @@ class Bootstrap {
     // DAY 22 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 22),
+        date: DateTime(2025, 4, 22),
         amount: -12.00,
         name: 'Bibimbap Lunch',
         category: 'Food',
@@ -1232,7 +1232,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 22),
+        date: DateTime(2025, 4, 22),
         amount: -3.30,
         name: 'MRT & Bus',
         category: 'Transport',
@@ -1243,7 +1243,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 22),
+        date: DateTime(2025, 4, 22),
         amount: -35.90,
         name: 'Cold Storage Groceries',
         category: 'Groceries',
@@ -1254,7 +1254,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 22),
+        date: DateTime(2025, 4, 22),
         amount: -75.00,
         name: 'Sports Equipment',
         category: 'Shopping',
@@ -1267,7 +1267,7 @@ class Bootstrap {
     // DAY 23 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 23),
+        date: DateTime(2025, 4, 23),
         amount: -10.00,
         name: 'Fried Rice Dinner',
         category: 'Food',
@@ -1278,7 +1278,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 23),
+        date: DateTime(2025, 4, 23),
         amount: -25.00,
         name: 'Grab Ride',
         category: 'Transport',
@@ -1289,7 +1289,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 23),
+        date: DateTime(2025, 4, 23),
         amount: -9.90,
         name: 'Nintendo eShop',
         category: 'Entertainment',
@@ -1300,7 +1300,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 23),
+        date: DateTime(2025, 4, 23),
         amount: -18.00,
         name: 'Popular Bookstore',
         category: 'Education',
@@ -1313,7 +1313,7 @@ class Bootstrap {
     // DAY 24 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 24),
+        date: DateTime(2025, 4, 24),
         amount: -7.50,
         name: 'Prata & Teh Tarik',
         category: 'Food',
@@ -1324,7 +1324,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 24),
+        date: DateTime(2025, 4, 24),
         amount: -3.00,
         name: 'Bus Fare',
         category: 'Transport',
@@ -1335,7 +1335,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 24),
+        date: DateTime(2025, 4, 24),
         amount: -99.00,
         name: 'Shopee Electronics',
         category: 'Shopping',
@@ -1346,7 +1346,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 24),
+        date: DateTime(2025, 4, 24),
         amount: -45.60,
         name: 'Dinner & Drinks',
         category: 'Entertainment',
@@ -1359,7 +1359,7 @@ class Bootstrap {
     // DAY 25 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 25),
+        date: DateTime(2025, 4, 25),
         amount: -14.00,
         name: 'Mixed Vegetable Rice',
         category: 'Food',
@@ -1370,7 +1370,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 25),
+        date: DateTime(2025, 4, 25),
         amount: -30.00,
         name: 'Taxi to Airport',
         category: 'Transport',
@@ -1381,7 +1381,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 25),
+        date: DateTime(2025, 4, 25),
         amount: -5.50,
         name: '7-Eleven Snacks',
         category: 'Groceries',
@@ -1392,7 +1392,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 3, 25),
+        date: DateTime(2025, 4, 25),
         amount: -30.00,
         name: 'Mobile Phone Bill',
         category: 'Bills',
@@ -1409,7 +1409,7 @@ class Bootstrap {
     // DAY 1 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 1),
+        date: DateTime(2025, 5, 1),
         amount: -10.50,
         name: 'Economy Rice Lunch',
         category: 'Food',
@@ -1420,7 +1420,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 1),
+        date: DateTime(2025, 5, 1),
         amount: -2.50,
         name: 'Bus Fare',
         category: 'Transport',
@@ -1431,7 +1431,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 1),
+        date: DateTime(2025, 5, 1),
         amount: -28.90,
         name: 'FairPrice Groceries',
         category: 'Groceries',
@@ -1442,7 +1442,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 1),
+        date: DateTime(2025, 5, 1),
         amount: -35.00,
         name: 'SingPost Bill Payment',
         category: 'Bills',
@@ -1455,7 +1455,7 @@ class Bootstrap {
     // DAY 2 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 2),
+        date: DateTime(2025, 5, 2),
         amount: -5.60,
         name: 'Bak Chor Mee',
         category: 'Food',
@@ -1466,7 +1466,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 2),
+        date: DateTime(2025, 5, 2),
         amount: -12.00,
         name: 'CityCab Ride',
         category: 'Transport',
@@ -1477,7 +1477,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 2),
+        date: DateTime(2025, 5, 2),
         amount: -19.00,
         name: 'Netflix Subscription',
         category: 'Entertainment',
@@ -1488,7 +1488,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 2),
+        date: DateTime(2025, 5, 2),
         amount: -100.00,
         name: 'Credit Card Bill Payment',
         category: 'Bills',
@@ -1501,7 +1501,7 @@ class Bootstrap {
     // DAY 3 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 3),
+        date: DateTime(2025, 5, 3),
         amount: -7.40,
         name: 'Toast Box Breakfast',
         category: 'Food',
@@ -1512,7 +1512,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 3),
+        date: DateTime(2025, 5, 3),
         amount: -3.00,
         name: 'MRT Fare',
         category: 'Transport',
@@ -1523,7 +1523,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 3),
+        date: DateTime(2025, 5, 3),
         amount: -23.50,
         name: 'Watsons',
         category: 'Shopping',
@@ -1534,7 +1534,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 3),
+        date: DateTime(2025, 5, 3),
         amount: -15.00,
         name: 'Delivery Tip',
         category: 'Others',
@@ -1547,7 +1547,7 @@ class Bootstrap {
     // DAY 4 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 4),
+        date: DateTime(2025, 5, 4),
         amount: -9.90,
         name: 'Hawker Center Lunch',
         category: 'Food',
@@ -1558,7 +1558,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 4),
+        date: DateTime(2025, 5, 4),
         amount: -18.00,
         name: 'Grab Ride',
         category: 'Transport',
@@ -1569,7 +1569,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 4),
+        date: DateTime(2025, 5, 4),
         amount: -5.00,
         name: 'Arcade Tokens',
         category: 'Entertainment',
@@ -1580,7 +1580,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 4),
+        date: DateTime(2025, 5, 4),
         amount: -25.00,
         name: 'FairPrice Groceries',
         category: 'Groceries',
@@ -1593,7 +1593,7 @@ class Bootstrap {
     // DAY 5 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 5),
+        date: DateTime(2025, 5, 5),
         amount: -6.70,
         name: 'Subway Dinner',
         category: 'Food',
@@ -1604,7 +1604,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 5),
+        date: DateTime(2025, 5, 5),
         amount: -2.00,
         name: 'Bus Fare',
         category: 'Transport',
@@ -1615,7 +1615,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 5),
+        date: DateTime(2025, 5, 5),
         amount: -12.00,
         name: 'Spotify',
         category: 'Entertainment',
@@ -1626,7 +1626,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 5),
+        date: DateTime(2025, 5, 5),
         amount: -45.00,
         name: 'Amazon Purchase',
         category: 'Shopping',
@@ -1639,7 +1639,7 @@ class Bootstrap {
     // DAY 6 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 6),
+        date: DateTime(2025, 5, 6),
         amount: -8.10,
         name: 'Mixed Rice Lunch',
         category: 'Food',
@@ -1650,7 +1650,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 6),
+        date: DateTime(2025, 5, 6),
         amount: -35.00,
         name: 'Bill Payment',
         category: 'Bills',
@@ -1661,7 +1661,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 6),
+        date: DateTime(2025, 5, 6),
         amount: -20.00,
         name: 'Grab Ride',
         category: 'Transport',
@@ -1672,7 +1672,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 6),
+        date: DateTime(2025, 5, 6),
         amount: -17.90,
         name: 'Cinema',
         category: 'Entertainment',
@@ -1685,7 +1685,7 @@ class Bootstrap {
     // DAY 7 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 7),
+        date: DateTime(2025, 5, 7),
         amount: -4.50,
         name: 'Local Kopitiam',
         category: 'Food',
@@ -1696,7 +1696,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 7),
+        date: DateTime(2025, 5, 7),
         amount: -2.50,
         name: 'Bus Fare',
         category: 'Transport',
@@ -1707,7 +1707,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 7),
+        date: DateTime(2025, 5, 7),
         amount: -22.00,
         name: 'Arcade & Snacks',
         category: 'Entertainment',
@@ -1718,7 +1718,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 7),
+        date: DateTime(2025, 5, 7),
         amount: 3000.00,
         name: 'Monthly Salary',
         category: 'Salary',
@@ -1731,7 +1731,7 @@ class Bootstrap {
     // DAY 8 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 8),
+        date: DateTime(2025, 5, 8),
         amount: -10.00,
         name: 'Pasta Lunch',
         category: 'Food',
@@ -1742,7 +1742,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 8),
+        date: DateTime(2025, 5, 8),
         amount: -2.20,
         name: 'MRT Fare',
         category: 'Transport',
@@ -1753,7 +1753,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 8),
+        date: DateTime(2025, 5, 8),
         amount: -45.00,
         name: 'Uniqlo Sale',
         category: 'Shopping',
@@ -1764,7 +1764,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 8),
+        date: DateTime(2025, 5, 8),
         amount: -3.90,
         name: 'ShareTea Drink',
         category: 'Food',
@@ -1777,7 +1777,7 @@ class Bootstrap {
     // DAY 9 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 9),
+        date: DateTime(2025, 5, 9),
         amount: -6.50,
         name: 'Porridge Breakfast',
         category: 'Food',
@@ -1788,7 +1788,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 9),
+        date: DateTime(2025, 5, 9),
         amount: -15.00,
         name: 'ComfortDelGro Taxi',
         category: 'Transport',
@@ -1799,7 +1799,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 9),
+        date: DateTime(2025, 5, 9),
         amount: -27.50,
         name: 'NTUC Groceries',
         category: 'Groceries',
@@ -1810,7 +1810,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 9),
+        date: DateTime(2025, 5, 9),
         amount: -8.00,
         name: 'Baskin Robbins',
         category: 'Entertainment',
@@ -1823,7 +1823,7 @@ class Bootstrap {
     // DAY 10 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 10),
+        date: DateTime(2025, 5, 10),
         amount: -14.00,
         name: 'McDonald’s',
         category: 'Food',
@@ -1834,7 +1834,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 10),
+        date: DateTime(2025, 5, 10),
         amount: -1.50,
         name: 'Bus Fare',
         category: 'Transport',
@@ -1845,7 +1845,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 10),
+        date: DateTime(2025, 5, 10),
         amount: -35.00,
         name: 'Movie Tickets',
         category: 'Entertainment',
@@ -1856,7 +1856,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 10),
+        date: DateTime(2025, 5, 10),
         amount: -25.50,
         name: 'Guardian Items',
         category: 'Shopping',
@@ -1869,7 +1869,7 @@ class Bootstrap {
     // DAY 11 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 11),
+        date: DateTime(2025, 5, 11),
         amount: -2.20,
         name: 'Coffee & Toast',
         category: 'Food',
@@ -1880,7 +1880,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 11),
+        date: DateTime(2025, 5, 11),
         amount: -5.00,
         name: 'Grab Share Ride',
         category: 'Transport',
@@ -1891,7 +1891,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 11),
+        date: DateTime(2025, 5, 11),
         amount: -12.00,
         name: 'Nintendo Online',
         category: 'Entertainment',
@@ -1902,7 +1902,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 11),
+        date: DateTime(2025, 5, 11),
         amount: -15.00,
         name: 'Popular Bookstore',
         category: 'Education',
@@ -1915,7 +1915,7 @@ class Bootstrap {
     // DAY 12 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 12),
+        date: DateTime(2025, 5, 12),
         amount: -4.70,
         name: 'Bakery Stop',
         category: 'Food',
@@ -1926,7 +1926,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 12),
+        date: DateTime(2025, 5, 12),
         amount: -2.50,
         name: 'Bus Ride',
         category: 'Transport',
@@ -1937,7 +1937,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 12),
+        date: DateTime(2025, 5, 12),
         amount: -32.00,
         name: 'Scoot Payment',
         category: 'Transport',
@@ -1948,7 +1948,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 12),
+        date: DateTime(2025, 5, 12),
         amount: -29.90,
         name: 'Mango Sale',
         category: 'Shopping',
@@ -1961,7 +1961,7 @@ class Bootstrap {
     // DAY 13 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 13),
+        date: DateTime(2025, 5, 13),
         amount: -10.00,
         name: 'Food Court Lunch',
         category: 'Food',
@@ -1972,7 +1972,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 13),
+        date: DateTime(2025, 5, 13),
         amount: -2.20,
         name: 'MRT Fare',
         category: 'Transport',
@@ -1983,7 +1983,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 13),
+        date: DateTime(2025, 5, 13),
         amount: -40.00,
         name: 'PUB Utilities Bill',
         category: 'Bills',
@@ -1994,7 +1994,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 13),
+        date: DateTime(2025, 5, 13),
         amount: -8.50,
         name: 'Park Entrance Fee',
         category: 'Entertainment',
@@ -2007,7 +2007,7 @@ class Bootstrap {
     // DAY 14 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 14),
+        date: DateTime(2025, 5, 14),
         amount: -5.00,
         name: 'Hawker Dinner',
         category: 'Food',
@@ -2018,7 +2018,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 14),
+        date: DateTime(2025, 5, 14),
         amount: -3.00,
         name: 'Train Fare',
         category: 'Transport',
@@ -2029,7 +2029,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 14),
+        date: DateTime(2025, 5, 14),
         amount: -12.00,
         name: 'StarHub Bill',
         category: 'Bills',
@@ -2040,7 +2040,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 14),
+        date: DateTime(2025, 5, 14),
         amount: 200.00,
         name: 'Project Bonus',
         category: 'Salary',
@@ -2053,7 +2053,7 @@ class Bootstrap {
     // DAY 15 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 15),
+        date: DateTime(2025, 5, 15),
         amount: -8.20,
         name: 'Teochew Porridge',
         category: 'Food',
@@ -2064,7 +2064,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 15),
+        date: DateTime(2025, 5, 15),
         amount: -1.90,
         name: 'Bus Fare',
         category: 'Transport',
@@ -2075,7 +2075,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 15),
+        date: DateTime(2025, 5, 15),
         amount: -55.00,
         name: 'Uniqlo Clothing',
         category: 'Shopping',
@@ -2086,7 +2086,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 15),
+        date: DateTime(2025, 5, 15),
         amount: -10.00,
         name: 'PUB Payment',
         category: 'Bills',
@@ -2099,7 +2099,7 @@ class Bootstrap {
     // DAY 16 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 16),
+        date: DateTime(2025, 5, 16),
         amount: -9.00,
         name: 'Fish Soup Lunch',
         category: 'Food',
@@ -2110,7 +2110,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 16),
+        date: DateTime(2025, 5, 16),
         amount: -3.00,
         name: 'Grab Share',
         category: 'Transport',
@@ -2121,7 +2121,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 16),
+        date: DateTime(2025, 5, 16),
         amount: -15.00,
         name: 'PUB Bill Top-up',
         category: 'Bills',
@@ -2132,7 +2132,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 16),
+        date: DateTime(2025, 5, 16),
         amount: -6.50,
         name: 'KOI Bubble Tea',
         category: 'Food',
@@ -2145,7 +2145,7 @@ class Bootstrap {
     // DAY 17 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 17),
+        date: DateTime(2025, 5, 17),
         amount: -10.00,
         name: 'Cai Fan Dinner',
         category: 'Food',
@@ -2156,7 +2156,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 17),
+        date: DateTime(2025, 5, 17),
         amount: -2.10,
         name: 'Train Fare',
         category: 'Transport',
@@ -2167,7 +2167,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 17),
+        date: DateTime(2025, 5, 17),
         amount: -32.00,
         name: 'FairPrice Weekly',
         category: 'Groceries',
@@ -2178,7 +2178,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 17),
+        date: DateTime(2025, 5, 17),
         amount: -50.00,
         name: 'Online Purchase',
         category: 'Shopping',
@@ -2191,7 +2191,7 @@ class Bootstrap {
     // DAY 18 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 18),
+        date: DateTime(2025, 5, 18),
         amount: -7.50,
         name: 'Bak Kut Teh',
         category: 'Food',
@@ -2202,7 +2202,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 18),
+        date: DateTime(2025, 5, 18),
         amount: -20.00,
         name: 'Grab Ride',
         category: 'Transport',
@@ -2213,7 +2213,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 18),
+        date: DateTime(2025, 5, 18),
         amount: -10.00,
         name: 'PSN Subscription',
         category: 'Entertainment',
@@ -2224,7 +2224,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 18),
+        date: DateTime(2025, 5, 18),
         amount: -85.00,
         name: 'Wallet Purchase',
         category: 'Shopping',
@@ -2237,7 +2237,7 @@ class Bootstrap {
     // DAY 19 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 19),
+        date: DateTime(2025, 5, 19),
         amount: -4.90,
         name: 'Minced Meat Noodles',
         category: 'Food',
@@ -2248,7 +2248,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 19),
+        date: DateTime(2025, 5, 19),
         amount: -2.00,
         name: 'Bus Fare',
         category: 'Transport',
@@ -2259,7 +2259,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 19),
+        date: DateTime(2025, 5, 19),
         amount: -25.00,
         name: 'Wallet Top-Up',
         category: 'Others',
@@ -2270,7 +2270,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 19),
+        date: DateTime(2025, 5, 19),
         amount: -9.50,
         name: 'Sentosa Monorail',
         category: 'Entertainment',
@@ -2283,7 +2283,7 @@ class Bootstrap {
     // DAY 20 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 20),
+        date: DateTime(2025, 5, 20),
         amount: -8.20,
         name: 'Kimchi Fried Rice',
         category: 'Food',
@@ -2294,7 +2294,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 20),
+        date: DateTime(2025, 5, 20),
         amount: -3.00,
         name: 'MRT Fare',
         category: 'Transport',
@@ -2305,7 +2305,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 20),
+        date: DateTime(2025, 5, 20),
         amount: -20.00,
         name: 'Grab Ride',
         category: 'Transport',
@@ -2316,7 +2316,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 20),
+        date: DateTime(2025, 5, 20),
         amount: -34.90,
         name: 'Toys Purchase',
         category: 'Shopping',
@@ -2329,7 +2329,7 @@ class Bootstrap {
     // DAY 21 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 21),
+        date: DateTime(2025, 5, 21),
         amount: -6.00,
         name: 'Malaysian Food Street',
         category: 'Food',
@@ -2340,7 +2340,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 21),
+        date: DateTime(2025, 5, 21),
         amount: -3.00,
         name: 'Bus Fare',
         category: 'Transport',
@@ -2351,7 +2351,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 21),
+        date: DateTime(2025, 5, 21),
         amount: -15.00,
         name: 'iTunes Subscription',
         category: 'Entertainment',
@@ -2362,7 +2362,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 21),
+        date: DateTime(2025, 5, 21),
         amount: 88.00,
         name: 'Gift from Sibling',
         category: 'Transfer',
@@ -2375,7 +2375,7 @@ class Bootstrap {
     // DAY 22 (Assignment: 1, 2, 3, 1)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 22),
+        date: DateTime(2025, 5, 22),
         amount: -12.40,
         name: 'Chicken Rice Lunch',
         category: 'Food',
@@ -2386,7 +2386,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 22),
+        date: DateTime(2025, 5, 22),
         amount: -3.30,
         name: 'MRT & Bus',
         category: 'Transport',
@@ -2397,7 +2397,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 22),
+        date: DateTime(2025, 5, 22),
         amount: -45.90,
         name: 'Cold Storage',
         category: 'Groceries',
@@ -2408,7 +2408,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 22),
+        date: DateTime(2025, 5, 22),
         amount: -65.00,
         name: 'KINOKUNIYA Books',
         category: 'Education',
@@ -2421,7 +2421,7 @@ class Bootstrap {
     // DAY 23 (Assignment: 2, 3, 1, 2)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 23),
+        date: DateTime(2025, 5, 23),
         amount: -6.80,
         name: 'Kopi & Toast',
         category: 'Food',
@@ -2432,7 +2432,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 23),
+        date: DateTime(2025, 5, 23),
         amount: -2.50,
         name: 'Bus Fare',
         category: 'Transport',
@@ -2443,7 +2443,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 23),
+        date: DateTime(2025, 5, 23),
         amount: -16.00,
         name: 'Golden Village Ticket',
         category: 'Entertainment',
@@ -2454,7 +2454,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 23),
+        date: DateTime(2025, 5, 23),
         amount: -26.00,
         name: 'Uniqlo T-Shirt',
         category: 'Shopping',
@@ -2467,7 +2467,7 @@ class Bootstrap {
     // DAY 24 (Assignment: 3, 1, 2, 3)
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 24),
+        date: DateTime(2025, 5, 24),
         amount: -14.00,
         name: 'Fish & Chips',
         category: 'Food',
@@ -2478,7 +2478,7 @@ class Bootstrap {
     );
     await transactionRepository.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 24),
+        date: DateTime(2025, 5, 24),
         amount: -20.00,
         name: 'Grab Ride',
         category: 'Transport',

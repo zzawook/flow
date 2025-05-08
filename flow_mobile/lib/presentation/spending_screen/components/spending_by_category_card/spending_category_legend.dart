@@ -13,8 +13,7 @@ class CategoryLegend extends StatelessWidget {
       runSpacing: 12,
       children:
           entries.map((entry) {
-            final colorHex = SpendingCategoryUtil.getCategoryColor(entry.key);
-            final color = _parseColor(colorHex);
+            final color = SpendingCategoryUtil.getCategoryColor(entry.key);
             final categoryName = entry.key; // e.g. "transfer", "food", etc.
 
             return Row(
@@ -39,13 +38,5 @@ class CategoryLegend extends StatelessWidget {
   String capitalize(String input) {
     if (input.isEmpty) return input;
     return input[0].toUpperCase() + input.substring(1);
-  }
-
-  Color _parseColor(String hexColor) {
-    String colorString = hexColor.replaceAll('#', '');
-    if (colorString.length == 6) {
-      colorString = 'FF$colorString';
-    }
-    return Color(int.parse(colorString, radix: 16));
   }
 }

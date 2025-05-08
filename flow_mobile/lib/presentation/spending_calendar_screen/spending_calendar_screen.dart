@@ -1,22 +1,23 @@
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/presentation/spending_detail_screen/spending_calendar.dart';
-import 'package:flow_mobile/presentation/spending_detail_screen/spending_detail_top_bar.dart';
-import 'package:flow_mobile/presentation/spending_detail_screen/transaction_list.dart';
+import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar.dart';
+import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar_screen_top_bar.dart';
+
+import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-class SpendingDetailScreen extends StatefulWidget {
-  const SpendingDetailScreen({super.key});
+class SpendingCalendarScreen extends StatefulWidget {
+  const SpendingCalendarScreen({super.key});
 
   @override
   SpendingDetailScreenState createState() => SpendingDetailScreenState();
 }
 
-class SpendingDetailScreenState extends State<SpendingDetailScreen> {
+class SpendingDetailScreenState extends State<SpendingCalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -52,7 +53,7 @@ class SpendingDetailScreenState extends State<SpendingDetailScreen> {
                 builder: (context, displayedMonth) {
                   return Column(
                     children: [
-                      SpendingDetailTopBar(
+                      SpendingCalendarScreenTopBar(
                         previousScreenRoute: "/spending",
                         displayMonthYear: displayedMonth,
                       ),

@@ -5,8 +5,8 @@ import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-class SpendingDetailTopBar extends StatelessWidget {
-  const SpendingDetailTopBar({
+class SpendingCalendarScreenTopBar extends StatelessWidget {
+  const SpendingCalendarScreenTopBar({
     super.key,
     required this.previousScreenRoute,
     required this.displayMonthYear,
