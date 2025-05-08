@@ -71,8 +71,8 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.grey.withOpacity(0.5),
-                  Colors.grey.withOpacity(0.0),
+                  Colors.grey.withValues(alpha: 0.5),
+                  Colors.grey.withValues(alpha: 0.0),
                 ],
               ),
             ),
@@ -113,8 +113,8 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xFF50C878).withOpacity(1.0),
-                  const Color(0xFF50C878).withOpacity(0.0),
+                  const Color(0xFF50C878).withValues(alpha: 1.0),
+                  const Color(0xFF50C878).withValues(alpha: 0.0),
                 ],
               ),
             ),

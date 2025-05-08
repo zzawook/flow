@@ -57,7 +57,10 @@ class FlowAppState extends State<FlowApp> {
                 page = SpendingScreen();
                 break;
               case '/spending/detail':
-                page = SpendingCalendarScreen();
+                CustomPageRouteArguments args =
+                    settings.arguments as CustomPageRouteArguments;
+                DateTime month = args.extraData as DateTime;
+                page = SpendingCalendarScreen(displayedMonth: month);
                 break;
               case '/spending/category':
                 CustomPageRouteArguments args =

@@ -1,5 +1,5 @@
 import 'package:flow_mobile/domain/entities/transaction.dart';
-import 'package:flow_mobile/domain/models/WeeklySpendingData.dart';
+import 'package:flow_mobile/domain/models/weekly_spending_data.dart';
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';

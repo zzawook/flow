@@ -20,10 +20,6 @@ class MonthlySpendingOverview extends StatefulWidget {
 }
 
 class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
-  DateTime currentMonthYear = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -32,87 +28,99 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
         color: Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 16),
-            child: StoreConnector<FlowState, SpendingOverviewState>(
-              distinct: true,
-              converter:
-                  (store) {
-                    DateTime displayedMonth =
-                        store.state.screenState.spendingScreenState.displayedMonth;
+      child: StoreConnector<FlowState, SpendingOverviewState>(
+        // distinct: true,
+        converter: (store) {
+          DateTime displayedMonth =
+              store.state.screenState.spendingScreenState.displayedMonth;
 
-                    DateTime today = DateTime(
-                      DateTime.now().year,
-                      DateTime.now().month,
-                      DateTime.now().day,
-                    );
-                    DateTime lastSunday = today.subtract(
-                      Duration(days: today.weekday % 7),
-                    );
-                    List<Transaction> transactions =
-                        store.state.transactionState.getTransactionsFromTo(lastSunday, today);
-                    return SpendingOverviewState(
-                      displayedMonth: displayedMonth,
-                      transactions: transactions,
-                    );
-                  },
-              builder:
-                  (context, spendingOverviewState) => Column(
+          print(displayedMonth);
+
+          DateTime today = DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+          );
+          DateTime lastSunday = today.subtract(
+            Duration(days: today.weekday % 7),
+          );
+          List<Transaction> transactions = store.state.transactionState
+              .getTransactionsFromTo(lastSunday, today);
+          return SpendingOverviewState(
+            displayedMonth: displayedMonth,
+            transactions: transactions,
+          );
+        },
+        builder:
+            (context, spendingOverviewState) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    top: 24,
+                    bottom: 16,
+                  ),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SpendingHeader(displayMonthYear: spendingOverviewState.displayedMonth),
+                      SpendingHeader(
+                        displayMonthYear: spendingOverviewState.displayedMonth,
+                      ),
 
                       SpendingComparetoLastMonthInsight(),
 
-                      WeeklySpendingCalendar(transactions: spendingOverviewState.transactions),
+                      WeeklySpendingCalendar(
+                        transactions: spendingOverviewState.transactions,
+                      ),
 
-                      TransactionsList(transactions: spendingOverviewState.transactions),
+                      TransactionsList(
+                        transactions: spendingOverviewState.transactions,
+                      ),
                     ],
                   ),
-            ),
-          ),
-
-          FlowButton(
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                '/spending/detail',
-                arguments: CustomPageRouteArguments(
-                  transitionType: TransitionType.slideLeft,
                 ),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.only(top: 15, bottom: 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'View Transactions ',
-                    textDirection: TextDirection.ltr,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      color: Color(0xFFA6A6A6),
-                      fontSize: 18,
+                FlowButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/spending/detail',
+                      arguments: CustomPageRouteArguments(
+                        transitionType: TransitionType.slideLeft,
+                        extraData: spendingOverviewState.displayedMonth,
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 15, bottom: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'View Transactions ',
+                          textDirection: TextDirection.ltr,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: Color(0xFFA6A6A6),
+                            fontSize: 18,
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/icons/arrow_right.png',
+                          width: 12,
+                          height: 12,
+                          color: const Color(0xFFA19F9F),
+                        ),
+                      ],
                     ),
                   ),
-                  Image.asset(
-                    'assets/icons/arrow_right.png',
-                    width: 12,
-                    height: 12,
-                    color: const Color(0xFFA19F9F),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
       ),
     );
   }

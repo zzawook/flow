@@ -2,8 +2,6 @@ import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
-import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
-import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/shared/widgets/spending/spending_monthly_trend_line_graph.dart';
@@ -12,13 +10,12 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 // ignore: must_be_immutable
 class SpendingHeader extends StatelessWidget {
-  SpendingHeader({super.key, required this.displayMonthYear});
+  const SpendingHeader({super.key, required this.displayMonthYear});
 
-  late DateTime displayMonthYear;
+  final DateTime displayMonthYear;
 
   @override
   Widget build(BuildContext context) {
-    displayMonthYear = DateTime(DateTime.now().year, DateTime.now().month);
     return Row(
       children: [
         Expanded(
@@ -37,13 +34,6 @@ class SpendingHeader extends StatelessWidget {
                               displayMonthYear.year,
                               displayMonthYear.month - 1,
                             ),
-                          ),
-                        );
-                        Navigator.pushNamed(
-                          context,
-                          "/spending/detail",
-                          arguments: CustomPageRouteArguments(
-                            transitionType: TransitionType.slideLeft,
                           ),
                         );
                       }, // Previous Month
@@ -72,20 +62,16 @@ class SpendingHeader extends StatelessWidget {
                     margin: EdgeInsets.only(left: 8),
                     child: FlowButton(
                       onPressed: () {
-                        // StoreProvider.of<FlowState>(
-                        //   context,
-                        // ).dispatch(IncrementDisplayedMonthAction());
-
-                        // Check if the next month is in the future
                         if (displayMonthYear.month == DateTime.now().month &&
                             displayMonthYear.year == DateTime.now().year) {
                           return;
                         }
-                        Navigator.pushNamed(
-                          context,
-                          "/spending/detail",
-                          arguments: CustomPageRouteArguments(
-                            transitionType: TransitionType.slideLeft,
+                        StoreProvider.of<FlowState>(context).dispatch(
+                          SetDisplayedMonthAction(
+                            DateTime(
+                              displayMonthYear.year,
+                              displayMonthYear.month + 1,
+                            ),
                           ),
                         );
                       },

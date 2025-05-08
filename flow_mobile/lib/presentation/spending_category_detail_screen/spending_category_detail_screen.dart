@@ -19,7 +19,6 @@ class SpendingCategoryDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(displayMonthYear);
     return Scaffold(
       body: Container(
         color: Color(0xFFFAFAFA),
@@ -62,6 +61,7 @@ class SpendingCategoryDetailScreen extends StatelessWidget {
                 BalanceSection(
                   category: category,
                   balance: totalTransactionAmount.toStringAsFixed(2),
+                  transactionCount: transactions.length,
                 ),
                 Container(height: 12, color: Color(0xFFF0F0F0)),
                 Expanded(
@@ -86,11 +86,13 @@ class SpendingCategoryDetailScreen extends StatelessWidget {
 class BalanceSection extends StatelessWidget {
   final String balance;
   final String category;
+  final int transactionCount;
 
   const BalanceSection({
     super.key,
     required this.category,
     required this.balance,
+    required this.transactionCount,
   });
 
   @override
@@ -114,6 +116,11 @@ class BalanceSection extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          FlowSeparatorBox(height: 32),
+          Text(
+            '$transactionCount transactions',
+            style: TextStyle(fontSize: 14, color: Color(0x88000000)),
           ),
         ],
       ),

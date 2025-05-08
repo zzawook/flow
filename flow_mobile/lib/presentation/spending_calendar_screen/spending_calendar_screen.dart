@@ -11,13 +11,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class SpendingCalendarScreen extends StatefulWidget {
-  const SpendingCalendarScreen({super.key});
+  final DateTime displayedMonth;
+  const SpendingCalendarScreen({super.key, required this.displayedMonth});
 
   @override
   SpendingDetailScreenState createState() => SpendingDetailScreenState();
 }
 
 class SpendingDetailScreenState extends State<SpendingCalendarScreen> {
+  late DateTime displayedMonth;
+
+  @override
+  void initState() {
+    super.initState();
+    displayedMonth = widget.displayedMonth;
+  }
+
+  void setDisplayedMonth(DateTime month) {
+    setState(() {
+      displayedMonth = month;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -42,20 +57,11 @@ class SpendingDetailScreenState extends State<SpendingCalendarScreen> {
             color: const Color(0xFFF5F5F5),
             child: Padding(
               padding: const EdgeInsets.only(left: 24, right: 24, top: 72),
-              child: StoreConnector<FlowState, DateTime>(
-                converter:
-                    (store) =>
-                        store
-                            .state
-                            .screenState
-                            .spendingScreenState
-                            .displayedMonth,
-                builder: (context, displayedMonth) {
-                  return Column(
+              child: Column(
                     children: [
-                      SpendingCalendarScreenTopBar(
-                        previousScreenRoute: "/spending",
+                  SpendingCalendarScreenTopBar(
                         displayMonthYear: displayedMonth,
+                    displayMonthYearSetter: setDisplayedMonth,
                       ),
                       const SizedBox(height: 30),
                       FlowSeparatorBox(height: 20),
@@ -74,9 +80,7 @@ class SpendingDetailScreenState extends State<SpendingCalendarScreen> {
                               ),
                             ),
                       ),
-                    ],
-                  );
-                },
+                ],
               ),
             ),
           ),

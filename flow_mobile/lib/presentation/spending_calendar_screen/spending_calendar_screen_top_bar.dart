@@ -1,18 +1,15 @@
-import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 
 class SpendingCalendarScreenTopBar extends StatelessWidget {
   const SpendingCalendarScreenTopBar({
     super.key,
-    required this.previousScreenRoute,
     required this.displayMonthYear,
+    required this.displayMonthYearSetter,
   });
 
-  final String previousScreenRoute;
+  final Function displayMonthYearSetter;
 
   final DateTime displayMonthYear;
 
@@ -38,9 +35,12 @@ class SpendingCalendarScreenTopBar extends StatelessWidget {
                 margin: EdgeInsets.only(right: 8),
                 child: FlowButton(
                   onPressed: () {
-                    StoreProvider.of<FlowState>(
-                      context,
-                    ).dispatch(DecrementDisplayedMonthAction());
+                    displayMonthYearSetter(
+                      DateTime(
+                        displayMonthYear.year,
+                        displayMonthYear.month - 1,
+                      ),
+                    );
                   }, // Previous Month
                   child: Image.asset(
                     'assets/icons/prevMonth.png',
@@ -67,9 +67,16 @@ class SpendingCalendarScreenTopBar extends StatelessWidget {
                 margin: EdgeInsets.only(left: 8),
                 child: FlowButton(
                   onPressed: () {
-                    StoreProvider.of<FlowState>(
-                      context,
-                    ).dispatch(IncrementDisplayedMonthAction());
+                    if (displayMonthYear.month == DateTime.now().month &&
+                        displayMonthYear.year == DateTime.now().year) {
+                      return;
+                    }
+                    displayMonthYearSetter(
+                      DateTime(
+                        displayMonthYear.year,
+                        displayMonthYear.month + 1,
+                      ),
+                    );
                   },
                   child: Image.asset(
                     displayMonthYear.month < DateTime.now().month ||
