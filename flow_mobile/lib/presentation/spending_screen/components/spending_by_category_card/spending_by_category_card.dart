@@ -83,7 +83,7 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
                             style: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 22,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.normal,
                               color: Color(0xFF000000),
                             ),
                           ),

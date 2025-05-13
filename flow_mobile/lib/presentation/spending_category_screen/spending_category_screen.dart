@@ -183,8 +183,8 @@ class MonthSelector extends StatelessWidget {
               DateTimeUtil.getMonthName(displayMonthYear.month),
               style: TextStyle(
                 fontFamily: 'Inter',
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontWeight: FontWeight.normal,
                 color: Color(0xFF000000),
               ),
             ),

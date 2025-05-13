@@ -1,0 +1,169 @@
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/shared/utils/recurring_spending.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class FixedSpendingCard extends StatefulWidget {
+  /// The month to show initially
+  final DateTime initialMonth;
+
+  const FixedSpendingCard({super.key, required this.initialMonth});
+
+  @override
+  FixedSpendingCardState createState() => FixedSpendingCardState();
+}
+
+class FixedSpendingCardState extends State<FixedSpendingCard> {
+  late DateTime displayMonth;
+
+  @override
+  void initState() {
+    super.initState();
+    displayMonth = widget.initialMonth;
+  }
+
+  Map<FixedSpendingCategory, double> spendingData = {
+    FixedSpendingCategory.telco: 32,
+    FixedSpendingCategory.subscription: 18,
+    FixedSpendingCategory.utilities: 125.24,
+    FixedSpendingCategory.insurance: 79.95,
+    FixedSpendingCategory.rent: 1550.0,
+    FixedSpendingCategory.others: 30.25,
+  };
+
+  /// Total of all categories
+  double get totalSpending =>
+      spendingData.values.fold(0, (sum, val) => sum + val);
+
+  /// Format numbers as “₩33,570”
+  String _formatSGD(double amount) {
+    final f = NumberFormat.currency(
+      locale: 'en_SG',
+      customPattern: "#,##0.00 'SGD'",
+      decimalDigits: 2,
+    );
+    return f.format(amount);
+  }
+
+  /// Format numbers as “₩33,570”
+  String _formatSGDollarSign(double amount) {
+    final f = NumberFormat.currency(
+      locale: 'en_SG',
+      symbol: '\$ ',
+      decimalDigits: 2,
+    );
+    return f.format(amount);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24, bottom: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Recurring Spendings",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                      color: Color(0x88000000),
+                    ),
+                  ),
+                  Text(
+                    _formatSGDollarSign(totalSpending),
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF00C864),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+            ...spendingData.entries.map((entry) {
+              if (entry.value == 0) {
+                return const SizedBox.shrink();
+              }
+              return FlowButton(
+                onPressed: () {
+                  // Handle button press
+                  Navigator.pushNamed(
+                    context,
+                    "/fixed_spending/category",
+                    arguments: CustomPageRouteArguments(
+                      transitionType: TransitionType.slideLeft,
+                      extraData: entry.key,
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    top: 14,
+                    bottom: 14,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF0F0F0),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: entry.key.icon,
+                          ),
+                          const FlowSeparatorBox(width: 18),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                entry.key.label,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0x88000000),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                _formatSGD(entry.value),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Icon(Icons.chevron_right, color: const Color(0xFFB0B0B0)),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+}

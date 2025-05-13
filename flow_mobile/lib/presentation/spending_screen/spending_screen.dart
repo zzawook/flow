@@ -1,5 +1,6 @@
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/presentation/spending_screen/components/fixed_spending_card/fixed_spending_card.dart';
 import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
@@ -12,10 +13,10 @@ class SpendingScreen extends StatefulWidget {
   const SpendingScreen({super.key});
 
   @override
-  _SpendingScreenState createState() => _SpendingScreenState();
+  SpendingScreenState createState() => SpendingScreenState();
 }
 
-class _SpendingScreenState extends State<SpendingScreen> {
+class SpendingScreenState extends State<SpendingScreen> {
   void _handleNotificationTap() {}
 
   @override
@@ -50,6 +51,15 @@ class _SpendingScreenState extends State<SpendingScreen> {
                     FlowSeparatorBox(height: 16),
 
                     const SpendingByCategoryCard(),
+
+                    FlowSeparatorBox(height: 16),
+
+                    FixedSpendingCard(
+                      initialMonth: DateTime(
+                        DateTime.now().year,
+                        DateTime.now().month,
+                      ),
+                    ),
 
                     FlowSeparatorBox(height: 16),
 
