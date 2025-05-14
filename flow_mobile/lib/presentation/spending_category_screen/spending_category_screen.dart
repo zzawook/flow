@@ -126,6 +126,7 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
                           padding: const EdgeInsets.only(left: 16, right: 16),
                           child: StackedBar(
                             total: total,
+                            height: 32,
                             entries: sortedCategories,
                           ),
                         ),

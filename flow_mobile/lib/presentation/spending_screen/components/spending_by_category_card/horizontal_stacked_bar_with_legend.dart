@@ -24,7 +24,7 @@ class HorizontalStackedBarWithLegend extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // The stacked bar
-        StackedBar(total: total, entries: entries),
+        StackedBar(total: total, height: 24, entries: entries),
         const SizedBox(height: 16),
         // The legend
         CategoryLegend(entries: entries),

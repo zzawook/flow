@@ -1,7 +1,3 @@
-/* -------------------------------------------------------------------------- */
-/*                              BalanceSection                                */
-/* -------------------------------------------------------------------------- */
-
 import 'dart:async';
 
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
@@ -10,13 +6,14 @@ import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_data.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_detail.dart';
 import 'package:flow_mobile/data/source/local_secure_hive.dart';
+import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/widgets.dart';
 
 /// Displays the current month's balance, income, spending, and more.
 class BalanceCard extends StatefulWidget {
-  final bool showBalance;
+  final bool isOnHomeScreen;
 
-  const BalanceCard({super.key, required this.showBalance});
+  const BalanceCard({super.key, required this.isOnHomeScreen});
 
   @override
   State<BalanceCard> createState() => _BalanceCardState();
@@ -64,17 +61,7 @@ class _BalanceCardState extends State<BalanceCard> {
 
   @override
   Widget build(BuildContext context) {
-    return FlowButton(
-      onPressed: () {
-        Navigator.pushNamed(
-          context,
-          '/spending',
-          arguments: CustomPageRouteArguments(
-            transitionType: TransitionType.slideLeft,
-          ),
-        );
-      },
-      child: Container(
+    Widget innerComponent = Container(
         padding: EdgeInsets.only(top: 24, left: 24, right: 24),
         decoration: BoxDecoration(
           color: Color(0xFFFFFFFF),
@@ -86,8 +73,14 @@ class _BalanceCardState extends State<BalanceCard> {
             BalanceCardTitle(),
             AsOfDateText(),
 
+          FlowSeparatorBox(height: widget.isOnHomeScreen ? 0 : 16),
+
             // Income & Spending
-            BalanceDetail(balanceData: balanceData),
+          BalanceDetail(
+            balanceData: balanceData,
+            isOnHomeScreen: widget.isOnHomeScreen,
+          ),
+          if (widget.isOnHomeScreen) ...[
             GestureDetector(
               onTap: () {},
               child: Container(
@@ -121,19 +114,35 @@ class _BalanceCardState extends State<BalanceCard> {
                 ),
               ),
             ),
+          ] else ...[
+            SizedBox(height: 30),
+          ]
           ],
         ),
-      ),
     );
+    if (widget.isOnHomeScreen) {
+      return FlowButton(
+        onPressed: () {
+          if (widget.isOnHomeScreen) {
+            Navigator.pushNamed(
+              context,
+              '/spending',
+              arguments: CustomPageRouteArguments(
+                transitionType: TransitionType.slideLeft,
+              ),
+            );
+          }
+        },
+        child: innerComponent,
+      );
+    } else {
+      return innerComponent;
+    }
   }
 }
 
-
-
 class AsOfDateText extends StatelessWidget {
-  const AsOfDateText({
-    super.key,
-  });
+  const AsOfDateText({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -153,9 +162,7 @@ class AsOfDateText extends StatelessWidget {
 }
 
 class BalanceCardTitle extends StatelessWidget {
-  const BalanceCardTitle({
-    super.key,
-  });
+  const BalanceCardTitle({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +172,7 @@ class BalanceCardTitle extends StatelessWidget {
         "This month's Balance",
         textDirection: TextDirection.ltr,
         style: TextStyle(
-          fontFamily: 'Inter', 
+          fontFamily: 'Inter',
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Color(0xFF000000),

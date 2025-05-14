@@ -2,13 +2,19 @@ import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_data.dart';
+import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class BalanceDetail extends StatelessWidget {
-  const BalanceDetail({super.key, required this.balanceData});
+  const BalanceDetail({
+    super.key,
+    required this.balanceData,
+    required this.isOnHomeScreen,
+  });
 
   final BalanceData balanceData;
+  final bool isOnHomeScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,12 @@ class BalanceDetail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               IncomeContainer(transactionState: transactionState),
-              SpendingContainer(transactionState: transactionState),
+              FlowSeparatorBox(height: isOnHomeScreen ? 0 : 16),
+              SpendingContainer(
+                transactionState: transactionState,
+                isOnHomeScreen: isOnHomeScreen,
+              ),
+              FlowSeparatorBox(height: isOnHomeScreen ? 0 : 16),
               TotalBalanceContainer(transactionState: transactionState),
             ],
           ),
@@ -51,7 +62,7 @@ class IncomeContainer extends StatelessWidget {
             ),
           ),
           Text(
-            '${transactionState.getIncomeForMonth(DateTime(DateTime.now().year, DateTime.now().month)).toStringAsFixed(2)} SGD',
+            '+ ${transactionState.getIncomeForMonth(DateTime(DateTime.now().year, DateTime.now().month)).toStringAsFixed(2)} SGD',
             textDirection: TextDirection.ltr,
             style: TextStyle(
               fontFamily: 'Inter',
@@ -67,9 +78,14 @@ class IncomeContainer extends StatelessWidget {
 }
 
 class SpendingContainer extends StatelessWidget {
-  const SpendingContainer({super.key, required this.transactionState});
+  const SpendingContainer({
+    super.key,
+    required this.transactionState,
+    required this.isOnHomeScreen,
+  });
 
   final TransactionState transactionState;
+  final bool isOnHomeScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +93,15 @@ class SpendingContainer extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 10),
       child: Column(
         children: [
-          SpendingTotal(transactionState: transactionState),
-          SpendingDetails(transactionState: transactionState),
+          SpendingTotal(
+            transactionState: transactionState,
+            isOnHomeScreen: isOnHomeScreen,
+          ),
+          FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
+          SpendingDetails(
+            transactionState: transactionState,
+            isOnHomeScreen: isOnHomeScreen,
+          ),
         ],
       ),
     );
@@ -127,9 +150,14 @@ class TotalBalanceContainer extends StatelessWidget {
 }
 
 class SpendingTotal extends StatelessWidget {
-  const SpendingTotal({super.key, required this.transactionState});
+  const SpendingTotal({
+    super.key,
+    required this.transactionState,
+    required this.isOnHomeScreen,
+  });
 
   final TransactionState transactionState;
+  final bool isOnHomeScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +177,7 @@ class SpendingTotal extends StatelessWidget {
             ),
           ),
           Text(
-            '${transactionState.getExpenseForMonth(DateTime(DateTime.now().year, DateTime.now().month)).abs().toStringAsFixed(2)} SGD',
+            '- ${transactionState.getExpenseForMonth(DateTime(DateTime.now().year, DateTime.now().month)).abs().toStringAsFixed(2)} SGD',
             textDirection: TextDirection.ltr,
             style: TextStyle(
               fontFamily: 'Inter',
@@ -165,9 +193,14 @@ class SpendingTotal extends StatelessWidget {
 }
 
 class SpendingDetails extends StatelessWidget {
-  const SpendingDetails({super.key, required this.transactionState});
+  const SpendingDetails({
+    super.key,
+    required this.transactionState,
+    required this.isOnHomeScreen,
+  });
 
   final TransactionState transactionState;
+  final bool isOnHomeScreen;
 
   String processMethod(String method) {
     if (method == 'Credit Card' || method == 'Debit Card') {
@@ -213,9 +246,11 @@ class SpendingDetails extends StatelessWidget {
                       transactions:
                           categorizedTransactions['Debit + Credit card'] ?? [],
                     ),
+                    FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
                     TransferSpending(
                       transactions: categorizedTransactions['Transfer'] ?? [],
                     ),
+                    FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
                     OtherSpending(
                       transactions: categorizedTransactions['Others'] ?? [],
                     ),

@@ -70,7 +70,9 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
                       QuickTransferCard(),
 
                       // Balance Section
-                      BalanceCard(showBalance: _showBalance),
+                      BalanceCard(
+                        isOnHomeScreen: true
+                      ),
                     ],
                   ),
                 ),

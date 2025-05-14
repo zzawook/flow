@@ -1,3 +1,4 @@
+import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/fixed_spending_card/fixed_spending_card.dart';
@@ -51,6 +52,10 @@ class SpendingScreenState extends State<SpendingScreen> {
                     FlowSeparatorBox(height: 16),
 
                     const SpendingByCategoryCard(),
+
+                    FlowSeparatorBox(height: 16),
+
+                    const BalanceCard(isOnHomeScreen: false),
 
                     FlowSeparatorBox(height: 16),
 
