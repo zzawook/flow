@@ -23,6 +23,18 @@ class DateTimeUtil {
         date1.day == date2.day;
   }
 
+  static String getDatePostFix(int dat) {
+    if (dat == 1 || dat == 21) {
+      return 'st';
+    } else if (dat == 2 || dat == 22) {
+      return 'nd';
+    } else if (dat == 3 || dat == 23) {
+      return 'rd';
+    } else {
+      return 'th';
+    }
+  }
+
   static String getMonthName(int month) {
     switch (month) {
       case 1:

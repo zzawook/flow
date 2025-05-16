@@ -97,7 +97,7 @@ class BalanceSection extends StatelessWidget {
                       left: 24,
                       right: 24,
                     ),
-                    backgroundColor: Color(0xFF50C864),
+                    backgroundColor: Color(0xFF50C878),
                     elevation: 10,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

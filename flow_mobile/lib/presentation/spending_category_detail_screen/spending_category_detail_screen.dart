@@ -4,10 +4,11 @@ import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_li
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_tag.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/month_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-class SpendingCategoryDetailScreen extends StatelessWidget {
+class SpendingCategoryDetailScreen extends StatefulWidget {
   final String category;
   final DateTime displayMonthYear;
 
@@ -16,6 +17,27 @@ class SpendingCategoryDetailScreen extends StatelessWidget {
     required this.category,
     required this.displayMonthYear,
   });
+
+  @override
+  State<SpendingCategoryDetailScreen> createState() =>
+      _SpendingCategoryDetailScreenState();
+}
+
+class _SpendingCategoryDetailScreenState
+    extends State<SpendingCategoryDetailScreen> {
+  late DateTime displayMonthYear;
+
+  @override
+  void initState() {
+    super.initState();
+    displayMonthYear = widget.displayMonthYear;
+  }
+
+  void displayMonthYearSetter(DateTime monthYear) {
+    setState(() {
+      displayMonthYear = monthYear;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +49,7 @@ class SpendingCategoryDetailScreen extends StatelessWidget {
           builder: (context, transactionState) {
             final transactions = transactionState
                 .getTransactionByCategoryFromTo(
-                  category,
+                  widget.category,
                   DateTime(displayMonthYear.year, displayMonthYear.month, 1),
                   (DateTime(
                         displayMonthYear.year,
@@ -48,19 +70,19 @@ class SpendingCategoryDetailScreen extends StatelessWidget {
             return Column(
               children: [
                 FlowTopBar(
-                  title: Text(
-                    "",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0x88000000),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MonthSelector(
+                        displayMonthYear: displayMonthYear,
+                        displayMonthYearSetter: displayMonthYearSetter,
+                      ),
+                    ],
+                  )
                 ),
                 BalanceSection(
-                  category: category,
-                  balance: totalTransactionAmount.toStringAsFixed(2),
+                  category: widget.category,
+                  balance: totalTransactionAmount.abs().toStringAsFixed(2),
                   transactionCount: transactions.length,
                 ),
                 Container(height: 12, color: Color(0xFFF0F0F0)),

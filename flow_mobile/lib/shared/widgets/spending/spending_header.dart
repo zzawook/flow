@@ -194,6 +194,7 @@ class SpendingHeader extends StatelessWidget {
               lastMonthSpendingByDays: lastMonthSpendingByDays,
               width: 180,
               height: 85,
+              enableTooltip: false,
             );
           },
         ),

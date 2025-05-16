@@ -6,6 +6,7 @@ class SpendingMonthlyTrendLineGraph extends StatelessWidget {
   final List<double> lastMonthSpendingByDays;
   final double width;
   final double height;
+  final bool enableTooltip;
 
   const SpendingMonthlyTrendLineGraph({
     super.key,
@@ -13,6 +14,7 @@ class SpendingMonthlyTrendLineGraph extends StatelessWidget {
     required this.lastMonthSpendingByDays,
     required this.width,
     required this.height,
+    required this.enableTooltip,
   });
 
   @override
@@ -23,6 +25,7 @@ class SpendingMonthlyTrendLineGraph extends StatelessWidget {
       child: SpendingMonthlyTrendLineGraphContent(
         currentMonthSpendingByDays: currentMonthSpendingByDays,
         lastMonthSpendingByDays: lastMonthSpendingByDays,
+        enableTooltip: enableTooltip,
       ),
     );
   }
@@ -31,17 +34,84 @@ class SpendingMonthlyTrendLineGraph extends StatelessWidget {
 class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
   final List<double> currentMonthSpendingByDays;
   final List<double> lastMonthSpendingByDays;
+  final bool enableTooltip;
 
   const SpendingMonthlyTrendLineGraphContent({
     super.key,
     required this.currentMonthSpendingByDays,
     required this.lastMonthSpendingByDays,
+    required this.enableTooltip,
   });
 
   @override
   Widget build(BuildContext context) {
     return LineChart(
       LineChartData(
+        // 1) Enable touch interactions & configure the tooltip
+        lineTouchData: LineTouchData(
+          enabled: enableTooltip,
+          handleBuiltInTouches: true,
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipColor: (touchedSpot) {
+              // final index = touchedSpot.x.toInt();
+              // final isCurrentMonth = currentMonthSpendingByDays[index] != 0;
+              return Color(0x22000000);
+            },
+            tooltipRoundedRadius: 8,
+            tooltipPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
+            getTooltipItems: (spots) {
+              if (spots.isEmpty) {
+                return [];
+              }
+              if (spots.length == 1) {
+                return [
+                  LineTooltipItem(
+                    spots[0].y.toStringAsFixed(2),
+                    TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ];
+              }
+
+              String currentMonthValue = "";
+              String lastMonthValue = "";
+
+              if (spots[0].y == lastMonthSpendingByDays[spots[0].x.toInt()]) {
+                currentMonthValue = spots[1].y.toStringAsFixed(2);
+                lastMonthValue = spots[0].y.toStringAsFixed(2);
+              } else {
+                currentMonthValue = spots[0].y.toStringAsFixed(2);
+                lastMonthValue = spots[1].y.toStringAsFixed(2);
+              }
+
+              return [
+                LineTooltipItem(
+                  currentMonthValue,
+                  TextStyle(
+                    color: Color(0xFF50C878),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                LineTooltipItem(
+                  lastMonthValue,
+                  TextStyle(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ];
+            },
+          ),
+        ),
+
         gridData: FlGridData(show: false),
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -55,14 +125,13 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
           // Gray line (last month)
           LineChartBarData(
             spots:
-                lastMonthSpendingByDays.asMap().entries.map((entry) {
-                  final index = entry.key.toDouble();
-                  final value = entry.value;
-                  return FlSpot(index, value);
-                }).toList(),
+                lastMonthSpendingByDays
+                    .asMap()
+                    .entries
+                    .map((e) => FlSpot(e.key.toDouble(), e.value))
+                    .toList(),
             isCurved: true,
             color: Colors.grey[600],
-            // 1) Make line thicker
             barWidth: 2,
             dotData: FlDotData(show: false),
             belowBarData: BarAreaData(
@@ -71,8 +140,8 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.grey.withValues(alpha: 0.5),
-                  Colors.grey.withValues(alpha: 0.0),
+                  Colors.grey.withOpacity(0.5),
+                  Colors.grey.withOpacity(0.0),
                 ],
               ),
             ),
@@ -81,29 +150,25 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
           // Green line (current month)
           LineChartBarData(
             spots:
-                currentMonthSpendingByDays.asMap().entries.map((entry) {
-                  final index = entry.key.toDouble();
-                  final value = entry.value;
-                  return FlSpot(index, value);
-                }).toList(),
+                currentMonthSpendingByDays
+                    .asMap()
+                    .entries
+                    .map((e) => FlSpot(e.key.toDouble(), e.value))
+                    .toList(),
             isCurved: true,
             color: const Color(0xFF50C878),
-            // 1) Make line thicker
             barWidth: 3,
-            // 2) Show a circular indicator only on the final spot
             dotData: FlDotData(
               show: true,
               getDotPainter: (spot, percent, barData, index) {
-                // Show a dot painter only for the last spot
                 if (index == barData.spots.length - 1) {
                   return FlDotCirclePainter(
                     radius: 6,
-                    color: barData.color ?? const Color(0xFF50C878),
+                    color: barData.color!,
                     strokeWidth: 2,
                     strokeColor: Colors.white,
                   );
                 }
-                // Hide (or make transparent) dots for other spots
                 return FlDotCirclePainter(radius: 0);
               },
             ),
@@ -113,8 +178,8 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xFF50C878).withValues(alpha: 1.0),
-                  const Color(0xFF50C878).withValues(alpha: 0.0),
+                  const Color(0xFF50C878).withOpacity(0.4),
+                  const Color(0xFF50C878).withOpacity(0.0),
                 ],
               ),
             ),

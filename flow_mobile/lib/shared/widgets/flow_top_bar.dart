@@ -2,7 +2,7 @@ import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/material.dart';
 
 class FlowTopBar extends StatelessWidget {
-  final Text title;
+  final Widget title;
 
   const FlowTopBar({super.key, required this.title});
 

@@ -2,6 +2,7 @@ import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/account_detail_screen/account_detail_screen.dart';
+import 'package:flow_mobile/presentation/fixed_spending_screen/fixed_spending_screen.dart';
 import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
@@ -77,6 +78,12 @@ class FlowAppState extends State<FlowApp> {
                   category: data.category,
                   displayMonthYear: data.displayMonthYear,
                 );
+                break;
+              case '/fixed_spending/details':
+                CustomPageRouteArguments args =
+                    settings.arguments as CustomPageRouteArguments;
+                DateTime month = args.extraData as DateTime;
+                page = FixedSpendingDetailsScreen(month: month);
                 break;
               case '/account_detail':
                 CustomPageRouteArguments args =
