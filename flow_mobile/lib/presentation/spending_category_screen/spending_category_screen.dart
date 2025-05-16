@@ -5,7 +5,6 @@ import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
 import 'package:flow_mobile/presentation/spending_category_screen/spending_graph_top_bar.dart';
-import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/month_selector.dart';
 import 'package:flow_mobile/shared/widgets/spending/stacked_bar.dart';
