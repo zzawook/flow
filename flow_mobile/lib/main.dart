@@ -33,6 +33,7 @@ import 'package:flow_mobile/presentation/account_detail_screen/account_detail_sc
 import 'package:flow_mobile/presentation/fixed_spending_screen/fixed_spending_screen.dart';
 import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/redux_route_observer.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/notification_screen/notification_screen.dart';
 import 'package:flow_mobile/presentation/privacy_protector.dart';
@@ -80,6 +81,8 @@ class FlowApplication extends StatelessWidget {
       ).dispatch(NavigateToScreenAction(screenName));
     }
 
+    final store = StoreProvider.of<FlowState>(context);
+
     return MaterialApp(
       title: 'Flow',
       color: const Color(0xFFFFFFFF),
@@ -90,6 +93,7 @@ class FlowApplication extends StatelessWidget {
           secondary: const Color(0xFF50C878),
         ),
       ),
+      navigatorObservers: [ReduxRouteObserver(store)],
       initialRoute: '/home',
       onGenerateRoute: (RouteSettings settings) {
         Widget page;
