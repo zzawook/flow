@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_data.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_detail.dart';
-import 'package:flow_mobile/data/source/local_secure_hive.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/widgets.dart';
 
@@ -20,37 +18,14 @@ class BalanceCard extends StatefulWidget {
 }
 
 class _BalanceCardState extends State<BalanceCard> {
-  BalanceData balanceData = BalanceData(0, 0, 0, 0);
   double totalSpending = 0;
   Timer? _pollingTimer;
 
   @override
   void initState() {
     super.initState();
-
-    _fetchBalanceData();
-
-    _pollingTimer = Timer.periodic(Duration(seconds: 2), (timer) {
-      _fetchBalanceData();
-    });
   }
 
-  void _fetchBalanceData() async {
-    final dynamic fetchedBalanceData = await SecureHive.getData(
-      'monthlyBalance',
-    );
-
-    BalanceData newBalanceData;
-    if (fetchedBalanceData is Map) {
-      newBalanceData = BalanceData.fromDynamicJson(fetchedBalanceData);
-    } else {
-      throw Exception("Balance Data is Missing");
-    }
-
-    setState(() {
-      balanceData = newBalanceData;
-    });
-  }
 
   @override
   void dispose() {
@@ -77,7 +52,6 @@ class _BalanceCardState extends State<BalanceCard> {
 
             // Income & Spending
           BalanceDetail(
-            balanceData: balanceData,
             isOnHomeScreen: widget.isOnHomeScreen,
           ),
           if (widget.isOnHomeScreen) ...[

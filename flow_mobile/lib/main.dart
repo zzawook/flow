@@ -18,6 +18,7 @@ import 'package:flow_mobile/domain/entities/setting.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/entities/transfer_receivable.dart';
 import 'package:flow_mobile/domain/entities/user.dart';
+import 'package:flow_mobile/domain/redux/actions/screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 import 'package:flow_mobile/domain/redux/states/notification_state.dart';
@@ -28,11 +29,28 @@ import 'package:flow_mobile/domain/redux/states/transfer_receivable_state.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/domain/redux/states/user_state.dart';
 import 'package:flow_mobile/domain/redux/store.dart';
-import 'package:flow_mobile/flow_app.dart';
+import 'package:flow_mobile/presentation/account_detail_screen/account_detail_screen.dart';
+import 'package:flow_mobile/presentation/fixed_spending_screen/fixed_spending_screen.dart';
+import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/presentation/notification_screen/notification_screen.dart';
+import 'package:flow_mobile/presentation/refresh_screen/refresh_init_screen.dart';
+import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar_screen.dart';
+import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
+import 'package:flow_mobile/presentation/spending_category_screen/spending_category_screen.dart';
+import 'package:flow_mobile/presentation/spending_screen/spending_screen.dart';
+import 'package:flow_mobile/presentation/transfer_screen/transfer_amount_screen.dart';
+import 'package:flow_mobile/presentation/transfer_screen/transfer_confirm.dart';
+import 'package:flow_mobile/presentation/transfer_screen/transfer_result_screen.dart';
+import 'package:flow_mobile/presentation/transfer_screen/transfer_screen.dart';
+import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/transfer_to_screen.dart';
+import 'package:flutter/material.dart' hide Notification;
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+
 import 'data/source/local_secure_hive.dart';
-import 'package:flutter/material.dart' hide Notification;
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -53,11 +71,17 @@ void main() async {
 class FlowApplication extends StatelessWidget {
   const FlowApplication({super.key});
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
+    void updateScreenState(String screenName) {
+      StoreProvider.of<FlowState>(
+        context,
+      ).dispatch(NavigateToScreenAction(screenName));
+    }
+
     return MaterialApp(
       title: 'Flow',
-      builder: (context, child) => FlowApp(),
       color: const Color(0xFFFFFFFF),
       theme: ThemeData(
         fontFamily: 'Inter',
@@ -66,6 +90,139 @@ class FlowApplication extends StatelessWidget {
           secondary: const Color(0xFF50C878),
         ),
       ),
+      initialRoute: '/home',
+      onGenerateRoute: (RouteSettings settings) {
+        Widget page;
+        updateScreenState(settings.name?.toString() ?? "/home");
+        switch (settings.name) {
+          case '/home':
+            page = FlowHomeScreen();
+            break;
+          case '/spending':
+            page = SpendingScreen();
+            break;
+          case '/spending/detail':
+            CustomPageRouteArguments args =
+                settings.arguments as CustomPageRouteArguments;
+            DateTime month = args.extraData as DateTime;
+            page = SpendingCalendarScreen(displayedMonth: month);
+            break;
+          case '/spending/category':
+            CustomPageRouteArguments args =
+                settings.arguments as CustomPageRouteArguments;
+            DateTime month = args.extraData as DateTime;
+            page = SpendingCategoryScreen(displayMonthYear: month);
+            break;
+          case '/spending/category/detail':
+            CustomPageRouteArguments args =
+                settings.arguments as CustomPageRouteArguments;
+            SpendingCategoryDetailScreenArguments data =
+                args.extraData as SpendingCategoryDetailScreenArguments;
+            page = SpendingCategoryDetailScreen(
+              category: data.category,
+              displayMonthYear: data.displayMonthYear,
+            );
+            break;
+          case '/fixed_spending/details':
+            CustomPageRouteArguments args =
+                settings.arguments as CustomPageRouteArguments;
+            DateTime month = args.extraData as DateTime;
+            page = FixedSpendingDetailsScreen(month: month);
+            break;
+          case '/account_detail':
+            CustomPageRouteArguments args =
+                settings.arguments as CustomPageRouteArguments;
+            BankAccount bankAccount = args.extraData as BankAccount;
+            page = BankAccountDetailScreen(bankAccount: bankAccount);
+            break;
+          case '/transfer':
+            page = TransferScreen();
+            break;
+          case '/transfer/amount':
+            page = TransferAmountScreen();
+            break;
+          case '/transfer/to':
+            page = TransferToScreen();
+            break;
+          case '/transfer/confirm':
+            page = TransferConfirmationScreen();
+            break;
+          case '/transfer/result':
+            page = TransferResultScreen();
+            break;
+          case '/notification':
+            page = NotificationScreen();
+            break;
+          case '/refresh':
+            page = RefreshInitScreen();
+            break;
+          default:
+            page = FlowHomeScreen();
+        }
+
+        // Read the custom arguments if any.
+        final args = settings.arguments as CustomPageRouteArguments?;
+        // Use a default transition if none is passed.
+        final transition = args?.transitionType ?? TransitionType.slideLeft;
+
+        return PageRouteBuilder(
+          settings: settings,
+          transitionDuration: Duration(milliseconds: 150),
+          pageBuilder:
+              (context, animation, secondaryAnimation) => DefaultTextStyle(
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  color: Color(0xFF000000),
+                ),
+                child: page,
+              ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Choose the transition effect based on the argument.
+            switch (transition) {
+              case TransitionType.slideLeft:
+                // Slide in from the right side (moves leftward to center)
+                final tween = Tween(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeInOut));
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              case TransitionType.slideRight:
+                // Slide in from the left side (moves rightward to center)
+                final tween = Tween(
+                  begin: const Offset(-1.0, 0.0),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeInOut));
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              case TransitionType.slideTop:
+                // Slide in from the top (moves downward to center)
+                final tween = Tween(
+                  begin: const Offset(0.0, -1.0),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeInOut));
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              case TransitionType.slideBottom:
+                // Slide in from the bottom (moves upward to center)
+                final tween = Tween(
+                  begin: const Offset(0.0, 1.0),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeInOut));
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+            }
+          },
+        );
+      },
     );
   }
 }

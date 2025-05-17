@@ -3,6 +3,7 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/shared/widgets/flow_snackbar.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,30 +80,17 @@ class BalanceSection extends StatelessWidget {
               ).then((_) {
                 // Provide user feedback by showing a snackbar.
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  FlowSnackbar(
                     content: Text(
-                      "Copied to clipboard!",
+                      "Copied to clipboard",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFFFFFFF),
                       ),
                     ),
-                    duration: Duration(seconds: 2),
-                    behavior: SnackBarBehavior.floating,
-                    margin: EdgeInsets.only(bottom: 32, left: 24, right: 24),
-                    padding: EdgeInsets.only(
-                      bottom: 16,
-                      top: 16,
-                      left: 24,
-                      right: 24,
-                    ),
-                    backgroundColor: Color(0xFF50C878),
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+                    duration: 2,
+                  ).build(context),
                 );
               });
             },

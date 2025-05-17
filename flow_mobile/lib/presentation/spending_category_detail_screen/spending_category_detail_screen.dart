@@ -78,7 +78,7 @@ class _SpendingCategoryDetailScreenState
                         displayMonthYearSetter: displayMonthYearSetter,
                       ),
                     ],
-                  )
+                  ),
                 ),
                 BalanceSection(
                   category: widget.category,

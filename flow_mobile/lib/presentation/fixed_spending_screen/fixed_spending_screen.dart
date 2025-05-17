@@ -111,6 +111,7 @@ class _FixedSpendingDetailsScreenState
         .expand((items) => items)
         .fold(0, (sum, item) => sum + item.amount);
     return Scaffold(
+      
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 24, right: 24, top: 16),

@@ -9,11 +9,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 class BalanceDetail extends StatelessWidget {
   const BalanceDetail({
     super.key,
-    required this.balanceData,
     required this.isOnHomeScreen,
   });
-
-  final BalanceData balanceData;
   final bool isOnHomeScreen;
 
   @override

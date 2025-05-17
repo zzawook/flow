@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart'; // Or flutter/widgets.dart if you prefer, but Material is typical.
 
 class FlowMainTopBar extends StatelessWidget {
-  final VoidCallback onNotificationTap;
 
-  const FlowMainTopBar({super.key, required this.onNotificationTap});
+  const FlowMainTopBar({super.key});
 
   @override
   Widget build(BuildContext context) {
