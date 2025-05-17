@@ -35,6 +35,7 @@ import 'package:flow_mobile/presentation/home_screen/flow_home_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/notification_screen/notification_screen.dart';
+import 'package:flow_mobile/presentation/privacy_protector.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_init_screen.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar_screen.dart';
 import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
@@ -46,7 +47,6 @@ import 'package:flow_mobile/presentation/transfer_screen/transfer_result_screen.
 import 'package:flow_mobile/presentation/transfer_screen/transfer_screen.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/transfer_to_screen.dart';
 import 'package:flutter/material.dart' hide Notification;
-import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -169,12 +169,14 @@ class FlowApplication extends StatelessWidget {
           settings: settings,
           transitionDuration: Duration(milliseconds: 150),
           pageBuilder:
-              (context, animation, secondaryAnimation) => DefaultTextStyle(
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  color: Color(0xFF000000),
+              (context, animation, secondaryAnimation) => PrivacyProtector(
+                child: DefaultTextStyle(
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    color: Color(0xFF000000),
+                  ),
+                  child: page,
                 ),
-                child: page,
               ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             // Choose the transition effect based on the argument.
