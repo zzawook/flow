@@ -8,8 +8,6 @@ SpendingScreenState spendingScreenReducer(
   if (action is DecrementDisplayedMonthAction) {
     DateTime modifiedDisplayedMonth = decrementMonth(state.displayedMonth);
 
-    print(modifiedDisplayedMonth);
-
     DateTime modifiedWeeklyCalendarDisplayWeek = DateTime(
       modifiedDisplayedMonth.year,
       modifiedDisplayedMonth.month,
@@ -90,8 +88,6 @@ SpendingScreenState spendingScreenReducer(
     }
 
     DateTime newWeekEnd = newWeekStart.add(Duration(days: 6));
-
-    print(DateTime.now());
 
     // Check if the week containing newWeekStart contains some day in the displayedMonth
     if (newWeekStart.month == state.displayedMonth.month ||
