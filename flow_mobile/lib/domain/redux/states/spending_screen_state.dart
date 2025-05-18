@@ -4,6 +4,7 @@ class SpendingScreenState {
   final DateTime displayedMonth;
   final DateTime selectedDate;
   final DateTime calendarSelectedDate;
+  final DateTime weeklySpendingCalendarDisplayWeek;
 
   SpendingScreenState({
     this.isLoading = false,
@@ -11,6 +12,7 @@ class SpendingScreenState {
     required this.selectedDate,
     required this.calendarSelectedDate,
     required this.displayedMonth,
+    required this.weeklySpendingCalendarDisplayWeek,
   });
 
   SpendingScreenState copyWith({
@@ -19,6 +21,7 @@ class SpendingScreenState {
     DateTime? displayedMonth,
     DateTime? selectedDate,
     DateTime? calendarSelectedDate,
+    DateTime? weeklySpendingCalendarDisplayWeek,
   }) {
     return SpendingScreenState(
       isLoading: isLoading ?? this.isLoading,
@@ -26,6 +29,9 @@ class SpendingScreenState {
       displayedMonth: displayedMonth ?? this.displayedMonth,
       selectedDate: selectedDate ?? this.selectedDate,
       calendarSelectedDate: calendarSelectedDate ?? this.calendarSelectedDate,
+      weeklySpendingCalendarDisplayWeek:
+          weeklySpendingCalendarDisplayWeek ??
+          this.weeklySpendingCalendarDisplayWeek,
     );
   }
 
@@ -33,5 +39,9 @@ class SpendingScreenState {
     displayedMonth: DateTime.now(),
     selectedDate: DateTime.now(),
     calendarSelectedDate: DateTime.now(),
+    // Set the initial week to the current week starting from Monday
+    weeklySpendingCalendarDisplayWeek: DateTime.now().subtract(
+      Duration(days: DateTime.now().weekday - DateTime.monday),
+    ),
   );
 }

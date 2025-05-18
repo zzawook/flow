@@ -28,6 +28,7 @@ ScreenState screenReducer(ScreenState state, dynamic action) {
   }
   if (action is IncrementDisplayedMonthAction ||
       action is DecrementDisplayedMonthAction ||
+      action is SetWeeklySpendingCalendarDisplayWeekAction ||
       action is SetDisplayedMonthAction ||
       action is SetSelectedDateAction ||
       action is SetCalendarSelectedDateAction) {

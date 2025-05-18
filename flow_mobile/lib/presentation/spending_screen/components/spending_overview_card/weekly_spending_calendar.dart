@@ -1,175 +1,238 @@
-import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/models/weekly_spending_data.dart';
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 
 class WeeklySpendingCalendar extends StatefulWidget {
-  final List<Transaction> transactions;
-
-  const WeeklySpendingCalendar({super.key, required this.transactions});
+  const WeeklySpendingCalendar({super.key});
 
   @override
-  State<WeeklySpendingCalendar> createState() => _WeeklySpendingCalendarState();
+  _WeeklySpendingCalendarState createState() => _WeeklySpendingCalendarState();
 }
 
 class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
-  DateTime currentSelectedDate = DateTime.now();
+  static const int _initialPage = 1000;
+  late final PageController _pageController;
+  int _currentPage = _initialPage;
+  late DateTime _baseMonday;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _initialPage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final vm =
+        StoreProvider.of<FlowState>(
+          context,
+        ).state.screenState.spendingScreenState;
+    final displayWeek = vm.weeklySpendingCalendarDisplayWeek;
+    _baseMonday = DateTime(
+      displayWeek.year,
+      displayWeek.month,
+      displayWeek.day - (displayWeek.weekday - DateTime.monday),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final today = DateTime.now();
-    final lastSunday = today.subtract(Duration(days: today.weekday % 7));
+    return StoreConnector<FlowState, _ViewModel>(
+      distinct: true,
+      converter: (store) {
+        final s = store.state.screenState.spendingScreenState;
+        return _ViewModel(
+          selectedDate: s.selectedDate,
+          displayWeek: s.weeklySpendingCalendarDisplayWeek,
+        );
+      },
+      builder: (context, vm) {
+        final today = DateTime.now();
 
-    // Filter last 7 days transactions from the provided list
-    final last7DaysTransactions =
-        widget.transactions
-            .where(
-              (t) =>
-                  DateTimeUtil.isSameDate(t.date, today) ||
-                  (t.date.isAfter(
-                        lastSunday.subtract(const Duration(days: 1)),
-                      ) &&
-                      t.date.isBefore(today.add(const Duration(days: 1)))),
-            )
-            .toList();
+        return SizedBox(
+          height: 140,
+          width: double.infinity,
+          child: PageView.builder(
+            controller: _pageController,
+            // 1. Fix the total pages so you can't swipe past page 1000:
+            itemCount: _initialPage + 1,
+            onPageChanged: (page) {
+              final delta = page - _currentPage;
+              final newMonday = _baseMonday.add(Duration(days: delta * 7));
 
-    // Build weekly spending data
-    WeeklySpendingData weeklySpendingData = WeeklySpendingData();
-    for (var tx in last7DaysTransactions) {
-      weeklySpendingData.addTransaction(tx);
+              StoreProvider.of<FlowState>(
+                context,
+                listen: false,
+              ).dispatch(SetWeeklySpendingCalendarDisplayWeekAction(newMonday));
+
+              _currentPage = page;
+              _baseMonday = newMonday;
+            },
+            itemBuilder: (context, page) {
+              final delta = page - _currentPage;
+              final monday = _baseMonday.add(Duration(days: delta * 7));
+              return _buildWeekRow(context, monday, today, vm.selectedDate);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildWeekRow(
+    BuildContext context,
+    DateTime monday,
+    DateTime today,
+    DateTime selectedDate,
+  ) {
+    final sunday = monday.add(const Duration(days: 6));
+    final txState =
+        StoreProvider.of<FlowState>(
+          context,
+          listen: false,
+        ).state.transactionState;
+    final txns = txState.getTransactionsFromTo(monday, sunday);
+
+    final data = WeeklySpendingData(monday);
+    for (final tx in txns) {
+      data.addTransaction(tx);
     }
-    final last7DaysData = weeklySpendingData.getWeeklySpendingData();
+    final weeklyData = data.getWeeklySpendingData();
 
-    // Generate keys for each day of the current week
-    final keys = List.generate(
-      7,
-      (index) => today.subtract(Duration(days: today.weekday - 1 - index)),
-    );
+    final days = List.generate(7, (i) => monday.add(Duration(days: i)));
 
-    return Container(
-      padding: const EdgeInsets.only(top: 20, bottom: 18),
-      width: double.infinity,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children:
-            keys.map((dateTime) {
-              DateTime dateTimeYMD = DateTime(
-                dateTime.year,
-                dateTime.month,
-                dateTime.day,
-              );
-              final item = last7DaysData[dateTimeYMD] ?? {};
-              final income = item["income"] ?? 0.0;
-              final expense = item["expense"] ?? 0.0;
-              final isToday = _isSameDay(dateTime, today);
-              final isSelected = _isSameDay(dateTime, currentSelectedDate);
-              final dayName = DateFormat('EEE').format(dateTime);
-              final dateNumber = dateTime.day;
-              final incomeTextColor = const Color(0xFF50C878);
-              final expenseTextColor = const Color(0x75000000);
-              final incomeText =
-                  income != 0 ? '+${income.toStringAsFixed(2)}' : '';
-              final expenseText =
-                  expense != 0 ? "-${expense.abs().toStringAsFixed(2)}" : '';
+    return StoreConnector<FlowState, DateTime>(
+      converter: (store) {
+        return store.state.screenState.spendingScreenState.displayedMonth;
+      },
+      builder:
+          (context, displayMonth) => Container(
+            padding: const EdgeInsets.only(top: 20, bottom: 18),
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children:
+                  days.map((dateTime) {
+                    final item =
+                        weeklyData[dateTime] ?? {'income': 0.0, 'expense': 0.0};
+                    final income = item['income']!;
+                    final expense = item['expense']!;
+                    final isToday = _isSameDay(dateTime, today);
+                    final isSelected = _isSameDay(dateTime, selectedDate);
+                    final dayName = DateFormat('EEE').format(dateTime);
+                    final dateNumber = dateTime.day;
+                    final incomeText =
+                        income != 0 ? '+${income.toStringAsFixed(2)}' : '';
+                    final expenseText =
+                        expense != 0
+                            ? '-${expense.abs().toStringAsFixed(2)}'
+                            : '';
 
-              return Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      dayName,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        // fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        if (dateTime.isAfter(today)) {
-                          return;
-                        }
-                        setState(() {
-                          StoreProvider.of<FlowState>(
-                            context,
-                            listen: false,
-                          ).dispatch(SetSelectedDateAction(dateTime));
-                          currentSelectedDate = dateTime;
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        padding: const EdgeInsets.all(12),
-                        decoration:
-                            isToday
-                                ? const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0x16000000),
-                                )
-                                : isSelected
-                                ? const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0x6450C878),
-                                )
-                                : null,
-                        child: Text(
-                          dateNumber.toString(),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color:
-                                dateTime.isAfter(today)
-                                    ? Color(0xFFB0B0B0)
-                                    : Color(0xFF000000),
+                    return Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(dayName, style: const TextStyle(fontSize: 12)),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              if (dateTime.isAfter(today)) return;
+                              StoreProvider.of<FlowState>(
+                                context,
+                                listen: false,
+                              ).dispatch(SetSelectedDateAction(dateTime));
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              padding: const EdgeInsets.all(12),
+                              decoration:
+                                  isToday
+                                      ? const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0x16000000),
+                                      )
+                                      : isSelected
+                                      ? const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0x6450C878),
+                                      )
+                                      : null,
+                              child: Text(
+                                '$dateNumber',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  color:
+                                      _shouldDimDate(dateTime, displayMonth)
+                                          ? const Color(0xFFB0B0B0)
+                                          : const Color(0xFF000000),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          Text(
+                            expense != 0 && income == 0
+                                ? expenseText
+                                : incomeText,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              color:
+                                  (expense != 0 && income == 0)
+                                      ? const Color(0x75000000)
+                                      : const Color(0xFF50C878),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (income !=
+                              0) // show expense on a second line if there was income
+                            Text(
+                              expenseText,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0x75000000),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      onlyHasExpense(income, expense)
-                          ? expenseText
-                          : incomeText,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        color:
-                            onlyHasExpense(income, expense)
-                                ? expenseTextColor
-                                : incomeTextColor,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                    ),
-                    Text(
-                      expenseText,
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 10,
-                        color:
-                            onlyHasExpense(income, expense)
-                                ? const Color(0xFFFFFFFF)
-                                : expenseTextColor,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-      ),
+                    );
+                  }).toList(),
+            ),
+          ),
     );
   }
 
-  bool onlyHasExpense(double income, double expense) {
-    return income == 0 && expense != 0;
-  }
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
-  bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
+  bool _shouldDimDate(DateTime date, DateTime displayMonth) {
+    if (date.isAfter(DateTime.now())) {
+      return true;
+    } else if (date.month != displayMonth.month ||
+        date.year != displayMonth.year) {
+      return true;
+    }
+    return false;
   }
+}
+
+// simple view model for the connector
+class _ViewModel {
+  final DateTime selectedDate;
+  final DateTime displayWeek;
+  _ViewModel({required this.selectedDate, required this.displayWeek});
 }

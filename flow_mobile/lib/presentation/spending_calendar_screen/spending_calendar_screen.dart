@@ -1,12 +1,11 @@
+import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar_screen_top_bar.dart';
-
 import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-import 'package:flow_mobile/domain/entities/transaction.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -58,28 +57,25 @@ class SpendingDetailScreenState extends State<SpendingCalendarScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 24, right: 24, top: 72),
               child: Column(
-                    children: [
+                children: [
                   SpendingCalendarScreenTopBar(
-                        displayMonthYear: displayedMonth,
+                    displayMonthYear: displayedMonth,
                     displayMonthYearSetter: setDisplayedMonth,
-                      ),
-                      const SizedBox(height: 30),
-                      FlowSeparatorBox(height: 20),
-                      SpendingCalendar(displayedMonth: displayedMonth),
-                      StoreConnector<FlowState, List<Transaction>>(
-                        converter:
-                            (store) => store.state.transactionState
-                                .getTransactionsForMonth(displayedMonth),
-                        builder:
-                            (
-                              BuildContext context,
-                              List<Transaction> transactions,
-                            ) => Expanded(
-                              child: TransactionList(
-                                transactions: transactions,
-                              ),
-                            ),
-                      ),
+                  ),
+                  FlowSeparatorBox(height: 24),
+                  SpendingCalendar(displayedMonth: displayedMonth),
+                  StoreConnector<FlowState, List<Transaction>>(
+                    converter:
+                        (store) => store.state.transactionState
+                            .getTransactionsForMonth(displayedMonth),
+                    builder:
+                        (
+                          BuildContext context,
+                          List<Transaction> transactions,
+                        ) => Expanded(
+                          child: TransactionList(transactions: transactions),
+                        ),
+                  ),
                 ],
               ),
             ),
@@ -89,5 +85,3 @@ class SpendingDetailScreenState extends State<SpendingCalendarScreen> {
     );
   }
 }
-
-

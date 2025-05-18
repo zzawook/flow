@@ -2,11 +2,11 @@ import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/shared/widgets/spending/spending_header.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/insight_sentences/spending_compareto_last_month_insight.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_list.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/weekly_spending_calendar.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/spending/spending_header.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -20,7 +20,6 @@ class MonthlySpendingOverview extends StatefulWidget {
 }
 
 class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,8 +32,6 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
         converter: (store) {
           DateTime displayedMonth =
               store.state.screenState.spendingScreenState.displayedMonth;
-
-          print(displayedMonth);
 
           DateTime today = DateTime(
             DateTime.now().year,
@@ -71,9 +68,7 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
 
                       SpendingComparetoLastMonthInsight(),
 
-                      WeeklySpendingCalendar(
-                        transactions: spendingOverviewState.transactions,
-                      ),
+                      WeeklySpendingCalendar(),
 
                       TransactionsList(
                         transactions: spendingOverviewState.transactions,

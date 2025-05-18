@@ -23,3 +23,9 @@ class SetCalendarSelectedDateAction {
 
   SetCalendarSelectedDateAction(this.calendarSelectedDate);
 }
+
+class SetWeeklySpendingCalendarDisplayWeekAction {
+  final DateTime weeklySpendingCalendarDisplayWeek;
+
+  SetWeeklySpendingCalendarDisplayWeekAction(this.weeklySpendingCalendarDisplayWeek);
+}

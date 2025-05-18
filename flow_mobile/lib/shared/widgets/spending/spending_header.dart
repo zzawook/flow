@@ -1,9 +1,10 @@
 import 'package:flow_mobile/domain/entities/transaction.dart';
-import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/spending/spending_monthly_trend_line_graph.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -28,9 +29,12 @@ class SpendingHeader extends StatelessWidget {
                     margin: EdgeInsets.only(right: 8),
                     child: FlowButton(
                       onPressed: () {
-                        StoreProvider.of<FlowState>(context).dispatch(
-                          SetDisplayedMonthAction(
-                            DateTime(
+                        Navigator.pushNamed(
+                          context,
+                          "/spending/detail",
+                          arguments: CustomPageRouteArguments(
+                            transitionType: TransitionType.slideTop,
+                            extraData: DateTime(
                               displayMonthYear.year,
                               displayMonthYear.month - 1,
                             ),
@@ -66,9 +70,12 @@ class SpendingHeader extends StatelessWidget {
                             displayMonthYear.year == DateTime.now().year) {
                           return;
                         }
-                        StoreProvider.of<FlowState>(context).dispatch(
-                          SetDisplayedMonthAction(
-                            DateTime(
+                        Navigator.pushNamed(
+                          context,
+                          "/spending/detail",
+                          arguments: CustomPageRouteArguments(
+                            transitionType: TransitionType.slideTop,
+                            extraData: DateTime(
                               displayMonthYear.year,
                               displayMonthYear.month + 1,
                             ),
@@ -97,9 +104,6 @@ class SpendingHeader extends StatelessWidget {
                             .transactionState
                             .getExpenseForMonth(displayMonthYear)
                             .abs();
-                    // if (balance < 0) {
-                    //   return '-\$${(-balance).toStringAsFixed(2)}';
-                    // }
                     return '\$ ${balance.toStringAsFixed(2)}';
                   }(),
                   style: TextStyle(
