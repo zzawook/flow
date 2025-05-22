@@ -4,11 +4,25 @@ import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_item.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class TransactionsList extends StatelessWidget {
   final List<Transaction> transactions;
 
   const TransactionsList({super.key, required this.transactions});
+
+  TransactionListState storeToTransactionListStateConverter(
+    Store<FlowState> store,
+  ) {
+    DateTime selectedDate =
+        store.state.screenState.spendingScreenState.selectedDate;
+    TransactionState transactionState = store.state.transactionState;
+
+    return TransactionListState(
+      selectedDate: selectedDate,
+      transactionState: transactionState,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +33,7 @@ class TransactionsList extends StatelessWidget {
       ),
       child: StoreConnector<FlowState, TransactionListState>(
         distinct: true,
-        converter: (store) {
-          DateTime selectedDate =
-              store.state.screenState.spendingScreenState.selectedDate;
-          TransactionState transactionState = store.state.transactionState;
-
-          return TransactionListState(
-            selectedDate: selectedDate,
-            transactionState: transactionState,
-          );
-        },
+        converter: (storeToTransactionListStateConverter),
         builder: (context, transactionListState) {
           List<Transaction> transactions = transactionListState.transactionState
               .getTransactionsFromTo(

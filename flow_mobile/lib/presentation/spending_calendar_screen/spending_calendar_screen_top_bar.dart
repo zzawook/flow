@@ -91,6 +91,7 @@ class SpendingCalendarScreenTopBar extends StatelessWidget {
             ],
           ),
         ),
+        SizedBox(width: 20),
       ],
     );
   }

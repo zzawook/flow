@@ -45,6 +45,8 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
               .getTransactionsFromTo(lastSunday, today);
           return SpendingOverviewState(
             displayedMonth: displayedMonth,
+            weeklySpendingCalendarDisplayWeek: store.state
+                .screenState.spendingScreenState.weeklySpendingCalendarDisplayWeek,
             transactions: transactions,
           );
         },
@@ -64,6 +66,8 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
                     children: [
                       SpendingHeader(
                         displayMonthYear: spendingOverviewState.displayedMonth,
+                        weeklySpendingCalendarDisplayWeek:
+                            spendingOverviewState.weeklySpendingCalendarDisplayWeek,
                       ),
 
                       SpendingComparetoLastMonthInsight(),
@@ -124,8 +128,11 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
 class SpendingOverviewState {
   DateTime displayedMonth;
   List<Transaction> transactions;
+  DateTime weeklySpendingCalendarDisplayWeek;
+
   SpendingOverviewState({
     required this.displayedMonth,
     required this.transactions,
+    required this.weeklySpendingCalendarDisplayWeek,
   });
 }

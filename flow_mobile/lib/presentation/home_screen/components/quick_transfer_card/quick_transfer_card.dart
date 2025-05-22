@@ -1,7 +1,3 @@
-/* -------------------------------------------------------------------------- */
-/*                           QuickTransferSection                             */
-/* -------------------------------------------------------------------------- */
-
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
@@ -11,25 +7,37 @@ import 'package:flutter/widgets.dart';
 class QuickTransferCard extends StatelessWidget {
   const QuickTransferCard({super.key});
 
+  void onQuickTransferPressed(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      '/transfer',
+      arguments: CustomPageRouteArguments(
+        transitionType: TransitionType.slideLeft,
+      ),
+    );
+  }
+
+  static const double _horizontalPadding = 24.0;
+  static const double _verticalPadding = 25.0;
+  static const double _bottomMargin = 15.0;
+  static const double _borderRadius = 15.0;
+  static const double _iconSize = 17.0;
 
   @override
   Widget build(BuildContext context) {
     return FlowButton(
       onPressed: () {
-        Navigator.pushNamed(
-          context,
-          '/transfer',
-          arguments: CustomPageRouteArguments(
-            transitionType: TransitionType.slideLeft,
-          ),
-        );
+        onQuickTransferPressed(context);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 25, horizontal: 24),
-        margin: EdgeInsets.only(bottom: 15),
+        padding: EdgeInsets.symmetric(
+          vertical: _verticalPadding,
+          horizontal: _horizontalPadding,
+        ),
+        margin: EdgeInsets.only(bottom: _bottomMargin),
         decoration: BoxDecoration(
           color: Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(_borderRadius),
         ),
         child: Row(
           children: [
@@ -44,7 +52,11 @@ class QuickTransferCard extends StatelessWidget {
                 ),
               ),
             ),
-            Image.asset('assets/icons/arrow_right.png', width: 17, height: 17),
+            Image.asset(
+              'assets/icons/arrow_right.png',
+              width: _iconSize,
+              height: _iconSize,
+            ),
           ],
         ),
       ),

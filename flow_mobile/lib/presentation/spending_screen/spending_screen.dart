@@ -6,53 +6,69 @@ import 'package:flow_mobile/presentation/spending_screen/components/special_anal
 import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/spending_by_category_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_trend_card/spending_trend_card.dart';
+import 'package:flow_mobile/presentation/spending_screen/spending_screen_contstants.dart';
 import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 
+
 class SpendingScreen extends StatelessWidget {
   const SpendingScreen({super.key});
 
+  Future<void> _handleRefresh(BuildContext context) async {
+    Navigator.pushNamed(
+      context,
+      SpendingScreenRoutes.refresh,
+      arguments: CustomPageRouteArguments(
+        transitionType: TransitionType.slideTop,
+      ),
+    );
+    await Future.delayed(SpendingScreenStyles.refreshDelay);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF5F5F5), // Background color
-      child: Column(
+    return Scaffold(
+      backgroundColor: SpendingScreenStyles.backgroundColor,
+      body: Column(
         children: [
           Expanded(
             child: RefreshIndicator.adaptive(
-              onRefresh: () {
-                Navigator.pushNamed(
-                  context,
-                  "/refresh",
-                  arguments: CustomPageRouteArguments(
-                    transitionType: TransitionType.slideTop,
-                  ),
-                );
-                return Future.delayed(const Duration(microseconds: 1));
-              },
+              onRefresh: () => _handleRefresh(context),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 32.0,
+                  horizontal: SpendingScreenStyles.horizontalPadding,
+                  vertical: SpendingScreenStyles.verticalPadding,
                 ),
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FlowMainTopBar(),
+                    const FlowMainTopBar(),
+
+                    // Monthly overview
                     const MonthlySpendingOverview(),
 
-                    FlowSeparatorBox(height: 16),
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
 
+                    // Breakdown by category
                     const SpendingByCategoryCard(),
 
-                    FlowSeparatorBox(height: 16),
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
 
+                    // Balance for this month
                     const BalanceCard(isOnHomeScreen: false),
 
-                    FlowSeparatorBox(height: 16),
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
 
+                    // Fixed spending section
                     FixedSpendingCard(
                       initialMonth: DateTime(
                         DateTime.now().year,
@@ -60,19 +76,25 @@ class SpendingScreen extends StatelessWidget {
                       ),
                     ),
 
-                    FlowSeparatorBox(height: 16),
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
 
-                    const SpendingTrendCard(),
+                    // Trend over time
+                    SpendingTrendCard(),
 
-                    FlowSeparatorBox(height: 16),
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
 
-                    const SpecialAnalysisCard(),
+                    // Any special analyses
+                    SpecialAnalysisCard(),
                   ],
                 ),
               ),
             ),
           ),
-          FlowBottomNavBar(),
+          const FlowBottomNavBar(),
         ],
       ),
     );

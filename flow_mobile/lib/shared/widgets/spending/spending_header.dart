@@ -1,8 +1,7 @@
 import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
-import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
-import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/spending/spending_monthly_trend_line_graph.dart';
@@ -11,12 +10,22 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 // ignore: must_be_immutable
 class SpendingHeader extends StatelessWidget {
-  const SpendingHeader({super.key, required this.displayMonthYear});
+  const SpendingHeader({
+    super.key,
+    required this.displayMonthYear,
+    required this.weeklySpendingCalendarDisplayWeek,
+  });
 
   final DateTime displayMonthYear;
+  final DateTime weeklySpendingCalendarDisplayWeek;
 
   @override
   Widget build(BuildContext context) {
+    DateTime lastMonday = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    ).subtract(Duration(days: DateTime.now().weekday - 1));
     return Row(
       children: [
         Expanded(
@@ -29,17 +38,9 @@ class SpendingHeader extends StatelessWidget {
                     margin: EdgeInsets.only(right: 8),
                     child: FlowButton(
                       onPressed: () {
-                        Navigator.pushNamed(
+                        StoreProvider.of<FlowState>(
                           context,
-                          "/spending/detail",
-                          arguments: CustomPageRouteArguments(
-                            transitionType: TransitionType.slideTop,
-                            extraData: DateTime(
-                              displayMonthYear.year,
-                              displayMonthYear.month - 1,
-                            ),
-                          ),
-                        );
+                        ).dispatch(DecrementDisplayedMonthAction());
                       }, // Previous Month
                       child: Image.asset(
                         'assets/icons/prevMonth.png',
@@ -66,27 +67,22 @@ class SpendingHeader extends StatelessWidget {
                     margin: EdgeInsets.only(left: 8),
                     child: FlowButton(
                       onPressed: () {
-                        if (displayMonthYear.month == DateTime.now().month &&
-                            displayMonthYear.year == DateTime.now().year) {
+                        if (weeklySpendingCalendarDisplayWeek.isAtSameMomentAs(
+                          lastMonday,
+                        )) {
                           return;
                         }
-                        Navigator.pushNamed(
+                        StoreProvider.of<FlowState>(
                           context,
-                          "/spending/detail",
-                          arguments: CustomPageRouteArguments(
-                            transitionType: TransitionType.slideTop,
-                            extraData: DateTime(
-                              displayMonthYear.year,
-                              displayMonthYear.month + 1,
-                            ),
-                          ),
-                        );
+                        ).dispatch(IncrementDisplayedMonthAction());
                       },
                       child: Image.asset(
-                        displayMonthYear.month < DateTime.now().month ||
-                                displayMonthYear.year < DateTime.now().year
-                            ? 'assets/icons/nextMonth_exists.png'
-                            : 'assets/icons/nextMonth_not_exists.png',
+                        DateTimeUtil.isSameDate(
+                              weeklySpendingCalendarDisplayWeek,
+                              lastMonday,
+                            )
+                            ? 'assets/icons/nextMonth_not_exists.png'
+                            : 'assets/icons/nextMonth_exists.png',
                         width: 20,
                         height: 20,
                       ),

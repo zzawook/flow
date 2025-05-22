@@ -1,22 +1,28 @@
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/shared/utils/date_time_util.dart';
 
 class SpendingCalendar extends StatefulWidget {
   final DateTime displayedMonth;
+  final void Function(DateTime date) onDateSelected;
 
-  const SpendingCalendar({super.key, required this.displayedMonth});
+  const SpendingCalendar({
+    super.key,
+    required this.displayedMonth,
+    required this.onDateSelected,
+  });
 
   @override
   State<SpendingCalendar> createState() => _SpendingCalendarState();
 }
 
 class _SpendingCalendarState extends State<SpendingCalendar> {
+  DateTime selectedDate = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
-    // We'll create a simple grid for the days of the week + days of the month
     final daysInMonth = DateTimeUtil.daysInMonth(
       widget.displayedMonth.year,
       widget.displayedMonth.month,
@@ -27,12 +33,9 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
           widget.displayedMonth.month,
           1,
         ).weekday;
-    // In Dart, weekday: 1 = Monday, 7 = Sunday. We'll align to Sunday=0, Monday=1, etc. for this grid.
-    final startOffset = (firstDayOfWeek % 7); // 0 if Sunday, 1 if Monday, etc.
+    final startOffset = (firstDayOfWeek % 7);
 
-    // Build day-of-week header
     final dayOfWeekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
     final dayOfWeekRow = Row(
       children:
           dayOfWeekLabels.map((label) {
@@ -52,16 +55,13 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
           }).toList(),
     );
 
-    // Build calendar days grid
     List<Widget> dayCells = [];
-    // Add empty slots for days before the first day of the month
     for (int i = 0; i < startOffset; i++) {
       dayCells.add(Expanded(child: Container()));
     }
 
-    // Add actual days
     for (int day = 1; day <= daysInMonth; day++) {
-      DateTime date = DateTime(
+      final date = DateTime(
         widget.displayedMonth.year,
         widget.displayedMonth.month,
         day,
@@ -70,33 +70,30 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
         StoreConnector<FlowState, CalendarCellState>(
           distinct: true,
           converter: (store) {
-            final transactionState = store.state.transactionState;
-            var dateStatistics = transactionState
-                .getTransactionStatisticForDate(date);
+            final s = store.state.transactionState;
+            final stats = s.getTransactionStatisticForDate(date);
             return CalendarCellState(
-              income: dateStatistics.income,
-              expense: dateStatistics.expense,
+              income: stats.income,
+              expense: stats.expense,
               isToday: DateTimeUtil.isSameDate(date, DateTime.now()),
               isSelected: DateTimeUtil.isSameDate(
-                date,
-                store
-                    .state
-                    .screenState
-                    .spendingScreenState
-                    .calendarSelectedDate,
+                date, selectedDate
               ),
             );
           },
-          builder: (context, calendarCellState) {
+          builder: (ctx, cell) {
             return Expanded(
               child: GestureDetector(
                 onTap: () {
-                  if (date.isAfter(DateTime.now())) {
-                    return;
-                  }
+                  if (date.isAfter(DateTime.now())) return;
+                  widget.onDateSelected(date);
                   StoreProvider.of<FlowState>(
-                    context,
+                    ctx,
+                    listen: false,
                   ).dispatch(SetCalendarSelectedDateAction(date));
+                  setState(() {
+                    selectedDate = date;
+                  });
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -110,9 +107,9 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                       ),
                       decoration: BoxDecoration(
                         color:
-                            calendarCellState.isToday
+                            cell.isToday
                                 ? Color(0x16000000)
-                                : calendarCellState.isSelected
+                                : cell.isSelected
                                 ? Color(0x6450C878)
                                 : null,
                         shape: BoxShape.circle,
@@ -132,17 +129,17 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                     Text(
                       date.isAfter(DateTime.now())
                           ? ""
-                          : calendarCellState.income > 0
-                          ? "+${calendarCellState.income.toStringAsFixed(2)}"
-                          : calendarCellState.expense < 0
-                          ? calendarCellState.expense.toStringAsFixed(2)
+                          : cell.income > 0
+                          ? "+${cell.income.toStringAsFixed(2)}"
+                          : cell.expense < 0
+                          ? cell.expense.toStringAsFixed(2)
                           : "",
                       style: TextStyle(
                         fontFamily: 'Inter',
                         color:
-                            calendarCellState.income > 0
+                            cell.income > 0
                                 ? Color(0xFF50C878)
-                                : calendarCellState.expense < 0
+                                : cell.expense < 0
                                 ? Color(0xFF757575)
                                 : Color(0xFF50C878),
                         fontSize: 10,
@@ -150,10 +147,9 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                       ),
                     ),
                     Text(
-                      date.isAfter(DateTime.now()) ||
-                              (calendarCellState.income == 0)
+                      date.isAfter(DateTime.now()) || (cell.income == 0)
                           ? ""
-                          : calendarCellState.expense.toStringAsFixed(2),
+                          : cell.expense.toStringAsFixed(2),
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         color: Color(0xFF757575),
@@ -170,25 +166,23 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
       );
     }
 
-    // We'll create rows of 7 columns each
-    List<Row> calendarRows = [];
+    List<Row> rows = [];
     for (int i = 0; i < dayCells.length; i += 7) {
-      final rowCells = dayCells.sublist(
+      final slice = dayCells.sublist(
         i,
         i + 7 > dayCells.length ? dayCells.length : i + 7,
       );
-      // If rowCells < 7, fill with empty containers
-      while (rowCells.length < 7) {
-        rowCells.add(Expanded(child: Container()));
+      while (slice.length < 7) {
+        slice.add(Expanded(child: Container()));
       }
-      calendarRows.add(Row(children: rowCells));
+      rows.add(Row(children: slice));
     }
 
     return Column(
       children: [
         dayOfWeekRow,
         const SizedBox(height: 8),
-        ...calendarRows.map(
+        ...rows.map(
           (r) => Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: r,

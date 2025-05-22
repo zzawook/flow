@@ -40,7 +40,11 @@ class SpendingScreenState {
     selectedDate: DateTime.now(),
     calendarSelectedDate: DateTime.now(),
     // Set the initial week to the current week starting from Monday
-    weeklySpendingCalendarDisplayWeek: DateTime.now().subtract(
+    weeklySpendingCalendarDisplayWeek: DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    ).subtract(
       Duration(days: DateTime.now().weekday - DateTime.monday),
     ),
   );

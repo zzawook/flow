@@ -15,8 +15,8 @@ class WeeklySpendingCalendar extends StatefulWidget {
 class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
   static const int _initialPage = 1000;
   late final PageController _pageController;
+  late final DateTime _initialMonday;
   int _currentPage = _initialPage;
-  late DateTime _baseMonday;
 
   @override
   void initState() {
@@ -27,22 +27,21 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final vm =
-        StoreProvider.of<FlowState>(
-          context,
-        ).state.screenState.spendingScreenState;
-    final displayWeek = vm.weeklySpendingCalendarDisplayWeek;
-    _baseMonday = DateTime(
-      displayWeek.year,
-      displayWeek.month,
-      displayWeek.day - (displayWeek.weekday - DateTime.monday),
-    );
+    _initialMonday = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    ).subtract(Duration(days: DateTime.now().weekday - DateTime.monday));
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  DateTime _startOfWeek(DateTime dt) {
+    return dt.subtract(Duration(days: dt.weekday - DateTime.monday));
   }
 
   @override
@@ -59,28 +58,39 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
       builder: (context, vm) {
         final today = DateTime.now();
 
+        // compute desired page for current displayWeek
+        final newMonday = _startOfWeek(vm.displayWeek);
+        final weekDelta = newMonday.difference(_initialMonday).inDays ~/ 7;
+        final targetPage = _initialPage + weekDelta;
+
+        if (targetPage != _currentPage) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _pageController.jumpToPage(targetPage);
+          });
+          _currentPage = targetPage;
+        }
+
         return SizedBox(
           height: 140,
           width: double.infinity,
           child: PageView.builder(
             controller: _pageController,
-            // 1. Fix the total pages so you can't swipe past page 1000:
             itemCount: _initialPage + 1,
             onPageChanged: (page) {
-              final delta = page - _currentPage;
-              final newMonday = _baseMonday.add(Duration(days: delta * 7));
-
-              StoreProvider.of<FlowState>(
-                context,
-                listen: false,
-              ).dispatch(SetWeeklySpendingCalendarDisplayWeekAction(newMonday));
-
-              _currentPage = page;
-              _baseMonday = newMonday;
+              final delta = page - _initialPage;
+              final updatedMonday = _initialMonday.add(
+                Duration(days: delta * 7),
+              );
+              StoreProvider.of<FlowState>(context, listen: false).dispatch(
+                SetWeeklySpendingCalendarDisplayWeekAction(updatedMonday),
+              );
+              setState(() {
+                _currentPage = page;
+              });
             },
             itemBuilder: (context, page) {
-              final delta = page - _currentPage;
-              final monday = _baseMonday.add(Duration(days: delta * 7));
+              final delta = page - _initialPage;
+              final monday = _initialMonday.add(Duration(days: delta * 7));
               return _buildWeekRow(context, monday, today, vm.selectedDate);
             },
           ),
@@ -112,9 +122,9 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
     final days = List.generate(7, (i) => monday.add(Duration(days: i)));
 
     return StoreConnector<FlowState, DateTime>(
-      converter: (store) {
-        return store.state.screenState.spendingScreenState.displayedMonth;
-      },
+      distinct: true,
+      converter:
+          (store) => store.state.screenState.spendingScreenState.displayedMonth,
       builder:
           (context, displayMonth) => Container(
             padding: const EdgeInsets.only(top: 20, bottom: 18),
@@ -125,6 +135,7 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                   days.map((dateTime) {
                     final item =
                         weeklyData[dateTime] ?? {'income': 0.0, 'expense': 0.0};
+
                     final income = item['income']!;
                     final expense = item['expense']!;
                     final isToday = _isSameDay(dateTime, today);
@@ -195,10 +206,8 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          if (income !=
-                              0) // show expense on a second line if there was income
-                            Text(
-                              expenseText,
+                          Text(
+                            income != 0 ? expenseText : "",
                               style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w900,
@@ -207,6 +216,7 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
+                            
                         ],
                       ),
                     );

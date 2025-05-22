@@ -12,19 +12,14 @@ SpendingScreenState spendingScreenReducer(
       modifiedDisplayedMonth.year,
       modifiedDisplayedMonth.month,
       // modifiedDIsplayedMonth's last day of the month
-      DateTime(
-        modifiedDisplayedMonth.year,
-        modifiedDisplayedMonth.month + 1,
-        0,
-      ).day,
+      1
     );
 
-    DateTime selectedDate = DateTime(
-      modifiedWeeklyCalendarDisplayWeek.year,
-      modifiedWeeklyCalendarDisplayWeek.month,
-      // modifiedWeeklyCalendarDisplayWeek's week's monday
-      modifiedWeeklyCalendarDisplayWeek.day -
-          (modifiedWeeklyCalendarDisplayWeek.weekday - DateTime.monday),
+    // modifiedWeeklyCalendarDisplayWeek's week's monday
+    DateTime selectedDate = modifiedWeeklyCalendarDisplayWeek.subtract(
+      Duration(
+        days: modifiedWeeklyCalendarDisplayWeek.weekday - DateTime.monday,
+      ),
     );
 
     return state.copyWith(
@@ -33,6 +28,18 @@ SpendingScreenState spendingScreenReducer(
       selectedDate: selectedDate,
     );
   } else if (action is IncrementDisplayedMonthAction) {
+    if (state.displayedMonth.month == DateTime.now().month &&
+        state.displayedMonth.year == DateTime.now().year) {
+      DateTime thisWeekMonday = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      ).subtract(Duration(days: DateTime.now().weekday - 1));
+      return state.copyWith(
+        weeklySpendingCalendarDisplayWeek: thisWeekMonday,
+        selectedDate: thisWeekMonday,
+      );
+    }
     DateTime modifiedDisplayedMonth = incrementMonth(state.displayedMonth);
 
     DateTime modifiedWeeklyCalendarDisplayWeek = DateTime(
@@ -40,15 +47,6 @@ SpendingScreenState spendingScreenReducer(
       modifiedDisplayedMonth.month,
       1,
     );
-
-    // Check if the modifiedDisplayedMonth is current Month
-    if (isSameMonth(modifiedDisplayedMonth, DateTime.now())) {
-      modifiedWeeklyCalendarDisplayWeek = DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-      );
-    }
 
     DateTime selectedDate = modifiedWeeklyCalendarDisplayWeek;
 

@@ -2,142 +2,127 @@ import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class BalanceDetail extends StatelessWidget {
-  const BalanceDetail({
-    super.key,
-    required this.isOnHomeScreen,
-  });
   final bool isOnHomeScreen;
+
+  const BalanceDetail({super.key, required this.isOnHomeScreen});
+
+  TransactionState storeToTransactionStateConverter(Store<FlowState> store) {
+    return store.state.transactionState;
+  }
 
   @override
   Widget build(BuildContext context) {
+    Widget separator = FlowSeparatorBox(height: isOnHomeScreen ? 0 : 16);
     return StoreConnector<FlowState, TransactionState>(
-      converter: (store) => store.state.transactionState,
-      builder:
-          (context, transactionState) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IncomeContainer(transactionState: transactionState),
-              FlowSeparatorBox(height: isOnHomeScreen ? 0 : 16),
-              SpendingContainer(
-                transactionState: transactionState,
-                isOnHomeScreen: isOnHomeScreen,
-              ),
-              FlowSeparatorBox(height: isOnHomeScreen ? 0 : 16),
-              TotalBalanceContainer(transactionState: transactionState),
-            ],
-          ),
+      converter: (store) => storeToTransactionStateConverter(store),
+      builder: (context, txState) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _IncomeContainer(txState: txState),
+            separator,
+            _SpendingContainer(
+              txState: txState,
+              isOnHomeScreen: isOnHomeScreen,
+            ),
+            separator,
+            _TotalBalanceContainer(txState: txState),
+          ],
+        );
+      },
     );
   }
 }
 
-class IncomeContainer extends StatelessWidget {
-  const IncomeContainer({super.key, required this.transactionState});
+class _IncomeContainer extends StatelessWidget {
+  final TransactionState txState;
 
-  final TransactionState transactionState;
+  const _IncomeContainer({required this.txState});
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final income = txState
+        .getIncomeForMonth(DateTime(now.year, now.month))
+        .toStringAsFixed(2);
+
     return Container(
-      padding: EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
         children: [
-          Text(
-            'Income',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF555555),
-            ),
-          ),
-          Text(
-            '+ ${transactionState.getIncomeForMonth(DateTime(DateTime.now().year, DateTime.now().month)).toStringAsFixed(2)} SGD',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF555555),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          const Text('Income', style: _labelStyle),
+          Text('+ $income SGD', style: _valueStyle),
         ],
       ),
     );
   }
 }
 
-class SpendingContainer extends StatelessWidget {
-  const SpendingContainer({
-    super.key,
-    required this.transactionState,
+class _SpendingContainer extends StatelessWidget {
+  final TransactionState txState;
+  final bool isOnHomeScreen;
+
+  const _SpendingContainer({
+    required this.txState,
     required this.isOnHomeScreen,
   });
 
-  final TransactionState transactionState;
-  final bool isOnHomeScreen;
-
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final expense = txState
+        .getExpenseForMonth(DateTime(now.year, now.month))
+        .abs()
+        .toStringAsFixed(2);
+
     return Container(
-      padding: EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Column(
         children: [
-          SpendingTotal(
-            transactionState: transactionState,
-            isOnHomeScreen: isOnHomeScreen,
+          Container(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Spending', style: _labelStyle),
+                Text('- $expense SGD', style: _valueStyle),
+              ],
+            ),
           ),
           FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
-          SpendingDetails(
-            transactionState: transactionState,
-            isOnHomeScreen: isOnHomeScreen,
-          ),
+          _SpendingDetails(txState: txState, isOnHomeScreen: isOnHomeScreen),
         ],
       ),
     );
   }
 }
 
-class TotalBalanceContainer extends StatelessWidget {
-  const TotalBalanceContainer({super.key, required this.transactionState});
+class _TotalBalanceContainer extends StatelessWidget {
+  final TransactionState txState;
 
-  final TransactionState transactionState;
+  const _TotalBalanceContainer({required this.txState});
 
   @override
   Widget build(BuildContext context) {
-    double totalBalance = transactionState.getBalanceForMonth(
-      DateTime(DateTime.now().year, DateTime.now().month),
-    );
+    final now = DateTime.now();
+    final balance = txState.getBalanceForMonth(DateTime(now.year, now.month));
+    final sign = balance >= 0 ? '+' : '-';
+
     return Container(
-      padding: EdgeInsets.only(top: 7),
+      padding: const EdgeInsets.only(top: 7),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const Text('Total Balance:', style: _totalLabelStyle),
           Text(
-            'Total Balance:',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF555555),
-            ),
-          ),
-          Text(
-            '${totalBalance > 0 ? "+" : "-"} ${totalBalance.toStringAsFixed(2)} SGD',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF00C864), // Green color
-            ),
+            '$sign ${balance.abs().toStringAsFixed(2)} SGD',
+            style: _totalValueStyle,
           ),
         ],
       ),
@@ -145,60 +130,13 @@ class TotalBalanceContainer extends StatelessWidget {
   }
 }
 
-class SpendingTotal extends StatelessWidget {
-  const SpendingTotal({
-    super.key,
-    required this.transactionState,
-    required this.isOnHomeScreen,
-  });
-
-  final TransactionState transactionState;
+class _SpendingDetails extends StatelessWidget {
+  final TransactionState txState;
   final bool isOnHomeScreen;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Spending',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF555555),
-            ),
-          ),
-          Text(
-            '- ${transactionState.getExpenseForMonth(DateTime(DateTime.now().year, DateTime.now().month)).abs().toStringAsFixed(2)} SGD',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF555555),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+  const _SpendingDetails({required this.txState, required this.isOnHomeScreen});
 
-class SpendingDetails extends StatelessWidget {
-  const SpendingDetails({
-    super.key,
-    required this.transactionState,
-    required this.isOnHomeScreen,
-  });
-
-  final TransactionState transactionState;
-  final bool isOnHomeScreen;
-
-  String processMethod(String method) {
+  String _processMethod(String method) {
     if (method == 'Credit Card' || method == 'Debit Card') {
       return 'Debit + Credit card';
     } else if (method == 'Transfer' || method == 'PayNow') {
@@ -210,6 +148,14 @@ class SpendingDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Categorize all negative‐amount transactions
+    final categorized = <String, List<Transaction>>{};
+    for (var t in txState.transactions) {
+      if (t.amount >= 0) continue;
+      final key = _processMethod(t.method);
+      categorized.putIfAbsent(key, () => []).add(t);
+    }
+
     return SizedBox(
       width: double.infinity,
       child: IntrinsicHeight(
@@ -218,41 +164,21 @@ class SpendingDetails extends StatelessWidget {
           children: [
             Container(
               width: 2,
-              color: Color(0xFFE5E5E5),
-              margin: EdgeInsets.only(right: 12),
+              color: const Color(0xFFE5E5E5),
+              margin: const EdgeInsets.only(right: 12),
             ),
             Expanded(
-              child: () {
-                List<Transaction> transactions = transactionState.transactions;
-                Map<String, List<Transaction>> categorizedTransactions = {};
-
-                for (var transaction in transactions) {
-                  if (transaction.amount >= 0) {
-                    continue;
-                  }
-                  String method = processMethod(transaction.method);
-                  if (!categorizedTransactions.containsKey(method)) {
-                    categorizedTransactions[method] = [];
-                  }
-                  categorizedTransactions[method]!.add(transaction);
-                }
-                return Column(
-                  children: [
-                    CardSpending(
-                      transactions:
-                          categorizedTransactions['Debit + Credit card'] ?? [],
-                    ),
-                    FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
-                    TransferSpending(
-                      transactions: categorizedTransactions['Transfer'] ?? [],
-                    ),
-                    FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
-                    OtherSpending(
-                      transactions: categorizedTransactions['Others'] ?? [],
-                    ),
-                  ],
-                );
-              }(),
+              child: Column(
+                children: [
+                  CardSpending(
+                    transactions: categorized['Debit + Credit card'] ?? [],
+                  ),
+                  FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
+                  TransferSpending(transactions: categorized['Transfer'] ?? []),
+                  FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
+                  OtherSpending(transactions: categorized['Others'] ?? []),
+                ],
+              ),
             ),
           ],
         ),
@@ -261,37 +187,30 @@ class SpendingDetails extends StatelessWidget {
   }
 }
 
-class OtherSpending extends StatelessWidget {
-  const OtherSpending({super.key, required this.transactions});
-
+class CardSpending extends StatelessWidget {
   final List<Transaction> transactions;
+
+  const CardSpending({super.key, required this.transactions});
 
   @override
   Widget build(BuildContext context) {
-    double otherSpending = 0;
-    for (var transaction in transactions) {
-      otherSpending += transaction.amount;
+    double total = 0;
+    final now = DateTime.now();
+
+    for (var t in transactions) {
+      if (t.date.year != now.year || t.date.month != now.month) continue;
+      total += t.amount;
     }
+
     return Container(
-      padding: EdgeInsets.only(bottom: 3),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const Text('Debit + Credit card:', style: _detailLabelStyle),
           Text(
-            'Others:',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF666666),
-            ),
-          ),
-          Text(
-            '${otherSpending.abs().toStringAsFixed(2)} SGD',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF666666),
-            ),
+            '${total.abs().toStringAsFixed(2)} SGD',
+            style: _detailValueStyle,
           ),
         ],
       ),
@@ -300,40 +219,29 @@ class OtherSpending extends StatelessWidget {
 }
 
 class TransferSpending extends StatelessWidget {
+  final List<Transaction> transactions;
+
   const TransferSpending({super.key, required this.transactions});
 
-  final List<Transaction> transactions;
-
   @override
   Widget build(BuildContext context) {
-    double transferSpending = 0;
-    for (var transaction in transactions) {
-      if (transaction.date.month != DateTime.now().month ||
-          transaction.date.year != DateTime.now().year) {
-        continue;
-      }
-      transferSpending += transaction.amount;
+    double total = 0;
+    final now = DateTime.now();
+
+    for (var t in transactions) {
+      if (t.date.year != now.year || t.date.month != now.month) continue;
+      total += t.amount;
     }
+
     return Container(
-      padding: EdgeInsets.only(bottom: 7),
+      padding: const EdgeInsets.only(bottom: 7),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const Text('Transfer:', style: _detailLabelStyle),
           Text(
-            'Transfer:',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF666666),
-            ),
-          ),
-          Text(
-            '${transferSpending.abs().toStringAsFixed(2)} SGD',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF666666),
-            ),
+            '${total.abs().toStringAsFixed(2)} SGD',
+            style: _detailValueStyle,
           ),
         ],
       ),
@@ -341,44 +249,71 @@ class TransferSpending extends StatelessWidget {
   }
 }
 
-class CardSpending extends StatelessWidget {
-  const CardSpending({super.key, required this.transactions});
-
+class OtherSpending extends StatelessWidget {
   final List<Transaction> transactions;
+
+  const OtherSpending({super.key, required this.transactions});
 
   @override
   Widget build(BuildContext context) {
-    double cardSpending = 0;
-    for (var transaction in transactions) {
-      if (transaction.date.month != DateTime.now().month ||
-          transaction.date.year != DateTime.now().year) {
-        continue;
-      }
-      cardSpending += transaction.amount;
+    double total = 0;
+    for (var t in transactions) {
+      total += t.amount;
     }
+
     return Container(
-      padding: EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 3),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const Text('Others:', style: _detailLabelStyle),
           Text(
-            'Debit + Credit card:',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF666666),
-            ),
-          ),
-          Text(
-            '${cardSpending.abs().toStringAsFixed(2)} SGD',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF666666),
-            ),
+            '${total.abs().toStringAsFixed(2)} SGD',
+            style: _detailValueStyle,
           ),
         ],
       ),
     );
   }
 }
+
+/// Common text styles
+const _labelStyle = TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
+  color: Color(0xFF555555),
+);
+
+const _valueStyle = TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16,
+  fontWeight: FontWeight.w500,
+  color: Color(0xFF555555),
+);
+
+const _detailLabelStyle = TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16,
+  color: Color(0xFF666666),
+);
+
+const _detailValueStyle = TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16,
+  color: Color(0xFF666666),
+);
+
+const _totalLabelStyle = TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
+  color: Color(0xFF555555),
+);
+
+const _totalValueStyle = TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
+  color: Color(0xFF00C864),
+);

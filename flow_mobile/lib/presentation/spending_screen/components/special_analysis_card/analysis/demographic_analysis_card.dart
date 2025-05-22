@@ -82,7 +82,7 @@ class DemographicAnalysisCard extends StatelessWidget {
               ),
               Container(
                 padding: EdgeInsets.only(top: 16),
-                height: 155,
+                height: 160,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
