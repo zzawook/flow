@@ -15,23 +15,17 @@ class WeeklySpendingCalendar extends StatefulWidget {
 class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
   static const int _initialPage = 1000;
   late final PageController _pageController;
-  late final DateTime _initialMonday;
+  final DateTime _initialMonday = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    ).subtract(Duration(days: DateTime.now().weekday - DateTime.monday));
   int _currentPage = _initialPage;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _initialPage);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initialMonday = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    ).subtract(Duration(days: DateTime.now().weekday - DateTime.monday));
   }
 
   @override
