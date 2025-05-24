@@ -288,7 +288,7 @@ const _labelStyle = TextStyle(
 const _valueStyle = TextStyle(
   fontFamily: 'Inter',
   fontSize: 16,
-  fontWeight: FontWeight.w500,
+  fontWeight: FontWeight.w900,
   color: Color(0xFF555555),
 );
 

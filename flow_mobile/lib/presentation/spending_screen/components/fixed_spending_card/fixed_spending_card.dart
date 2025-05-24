@@ -160,6 +160,7 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
+                                        color: Color(0xFF555555)
                                       ),
                                     ),
                                   ],

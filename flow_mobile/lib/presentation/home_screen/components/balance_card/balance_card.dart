@@ -70,8 +70,8 @@ class _BalanceCardTitle extends StatelessWidget {
         "This month's Balance",
         style: TextStyle(
           fontFamily: 'Inter',
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+          fontSize: 22,
+          fontWeight: FontWeight.normal,
           color: Color(0xFF000000),
         ),
       ),
