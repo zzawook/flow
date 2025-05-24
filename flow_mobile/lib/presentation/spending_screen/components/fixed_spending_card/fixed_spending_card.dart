@@ -34,6 +34,7 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
     FixedSpendingCategory.insurance: 79.95,
     FixedSpendingCategory.rent: 1550.0,
     FixedSpendingCategory.others: 30.25,
+    FixedSpendingCategory.installment: 200.0,
   };
 
   /// Total of all categories
@@ -160,7 +161,7 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0xFF555555)
+                                        color: Color(0xFF555555),
                                       ),
                                     ),
                                   ],
@@ -173,8 +174,8 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
                             ),
                           ],
                         ),
-                  ),
-                ),
+                      ),
+                    ),
               );
             }),
           ],

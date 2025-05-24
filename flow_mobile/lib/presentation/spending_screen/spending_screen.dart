@@ -6,14 +6,12 @@ import 'package:flow_mobile/presentation/spending_screen/components/special_anal
 import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/spending_by_category_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_trend_card/spending_trend_card.dart';
-import 'package:flow_mobile/presentation/spending_screen/components/top_spending_cluster_card/top_spending_cluster.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/top_spending_cluster_card/top_spending_cluster_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/spending_screen_contstants.dart';
 import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/material.dart';
-
 
 class SpendingScreen extends StatelessWidget {
   const SpendingScreen({super.key});
@@ -63,12 +61,6 @@ class SpendingScreen extends StatelessWidget {
                       height: SpendingScreenStyles.sectionSpacing,
                     ),
 
-                    TopSpendingClusterCard(),
-
-                    const FlowSeparatorBox(
-                      height: SpendingScreenStyles.sectionSpacing,
-                    ),
-
                     // Balance for this month
                     const BalanceCard(isOnHomeScreen: false),
 
@@ -90,6 +82,12 @@ class SpendingScreen extends StatelessWidget {
 
                     // Trend over time
                     SpendingTrendCard(),
+
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
+
+                    TopSpendingClusterCard(),
 
                     const FlowSeparatorBox(
                       height: SpendingScreenStyles.sectionSpacing,

@@ -17,7 +17,7 @@ class TopSpendingClusterCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Top 5 Spending',
+            'Top 5 Spendings',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.normal),
           ),
           SizedBox(height: 16),

@@ -7,6 +7,7 @@ enum FixedSpendingCategory {
   insurance,
   others,
   rent,
+  installment,
 }
 
 extension FixedSpendingCategoryInfo on FixedSpendingCategory {
@@ -24,6 +25,8 @@ extension FixedSpendingCategoryInfo on FixedSpendingCategory {
         return 'Rent';
       case FixedSpendingCategory.others:
         return 'Others';
+      case FixedSpendingCategory.installment:
+        return 'Installment';
     }
   }
 
@@ -41,6 +44,8 @@ extension FixedSpendingCategoryInfo on FixedSpendingCategory {
         return Icon(Icons.home, color: Colors.brown.shade400);
       case FixedSpendingCategory.others:
         return Icon(Icons.more_horiz, color: Colors.grey);
+      case FixedSpendingCategory.installment:
+        return Icon(Icons.credit_card, color: Colors.purple.shade400);
     }
   }
 }
