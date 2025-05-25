@@ -6,17 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart'; // Or flutter/widgets.dart if you prefer, but Material is typical.
 
 class FlowMainTopBar extends StatelessWidget {
-
   const FlowMainTopBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 15),
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset('assets/FLOW.png', height: 80, width: 80),
+          Image.asset('assets/FLOW.png', width: 80),
           GestureDetector(
             onTap: () {
               Navigator.pushNamed(

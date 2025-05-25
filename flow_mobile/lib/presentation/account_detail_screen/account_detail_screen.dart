@@ -66,59 +66,69 @@ class BalanceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 48, left: 24, right: 24, bottom: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Clipboard.setData(
-                ClipboardData(
-                  text: "${bankAccount.bank.name} ${bankAccount.accountNumber}",
-                ),
-              ).then((_) {
-                // Provide user feedback by showing a snackbar.
-                ScaffoldMessenger.of(context).showSnackBar(
-                  FlowSnackbar(
-                    content: Text(
-                      "Copied to clipboard",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFFFFFFF),
-                      ),
-                    ),
-                    duration: 2,
-                  ).build(context),
-                );
-              });
-            },
-            child: Text(
-              "${bankAccount.bank.name} ${bankAccount.accountNumber}",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-                color: Color(0x88000000),
-                decoration: TextDecoration.underline,
-              ),
-            ),
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.only(
+            top: 48,
+            left: 24,
+            right: 24,
+            bottom: 32,
           ),
-          FlowSeparatorBox(height: 12),
-          Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              GestureDetector(
+                onTap: () {
+                  Clipboard.setData(
+                    ClipboardData(
+                      text:
+                          "${bankAccount.bank.name} ${bankAccount.accountNumber}",
+                    ),
+                  ).then((_) {
+                    // Provide user feedback by showing a snackbar.
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      FlowSnackbar(
+                        content: Text(
+                          "Copied to clipboard",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFFFFFFF),
+                          ),
+                        ),
+                        duration: 2,
+                      ).build(context),
+                    );
+                  });
+                },
                 child: Text(
-                  '\$ ${bankAccount.balance.toStringAsFixed(0)}',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                  "${bankAccount.bank.name} ${bankAccount.accountNumber}",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                    color: Color(0x88000000),
+                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
+              FlowSeparatorBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '\$ ${bankAccount.balance.toStringAsFixed(0)}',
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

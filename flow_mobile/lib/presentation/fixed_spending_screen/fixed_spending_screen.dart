@@ -1,7 +1,9 @@
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/shared/utils/recurring_spending.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/month_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -124,72 +126,76 @@ class _FixedSpendingDetailsScreenState
     final double total = data.values
         .expand((items) => items)
         .fold(0, (sum, item) => sum + item.amount);
+
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top bar
-              FixedSpendingTopBar(
-                month: month,
-                onMonthChange: (newMonth) {
-                  setState(() {
-                    month = newMonth;
-                  });
-                },
+      body: FlowSafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ───────── TOP BAR ────────────────────────────────────────────────
+            FlowTopBar(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MonthSelector(
+                    displayMonthYear: month,
+                    displayMonthYearSetter:
+                        (newmonth) => setState(() => month = newmonth),
+                  ),
+                ],
               ),
+            ),
 
-              FlowSeparatorBox(height: 45),
-
-              Text(
-                "Fixed Spending",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Color(0x88000000),
-                ),
+            // ───────── HEADER (non-scrolling) ────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  FlowSeparatorBox(height: 36),
+                  const Text(
+                    "Fixed Spending",
+                    style: TextStyle(fontSize: 16, color: Color(0x88000000)),
+                  ),
+                  Text(
+                    "\$ $total",
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF50C878),
+                    ),
+                  ),
+                  FlowSeparatorBox(height: 36),
+                ],
               ),
+            ),
 
-              Text(
-                "\$ $total",
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF50C878),
-                ),
-              ),
-
-              FlowSeparatorBox(height: 36),
-
-              Expanded(
+            // ───────── SCROLLABLE LIST ──────────────────────────────────────
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: ListView(
                   children:
                       FixedSpendingCategory.values.map((cat) {
                         final items = data[cat] ?? [];
-                        final total = items.fold<int>(
+                        final catTotal = items.fold<int>(
                           0,
-                          (sum, i) => sum + i.amount,
+                          (s, i) => s + i.amount,
                         );
 
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Section header
+                            // section header
                             Row(
                               children: [
                                 Text(
                                   cat.label,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.normal,
-                                    color: Color(0xFF000000),
-                                  ),
+                                  style: const TextStyle(fontSize: 18),
                                 ),
                                 const Spacer(),
                                 Text(
-                                  _formatKRW(total),
+                                  _formatKRW(catTotal),
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -198,14 +204,14 @@ class _FixedSpendingDetailsScreenState
                               ],
                             ),
 
+                            // items
                             ...items.map((item) {
-                              String dateText = '';
-                              if (item.scheduledDay > DateTime.now().day &&
-                                  month.month == DateTime.now().month) {
-                                dateText = 'Scheduled for';
-                              } else {
-                                dateText = 'Complete on';
-                              }
+                              final isFuture =
+                                  item.scheduledDay > DateTime.now().day &&
+                                  month.month == DateTime.now().month;
+                              final dateText =
+                                  isFuture ? 'Scheduled for' : 'Complete on';
+
                               return ListTile(
                                 leading: cat.icon,
                                 title: Text(
@@ -222,43 +228,37 @@ class _FixedSpendingDetailsScreenState
                                     color: Color(0x88000000),
                                   ),
                                 ),
-                                trailing: Column(
+                                trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          dateText,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0x66000000),
-                                          ),
-                                        ),
-                                        Text(
-                                          ' ${item.scheduledDay}${DateTimeUtil.getDatePostFix(item.scheduledDay)}',
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0x66000000),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
+                                    Text(
+                                      dateText,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0x66000000),
+                                      ),
+                                    ),
+                                    Text(
+                                      ' ${item.scheduledDay}${DateTimeUtil.getDatePostFix(item.scheduledDay)}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0x66000000),
+                                      ),
                                     ),
                                   ],
                                 ),
                               );
                             }),
 
-                            // Actual items
-                            const FlowSeparatorBox(height: 30),
+                            FlowSeparatorBox(height: 30),
                           ],
                         );
                       }).toList(),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

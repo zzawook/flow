@@ -8,6 +8,7 @@ import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,31 +67,33 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
       },
       child: Scaffold(
         backgroundColor: HomeScreenColors.background,
-        body: Column(
-          children: [
-            Expanded(
-              child: RefreshIndicator(
-                color: HomeScreenColors.primary,
-                onRefresh: _onRefresh,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 32, 18, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const FlowMainTopBar(),
-                        AccountsCard(onToggleBalance: _onToggleBalance),
-                        const QuickTransferCard(),
-                        const BalanceCard(isOnHomeScreen: true),
-                      ],
+        body: FlowSafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  color: HomeScreenColors.primary,
+                  onRefresh: _onRefresh,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 18, right: 18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const FlowMainTopBar(),
+                          AccountsCard(onToggleBalance: _onToggleBalance),
+                          const QuickTransferCard(),
+                          const BalanceCard(isOnHomeScreen: true),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const FlowBottomNavBar(),
-          ],
+              const FlowBottomNavBar(),
+            ],
+          ),
         ),
       ),
     );

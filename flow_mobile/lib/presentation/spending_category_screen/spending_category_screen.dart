@@ -4,12 +4,13 @@ import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
-import 'package:flow_mobile/presentation/spending_category_screen/spending_graph_top_bar.dart';
+import 'package:flow_mobile/shared/utils/spending_category_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
+import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/month_selector.dart';
 import 'package:flow_mobile/shared/widgets/spending/stacked_bar.dart';
-import 'package:flow_mobile/shared/utils/spending_category_util.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -39,116 +40,112 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      decoration: const BoxDecoration(color: Color(0xFFF5F5F5)),
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 72),
-                child: StoreConnector<FlowState, TransactionState>(
-                  converter: (store) => store.state.transactionState,
-                  builder: (context, transactionState) {
-                    List<Transaction> transactions = transactionState
-                        .getTransactionsForMonth(
-                          DateTime(
-                            displayMonthYear.year,
-                            displayMonthYear.month,
-                          ),
-                        );
-                    Map<String, double> categoryAmount = {};
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      body: FlowSafeArea(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: StoreConnector<FlowState, TransactionState>(
+                    converter: (store) => store.state.transactionState,
+                    builder: (context, transactionState) {
+                      List<Transaction> transactions = transactionState
+                          .getTransactionsForMonth(
+                            DateTime(
+                              displayMonthYear.year,
+                              displayMonthYear.month,
+                            ),
+                          );
+                      Map<String, double> categoryAmount = {};
 
-                    double total = 0.0;
+                      double total = 0.0;
 
-                    // Calculate the total amount for each category
-                    for (var transaction in transactions) {
-                      if (transaction.amount > 0) {
-                        continue; // Skip income transactions
+                      // Calculate the total amount for each category
+                      for (var transaction in transactions) {
+                        if (transaction.amount > 0) {
+                          continue; // Skip income transactions
+                        }
+                        if (categoryAmount.containsKey(transaction.category)) {
+                          categoryAmount[transaction.category] =
+                              categoryAmount[transaction.category]! +
+                              transaction.amount;
+                        } else {
+                          categoryAmount[transaction.category] =
+                              transaction.amount;
+                        }
+                        total += transaction.amount.abs();
                       }
-                      if (categoryAmount.containsKey(transaction.category)) {
-                        categoryAmount[transaction.category] =
-                            categoryAmount[transaction.category]! +
-                            transaction.amount;
-                      } else {
-                        categoryAmount[transaction.category] =
-                            transaction.amount;
-                      }
-                      total += transaction.amount.abs();
-                    }
 
-                    // Remove categories with 0 amount
-                    categoryAmount.removeWhere((key, value) => value == 0);
+                      // Remove categories with 0 amount
+                      categoryAmount.removeWhere((key, value) => value == 0);
 
-                    final sortedCategories =
-                        categoryAmount.entries.toList()
-                          ..sort((a, b) => a.value.compareTo(b.value));
+                      final sortedCategories =
+                          categoryAmount.entries.toList()
+                            ..sort((a, b) => a.value.compareTo(b.value));
 
-                    // BUILD
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 24),
-                          child: SpendingGraphTopBar(),
-                        ),
-                        const FlowSeparatorBox(height: 45),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 24, right: 24),
-                          child: MonthSelector(
-                            displayMonthYear: displayMonthYear,
-                            displayMonthYearSetter: setDisplayMonthYear,
+                      // BUILD
+                      return Column(
+                        children: [
+                          FlowTopBar(title: Text("")),
+                          const FlowSeparatorBox(height: 45),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 24, right: 24),
+                            child: MonthSelector(
+                              displayMonthYear: displayMonthYear,
+                              displayMonthYearSetter: setDisplayMonthYear,
+                            ),
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(
-                            top: 24,
-                            left: 16,
-                            right: 16,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                '\$ ${total.toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xAA000000),
+                          Container(
+                            padding: const EdgeInsets.only(
+                              top: 24,
+                              left: 16,
+                              right: 16,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '\$ ${total.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xAA000000),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        FlowSeparatorBox(height: 12),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 16),
-                          child: StackedBar(
-                            total: total,
-                            height: 32,
-                            entries: sortedCategories,
+                          FlowSeparatorBox(height: 12),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16, right: 16),
+                            child: StackedBar(
+                              total: total,
+                              height: 32,
+                              entries: sortedCategories,
+                            ),
                           ),
-                        ),
-                        const FlowSeparatorBox(height: 24),
-                        SpendingCategoryList(
-                          sortedCategories: sortedCategories,
-                          displayedMonthYear: displayMonthYear,
-                        ),
-                      ],
-                    );
-                  },
+                          const FlowSeparatorBox(height: 24),
+                          SpendingCategoryList(
+                            sortedCategories: sortedCategories,
+                            displayedMonthYear: displayMonthYear,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
-
-
 
 class SpendingCategoryList extends StatelessWidget {
   final List<MapEntry<String, dynamic>> sortedCategories;
@@ -202,7 +199,7 @@ class SpendingCategoryList extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 35,
+                      width: 36,
                       child: Text(
                         '${percentage.toStringAsFixed(0)}%',
                         style: const TextStyle(

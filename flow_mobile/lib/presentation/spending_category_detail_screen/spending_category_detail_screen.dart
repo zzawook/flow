@@ -2,6 +2,7 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_tag.dart';
+import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flow_mobile/shared/widgets/month_selector.dart';
@@ -42,8 +43,8 @@ class _SpendingCategoryDetailScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Color(0xFFFAFAFA),
+      backgroundColor: Color(0xFFFAFAFA),
+      body: FlowSafeArea(
         child: StoreConnector<FlowState, TransactionState>(
           converter: (store) => store.state.transactionState,
           builder: (context, transactionState) {

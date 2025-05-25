@@ -1,11 +1,11 @@
+import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/presentation/transfer_screen/transfer_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class TransferAmountScreen extends StatefulWidget {
@@ -20,9 +20,7 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
   int _amount = 0;
 
   void onTransferButtonPressed() {
-    StoreProvider.of<FlowState>(
-      context,
-    ).dispatch(EnterAmountAction(_amount));
+    StoreProvider.of<FlowState>(context).dispatch(EnterAmountAction(_amount));
     Navigator.pushNamed(
       context,
       '/transfer/confirm',
@@ -68,48 +66,58 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
   @override
   Widget build(BuildContext context) {
     // Directionality ensures text is laid out (LTR or RTL).
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Container(
-        color: const Color(0xFFF5F5F5),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 72.0),
-          child: Column(
-            children: [
-              // Top bar
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: TransferTopBar(previousScreenRoute: "/transfer"),
-              ),
-
-              // The large amount display
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '\$ $_formattedAmount',
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF000000),
+    return Scaffold(
+      backgroundColor: Color(0xFFF5F5F5),
+      body: SafeArea(
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Container(
+            color: const Color(0xFFF5F5F5),
+            child: Column(
+              children: [
+                // Top bar
+                FlowTopBar(
+                  title: const Center(
+                    child: Text(
+                      'Transfer',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              _amount > 0
-                  ? Row(
-                    children: [
-                      TransferButton(onPressed: onTransferButtonPressed),
-                    ],
-                  )
-                  : const SizedBox(height: 60),
+                // The large amount display
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      '\$ $_formattedAmount',
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF000000),
+                      ),
+                    ),
+                  ),
+                ),
 
-              // The custom 3×4 keypad
-              _buildNumberPad(),
+                _amount > 0
+                    ? Row(
+                      children: [
+                        TransferButton(onPressed: onTransferButtonPressed),
+                      ],
+                    )
+                    : const SizedBox(height: 60),
 
-              // Bottom row: Cancel and Transfer
-            ],
+                // The custom 3×4 keypad
+                _buildNumberPad(),
+
+                // Bottom row: Cancel and Transfer
+              ],
+            ),
           ),
         ),
       ),

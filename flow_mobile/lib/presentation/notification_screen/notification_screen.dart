@@ -1,8 +1,9 @@
+import 'package:flow_mobile/domain/entities/notification.dart' as w;
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/notification_state.dart';
+import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flow_mobile/domain/entities/notification.dart' as w;
 import 'package:flutter_redux/flutter_redux.dart';
 
 /// The notifications page now lists all notifications in a single column without grouping.
@@ -13,42 +14,44 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xFFFAFAFA),
-      child: Column(
-        children: [
-          // Top bar with title
-          FlowTopBar(
-            title: Text(
-              "Notifications",
-              style: const TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
-                color: Color(0x88000000),
+      child: FlowSafeArea(
+        child: Column(
+          children: [
+            // Top bar with title
+            FlowTopBar(
+              title: Text(
+                "Notifications",
+                style: const TextStyle(
+                  fontSize: 21,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0x88000000),
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
-          ),
-          Expanded(
-            // Displays a single list of notifications (no grouping).
-            child: StoreConnector<FlowState, NotificationState>(
-              converter: (store) => store.state.notificationState,
-              builder: (context, notificationState) {
-                final notifications = notificationState.getNotification();
-                final sortedNotifications = List<w.Notification>.from(
-                  notifications,
-                )..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: sortedNotifications.length,
-                  itemBuilder: (context, index) {
-                    final w.Notification notification =
-                        sortedNotifications[index];
-                    return NotificationCard(notification: notification);
-                  },
-                );
-              },
+            Expanded(
+              // Displays a single list of notifications (no grouping).
+              child: StoreConnector<FlowState, NotificationState>(
+                converter: (store) => store.state.notificationState,
+                builder: (context, notificationState) {
+                  final notifications = notificationState.getNotification();
+                  final sortedNotifications = List<w.Notification>.from(
+                    notifications,
+                  )..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: sortedNotifications.length,
+                    itemBuilder: (context, index) {
+                      final w.Notification notification =
+                          sortedNotifications[index];
+                      return NotificationCard(notification: notification);
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
