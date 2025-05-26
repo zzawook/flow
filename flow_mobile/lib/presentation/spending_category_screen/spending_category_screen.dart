@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/presentation/home_screen/home_screen_constants.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
@@ -38,16 +39,28 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
     });
   }
 
+  Future<void> _onRefresh() async {
+    Navigator.pushNamed(
+      context,
+      HomeScreenRoutes.refresh,
+      arguments: CustomPageRouteArguments(
+        transitionType: TransitionType.slideTop,
+      ),
+    );
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
       backgroundColor: const Color(0xFFF5F5F5),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            Expanded(
+      child: Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _onRefresh,
               child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
                 child: StoreConnector<FlowState, TransactionState>(
                   converter: (store) => store.state.transactionState,
                   builder: (context, transactionState) {
@@ -138,8 +151,8 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

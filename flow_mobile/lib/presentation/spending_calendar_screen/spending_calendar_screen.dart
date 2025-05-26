@@ -66,7 +66,7 @@ class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
 
     return FlowSafeArea(
       backgroundColor: const Color(0xFFFFFFFF),
-      child: RefreshIndicator(
+      child: RefreshIndicator.adaptive(
         onRefresh: () {
           Navigator.pushNamed(
             context,
@@ -77,40 +77,45 @@ class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
           );
           return Future.delayed(const Duration(microseconds: 1));
         },
-        child: SingleChildScrollView(
+        child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: SizedBox(
-            width: screenSize.width,
-            height: screenSize.height,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24),
-              child: Column(
-                children: [
-                  SpendingCalendarScreenTopBar(
-                    displayMonthYear: displayedMonth,
-                    displayMonthYearSetter: setDisplayedMonth,
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false, // important!
+              child: SizedBox(
+                width: screenSize.width,
+                height: screenSize.height,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24),
+                  child: Column(
+                    children: [
+                      SpendingCalendarScreenTopBar(
+                        displayMonthYear: displayedMonth,
+                        displayMonthYearSetter: setDisplayedMonth,
+                      ),
+                      FlowSeparatorBox(height: 24),
+                      SpendingCalendar(
+                        displayedMonth: displayedMonth,
+                        onDateSelected: _handleDateTap,
+                      ),
+                      StoreConnector<FlowState, List<Transaction>>(
+                        converter:
+                            (store) => store.state.transactionState
+                                .getTransactionsForMonth(displayedMonth),
+                        builder:
+                            (context, transactions) => Expanded(
+                              child: TransactionList(
+                                transactions: transactions,
+                                detailKeys: _detailKeys,
+                              ),
+                            ),
+                      ),
+                    ],
                   ),
-                  FlowSeparatorBox(height: 24),
-                  SpendingCalendar(
-                    displayedMonth: displayedMonth,
-                    onDateSelected: _handleDateTap,
-                  ),
-                  StoreConnector<FlowState, List<Transaction>>(
-                    converter:
-                        (store) => store.state.transactionState
-                            .getTransactionsForMonth(displayedMonth),
-                    builder:
-                        (context, transactions) => Expanded(
-                          child: TransactionList(
-                            transactions: transactions,
-                            detailKeys: _detailKeys,
-                          ),
-                        ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

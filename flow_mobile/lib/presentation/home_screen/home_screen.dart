@@ -70,23 +70,28 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
         child: Column(
           children: [
             Expanded(
-              child: RefreshIndicator(
+              child: RefreshIndicator.adaptive(
                 color: HomeScreenColors.primary,
                 onRefresh: _onRefresh,
-                child: SingleChildScrollView(
+                child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 18, right: 18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const FlowMainTopBar(),
-                        AccountsCard(onToggleBalance: _onToggleBalance),
-                        const QuickTransferCard(),
-                        const BalanceCard(isOnHomeScreen: true),
-                      ],
+                  slivers: [
+                    SliverFillRemaining(
+                      hasScrollBody: false, // important!
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 18, right: 18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const FlowMainTopBar(),
+                            AccountsCard(onToggleBalance: _onToggleBalance),
+                            const QuickTransferCard(),
+                            const BalanceCard(isOnHomeScreen: true),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
