@@ -8,7 +8,7 @@ class AnalysisCarousel extends StatefulWidget {
   const AnalysisCarousel({super.key});
 
   @override
-  _AnalysisCarouselState createState() => _AnalysisCarouselState();
+  State<AnalysisCarousel> createState() => _AnalysisCarouselState();
 }
 
 class _AnalysisCarouselState extends State<AnalysisCarousel>

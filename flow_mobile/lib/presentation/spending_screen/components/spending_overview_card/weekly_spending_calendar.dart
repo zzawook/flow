@@ -9,7 +9,7 @@ class WeeklySpendingCalendar extends StatefulWidget {
   const WeeklySpendingCalendar({super.key});
 
   @override
-  _WeeklySpendingCalendarState createState() => _WeeklySpendingCalendarState();
+  State<WeeklySpendingCalendar> createState() => _WeeklySpendingCalendarState();
 }
 
 class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {

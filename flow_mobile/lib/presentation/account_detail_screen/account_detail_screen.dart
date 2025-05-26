@@ -16,44 +16,46 @@ class BankAccountDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlowSafeArea(
-      backgroundColor: const Color(0xFFFAFAFA),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // ── custom top bar ───────────────────────────────────────────────
-          FlowTopBar(
-            title: Text(
-              'My ${bankAccount.bank.name} ${bankAccount.accountName}',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0x88000000),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // ── balance & copy-to-clipboard section ─────────────────────────
-          BalanceSection(bankAccount: bankAccount),
-
-          // thin grey divider
-          Container(height: 12, color: const Color(0xFFF0F0F0)),
-
-          // ── transactions list (scrollable) ──────────────────────────────
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
-              child: StoreConnector<FlowState, TransactionState>(
-                converter: (store) => store.state.transactionState,
-                builder: (_, txnState) {
-                  final txns = txnState.getTransactionsByAccount(bankAccount);
-                  return TransactionList(transactions: txns);
-                },
+    return Scaffold(
+      body: FlowSafeArea(
+        backgroundColor: const Color(0xFFFAFAFA),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── custom top bar ───────────────────────────────────────────────
+            FlowTopBar(
+              title: Text(
+                'My ${bankAccount.bank.name} ${bankAccount.accountName}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0x88000000),
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
-          ),
-        ],
+
+            // ── balance & copy-to-clipboard section ─────────────────────────
+            BalanceSection(bankAccount: bankAccount),
+
+            // thin grey divider
+            Container(height: 12, color: const Color(0xFFF0F0F0)),
+
+            // ── transactions list (scrollable) ──────────────────────────────
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+                child: StoreConnector<FlowState, TransactionState>(
+                  converter: (store) => store.state.transactionState,
+                  builder: (_, txnState) {
+                    final txns = txnState.getTransactionsByAccount(bankAccount);
+                    return TransactionList(transactions: txns);
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -84,7 +86,7 @@ class BalanceSection extends StatelessWidget {
                       "Copied to clipboard",
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.normal,
                         color: Colors.white,
                       ),
                     ),

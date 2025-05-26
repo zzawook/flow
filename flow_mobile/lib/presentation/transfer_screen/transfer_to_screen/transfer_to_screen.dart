@@ -14,7 +14,7 @@ class TransferToScreen extends StatefulWidget {
   const TransferToScreen({super.key});
 
   @override
-  _TransferToScreenState createState() => _TransferToScreenState();
+  State<TransferToScreen> createState() => _TransferToScreenState();
 }
 
 class _TransferToScreenState extends State<TransferToScreen> {

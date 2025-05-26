@@ -14,7 +14,7 @@ class EditableTextWidget extends StatefulWidget {
   });
 
   @override
-  _EditableTextWidgetState createState() => _EditableTextWidgetState();
+  State<EditableTextWidget> createState() => _EditableTextWidgetState();
 }
 
 class _EditableTextWidgetState extends State<EditableTextWidget> {

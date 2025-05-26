@@ -16,10 +16,10 @@ class SpendingCalendarScreen extends StatefulWidget {
   const SpendingCalendarScreen({super.key, required this.displayedMonth});
 
   @override
-  SpendingDetailScreenState createState() => SpendingDetailScreenState();
+  State<SpendingCalendarScreen> createState() => _SpendingDetailScreenState();
 }
 
-class SpendingDetailScreenState extends State<SpendingCalendarScreen> {
+class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
   late DateTime displayedMonth;
   final Map<DateTime, GlobalKey> _detailKeys = {};
 
