@@ -61,7 +61,6 @@ class BankAccountDetailScreen extends StatelessWidget {
   }
 }
 
-// ───────────────────────────────── BalanceSection (unchanged) ──────────────
 class BalanceSection extends StatelessWidget {
   final BankAccount bankAccount;
   const BalanceSection({super.key, required this.bankAccount});
@@ -75,24 +74,27 @@ class BalanceSection extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
+              // Capture messenger & snackbar synchronously
+              final messenger = ScaffoldMessenger.of(context);
+              final snack = FlowSnackbar(
+                content: const Text(
+                  "Copied to clipboard",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white,
+                  ),
+                ),
+                duration: 2,
+              ).build(context);
+
+              // Now do the async, then show using the captured messenger
               Clipboard.setData(
                 ClipboardData(
                   text: "${bankAccount.bank.name} ${bankAccount.accountNumber}",
                 ),
               ).then((_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  FlowSnackbar(
-                    content: const Text(
-                      "Copied to clipboard",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white,
-                      ),
-                    ),
-                    duration: 2,
-                  ).build(context),
-                );
+                messenger.showSnackBar(snack);
               });
             },
             child: Text(
