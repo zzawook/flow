@@ -30,80 +30,78 @@ class SpendingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FlowSafeArea(
       backgroundColor: SpendingScreenStyles.backgroundColor,
-      body: FlowSafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: RefreshIndicator.adaptive(
-                onRefresh: () => _handleRefresh(context),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpendingScreenStyles.horizontalPadding,
-                  ),
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const FlowMainTopBar(),
+      child: Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator.adaptive(
+              onRefresh: () => _handleRefresh(context),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpendingScreenStyles.horizontalPadding,
+                ),
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const FlowMainTopBar(),
 
-                      // Monthly overview
-                      const MonthlySpendingOverview(),
+                    // Monthly overview
+                    const MonthlySpendingOverview(),
 
-                      const FlowSeparatorBox(
-                        height: SpendingScreenStyles.sectionSpacing,
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
+
+                    // Breakdown by category
+                    const SpendingByCategoryCard(),
+
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
+
+                    // Balance for this month
+                    const BalanceCard(isOnHomeScreen: false),
+
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
+
+                    // Fixed spending section
+                    FixedSpendingCard(
+                      initialMonth: DateTime(
+                        DateTime.now().year,
+                        DateTime.now().month,
                       ),
+                    ),
 
-                      // Breakdown by category
-                      const SpendingByCategoryCard(),
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
 
-                      const FlowSeparatorBox(
-                        height: SpendingScreenStyles.sectionSpacing,
-                      ),
+                    // Trend over time
+                    SpendingTrendCard(),
 
-                      // Balance for this month
-                      const BalanceCard(isOnHomeScreen: false),
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
 
-                      const FlowSeparatorBox(
-                        height: SpendingScreenStyles.sectionSpacing,
-                      ),
+                    TopSpendingClusterCard(),
 
-                      // Fixed spending section
-                      FixedSpendingCard(
-                        initialMonth: DateTime(
-                          DateTime.now().year,
-                          DateTime.now().month,
-                        ),
-                      ),
+                    const FlowSeparatorBox(
+                      height: SpendingScreenStyles.sectionSpacing,
+                    ),
 
-                      const FlowSeparatorBox(
-                        height: SpendingScreenStyles.sectionSpacing,
-                      ),
-
-                      // Trend over time
-                      SpendingTrendCard(),
-
-                      const FlowSeparatorBox(
-                        height: SpendingScreenStyles.sectionSpacing,
-                      ),
-
-                      TopSpendingClusterCard(),
-
-                      const FlowSeparatorBox(
-                        height: SpendingScreenStyles.sectionSpacing,
-                      ),
-
-                      // Any special analyses
-                      SpecialAnalysisCard(),
-                    ],
-                  ),
+                    // Any special analyses
+                    SpecialAnalysisCard(),
+                  ],
                 ),
               ),
             ),
-            const FlowBottomNavBar(),
-          ],
-        ),
+          ),
+          const FlowBottomNavBar(),
+        ],
       ),
     );
   }

@@ -127,12 +127,15 @@ class _FixedSpendingDetailsScreenState
         .expand((items) => items)
         .fold(0, (sum, item) => sum + item.amount);
 
-    return Scaffold(
-      body: FlowSafeArea(
+    return FlowSafeArea(
+      // just add a background so the screen isn’t transparent/black
+      backgroundColor: const Color(0xFFFFFFFF),
+
+      child: Material(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ───────── TOP BAR ────────────────────────────────────────────────
+            // ─── TOP BAR ─────────────────────────────────────────────────────
             FlowTopBar(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -140,17 +143,17 @@ class _FixedSpendingDetailsScreenState
                   MonthSelector(
                     displayMonthYear: month,
                     displayMonthYearSetter:
-                        (newmonth) => setState(() => month = newmonth),
+                        (newMonth) => setState(() => month = newMonth),
                   ),
                 ],
               ),
             ),
 
-            // ───────── HEADER (non-scrolling) ────────────────────────────────
+            // ─── HEADER (fixed) ──────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   FlowSeparatorBox(height: 36),
                   const Text(
@@ -170,7 +173,7 @@ class _FixedSpendingDetailsScreenState
               ),
             ),
 
-            // ───────── SCROLLABLE LIST ──────────────────────────────────────
+            // ─── SCROLLABLE LIST ─────────────────────────────────────────────
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -204,7 +207,7 @@ class _FixedSpendingDetailsScreenState
                               ],
                             ),
 
-                            // items
+                            // section items
                             ...items.map((item) {
                               final isFuture =
                                   item.scheduledDay > DateTime.now().day &&
@@ -239,7 +242,8 @@ class _FixedSpendingDetailsScreenState
                                       ),
                                     ),
                                     Text(
-                                      ' ${item.scheduledDay}${DateTimeUtil.getDatePostFix(item.scheduledDay)}',
+                                      ' ${item.scheduledDay}'
+                                      '${DateTimeUtil.getDatePostFix(item.scheduledDay)}',
                                       style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,

@@ -16,211 +16,209 @@ class TransferConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FlowSafeArea(
       backgroundColor: const Color(0xFFFFFFFF),
-      body: FlowSafeArea(
-        child: Container(
-          color: const Color(0xFFFFFFFF),
-          child: StoreConnector<FlowState, TransferState>(
-            converter: (store) => store.state.transferState,
-            builder:
-                (context, transferState) => Column(
-                  children: [
-                    // Top bar row
-                    FlowTopBar(
-                      title: const Center(
-                        child: Text(
-                          'Transfer',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+      child: Container(
+        color: const Color(0xFFFFFFFF),
+        child: StoreConnector<FlowState, TransferState>(
+          converter: (store) => store.state.transferState,
+          builder:
+              (context, transferState) => Column(
+                children: [
+                  // Top bar row
+                  FlowTopBar(
+                    title: const Center(
+                      child: Text(
+                        'Transfer',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
+                  ),
 
-                    // Main content
-                    Expanded(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Bank logo inside a circle
-                            Container(
-                              width: 150,
-                              height: 150,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFFE0E0E0),
-                              ),
-                              child: ClipOval(
-                                child: Image.asset(
-                                  // Replace with your own bank logo
-                                  transferState.fromAccount.bank.logoPath,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              'Transfer',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 24,
-                                fontWeight: FontWeight.normal,
-                                color: Color(0xFF000000),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '\$${(transferState.amount / 100).toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF000000),
-                                  ),
-                                ),
-                                const Text(
-                                  ' to ',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.normal,
-                                    color: Color(0xFF000000),
-                                  ),
-                                ),
-                                Text(
-                                  transferState.receiving.name,
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF000000),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                  // Main content
+                  Expanded(
+                    child: Center(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Recipient row
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Remark to recepient',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 16,
-                                  color: Color(0xFF757575),
-                                ),
+                          // Bank logo inside a circle
+                          Container(
+                            width: 150,
+                            height: 150,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xFFE0E0E0),
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                // Replace with your own bank logo
+                                transferState.fromAccount.bank.logoPath,
+                                fit: BoxFit.cover,
                               ),
-                              Row(
-                                children: [
-                                  StoreConnector<FlowState, String>(
-                                    converter:
-                                        (store) =>
-                                            store.state.userState.user.name,
-                                    builder:
-                                        (context, name) => Text(
-                                          name,
-                                          style: const TextStyle(
-                                            fontFamily: 'Inter',
-                                            fontSize: 16,
-                                            color: Color(0xFF000000),
-                                          ),
-                                        ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Image.asset(
-                                      "assets/icons/arrow_right.png",
-                                      height: 12,
-                                      width: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                            ),
                           ),
                           const SizedBox(height: 16),
-                          // Date row
+                          const Text(
+                            'Transfer',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 24,
+                              fontWeight: FontWeight.normal,
+                              color: Color(0xFF000000),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text(
-                                'From',
+                              Text(
+                                '\$${(transferState.amount / 100).toStringAsFixed(2)}',
                                 style: TextStyle(
                                   fontFamily: 'Inter',
-                                  fontSize: 16,
-                                  color: Color(0xFF757575),
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF000000),
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'My ${transferState.fromAccount.bank.name} ${transferState.fromAccount.accountName}',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 16,
-                                      color: Color(0xFF000000),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Image.asset(
-                                      "assets/icons/arrow_right.png",
-                                      height: 12,
-                                      width: 12,
-                                    ),
-                                  ),
-                                ],
+                              const Text(
+                                ' to ',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.normal,
+                                  color: Color(0xFF000000),
+                                ),
+                              ),
+                              Text(
+                                transferState.receiving.name,
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF000000),
+                                ),
                               ),
                             ],
                           ),
                         ],
                       ),
                     ),
-
-                    FlowSeparatorBox(height: 12),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 28,
-                      ),
-                      child: FlowCTAButton(
-                        text: "Transfer",
-                        onPressed: () async {
-                          bool authenticated =
-                              await _authenticateUsingLocalAuth();
-                          if (!authenticated) {
-                            print("Auth unsuccessful");
-                            return;
-                          }
-                          Navigator.pushNamed(
-                            context,
-                            '/transfer/result',
-                            arguments: CustomPageRouteArguments(
-                              transitionType: TransitionType.slideLeft,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Column(
+                      children: [
+                        // Recipient row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Remark to recepient',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 16,
+                                color: Color(0xFF757575),
+                              ),
                             ),
-                          );
-                        },
-                      ),
+                            Row(
+                              children: [
+                                StoreConnector<FlowState, String>(
+                                  converter:
+                                      (store) =>
+                                          store.state.userState.user.name,
+                                  builder:
+                                      (context, name) => Text(
+                                        name,
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 16,
+                                          color: Color(0xFF000000),
+                                        ),
+                                      ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Image.asset(
+                                    "assets/icons/arrow_right.png",
+                                    height: 12,
+                                    width: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        // Date row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'From',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 16,
+                                color: Color(0xFF757575),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'My ${transferState.fromAccount.bank.name} ${transferState.fromAccount.accountName}',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    color: Color(0xFF000000),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Image.asset(
+                                    "assets/icons/arrow_right.png",
+                                    height: 12,
+                                    width: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-          ),
+                  ),
+
+                  FlowSeparatorBox(height: 12),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 28,
+                    ),
+                    child: FlowCTAButton(
+                      text: "Transfer",
+                      onPressed: () async {
+                        bool authenticated =
+                            await _authenticateUsingLocalAuth();
+                        if (!authenticated) {
+                          print("Auth unsuccessful");
+                          return;
+                        }
+                        Navigator.pushNamed(
+                          context,
+                          '/transfer/result',
+                          arguments: CustomPageRouteArguments(
+                            transitionType: TransitionType.slideLeft,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
         ),
       ),
     );

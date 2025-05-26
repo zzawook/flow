@@ -35,107 +35,102 @@ class _TransferToScreenState extends State<TransferToScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FlowSafeArea(
       backgroundColor: const Color(0xFFF5F5F5),
-      body: FlowSafeArea(
-        child: Column(
-          children: [
-            FlowTopBar(
-              title: const Center(
-                child: Text(
-                  'Transfer',
+      child: Column(
+        children: [
+          FlowTopBar(
+            title: const Center(
+              child: Text(
+                'Transfer',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 28,
+              left: 24,
+              right: 24,
+              bottom: 24,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Who's receiving?",
                   style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 20,
+                    fontSize: 24,
+                    fontFamily: "Inter",
+                    color: Color(0xFF000000),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 28,
-                left: 24,
-                right: 24,
-                bottom: 24,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Who's receiving?",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontFamily: "Inter",
-                      color: Color(0xFF000000),
-                      fontWeight: FontWeight.bold,
+          ),
+          TabRowWidget(
+            selectedTabIndex: _selectedTabIndex,
+            onTabSelected: (int index) {
+              setState(() {
+                _selectedTabIndex = index;
+              });
+            },
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: StoreConnector<
+                FlowState,
+                TransferReceivableAndBankAccountState
+              >(
+                converter:
+                    (store) => TransferReceivableAndBankAccountState(
+                      transferReceivableState:
+                          store.state.transferReceivableState,
+                      bankAccountState: store.state.bankAccountState,
                     ),
-                  ),
-                ],
+                builder: (context, transferReceivableAndBankAccountState) {
+                  TransferReceivableState transferReceivableState =
+                      transferReceivableAndBankAccountState
+                          .transferReceivableState;
+                  BankAccountState bankAccountState =
+                      transferReceivableAndBankAccountState.bankAccountState;
+                  final List<PayNowRecipient> recommended =
+                      transferReceivableState.getRecommendedPayNow();
+                  final List<PayNowRecipient> fromContacts =
+                      transferReceivableState.getPayNowFromContactExcluding([]);
+                  final List<BankAccount> recommendedBankAccount =
+                      transferReceivableState.getRecommendedBankAccount();
+                  final List<BankAccount> myBankAccounts =
+                      bankAccountState.bankAccounts;
+                  return Container(
+                    decoration: BoxDecoration(color: const Color(0xFFF5F5F5)),
+                    child:
+                        _selectedTabIndex == 0
+                            ? PayNowLayoutWidget(
+                              payNowController: _payNowController,
+                              payNowFocus: _payNowFocus,
+                              recommended: recommended,
+                              fromContact: fromContacts,
+                            )
+                            : AccountLayoutWidget(
+                              accountNumberController: _accountNumberController,
+                              accountNumberFocus: _accountNumberFocus,
+                              selectBankController: _selectBankController,
+                              selectBankFocus: _selectBankFocus,
+                              myAccounts: myBankAccounts,
+                              recommended: recommendedBankAccount,
+                            ),
+                  );
+                },
               ),
             ),
-            TabRowWidget(
-              selectedTabIndex: _selectedTabIndex,
-              onTabSelected: (int index) {
-                setState(() {
-                  _selectedTabIndex = index;
-                });
-              },
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: StoreConnector<
-                  FlowState,
-                  TransferReceivableAndBankAccountState
-                >(
-                  converter:
-                      (store) => TransferReceivableAndBankAccountState(
-                        transferReceivableState:
-                            store.state.transferReceivableState,
-                        bankAccountState: store.state.bankAccountState,
-                      ),
-                  builder: (context, transferReceivableAndBankAccountState) {
-                    TransferReceivableState transferReceivableState =
-                        transferReceivableAndBankAccountState
-                            .transferReceivableState;
-                    BankAccountState bankAccountState =
-                        transferReceivableAndBankAccountState.bankAccountState;
-                    final List<PayNowRecipient> recommended =
-                        transferReceivableState.getRecommendedPayNow();
-                    final List<PayNowRecipient> fromContacts =
-                        transferReceivableState.getPayNowFromContactExcluding(
-                          [],
-                        );
-                    final List<BankAccount> recommendedBankAccount =
-                        transferReceivableState.getRecommendedBankAccount();
-                    final List<BankAccount> myBankAccounts =
-                        bankAccountState.bankAccounts;
-                    return Container(
-                      decoration: BoxDecoration(color: const Color(0xFFF5F5F5)),
-                      child:
-                          _selectedTabIndex == 0
-                              ? PayNowLayoutWidget(
-                                payNowController: _payNowController,
-                                payNowFocus: _payNowFocus,
-                                recommended: recommended,
-                                fromContact: fromContacts,
-                              )
-                              : AccountLayoutWidget(
-                                accountNumberController:
-                                    _accountNumberController,
-                                accountNumberFocus: _accountNumberFocus,
-                                selectBankController: _selectBankController,
-                                selectBankFocus: _selectBankFocus,
-                                myAccounts: myBankAccounts,
-                                recommended: recommendedBankAccount,
-                              ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

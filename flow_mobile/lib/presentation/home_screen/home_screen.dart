@@ -65,35 +65,33 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
       onPopInvokedWithResult: (didPop, result) {
         _handleBack();
       },
-      child: Scaffold(
+      child: FlowSafeArea(
         backgroundColor: HomeScreenColors.background,
-        body: FlowSafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: RefreshIndicator(
-                  color: HomeScreenColors.primary,
-                  onRefresh: _onRefresh,
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 18, right: 18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const FlowMainTopBar(),
-                          AccountsCard(onToggleBalance: _onToggleBalance),
-                          const QuickTransferCard(),
-                          const BalanceCard(isOnHomeScreen: true),
-                        ],
-                      ),
+        child: Column(
+          children: [
+            Expanded(
+              child: RefreshIndicator(
+                color: HomeScreenColors.primary,
+                onRefresh: _onRefresh,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 18, right: 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const FlowMainTopBar(),
+                        AccountsCard(onToggleBalance: _onToggleBalance),
+                        const QuickTransferCard(),
+                        const BalanceCard(isOnHomeScreen: true),
+                      ],
                     ),
                   ),
                 ),
               ),
-              const FlowBottomNavBar(),
-            ],
-          ),
+            ),
+            const FlowBottomNavBar(),
+          ],
         ),
       ),
     );

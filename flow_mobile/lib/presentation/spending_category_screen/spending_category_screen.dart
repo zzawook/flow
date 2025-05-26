@@ -40,107 +40,105 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FlowSafeArea(
       backgroundColor: const Color(0xFFF5F5F5),
-      body: FlowSafeArea(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: StoreConnector<FlowState, TransactionState>(
-                    converter: (store) => store.state.transactionState,
-                    builder: (context, transactionState) {
-                      List<Transaction> transactions = transactionState
-                          .getTransactionsForMonth(
-                            DateTime(
-                              displayMonthYear.year,
-                              displayMonthYear.month,
-                            ),
-                          );
-                      Map<String, double> categoryAmount = {};
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: StoreConnector<FlowState, TransactionState>(
+                  converter: (store) => store.state.transactionState,
+                  builder: (context, transactionState) {
+                    List<Transaction> transactions = transactionState
+                        .getTransactionsForMonth(
+                          DateTime(
+                            displayMonthYear.year,
+                            displayMonthYear.month,
+                          ),
+                        );
+                    Map<String, double> categoryAmount = {};
 
-                      double total = 0.0;
+                    double total = 0.0;
 
-                      // Calculate the total amount for each category
-                      for (var transaction in transactions) {
-                        if (transaction.amount > 0) {
-                          continue; // Skip income transactions
-                        }
-                        if (categoryAmount.containsKey(transaction.category)) {
-                          categoryAmount[transaction.category] =
-                              categoryAmount[transaction.category]! +
-                              transaction.amount;
-                        } else {
-                          categoryAmount[transaction.category] =
-                              transaction.amount;
-                        }
-                        total += transaction.amount.abs();
+                    // Calculate the total amount for each category
+                    for (var transaction in transactions) {
+                      if (transaction.amount > 0) {
+                        continue; // Skip income transactions
                       }
+                      if (categoryAmount.containsKey(transaction.category)) {
+                        categoryAmount[transaction.category] =
+                            categoryAmount[transaction.category]! +
+                            transaction.amount;
+                      } else {
+                        categoryAmount[transaction.category] =
+                            transaction.amount;
+                      }
+                      total += transaction.amount.abs();
+                    }
 
-                      // Remove categories with 0 amount
-                      categoryAmount.removeWhere((key, value) => value == 0);
+                    // Remove categories with 0 amount
+                    categoryAmount.removeWhere((key, value) => value == 0);
 
-                      final sortedCategories =
-                          categoryAmount.entries.toList()
-                            ..sort((a, b) => a.value.compareTo(b.value));
+                    final sortedCategories =
+                        categoryAmount.entries.toList()
+                          ..sort((a, b) => a.value.compareTo(b.value));
 
-                      // BUILD
-                      return Column(
-                        children: [
-                          FlowTopBar(title: Text("")),
-                          const FlowSeparatorBox(height: 45),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 24, right: 24),
-                            child: MonthSelector(
-                              displayMonthYear: displayMonthYear,
-                              displayMonthYearSetter: setDisplayMonthYear,
-                            ),
+                    // BUILD
+                    return Column(
+                      children: [
+                        FlowTopBar(title: Text("")),
+                        const FlowSeparatorBox(height: 45),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 24, right: 24),
+                          child: MonthSelector(
+                            displayMonthYear: displayMonthYear,
+                            displayMonthYearSetter: setDisplayMonthYear,
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                              top: 24,
-                              left: 16,
-                              right: 16,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '\$ ${total.toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xAA000000),
-                                  ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(
+                            top: 24,
+                            left: 16,
+                            right: 16,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                '\$ ${total.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xAA000000),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          FlowSeparatorBox(height: 12),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16, right: 16),
-                            child: StackedBar(
-                              total: total,
-                              height: 32,
-                              entries: sortedCategories,
-                            ),
+                        ),
+                        FlowSeparatorBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          child: StackedBar(
+                            total: total,
+                            height: 32,
+                            entries: sortedCategories,
                           ),
-                          const FlowSeparatorBox(height: 24),
-                          SpendingCategoryList(
-                            sortedCategories: sortedCategories,
-                            displayedMonthYear: displayMonthYear,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                        ),
+                        const FlowSeparatorBox(height: 24),
+                        SpendingCategoryList(
+                          sortedCategories: sortedCategories,
+                          displayedMonthYear: displayMonthYear,
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -2,11 +2,20 @@ import 'package:flutter/material.dart';
 
 class FlowSafeArea extends StatelessWidget {
   final Widget child;
+  Color? backgroundColor;
 
-  const FlowSafeArea({super.key, required this.child});
+  FlowSafeArea({super.key, required this.child, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(bottom: false, child: child);
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top,
+        left: MediaQuery.of(context).padding.left,
+        right: MediaQuery.of(context).padding.right,
+      ),
+      color: backgroundColor ?? Colors.transparent,
+      child: child,
+    );
   }
 }

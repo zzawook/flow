@@ -64,54 +64,50 @@ class SpendingDetailScreenState extends State<SpendingCalendarScreen> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: FlowSafeArea(
-        child: RefreshIndicator(
-          onRefresh: () {
-            Navigator.pushNamed(
-              context,
-              "/refresh",
-              arguments: CustomPageRouteArguments(
-                transitionType: TransitionType.slideTop,
-              ),
-            );
-            return Future.delayed(const Duration(microseconds: 1));
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: SizedBox(
-              width: screenSize.width,
-              height: screenSize.height,
-              child: Container(
-                color: const Color(0xFFFFFFFF),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 24, right: 24),
-                  child: Column(
-                    children: [
-                      SpendingCalendarScreenTopBar(
-                        displayMonthYear: displayedMonth,
-                        displayMonthYearSetter: setDisplayedMonth,
-                      ),
-                      FlowSeparatorBox(height: 24),
-                      SpendingCalendar(
-                        displayedMonth: displayedMonth,
-                        onDateSelected: _handleDateTap,
-                      ),
-                      StoreConnector<FlowState, List<Transaction>>(
-                        converter:
-                            (store) => store.state.transactionState
-                                .getTransactionsForMonth(displayedMonth),
-                        builder:
-                            (context, transactions) => Expanded(
-                              child: TransactionList(
-                                transactions: transactions,
-                                detailKeys: _detailKeys,
-                              ),
-                            ),
-                      ),
-                    ],
+    return FlowSafeArea(
+      backgroundColor: const Color(0xFFFFFFFF),
+      child: RefreshIndicator(
+        onRefresh: () {
+          Navigator.pushNamed(
+            context,
+            "/refresh",
+            arguments: CustomPageRouteArguments(
+              transitionType: TransitionType.slideTop,
+            ),
+          );
+          return Future.delayed(const Duration(microseconds: 1));
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            width: screenSize.width,
+            height: screenSize.height,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24),
+              child: Column(
+                children: [
+                  SpendingCalendarScreenTopBar(
+                    displayMonthYear: displayedMonth,
+                    displayMonthYearSetter: setDisplayedMonth,
                   ),
-                ),
+                  FlowSeparatorBox(height: 24),
+                  SpendingCalendar(
+                    displayedMonth: displayedMonth,
+                    onDateSelected: _handleDateTap,
+                  ),
+                  StoreConnector<FlowState, List<Transaction>>(
+                    converter:
+                        (store) => store.state.transactionState
+                            .getTransactionsForMonth(displayedMonth),
+                    builder:
+                        (context, transactions) => Expanded(
+                          child: TransactionList(
+                            transactions: transactions,
+                            detailKeys: _detailKeys,
+                          ),
+                        ),
+                  ),
+                ],
               ),
             ),
           ),

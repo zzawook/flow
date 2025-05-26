@@ -3,6 +3,7 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,58 +67,56 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
   @override
   Widget build(BuildContext context) {
     // Directionality ensures text is laid out (LTR or RTL).
-    return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
-      body: SafeArea(
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Container(
-            color: const Color(0xFFF5F5F5),
-            child: Column(
-              children: [
-                // Top bar
-                FlowTopBar(
-                  title: const Center(
-                    child: Text(
-                      'Transfer',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+    return FlowSafeArea(
+      backgroundColor: const Color(0xFFF5F5F5),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Container(
+          color: const Color(0xFFF5F5F5),
+          child: Column(
+            children: [
+              // Top bar
+              FlowTopBar(
+                title: const Center(
+                  child: Text(
+                    'Transfer',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+              ),
 
-                // The large amount display
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      '\$ $_formattedAmount',
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF000000),
-                      ),
+              // The large amount display
+              Expanded(
+                child: Center(
+                  child: Text(
+                    '\$ $_formattedAmount',
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF000000),
                     ),
                   ),
                 ),
+              ),
 
-                _amount > 0
-                    ? Row(
-                      children: [
-                        TransferButton(onPressed: onTransferButtonPressed),
-                      ],
-                    )
-                    : const SizedBox(height: 60),
+              _amount > 0
+                  ? Row(
+                    children: [
+                      TransferButton(onPressed: onTransferButtonPressed),
+                    ],
+                  )
+                  : const SizedBox(height: 60),
 
-                // The custom 3×4 keypad
-                _buildNumberPad(),
+              // The custom 3×4 keypad
+              _buildNumberPad(),
 
-                // Bottom row: Cancel and Transfer
-              ],
-            ),
+              // Bottom row: Cancel and Transfer
+            ],
           ),
         ),
       ),

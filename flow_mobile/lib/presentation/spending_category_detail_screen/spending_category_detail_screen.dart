@@ -42,65 +42,54 @@ class _SpendingCategoryDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FlowSafeArea(
       backgroundColor: Color(0xFFFAFAFA),
-      body: FlowSafeArea(
-        child: StoreConnector<FlowState, TransactionState>(
-          converter: (store) => store.state.transactionState,
-          builder: (context, transactionState) {
-            final transactions = transactionState
-                .getTransactionByCategoryFromTo(
-                  widget.category,
-                  DateTime(displayMonthYear.year, displayMonthYear.month, 1),
-                  (DateTime(
-                        displayMonthYear.year,
-                        displayMonthYear.month + 1,
-                        0,
-                      ).isBefore(DateTime.now()))
-                      ? DateTime(
-                        displayMonthYear.year,
-                        displayMonthYear.month + 1,
-                        0,
-                      )
-                      : DateTime.now(),
-                );
-            final totalTransactionAmount = transactions.fold(
-              0.0,
-              (previousValue, element) => previousValue + element.amount,
-            );
-            return Column(
-              children: [
-                FlowTopBar(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MonthSelector(
-                        displayMonthYear: displayMonthYear,
-                        displayMonthYearSetter: displayMonthYearSetter,
-                      ),
-                    ],
-                  ),
-                ),
-                BalanceSection(
-                  category: widget.category,
-                  balance: totalTransactionAmount.abs().toStringAsFixed(2),
-                  transactionCount: transactions.length,
-                ),
-                Container(height: 12, color: Color(0xFFF0F0F0)),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 24,
-                      right: 24,
-                      top: 24,
+      child: StoreConnector<FlowState, TransactionState>(
+        converter: (store) => store.state.transactionState,
+        builder: (context, transactionState) {
+          final transactions = transactionState.getTransactionByCategoryFromTo(
+            widget.category,
+            DateTime(displayMonthYear.year, displayMonthYear.month, 1),
+            (DateTime(
+                  displayMonthYear.year,
+                  displayMonthYear.month + 1,
+                  0,
+                ).isBefore(DateTime.now()))
+                ? DateTime(displayMonthYear.year, displayMonthYear.month + 1, 0)
+                : DateTime.now(),
+          );
+          final totalTransactionAmount = transactions.fold(
+            0.0,
+            (previousValue, element) => previousValue + element.amount,
+          );
+          return Column(
+            children: [
+              FlowTopBar(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MonthSelector(
+                      displayMonthYear: displayMonthYear,
+                      displayMonthYearSetter: displayMonthYearSetter,
                     ),
-                    child: TransactionList(transactions: transactions),
-                  ),
+                  ],
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+              BalanceSection(
+                category: widget.category,
+                balance: totalTransactionAmount.abs().toStringAsFixed(2),
+                transactionCount: transactions.length,
+              ),
+              Container(height: 12, color: Color(0xFFF0F0F0)),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+                  child: TransactionList(transactions: transactions),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
