@@ -1,5 +1,5 @@
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_tag.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 /// Individual Transaction Item
 class TransactionItem extends StatelessWidget {
@@ -57,7 +57,9 @@ class TransactionItem extends StatelessWidget {
                         fontFamily: 'Inter',
                         fontSize: 12,
                         fontWeight: FontWeight.normal,
-                        color: Color(0x88000000),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withAlpha(150),
                       ),
                     ),
                   ],

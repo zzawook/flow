@@ -1,5 +1,5 @@
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/analysis_carousel.dart';
+import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 
 /// Special Analysis Section
@@ -11,7 +11,7 @@ class SpecialAnalysisCard extends StatelessWidget {
       padding: EdgeInsets.all(24),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -21,7 +21,7 @@ class SpecialAnalysisCard extends StatelessWidget {
               Text(
                 'Special Analysis by ',
                 style: TextStyle(
-                  fontFamily: 'Inter', 
+                  fontFamily: 'Inter',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF000000),
@@ -30,7 +30,7 @@ class SpecialAnalysisCard extends StatelessWidget {
               Text(
                 'FLOW',
                 style: TextStyle(
-                  fontFamily: 'Inter', 
+                  fontFamily: 'Inter',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF00C864),

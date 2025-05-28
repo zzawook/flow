@@ -13,17 +13,15 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
-      backgroundColor: const Color(0xFFFAFAFA),
+      backgroundColor: Theme.of(context).canvasColor,
       child: Column(
         children: [
           // Top bar with title
           FlowTopBar(
             title: Text(
               "Notifications",
-              style: const TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
-                color: Color(0x88000000),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
@@ -69,7 +67,7 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(color: Color(0xFFFAFAFA)),
+      decoration: BoxDecoration(color: Theme.of(context).canvasColor),
       padding: const EdgeInsets.only(left: 0, right: 12, top: 16, bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,11 +100,7 @@ class NotificationCard extends StatelessWidget {
                   children: [
                     Text(
                       notification.title,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: Color(0x88000000),
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Text(
                       _formatTime(notification.createdAt),
@@ -117,10 +111,10 @@ class NotificationCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   notification.body,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Color(0xBB000000),
-                    fontWeight: FontWeight.w900,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(180),
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
 class SpendingMonthlyTrendLineGraph extends StatelessWidget {
   final List<double> currentMonthSpendingByDays;
@@ -94,7 +94,7 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
                 LineTooltipItem(
                   currentMonthValue,
                   TextStyle(
-                    color: Color(0xFF50C878),
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -156,7 +156,7 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
                     .map((e) => FlSpot(e.key.toDouble(), e.value))
                     .toList(),
             isCurved: true,
-            color: const Color(0xFF50C878),
+            color: Theme.of(context).primaryColor,
             barWidth: 3,
             dotData: FlDotData(
               show: true,
@@ -178,8 +178,8 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xFF50C878).withValues(alpha: 0.4),
-                  const Color(0xFF50C878).withValues(alpha: 0.0),
+                  Theme.of(context).primaryColor.withValues(alpha: 0.4),
+                  Theme.of(context).primaryColor.withValues(alpha: 0.0),
                 ],
               ),
             ),

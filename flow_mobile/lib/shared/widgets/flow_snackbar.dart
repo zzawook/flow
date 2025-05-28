@@ -18,7 +18,7 @@ class FlowSnackbar extends StatelessWidget {
       behavior: SnackBarBehavior.floating,
       margin: EdgeInsets.only(bottom: 48, left: 24, right: 24),
       padding: EdgeInsets.only(bottom: 16, top: 16, left: 24, right: 24),
-      backgroundColor: Color(0xFF50C878),
+      backgroundColor: Theme.of(context).primaryColor,
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     );

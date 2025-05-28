@@ -7,7 +7,7 @@ import 'package:flow_mobile/presentation/spending_screen/components/spending_ove
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/weekly_spending_calendar.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/spending/spending_header.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 /// Monthly Spending Overview Section
@@ -24,7 +24,7 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFFFFFFF),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: StoreConnector<FlowState, SpendingOverviewState>(
@@ -45,8 +45,12 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
               .getTransactionsFromTo(lastSunday, today);
           return SpendingOverviewState(
             displayedMonth: displayedMonth,
-            weeklySpendingCalendarDisplayWeek: store.state
-                .screenState.spendingScreenState.weeklySpendingCalendarDisplayWeek,
+            weeklySpendingCalendarDisplayWeek:
+                store
+                    .state
+                    .screenState
+                    .spendingScreenState
+                    .weeklySpendingCalendarDisplayWeek,
             transactions: transactions,
           );
         },
@@ -67,7 +71,8 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
                       SpendingHeader(
                         displayMonthYear: spendingOverviewState.displayedMonth,
                         weeklySpendingCalendarDisplayWeek:
-                            spendingOverviewState.weeklySpendingCalendarDisplayWeek,
+                            spendingOverviewState
+                                .weeklySpendingCalendarDisplayWeek,
                       ),
 
                       SpendingComparetoLastMonthInsight(),

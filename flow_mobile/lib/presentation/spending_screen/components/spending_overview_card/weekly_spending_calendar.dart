@@ -16,10 +16,10 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
   static const int _initialPage = 1000;
   late final PageController _pageController;
   final DateTime _initialMonday = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    ).subtract(Duration(days: DateTime.now().weekday - DateTime.monday));
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  ).subtract(Duration(days: DateTime.now().weekday - DateTime.monday));
   int _currentPage = _initialPage;
 
   @override
@@ -115,6 +115,8 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
 
     final days = List.generate(7, (i) => monday.add(Duration(days: i)));
 
+    final expenseColor = Theme.of(context).colorScheme.onSurface.withAlpha(140);
+
     return StoreConnector<FlowState, DateTime>(
       distinct: true,
       converter:
@@ -143,11 +145,25 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                             ? '-${expense.abs().toStringAsFixed(2)}'
                             : '';
 
+                    final dimColor = Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(80);
+                    final notDimColor = Theme.of(context).colorScheme.onSurface;
+
+                    final todayMarkColor =
+                        Theme.of(context).colorScheme.surfaceBright;
+
                     return Expanded(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(dayName, style: const TextStyle(fontSize: 12)),
+                          Text(
+                            dayName,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: () {
@@ -162,25 +178,26 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                               padding: const EdgeInsets.all(12),
                               decoration:
                                   isToday
-                                      ? const BoxDecoration(
+                                      ? BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Color(0x16000000),
+                                        color: todayMarkColor,
                                       )
                                       : isSelected
-                                      ? const BoxDecoration(
+                                      ? BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Color(0x6450C878),
+                                        color:
+                                            Theme.of(context).primaryColorLight,
                                       )
                                       : null,
                               child: Text(
                                 '$dateNumber',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.copyWith(
                                   color:
                                       _shouldDimDate(dateTime, displayMonth)
-                                          ? const Color(0xFFB0B0B0)
-                                          : const Color(0xFF000000),
+                                          ? dimColor
+                                          : notDimColor,
                                 ),
                               ),
                             ),
@@ -194,23 +211,22 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                               fontWeight: FontWeight.w900,
                               color:
                                   (expense != 0 && income == 0)
-                                      ? const Color(0x75000000)
-                                      : const Color(0xFF50C878),
+                                      ? expenseColor
+                                      : Theme.of(context).primaryColor,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             income != 0 ? expenseText : "",
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0x75000000),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0x75000000),
                             ),
-                            
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     );

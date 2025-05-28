@@ -213,7 +213,7 @@ class TransferButton extends StatelessWidget {
           height: 60,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Color(0xFF50C878),
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(0),
           ),
           child: const Text(

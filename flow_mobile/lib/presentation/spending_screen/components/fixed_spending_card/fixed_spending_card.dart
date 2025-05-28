@@ -64,7 +64,7 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: Theme.of(context).cardColor,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.only(top: 24, bottom: 24),
@@ -79,10 +79,8 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
                 children: [
                   Text(
                     "Recurring Spendings",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                      color: Color(0x88000000),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   Text(
@@ -138,7 +136,13 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF0F0F0),
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Color(0xFFF0F0F0)
+                                            : Theme.of(
+                                              context,
+                                            ).colorScheme.surfaceBright,
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   padding: const EdgeInsets.all(8),
@@ -150,18 +154,24 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
                                   children: [
                                     Text(
                                       entry.key.label,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0x88000000),
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.labelMedium?.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface.withAlpha(180),
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       _formatSGD(entry.value),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF555555),
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyLarge?.copyWith(
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                       ),
                                     ),
                                   ],

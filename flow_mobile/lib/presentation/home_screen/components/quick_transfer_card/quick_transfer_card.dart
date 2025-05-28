@@ -1,7 +1,7 @@
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 /// A placeholder section for a "Quick Transfer" feature.
 class QuickTransferCard extends StatelessWidget {
@@ -36,7 +36,7 @@ class QuickTransferCard extends StatelessWidget {
         ),
         margin: EdgeInsets.only(bottom: _bottomMargin),
         decoration: BoxDecoration(
-          color: Color(0xFFFFFFFF),
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(_borderRadius),
         ),
         child: Row(
@@ -44,12 +44,7 @@ class QuickTransferCard extends StatelessWidget {
             Expanded(
               child: Text(
                 'Quick transfer',
-                style: TextStyle(
-                  fontFamily: 'Inter', 
-                  fontSize: 21,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF000000),
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
             Image.asset(

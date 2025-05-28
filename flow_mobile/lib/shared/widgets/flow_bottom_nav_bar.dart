@@ -2,7 +2,7 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class FlowBottomNavBar extends StatefulWidget {
@@ -18,7 +18,10 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
     return Container(
       height: 75,
       decoration: BoxDecoration(
-        color: Color(0xFFEEEEEE),
+        color: Theme.of(context).canvasColor.withAlpha(230),
+        border: Border(
+          top: BorderSide(color: Theme.of(context).dividerColor, width: 0.5),
+        ),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(15),
           topRight: Radius.circular(15),
@@ -88,6 +91,9 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
   }
 
   Widget navItem(String icon, bool isSelected, Function() onTap) {
+    final Color selectedColor = Theme.of(context).dividerColor;
+    final Color unselectedColor = Theme.of(context).disabledColor;
+
     return FlowButton(
       onPressed: () => onTap(),
       child: Container(
@@ -96,7 +102,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
           'assets/icons/${icon}_icon.png',
           height: 30,
           width: 30,
-          color: isSelected ? Color(0xFF000000) : Color(0xFFBDBDBD),
+          color: isSelected ? selectedColor : unselectedColor,
         ),
       ),
     );

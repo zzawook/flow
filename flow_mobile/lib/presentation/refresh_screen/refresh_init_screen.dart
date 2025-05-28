@@ -86,11 +86,10 @@ class _RefreshInitScreenContainerState
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: widget.screenSize.width,
-      height: widget.screenSize.height,
-      color: const Color(0xFFF5F5F5),
-      child: Padding(
+    print(Theme.of(context).primaryColor);
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Padding(
         padding: const EdgeInsets.only(left: 24, right: 24, top: 72),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,21 +107,17 @@ class _RefreshInitScreenContainerState
                     children: [
                       Text(
                         'To refresh your data,\nwe need MFAs from ${newBankDatas.where((bankData) => bankData.isSelected).length} banks',
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 28,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFF000000),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Takes less than ${newBankDatas.where((bankData) => bankData.isSelected).length} minutes',
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF50C878),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ],
@@ -134,11 +129,8 @@ class _RefreshInitScreenContainerState
                     children: [
                       Text(
                         'Choose banks to refresh:',
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xAA000000),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -210,8 +202,8 @@ class _RefreshInitScreenContainerState
                               newBankDatas
                                       .where((bankData) => bankData.isSelected)
                                       .isEmpty
-                                  ? const Color(0x11000000)
-                                  : const Color(0xFF50C878),
+                                  ? Theme.of(context).disabledColor
+                                  : Theme.of(context).primaryColor,
                         ),
                         child: const Center(
                           child: Text(

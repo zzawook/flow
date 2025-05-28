@@ -51,13 +51,25 @@ class _IncomeContainer extends StatelessWidget {
         .getIncomeForMonth(DateTime(now.year, now.month))
         .toStringAsFixed(2);
 
+    final labelStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
+      fontFamily: 'Inter',
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color:
+          Theme.of(context).brightness == Brightness.light
+              ? const Color(0xFF555555)
+              : Theme.of(context).colorScheme.onSurface.withAlpha(225),
+    );
+
+    final valueStyle = labelStyle.copyWith(fontWeight: FontWeight.w900);
+
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Income', style: _labelStyle),
-          Text('+ $income SGD', style: _valueStyle),
+          Text('Income', style: labelStyle),
+          Text('+ $income SGD', style: valueStyle),
         ],
       ),
     );
@@ -81,6 +93,15 @@ class _SpendingContainer extends StatelessWidget {
         .abs()
         .toStringAsFixed(2);
 
+    final labelStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
+      color:
+          Theme.of(context).brightness == Brightness.light
+              ? const Color(0xFF555555)
+              : Theme.of(context).colorScheme.onSurface.withAlpha(225),
+    );
+
+    final valueStyle = labelStyle.copyWith(fontWeight: FontWeight.w900);
+
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       child: Column(
@@ -90,8 +111,8 @@ class _SpendingContainer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Spending', style: _labelStyle),
-                Text('- $expense SGD', style: _valueStyle),
+                Text('Spending', style: labelStyle),
+                Text('- $expense SGD', style: valueStyle),
               ],
             ),
           ),
@@ -114,15 +135,19 @@ class _TotalBalanceContainer extends StatelessWidget {
     final balance = txState.getBalanceForMonth(DateTime(now.year, now.month));
     final sign = balance >= 0 ? '+' : '-';
 
+    final totalBalanceStyle = Theme.of(
+      context,
+    ).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor);
+
     return Container(
       padding: const EdgeInsets.only(top: 7),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Total Balance:', style: _totalLabelStyle),
+          Text('Total Balance:', style: totalBalanceStyle),
           Text(
             '$sign ${balance.abs().toStringAsFixed(2)} SGD',
-            style: _totalValueStyle,
+            style: totalBalanceStyle,
           ),
         ],
       ),
@@ -164,7 +189,10 @@ class _SpendingDetails extends StatelessWidget {
           children: [
             Container(
               width: 2,
-              color: const Color(0xFFE5E5E5),
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Color(0xFFE5E5E5)
+                      : Color(0xFF444444),
               margin: const EdgeInsets.only(right: 12),
             ),
             Expanded(
@@ -202,15 +230,22 @@ class CardSpending extends StatelessWidget {
       total += t.amount;
     }
 
+    final detailValueStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color:
+          Theme.of(context).brightness == Brightness.light
+              ? const Color(0xFF666666)
+              : const Color(0xFFAFAFAF),
+    );
+
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Debit + Credit card:', style: _detailLabelStyle),
+          Text('Debit + Credit card:', style: detailValueStyle),
           Text(
             '${total.abs().toStringAsFixed(2)} SGD',
-            style: _detailValueStyle,
+            style: detailValueStyle,
           ),
         ],
       ),
@@ -233,15 +268,22 @@ class TransferSpending extends StatelessWidget {
       total += t.amount;
     }
 
+    final detailValueStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color:
+          Theme.of(context).brightness == Brightness.light
+              ? const Color(0xFF666666)
+              : const Color(0xFFAFAFAF),
+    );
+
     return Container(
       padding: const EdgeInsets.only(bottom: 7),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Transfer:', style: _detailLabelStyle),
+          Text('Transfer:', style: detailValueStyle),
           Text(
             '${total.abs().toStringAsFixed(2)} SGD',
-            style: _detailValueStyle,
+            style: detailValueStyle,
           ),
         ],
       ),
@@ -261,59 +303,25 @@ class OtherSpending extends StatelessWidget {
       total += t.amount;
     }
 
+    final detailValueStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color:
+          Theme.of(context).brightness == Brightness.light
+              ? const Color(0xFF666666)
+              : const Color(0xFFAFAFAF),
+    );
+
     return Container(
       padding: const EdgeInsets.only(bottom: 3),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Others:', style: _detailLabelStyle),
+          Text('Others:', style: detailValueStyle),
           Text(
             '${total.abs().toStringAsFixed(2)} SGD',
-            style: _detailValueStyle,
+            style: detailValueStyle,
           ),
         ],
       ),
     );
   }
 }
-
-/// Common text styles
-const _labelStyle = TextStyle(
-  fontFamily: 'Inter',
-  fontSize: 16,
-  fontWeight: FontWeight.bold,
-  color: Color(0xFF555555),
-);
-
-const _valueStyle = TextStyle(
-  fontFamily: 'Inter',
-  fontSize: 16,
-  fontWeight: FontWeight.w900,
-  color: Color(0xFF555555),
-);
-
-const _detailLabelStyle = TextStyle(
-  fontFamily: 'Inter',
-  fontSize: 16,
-  color: Color(0xFF666666),
-);
-
-const _detailValueStyle = TextStyle(
-  fontFamily: 'Inter',
-  fontSize: 16,
-  color: Color(0xFF666666),
-);
-
-const _totalLabelStyle = TextStyle(
-  fontFamily: 'Inter',
-  fontSize: 16,
-  fontWeight: FontWeight.bold,
-  color: Color(0xFF555555),
-);
-
-const _totalValueStyle = TextStyle(
-  fontFamily: 'Inter',
-  fontSize: 16,
-  fontWeight: FontWeight.bold,
-  color: Color(0xFF00C864),
-);

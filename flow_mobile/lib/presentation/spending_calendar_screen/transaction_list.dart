@@ -1,9 +1,9 @@
-import 'package:flutter/widgets.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
-import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_item.dart';
+import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_horizontal_divider.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flutter/material.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
@@ -22,11 +22,7 @@ class TransactionList extends StatelessWidget {
       return Center(
         child: Text(
           'No transactions found',
-          style: const TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 16,
-            color: Color(0xFF000000),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
       );
     }
@@ -58,47 +54,57 @@ class TransactionList extends StatelessWidget {
                             txn.date,
                           );
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (isNewDate)
-                            Column(
-                              key: detailKeys[dateOnly],
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: index == 0 ? 0 : 24,
-                                    bottom: 8,
-                                  ),
-                                  child: Text(
-                                    dateLabel,
-                                    style: const TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: Color(0xAA000000),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (isNewDate)
+                              Column(
+                                key: detailKeys[dateOnly],
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: index == 0 ? 0 : 24,
+                                      bottom: 8,
+                                    ),
+                                    child: Text(
+                                      dateLabel,
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                FlowHorizontalDivider(),
-                                FlowSeparatorBox(height: 8),
-                              ],
+                                  FlowHorizontalDivider(),
+                                  FlowSeparatorBox(height: 8),
+                                ],
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                              ),
+                              child: TransactionItem(
+                                name: txn.name,
+                                amount: txn.amount,
+                                category: txn.category,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withAlpha(240),
+                                incomeColor:
+                                    txn.amount > 0
+                                        ? const Color(0xFF00C864)
+                                        : const Color(0xFF000000),
+                              ),
                             ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: TransactionItem(
-                              name: txn.name,
-                              amount: txn.amount,
-                              category: txn.category,
-                              color: Color(0xFF000000),
-                              incomeColor:
-                                  txn.amount > 0
-                                      ? const Color(0xFF00C864)
-                                      : const Color(0xFF000000),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -115,13 +121,13 @@ class TransactionList extends StatelessWidget {
           height: fadeHeight,
           child: IgnorePointer(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFFFFFFFF), // match background
-                    Color(0x00F5F5F5), // transparent
+                    Theme.of(context).cardColor, // match background
+                    Theme.of(context).cardColor.withAlpha(0), // transparent
                   ],
                 ),
               ),

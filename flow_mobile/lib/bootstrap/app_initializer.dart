@@ -78,6 +78,7 @@ class AppInitializer {
     );
   }
 }
+
 Future<UserState> getUserState() async {
   UserRepository userRepository = await UserRepositoryImpl.getInstance();
   User user = await userRepository.getUser();
@@ -195,7 +196,7 @@ void bootstrapSettingData() async {
 
   settingRepository.setFontScale(16);
   settingRepository.setLanguage('en');
-  settingRepository.setTheme('light');
+  settingRepository.setTheme('dark');
   settingRepository.setNotification(true);
 }
 

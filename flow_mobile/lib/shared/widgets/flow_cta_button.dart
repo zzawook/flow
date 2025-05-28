@@ -1,42 +1,55 @@
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class FlowCTAButton extends StatelessWidget {
+// ignore: must_be_immutable
+class FlowCTAButton extends StatefulWidget {
   final String text;
   final Function() onPressed;
-  final Color color;
+  Color? color;
   final Color textColor;
   final double borderRadius;
   final FontWeight fontWeight;
 
-  const FlowCTAButton({
+  FlowCTAButton({
     super.key,
     required this.text,
     required this.onPressed,
-    this.color = const Color(0xFF50C878),
+    this.color,
     this.textColor = const Color(0xFFFFFFFF),
     this.borderRadius = 16,
     this.fontWeight = FontWeight.bold,
   });
 
   @override
+  State<FlowCTAButton> createState() => _FlowCTAButtonState();
+}
+
+class _FlowCTAButtonState extends State<FlowCTAButton> {
+  @override
+  void initState() {
+    super.initState();
+    widget.color ??= Theme.of(context).primaryColor;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FlowButton(
-      onPressed: onPressed,
+      onPressed: widget.onPressed,
       child: Container(
         height: 60,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(borderRadius),
+          color: widget.color,
+          borderRadius: BorderRadius.circular(widget.borderRadius),
         ),
         child: Text(
-          text,
+          widget.text,
           style: TextStyle(
             fontFamily: 'Inter',
             fontSize: 20,
-            color: textColor,
-            fontWeight: fontWeight,
+            color: widget.textColor,
+            fontWeight: widget.fontWeight,
           ),
         ),
       ),

@@ -12,19 +12,22 @@ class SpendingTrendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<FlowState, TransactionState>(
+    return StoreConnector<FlowState, SpendingTrendCardState>(
       converter: (store) {
-        return store.state.transactionState;
-      },
-      builder: (context, transactionState) {
-        DateTime currentMonth = DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
+        return SpendingTrendCardState(
+          transactionState: store.state.transactionState,
+          currentMonth:
+              store.state.screenState.spendingScreenState.displayedMonth,
         );
+      },
+      builder: (context, spendingTrendCardState) {
+        DateTime currentMonth = spendingTrendCardState.currentMonth;
 
-        List<Transaction> currentMonthTransactions = transactionState
+        List<Transaction> currentMonthTransactions = spendingTrendCardState
+            .transactionState
             .getTransactionsForMonth(currentMonth);
-        List<Transaction> lastMonthTransactions = transactionState
+        List<Transaction> lastMonthTransactions = spendingTrendCardState
+            .transactionState
             .getTransactionsForMonth(
               DateTime(currentMonth.year, currentMonth.month - 1),
             );
@@ -92,7 +95,7 @@ class SpendingTrendCard extends StatelessWidget {
             bottom: 16,
           ),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFFFFF),
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -103,11 +106,7 @@ class SpendingTrendCard extends StatelessWidget {
                 children: [
                   Text(
                     "Spent \$ ${currentMonthSpendingByDays.last.toStringAsFixed(2)} this month",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF000000),
-                    ),
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const SizedBox(height: 8),
                   Row(
@@ -124,7 +123,7 @@ class SpendingTrendCard extends StatelessWidget {
                                             currentMonthSpendingByDays.last,
                                           )]
                                   ? Colors.red
-                                  : Color(0xFF50C878),
+                                  : Theme.of(context).primaryColor,
                         ),
                       ),
                       Text(
@@ -158,7 +157,7 @@ class SpendingTrendCard extends StatelessWidget {
                   Container(
                     width: 30,
                     height: 3,
-                    color: const Color(0xFF50C878),
+                    color: Theme.of(context).primaryColor,
                   ),
                   const FlowSeparatorBox(width: 8),
                   Text(
@@ -194,4 +193,14 @@ class SpendingTrendCard extends StatelessWidget {
       },
     );
   }
+}
+
+class SpendingTrendCardState {
+  final TransactionState transactionState;
+  final DateTime currentMonth;
+
+  SpendingTrendCardState({
+    required this.transactionState,
+    required this.currentMonth,
+  });
 }

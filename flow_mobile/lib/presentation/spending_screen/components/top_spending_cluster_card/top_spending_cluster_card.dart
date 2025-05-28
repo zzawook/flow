@@ -10,7 +10,7 @@ class TopSpendingClusterCard extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -18,7 +18,9 @@ class TopSpendingClusterCard extends StatelessWidget {
         children: [
           Text(
             'Top 5 Spendings',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.normal),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           SizedBox(height: 16),
           Row(

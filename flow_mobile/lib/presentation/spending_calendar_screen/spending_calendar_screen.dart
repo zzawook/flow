@@ -3,11 +3,12 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar.dart';
-import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar_screen_top_bar.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/month_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -65,7 +66,7 @@ class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
     final screenSize = MediaQuery.of(context).size;
 
     return FlowSafeArea(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: Theme.of(context).canvasColor,
       child: RefreshIndicator.adaptive(
         onRefresh: () {
           Navigator.pushNamed(
@@ -81,37 +82,36 @@ class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverFillRemaining(
-              hasScrollBody: false, // important!
+              hasScrollBody: true, // important!
               child: SizedBox(
                 width: screenSize.width,
                 height: screenSize.height,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 24, right: 24),
-                  child: Column(
-                    children: [
-                      SpendingCalendarScreenTopBar(
+                child: Column(
+                  children: [
+                    FlowTopBar(
+                      title: MonthSelector(
                         displayMonthYear: displayedMonth,
                         displayMonthYearSetter: setDisplayedMonth,
                       ),
-                      FlowSeparatorBox(height: 24),
-                      SpendingCalendar(
-                        displayedMonth: displayedMonth,
-                        onDateSelected: _handleDateTap,
-                      ),
-                      StoreConnector<FlowState, List<Transaction>>(
-                        converter:
-                            (store) => store.state.transactionState
-                                .getTransactionsForMonth(displayedMonth),
-                        builder:
-                            (context, transactions) => Expanded(
-                              child: TransactionList(
-                                transactions: transactions,
-                                detailKeys: _detailKeys,
-                              ),
+                    ),
+                    FlowSeparatorBox(height: 24),
+                    SpendingCalendar(
+                      displayedMonth: displayedMonth,
+                      onDateSelected: _handleDateTap,
+                    ),
+                    StoreConnector<FlowState, List<Transaction>>(
+                      converter:
+                          (store) => store.state.transactionState
+                              .getTransactionsForMonth(displayedMonth),
+                      builder:
+                          (context, transactions) => Expanded(
+                            child: TransactionList(
+                              transactions: transactions,
+                              detailKeys: _detailKeys,
                             ),
-                      ),
-                    ],
-                  ),
+                          ),
+                    ),
+                  ],
                 ),
               ),
             ),

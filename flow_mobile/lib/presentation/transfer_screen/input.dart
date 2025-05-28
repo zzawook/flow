@@ -60,10 +60,10 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
                 borderSide: BorderSide(color: const Color(0xFF50C878)),
               ),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: const Color(0xFFC8C8C8)),
+                borderSide: BorderSide(color: const Color(0xFF50C878)),
               ),
               filled: true,
-              fillColor: const Color(0xFFF5F5F5),
+              fillColor: const Color(0x00000000),
               contentPadding: EdgeInsets.zero,
             ),
             keyboardType: TextInputType.text,

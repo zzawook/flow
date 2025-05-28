@@ -57,14 +57,14 @@ class _SpendingCategoryDetailScreenState
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
-      backgroundColor: Color(0xFFFAFAFA),
+      backgroundColor: Theme.of(context).cardColor,
       child: RefreshIndicator.adaptive(
         onRefresh: _onRefresh,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverFillRemaining(
-              hasScrollBody: false, // important!
+              hasScrollBody: true, // important!
               child: StoreConnector<FlowState, TransactionState>(
                 converter: (store) => store.state.transactionState,
                 builder: (context, transactionState) {
@@ -112,16 +112,17 @@ class _SpendingCategoryDetailScreenState
                         ),
                         transactionCount: transactions.length,
                       ),
-                      Container(height: 12, color: Color(0xFFF0F0F0)),
+
+                      Container(
+                        height: 12,
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Theme.of(context).canvasColor
+                                : const Color(0xFF303030),
+                      ),
+
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 24,
-                            right: 24,
-                            top: 24,
-                          ),
-                          child: TransactionList(transactions: transactions),
-                        ),
+                        child: TransactionList(transactions: transactions),
                       ),
                     ],
                   );
@@ -161,9 +162,8 @@ class BalanceSection extends StatelessWidget {
               Expanded(
                 child: Text(
                   '\$ $balance',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               ),
@@ -172,7 +172,7 @@ class BalanceSection extends StatelessWidget {
           FlowSeparatorBox(height: 32),
           Text(
             '$transactionCount transactions',
-            style: TextStyle(fontSize: 14, color: Color(0x88000000)),
+            style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor),
           ),
         ],
       ),

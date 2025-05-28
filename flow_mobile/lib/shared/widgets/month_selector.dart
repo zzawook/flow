@@ -15,6 +15,7 @@ class MonthSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           margin: EdgeInsets.only(right: 8),
@@ -24,23 +25,20 @@ class MonthSelector extends StatelessWidget {
                 DateTime(displayMonthYear.year, displayMonthYear.month - 1),
               );
             }, // Previous Month
-            child: Image.asset(
-              'assets/icons/prevMonth.png',
-              width: 20,
-              height: 20,
+            child: Icon(
+              Icons.keyboard_arrow_left,
+              size: 35,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(240),
             ),
           ),
         ),
         SizedBox(
-          width: 120,
+          width: 90,
           child: Center(
             child: Text(
-              DateTimeUtil.getMonthName(displayMonthYear.month),
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 20,
-                fontWeight: FontWeight.normal,
-                color: Color(0xFF000000),
+              '${DateTimeUtil.getMonthName(displayMonthYear.month).substring(0, 3)}${displayMonthYear.year == DateTime.now().year ? '' : ' ${displayMonthYear.year.toString().substring(2)}\''}',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(240),
               ),
             ),
           ),
@@ -57,13 +55,14 @@ class MonthSelector extends StatelessWidget {
                 DateTime(displayMonthYear.year, displayMonthYear.month + 1),
               );
             },
-            child: Image.asset(
-              displayMonthYear.month < DateTime.now().month ||
-                      displayMonthYear.year < DateTime.now().year
-                  ? 'assets/icons/nextMonth_exists.png'
-                  : 'assets/icons/nextMonth_not_exists.png',
-              width: 20,
-              height: 20,
+            child: Icon(
+              Icons.keyboard_arrow_right,
+              size: 35,
+              color:
+                  displayMonthYear.month < DateTime.now().month ||
+                          displayMonthYear.year < DateTime.now().year
+                      ? Theme.of(context).colorScheme.onSurface.withAlpha(240)
+                      : Theme.of(context).colorScheme.onSurface.withAlpha(80),
             ),
           ),
         ),

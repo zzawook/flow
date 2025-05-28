@@ -1,6 +1,6 @@
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class AccountTile extends StatelessWidget {
   final BankAccount bankAccount;
@@ -39,21 +39,15 @@ class AccountTile extends StatelessWidget {
                     children: [
                       Text(
                         bankAccount.bank.name,
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF454545),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         bankAccount.accountName,
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                          color: Color(0xFF454545),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -61,11 +55,9 @@ class AccountTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     "\$ ${bankAccount.balance.toString()}",
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF454545),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],

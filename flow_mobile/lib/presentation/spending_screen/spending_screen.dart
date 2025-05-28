@@ -74,7 +74,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
-      backgroundColor: SpendingScreenStyles.backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       child: Stack(
         children: [
           /* ---------- MAIN PAGE CONTENT ---------- */
@@ -156,7 +156,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
               child: IgnorePointer(
                 ignoring: _barOpacity == 0,
                 child: Container(
-                  color: SpendingScreenStyles.backgroundColor,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   child: FlowTopBar(
                     showBackButton: false,
                     title: Row(

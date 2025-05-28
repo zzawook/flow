@@ -3,7 +3,7 @@ import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/shared/widgets/month_selector.dart';
 import 'package:flow_mobile/shared/widgets/spending/spending_monthly_trend_line_graph.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -21,74 +21,19 @@ class SpendingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime lastMonday = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    ).subtract(Duration(days: DateTime.now().weekday - 1));
     return Row(
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(right: 8),
-                    child: FlowButton(
-                      onPressed: () {
-                        StoreProvider.of<FlowState>(
-                          context,
-                        ).dispatch(DecrementDisplayedMonthAction());
-                      }, // Previous Month
-                      child: Image.asset(
-                        'assets/icons/prevMonth.png',
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: Center(
-                      child: Text(
-                        DateTimeUtil.getMonthName(displayMonthYear.month),
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF000000),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 8),
-                    child: FlowButton(
-                      onPressed: () {
-                        if (weeklySpendingCalendarDisplayWeek.isAtSameMomentAs(
-                          lastMonday,
-                        )) {
-                          return;
-                        }
-                        StoreProvider.of<FlowState>(
-                          context,
-                        ).dispatch(IncrementDisplayedMonthAction());
-                      },
-                      child: Image.asset(
-                        DateTimeUtil.isSameDate(
-                              weeklySpendingCalendarDisplayWeek,
-                              lastMonday,
-                            )
-                            ? 'assets/icons/nextMonth_not_exists.png'
-                            : 'assets/icons/nextMonth_exists.png',
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  ),
-                ],
+              MonthSelector(
+                displayMonthYear: displayMonthYear,
+                displayMonthYearSetter: (date) {
+                  StoreProvider.of<FlowState>(
+                    context,
+                  ).dispatch(SetDisplayedMonthAction(date));
+                },
               ),
               Container(
                 padding: EdgeInsets.only(top: 15),

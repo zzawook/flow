@@ -1,26 +1,20 @@
-import 'package:flow_mobile/presentation/home_screen/components/accounts_card/account_row.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/home_screen/components/accounts_card/account_row.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 /// A card listing the user’s bank accounts, with a “See more” footer.
 class AccountsCard extends StatelessWidget {
   final VoidCallback onToggleBalance;
 
-  const AccountsCard({
-    super.key,
-    required this.onToggleBalance,
-  });
+  const AccountsCard({super.key, required this.onToggleBalance});
 
-  List<BankAccount> storeTobankAccountListConverter(
-    Store<FlowState> store,
-  ) {
+  List<BankAccount> storeTobankAccountListConverter(Store<FlowState> store) {
     return store.state.bankAccountState.bankAccounts;
   }
 
@@ -30,7 +24,7 @@ class AccountsCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: StoreConnector<FlowState, List<BankAccount>>(
@@ -57,7 +51,6 @@ class AccountsCard extends StatelessWidget {
 }
 
 class _SeeMoreButton extends StatelessWidget {
-
   void onSeeMorePressed(BuildContext context) {
     Navigator.pushNamed(
       context,
@@ -89,11 +82,7 @@ class _SeeMoreButton extends StatelessWidget {
               ),
             ),
             SizedBox(width: 4),
-            Icon(
-              Icons.chevron_right,
-              size: 12,
-              color: Color(0xFFA19F9F),
-            ),
+            Icon(Icons.chevron_right, size: 12, color: Color(0xFFA19F9F)),
           ],
         ),
       ),

@@ -53,7 +53,7 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).canvasColor,
       child: Column(
         children: [
           Expanded(
@@ -102,12 +102,17 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
                     return Column(
                       children: [
                         FlowTopBar(title: Text("")),
-                        const FlowSeparatorBox(height: 45),
+                        const FlowSeparatorBox(height: 40),
                         Padding(
                           padding: const EdgeInsets.only(left: 24, right: 24),
-                          child: MonthSelector(
-                            displayMonthYear: displayMonthYear,
-                            displayMonthYearSetter: setDisplayMonthYear,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              MonthSelector(
+                                displayMonthYear: displayMonthYear,
+                                displayMonthYearSetter: setDisplayMonthYear,
+                              ),
+                            ],
                           ),
                         ),
                         Container(
@@ -121,11 +126,10 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
                             children: [
                               Text(
                                 '\$ ${total.toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xAA000000),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.displayLarge?.copyWith(
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
                             ],
@@ -197,7 +201,7 @@ class SpendingCategoryList extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
@@ -213,9 +217,9 @@ class SpendingCategoryList extends StatelessWidget {
                       width: 36,
                       child: Text(
                         '${percentage.toStringAsFixed(0)}%',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
-                          color: Color(0xFF000000),
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
@@ -244,18 +248,11 @@ class SpendingCategoryList extends StatelessWidget {
                             children: [
                               Text(
                                 entry.key,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF000000),
-                                  fontWeight: FontWeight.normal,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Text(
                                 '\$ ${entry.value.abs().toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF000000),
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -307,7 +304,7 @@ class PercentageBar extends StatelessWidget {
     return Container(
       height: 15,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
         borderRadius: BorderRadius.circular(7),
       ),
       child: FractionallySizedBox(

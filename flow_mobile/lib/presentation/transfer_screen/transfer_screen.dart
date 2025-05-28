@@ -18,19 +18,15 @@ class TransferScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).canvasColor,
       child: Column(
         children: [
           // ── top bar ───────────────────────────────────────────────
           FlowTopBar(
-            title: const Center(
+            title: Center(
               child: Text(
                 'Transfer',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
           ),
@@ -49,22 +45,18 @@ class TransferScreen extends StatelessWidget {
                   builder:
                       (_, name) => Text(
                         'Hi $name,',
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                 ),
                 const SizedBox(height: 8),
                 Row(
-                  children: const [
+                  children: [
                     Text(
                       'Your total balance: ',
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 16,
-                        color: Color(0xFF50C878),
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                     Text(
@@ -73,7 +65,7 @@ class TransferScreen extends StatelessWidget {
                         fontFamily: 'Inter',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF50C878),
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ],
@@ -83,21 +75,17 @@ class TransferScreen extends StatelessWidget {
                 FlowHorizontalDivider(),
                 const SizedBox(height: 24),
 
-                const Text(
+                Text(
                   'Choose my bank account to transfer',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    color: Color(0xAA000000),
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const FlowSeparatorBox(height: 6),
-                const Text(
+                Text(
                   'From:',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const FlowSeparatorBox(height: 16),

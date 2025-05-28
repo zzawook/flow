@@ -27,19 +27,15 @@ class TopSpendingCluster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1️⃣ exact proportions you requested
     final fractions = [0.50, 0.40, 0.30, 0.25, 0.20];
     final diameters = [for (final f in fractions) f * size];
     final radii = [for (final d in diameters) d / 2];
 
-    // 2️⃣ (cx, cy) is the centre of the design square
     final cx = size / 2;
     final cy = size / 2;
 
-    // 3️⃣ angles for the four satellites ─ NE, NW, SW, SE
     final angles = [pi / 4, 3 * pi / 4, 5 * pi / 4, 7 * pi / 4];
 
-    // 4️⃣ compute top–left origins
     final positions = <Offset>[
       Offset(cx - radii[0], cy - radii[0]), // central
       for (var i = 0; i < angles.length; i++)
@@ -67,7 +63,8 @@ class TopSpendingCluster extends StatelessWidget {
         .reduce(max);
 
     // 6️⃣ render
-    return SizedBox(
+    return Container(
+      color: Theme.of(context).cardColor,
       width: maxX - minX,
       height: maxY - minY,
       child: Stack(

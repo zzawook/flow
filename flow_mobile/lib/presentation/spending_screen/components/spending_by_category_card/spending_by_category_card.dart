@@ -3,13 +3,11 @@ import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+// Import your chart widgets
+import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/horizontal_stacked_bar_with_legend.dart';
 import 'package:flow_mobile/shared/utils/spending_category_util.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-
-// Import your chart widgets
-import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/horizontal_stacked_bar_with_legend.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -43,7 +41,7 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
             padding: const EdgeInsets.only(top: 24, bottom: 0),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(12),
             ),
             child: StoreConnector<FlowState, TransactionState>(
@@ -78,14 +76,9 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Category Breakdown',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 22,
-                              fontWeight: FontWeight.normal,
-                              color: Color(0xFF000000),
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ],
                       ),
@@ -116,11 +109,11 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
                     SizedBox(
                       width: double.infinity,
                       child: Padding(
-                            padding: const EdgeInsets.only(left: 24, right: 24),
-                            child: HorizontalStackedBarWithLegend(
-                              categories: categoryAmount,
-                            ),
-                          ),
+                        padding: const EdgeInsets.only(left: 24, right: 24),
+                        child: HorizontalStackedBarWithLegend(
+                          categories: categoryAmount,
+                        ),
+                      ),
                     ),
 
                     FlowSeparatorBox(height: 8),

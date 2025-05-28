@@ -20,7 +20,7 @@ class FlowTopBar extends StatelessWidget {
     return SizedBox(
       height: 48,
       child: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24),
+        padding: const EdgeInsets.only(left: 16, right: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

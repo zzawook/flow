@@ -36,7 +36,7 @@ class _TransferToScreenState extends State<TransferToScreen> {
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).canvasColor,
       child: Column(
         children: [
           FlowTopBar(
@@ -108,7 +108,9 @@ class _TransferToScreenState extends State<TransferToScreen> {
                   final List<BankAccount> myBankAccounts =
                       bankAccountState.bankAccounts;
                   return Container(
-                    decoration: BoxDecoration(color: const Color(0xFFF5F5F5)),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                    ),
                     child:
                         _selectedTabIndex == 0
                             ? PayNowLayoutWidget(
@@ -215,7 +217,8 @@ class TabItemWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF50C878) : Color(0xFFFFFFFF),
+            color:
+                isSelected ? Theme.of(context).primaryColor : Color(0xFFFFFFFF),
             borderRadius: borderRadius,
           ),
           child: Text(

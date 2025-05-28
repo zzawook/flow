@@ -61,8 +61,8 @@ class FlowMainTopBar extends StatelessWidget {
                         child: Container(
                           width: 8,
                           height: 8,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF50C878),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
                             shape: BoxShape.circle,
                           ),
                         ),

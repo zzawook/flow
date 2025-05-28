@@ -23,7 +23,7 @@ class BalanceCard extends StatelessWidget {
         right: _horizontalPadding,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(_borderRadius),
       ),
       child: Column(
@@ -64,16 +64,11 @@ class _BalanceCardTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.only(bottom: 5),
       child: Text(
         "This month's Balance",
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 22,
-          fontWeight: FontWeight.normal,
-          color: Color(0xFF000000),
-        ),
+        style: Theme.of(context).textTheme.titleMedium,
       ),
     );
   }
@@ -84,15 +79,11 @@ class _AsOfDateText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.only(bottom: 25),
       child: Text(
         'As of today',
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 13,
-          color: Color(0xFF000000),
-        ),
+        style: Theme.of(context).textTheme.labelMedium,
       ),
     );
   }

@@ -59,19 +59,20 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // PopScope replaces deprecated WillPopScope
+    final themeData = Theme.of(context);
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         _handleBack();
       },
       child: FlowSafeArea(
-        backgroundColor: HomeScreenColors.background,
+        backgroundColor: themeData.canvasColor,
         child: Column(
           children: [
             Expanded(
               child: RefreshIndicator.adaptive(
-                color: HomeScreenColors.primary,
+                color: themeData.primaryColor,
                 onRefresh: _onRefresh,
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),

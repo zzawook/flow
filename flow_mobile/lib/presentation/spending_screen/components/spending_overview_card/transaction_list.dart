@@ -2,7 +2,7 @@ import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_item.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
@@ -28,7 +28,7 @@ class TransactionsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: StoreConnector<FlowState, TransactionListState>(
@@ -49,7 +49,7 @@ class TransactionsList extends StatelessWidget {
                     amount: tx.amount,
                     category: tx.category,
                     color: Color(0xFFEB5757),
-                    incomeColor: Color(0xFF50C878),
+                    incomeColor: Theme.of(context).primaryColor,
                   );
                 }).toList(),
           );

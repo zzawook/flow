@@ -18,7 +18,7 @@ class BankAccountDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FlowSafeArea(
-        backgroundColor: const Color(0xFFFAFAFA),
+        backgroundColor: Theme.of(context).cardColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -26,10 +26,8 @@ class BankAccountDetailScreen extends StatelessWidget {
             FlowTopBar(
               title: Text(
                 'My ${bankAccount.bank.name} ${bankAccount.accountName}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0x88000000),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -39,19 +37,22 @@ class BankAccountDetailScreen extends StatelessWidget {
             BalanceSection(bankAccount: bankAccount),
 
             // thin grey divider
-            Container(height: 12, color: const Color(0xFFF0F0F0)),
+            Container(
+              height: 12,
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Theme.of(context).canvasColor
+                      : const Color(0xFF303030),
+            ),
 
             // ── transactions list (scrollable) ──────────────────────────────
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
-                child: StoreConnector<FlowState, TransactionState>(
-                  converter: (store) => store.state.transactionState,
-                  builder: (_, txnState) {
-                    final txns = txnState.getTransactionsByAccount(bankAccount);
-                    return TransactionList(transactions: txns);
-                  },
-                ),
+              child: StoreConnector<FlowState, TransactionState>(
+                converter: (store) => store.state.transactionState,
+                builder: (_, txnState) {
+                  final txns = txnState.getTransactionsByAccount(bankAccount);
+                  return TransactionList(transactions: txns);
+                },
               ),
             ),
           ],
@@ -99,9 +100,7 @@ class BalanceSection extends StatelessWidget {
             },
             child: Text(
               "${bankAccount.bank.name} ${bankAccount.accountNumber}",
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0x88000000),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 decoration: TextDecoration.underline,
               ),
             ),
@@ -109,7 +108,9 @@ class BalanceSection extends StatelessWidget {
           const FlowSeparatorBox(height: 12),
           Text(
             '\$ ${bankAccount.balance.toStringAsFixed(0)}',
-            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ],
       ),

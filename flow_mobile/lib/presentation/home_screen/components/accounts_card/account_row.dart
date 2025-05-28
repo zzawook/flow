@@ -7,7 +7,6 @@ import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-
 /// A single row displaying account info, a “View Balance” action, and a quick-transfer button.
 class AccountRow extends StatelessWidget {
   final BankAccount bankAccount;
@@ -19,7 +18,6 @@ class AccountRow extends StatelessWidget {
     required this.onViewBalance,
   });
 
-  static const double _avatarSize = 55;
   static const double _spacing = 12;
 
   void onAccountPressed(BuildContext context) {
@@ -66,7 +64,7 @@ class AccountRow extends StatelessWidget {
                 children: [
                   _buildAvatar(),
                   const SizedBox(width: 20),
-                  _buildLabels(),
+                  _buildLabels(context),
                 ],
               ),
             ),
@@ -84,13 +82,19 @@ class AccountRow extends StatelessWidget {
               height: 40,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xFFEFEFEF),
+                color:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Color(0xFFF0F0F0)
+                        : Theme.of(context).colorScheme.surfaceBright,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.swap_horiz,
                 size: 24,
-                color: Color(0xFF565656),
+                color:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Color(0xFF565656)
+                        : Color(0xFFAAAAAA),
               ),
             ),
           ),
@@ -100,43 +104,43 @@ class AccountRow extends StatelessWidget {
   }
 
   Widget _buildAvatar() {
-    return Container(
-      width: _avatarSize,
-      height: _avatarSize,
-      decoration: BoxDecoration(
-        color: const Color(0xFFE8E8E8),
-        borderRadius: BorderRadius.circular(_avatarSize / 2),
-      ),
+    return SizedBox(
+      width: 50,
+      height: 50,
       child: Image.asset(
         'assets/bank_logos/${bankAccount.bank.name}.png',
-        width: _avatarSize,
-        height: _avatarSize,
         fit: BoxFit.contain,
       ),
     );
   }
 
-  Widget _buildLabels() {
+  Widget _buildLabels(BuildContext context) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             bankAccount.accountName,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 15,
-              color: Color(0xFF565656),
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Color(0xFF565656)
+                      : Color(0xFFCCCCCC),
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             'View Balance',
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF000000),
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Color(0xFF000000)
+                      : Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],

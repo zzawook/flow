@@ -31,6 +31,23 @@ class _BankTileState extends State<BankTile> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedTextStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      // fontWeight: FontWeight.bold,
+      color: Theme.of(context).colorScheme.onSurface,
+    );
+
+    final unselectedTextStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(
+      color: Theme.of(context).colorScheme.onSurface,
+      fontWeight: FontWeight.normal,
+    );
+
+    final selectedTileColor =
+        Theme.of(context).brightness == Brightness.light
+            ? Theme.of(context).primaryColor.withAlpha(150)
+            : Theme.of(context).primaryColorLight.withAlpha(150);
+
     return FlowButton(
       onPressed: () {
         widget.onTap();
@@ -42,7 +59,8 @@ class _BankTileState extends State<BankTile> {
         margin: const EdgeInsets.only(bottom: 8.0),
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0x4450C878) : const Color(0xFFFFFFFF),
+          color:
+              isSelected ? selectedTileColor : Theme.of(context).disabledColor,
           borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
@@ -61,26 +79,18 @@ class _BankTileState extends State<BankTile> {
                 children: [
                   Text(
                     widget.bank.name,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF454545),
-                    ),
+                    style: isSelected ? selectedTextStyle : unselectedTextStyle,
                   ),
                   Text(
                     "${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''}",
+                    style: isSelected ? selectedTextStyle : unselectedTextStyle,
                   ),
                   const SizedBox(height: 4),
                   ...widget.bankAccountNames.map(
                     (accountName) => Text(
                       accountName,
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal,
-                        color: Color(0xFF454545),
-                      ),
+                      style:
+                          isSelected ? selectedTextStyle : unselectedTextStyle,
                     ),
                   ),
                 ],

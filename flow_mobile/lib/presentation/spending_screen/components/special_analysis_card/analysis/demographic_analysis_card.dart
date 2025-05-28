@@ -1,5 +1,5 @@
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class DemographicAnalysisCard extends StatelessWidget {
@@ -41,7 +41,7 @@ class DemographicAnalysisCard extends StatelessWidget {
         Container(
           height: height,
           decoration: BoxDecoration(
-            color: Color(0xFFF9F9F9),
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(8),
           ),
           padding: EdgeInsets.all(16),

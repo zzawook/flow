@@ -127,11 +127,14 @@ class _FixedSpendingDetailsScreenState
         .expand((items) => items)
         .fold(0, (sum, item) => sum + item.amount);
 
+    final themeData = Theme.of(context);
+
     return FlowSafeArea(
       // just add a background so the screen isn’t transparent/black
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: themeData.cardColor,
 
       child: Material(
+        color: themeData.cardColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -156,19 +159,21 @@ class _FixedSpendingDetailsScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   FlowSeparatorBox(height: 36),
-                  const Text(
+                  Text(
                     "Fixed Spending",
-                    style: TextStyle(fontSize: 16, color: Color(0x88000000)),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
                   Text(
                     "\$ $total",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF50C878),
+                      color: themeData.primaryColor,
                     ),
                   ),
-                  FlowSeparatorBox(height: 36),
+                  FlowSeparatorBox(height: 24),
                 ],
               ),
             ),
@@ -226,9 +231,11 @@ class _FixedSpendingDetailsScreenState
                                 ),
                                 subtitle: Text(
                                   item.subtitle,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
-                                    color: Color(0x88000000),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withAlpha(150),
                                   ),
                                 ),
                                 trailing: Row(
@@ -236,18 +243,22 @@ class _FixedSpendingDetailsScreenState
                                   children: [
                                     Text(
                                       dateText,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 12,
-                                        color: Color(0x66000000),
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface.withAlpha(150),
                                       ),
                                     ),
                                     Text(
                                       ' ${item.scheduledDay}'
                                       '${DateTimeUtil.getDatePostFix(item.scheduledDay)}',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0x66000000),
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface.withAlpha(150),
                                       ),
                                     ),
                                   ],

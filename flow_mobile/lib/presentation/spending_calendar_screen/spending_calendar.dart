@@ -1,8 +1,8 @@
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/shared/utils/date_time_util.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 class SpendingCalendar extends StatefulWidget {
   final DateTime displayedMonth;
@@ -23,6 +23,8 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
 
   @override
   Widget build(BuildContext context) {
+    final expenseColor = Theme.of(context).colorScheme.onSurface.withAlpha(140);
+
     final daysInMonth = DateTimeUtil.daysInMonth(
       widget.displayedMonth.year,
       widget.displayedMonth.month,
@@ -43,10 +45,10 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
               child: Center(
                 child: Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF000000),
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 12,
                   ),
                 ),
@@ -76,9 +78,7 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
               income: stats.income,
               expense: stats.expense,
               isToday: DateTimeUtil.isSameDate(date, DateTime.now()),
-              isSelected: DateTimeUtil.isSameDate(
-                date, selectedDate
-              ),
+              isSelected: DateTimeUtil.isSameDate(date, selectedDate),
             );
           },
           builder: (ctx, cell) {
@@ -108,21 +108,29 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                       decoration: BoxDecoration(
                         color:
                             cell.isToday
-                                ? Color(0x16000000)
+                                ? Theme.of(context).colorScheme.surfaceBright
                                 : cell.isSelected
-                                ? Color(0x6450C878)
+                                ? Theme.of(ctx).primaryColorLight
                                 : null,
                         shape: BoxShape.circle,
                       ),
                       child: Text(
                         "$day",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFF000000).withValues(
-                            alpha: date.isAfter(DateTime.now()) ? 0.3 : 1.0,
-                          ),
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color:
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white.withValues(
+                                    alpha:
+                                        date.isAfter(DateTime.now())
+                                            ? 0.3
+                                            : 0.8,
+                                  )
+                                  : Colors.black.withValues(
+                                    alpha:
+                                        date.isAfter(DateTime.now())
+                                            ? 0.3
+                                            : 1.0,
+                                  ),
                         ),
                       ),
                     ),
@@ -138,10 +146,10 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                         fontFamily: 'Inter',
                         color:
                             cell.income > 0
-                                ? Color(0xFF50C878)
+                                ? Theme.of(ctx).primaryColor
                                 : cell.expense < 0
-                                ? Color(0xFF757575)
-                                : Color(0xFF50C878),
+                                ? expenseColor
+                                : Theme.of(ctx).primaryColor,
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
                       ),
@@ -150,9 +158,9 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
                       date.isAfter(DateTime.now()) || (cell.income == 0)
                           ? ""
                           : cell.expense.toStringAsFixed(2),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Inter',
-                        color: Color(0xFF757575),
+                        color: expenseColor,
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
                       ),
