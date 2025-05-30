@@ -86,7 +86,6 @@ class _RefreshInitScreenContainerState
 
   @override
   Widget build(BuildContext context) {
-    print(Theme.of(context).primaryColor);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(

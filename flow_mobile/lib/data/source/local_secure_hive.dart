@@ -19,7 +19,6 @@ class SecureHive {
 
     SecureStorage secureStorage = SecureStorage();
 
-    // Retrieve encryption key from secure storage
     var encryptionKey = await secureStorage.getData('hiveKey');
 
     if (encryptionKey == null) {
@@ -27,7 +26,6 @@ class SecureHive {
       await secureStorage.saveData('hiveKey', encryptionKey);
     }
 
-    // Decode the encryption key from Base64 back to Uint8List
     secureKey = base64Decode(encryptionKey);
 
     _doMigration(secureKey!);

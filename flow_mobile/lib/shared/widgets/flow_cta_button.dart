@@ -1,6 +1,5 @@
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 // ignore: must_be_immutable
 class FlowCTAButton extends StatefulWidget {
