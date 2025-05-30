@@ -1,9 +1,9 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 class SpendingCategoryUtil {
   static Map<String, Map<String, dynamic>> categoryData = {
     "Transfer": {
-      "color": "#8BC34A",
+      "color": "#9CCD4BC",
       "icon": "assets/icons/category_icons/transfer.png",
     },
     "Transport": {
@@ -11,7 +11,7 @@ class SpendingCategoryUtil {
       "icon": "assets/icons/category_icons/transport.png",
     },
     "Food": {
-      "color": "#F44336",
+      "color": "#F554477",
       "icon": "assets/icons/category_icons/food.png",
     },
     "Others": {
@@ -36,13 +36,20 @@ class SpendingCategoryUtil {
 
   static Color getCategoryColor(String category) {
     if (!categoryData.containsKey(category)) {
-      return const Color(0xFF000000);
+      return shadeWithHsl(Color(0xFF000000), 0.2);
     }
     String colorString = categoryData[category]!["color"];
     if (colorString.startsWith('#')) {
       colorString = colorString.substring(1);
     }
-    return Color(int.parse('FF$colorString', radix: 16));
+    return shadeWithHsl(Color(int.parse('FF$colorString', radix: 16)), 0.07);
+  }
+
+  static Color shadeWithHsl(Color base, double amount) {
+    // amount positive → lighter, negative → darker
+    final hsl = HSLColor.fromColor(base);
+    final light = (hsl.lightness + amount).clamp(0.0, 1.0);
+    return hsl.withLightness(light).toColor();
   }
 
   static getCategoryIcon(String category) {
