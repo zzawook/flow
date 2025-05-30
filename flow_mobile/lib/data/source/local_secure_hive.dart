@@ -30,6 +30,8 @@ class SecureHive {
     // Decode the encryption key from Base64 back to Uint8List
     secureKey = base64Decode(encryptionKey);
 
+    _doMigration(secureKey!);
+
     Hive.registerAdapter(SettingsAdapter());
     Hive.registerAdapter(UserAdapter());
     Hive.registerAdapter(BankAccountAdapter());
@@ -37,6 +39,8 @@ class SecureHive {
     Hive.registerAdapter(TransactionAdapter());
     Hive.registerAdapter(PayNowRecipientAdapter());
     Hive.registerAdapter(NotificationAdapter());
+
+    // ADD ADAPTERS FOR BOTH LEGACY AND NEW ENTITIES
 
     return true;
   }
@@ -51,5 +55,32 @@ class SecureHive {
 
   static Future<Box<E>> getBox<E>(String boxName) {
     return Hive.openBox(boxName, encryptionCipher: HiveAesCipher(secureKey!));
+  }
+
+  static void _doMigration(Uint8List secureKey) async {
+    const kHiveVersionKey = '__schema_version__';
+    const hiveBoxKey = 'app_meta';
+
+    if (!await Hive.boxExists(kHiveVersionKey)) {
+      // If the version box does not exist, create it with version 0
+      // then return
+      await Hive.openBox(
+        hiveBoxKey,
+        encryptionCipher: HiveAesCipher(secureKey),
+      ).then((box) => box.put(kHiveVersionKey, 0));
+      return;
+    }
+
+    final meta = await Hive.openBox(
+      hiveBoxKey,
+      encryptionCipher: HiveAesCipher(secureKey),
+    );
+    final currentVersion = meta.get(kHiveVersionKey, defaultValue: 0) as int;
+
+    // if (currentVersion < 2) {
+    //   // Migration logic for version
+    //   await meta.put(kHiveVersionKey, 2);
+    // }
+    // Add more migrations here as needed
   }
 }
