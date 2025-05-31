@@ -1,5 +1,5 @@
 import 'package:flow_mobile/bootstrap/app_initializer.dart';
-import 'package:flow_mobile/domain/entities/setting.dart';
+import 'package:flow_mobile/domain/entities/setting_v1.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -33,32 +33,37 @@ class FlowApplication extends StatelessWidget {
   Widget build(BuildContext context) {
     // Grab store once
     final store = StoreProvider.of<FlowState>(context);
-    final theme = _buildTheme(store.state.settingsState.settings);
 
-    return MaterialApp(
-      title: 'Flow',
-      theme: theme,
-      navigatorObservers: [ReduxRouteObserver(store)],
-      builder:
-          (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.light.copyWith(
-              statusBarColor: theme.scaffoldBackgroundColor,
-              statusBarIconBrightness:
-                  theme.brightness == Brightness.light
-                      ? Brightness.dark
-                      : Brightness.light,
-              systemNavigationBarContrastEnforced: true,
-            ),
-            child: child ?? SizedBox.shrink(),
-          ),
+    return StoreConnector<FlowState, String>(
+      converter: (store) => store.state.settingsState.settings.theme,
+      builder: (context, themeName) {
+        final theme = _buildTheme(store.state.settingsState.settings);
+        return MaterialApp(
+          title: 'Flow',
+          theme: theme,
+          navigatorObservers: [ReduxRouteObserver(store)],
+          builder:
+              (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle.light.copyWith(
+                  statusBarColor: theme.scaffoldBackgroundColor,
+                  statusBarIconBrightness:
+                      theme.brightness == Brightness.light
+                          ? Brightness.dark
+                          : Brightness.light,
+                  systemNavigationBarContrastEnforced: true,
+                ),
+                child: child ?? SizedBox.shrink(),
+              ),
 
-      initialRoute: AppRoutes.home,
-      onGenerateRoute:
-          (settings) => AppRoutes.generate(settings, store.dispatch),
+          initialRoute: AppRoutes.home,
+          onGenerateRoute:
+              (settings) => AppRoutes.generate(settings, store.dispatch),
+        );
+      },
     );
   }
 
-  ThemeData _buildTheme(Settings settings) {
+  ThemeData _buildTheme(SettingsV1 settings) {
     if (settings.theme == "light") {
       return ThemeData(
         fontFamily: 'Inter',

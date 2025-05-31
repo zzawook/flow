@@ -69,7 +69,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
                 }),
               ),
               Expanded(
-                child: navItem("analysis", screenName == '/transfer', () {
+                child: navItem("transfer", screenName == '/transfer', () {
                   // Check if the current screen is already the transfer screen
                   if (screenName == '/transfer') {
                     return;
@@ -82,6 +82,26 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
                     ),
                   );
                 }),
+              ),
+              Expanded(
+                child: navItem(
+                  "setting",
+                  screenName.contains('setting') ||
+                      screenName.contains('manage'),
+                  () {
+                    // Check if the current screen is already the transfer screen
+                    if (screenName == '/setting') {
+                      return;
+                    }
+                    Navigator.pushNamed(
+                      context,
+                      '/setting',
+                      arguments: CustomPageRouteArguments(
+                        transitionType: TransitionType.slideLeft,
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           );

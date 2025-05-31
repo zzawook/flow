@@ -15,6 +15,8 @@ class FlowSafeArea extends StatelessWidget {
         left: MediaQuery.of(context).padding.left,
         right: MediaQuery.of(context).padding.right,
       ),
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
       color: backgroundColor ?? Colors.transparent,
       child: child,
     );

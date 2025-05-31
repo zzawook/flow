@@ -1,2 +1,10 @@
 // Action
-class ToggleDarkModeAction {}
+class ToggleThemeAction {}
+
+class ToggleNotificationMasterAction {}
+
+class ToggleInsightNotificationAction {}
+
+class TogglePeriodicReminderNotificationAction {}
+
+class TogglePeriodicReminderAutoNotificationAction {}

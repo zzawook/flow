@@ -15,7 +15,8 @@ import 'package:flow_mobile/data/repository/user_repository_impl.dart';
 import 'package:flow_mobile/data/source/local_secure_hive.dart';
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/entities/notification.dart';
-import 'package:flow_mobile/domain/entities/setting.dart';
+import 'package:flow_mobile/domain/entities/notification_setting.dart';
+import 'package:flow_mobile/domain/entities/setting_v1.dart';
 import 'package:flow_mobile/domain/entities/transaction.dart';
 import 'package:flow_mobile/domain/entities/transfer_receivable.dart';
 import 'package:flow_mobile/domain/entities/user.dart';
@@ -89,11 +90,11 @@ Future<SettingsState> getSettingState() async {
   SettingRepository settingRepository =
       await SettingRepositoryImpl.getInstance();
   return SettingsState(
-    settings: Settings(
+    settings: SettingsV1(
       fontScale: await settingRepository.getFontScale(),
       language: await settingRepository.getLanguage(),
       theme: await settingRepository.getTheme(),
-      notification: await settingRepository.getNotification(),
+      notification: await settingRepository.getNotificationSetting(),
     ),
   );
 }
@@ -197,7 +198,7 @@ void bootstrapSettingData() async {
   settingRepository.setFontScale(16);
   settingRepository.setLanguage('en');
   settingRepository.setTheme('dark');
-  settingRepository.setNotification(true);
+  settingRepository.setNotificationSetting(NotificationSetting.initial());
 }
 
 Future<bool> bootstrapTransactionData() async {

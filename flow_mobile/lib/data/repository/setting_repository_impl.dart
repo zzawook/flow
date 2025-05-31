@@ -1,9 +1,10 @@
 import 'package:flow_mobile/data/repository/setting_repository.dart';
-import 'package:flow_mobile/domain/entities/setting.dart';
+import 'package:flow_mobile/domain/entities/notification_setting.dart';
+import 'package:flow_mobile/domain/entities/setting_v1.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class SettingRepositoryImpl implements SettingRepository {
-  final Box<Settings> _settingsBox;
+  final Box<SettingsV1> _settingsBox;
 
   // Singleton instance
   static SettingRepositoryImpl? _instance;
@@ -14,8 +15,8 @@ class SettingRepositoryImpl implements SettingRepository {
   // Asynchronous getter to obtain the singleton instance
   static Future<SettingRepositoryImpl> getInstance() async {
     if (_instance == null) {
-      final box = await Hive.openBox<Settings>('settingsBox');
-      await box.put('settings', Settings.initial());
+      final box = await Hive.openBox<SettingsV1>('settingsBox');
+      await box.put('settings', SettingsV1.initial());
       _instance = SettingRepositoryImpl._(box);
     }
     return _instance!;
@@ -40,7 +41,7 @@ class SettingRepositoryImpl implements SettingRepository {
   }
 
   @override
-  Future<bool> getNotification() async {
+  Future<NotificationSetting> getNotificationSetting() async {
     final settings = _settingsBox.get('settings');
     if (settings == null) {
       throw Exception("Settings not found");
@@ -78,7 +79,7 @@ class SettingRepositoryImpl implements SettingRepository {
   }
 
   @override
-  Future<void> setNotification(bool notification) async {
+  Future<void> setNotificationSetting(NotificationSetting notification) async {
     final settings = _settingsBox.get('settings');
     if (settings == null) {
       throw Exception("Settings not found");
