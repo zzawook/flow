@@ -22,7 +22,7 @@ class MonthlyAssetBarChart extends StatelessWidget {
     required this.last6MonthlyAssetData,
     this.normalBarColor = const Color(0xFF5A5A5A),
     this.todayBarColor = const Color(0xFF50C878),
-    this.barWidth = 35,
+    this.barWidth = 45,
     this.labelGap = 8,
   });
 

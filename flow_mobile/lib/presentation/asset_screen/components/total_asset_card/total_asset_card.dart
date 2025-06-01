@@ -88,6 +88,10 @@ class _TotalAssetCardState extends State<TotalAssetCard> {
             height: 300,
             child: MonthlyAssetBarChart(
               last6MonthlyAssetData: last6MonthlyAssetData,
+              normalBarColor:
+                  Theme.of(context).brightness == Brightness.light
+                      ? const Color(0xFFCACACA)
+                      : const Color(0xFF4A4A4A),
             ),
           ),
         ],
