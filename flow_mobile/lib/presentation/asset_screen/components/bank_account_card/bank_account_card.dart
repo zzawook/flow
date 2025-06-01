@@ -44,7 +44,7 @@ class _BankAccountCardState extends State<BankAccountCard> {
                   padding: const EdgeInsets.only(left: 24, top: 8, bottom: 8),
                   child: Text(
                     "Bank Accounts",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
