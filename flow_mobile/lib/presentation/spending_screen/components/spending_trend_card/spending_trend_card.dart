@@ -114,7 +114,7 @@ class SpendingTrendCard extends StatelessWidget {
                       Text(
                         "\$ ${(currentMonthSpendingByDays.last - lastMonthSpendingByDays[currentMonthSpendingByDays.indexOf(currentMonthSpendingByDays.last)]).abs().toStringAsFixed(2)} ${currentMonthSpendingByDays.last > lastMonthSpendingByDays[currentMonthSpendingByDays.indexOf(currentMonthSpendingByDays.last)] ? "more" : "less"}",
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.normal,
                           color:
                               currentMonthSpendingByDays.last >
@@ -128,10 +128,10 @@ class SpendingTrendCard extends StatelessWidget {
                       ),
                       Text(
                         " than last month",
-                        style: const TextStyle(
-                          fontSize: 14,
+                        style: TextStyle(
+                          fontSize: 16,
                           fontWeight: FontWeight.normal,
-                          color: Color(0x88000000),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],

@@ -16,7 +16,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 75,
+      height: 84,
       decoration: BoxDecoration(
         color: Theme.of(context).canvasColor.withAlpha(230),
         border: Border(
@@ -36,7 +36,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
-                child: navItem("home", screenName == '/home', () {
+                child: navItem("home", "Home", screenName == '/home', () {
                   // Check if the current screen is already the home screen
                   if (screenName == '/home') {
                     return;
@@ -51,7 +51,11 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
                 }),
               ),
               Expanded(
-                child: navItem("spending", screenName == '/spending', () {
+                child: navItem(
+                  "spending",
+                  "Spending",
+                  screenName == '/spending',
+                  () {
                   // Check if the current screen is already the spending screen
                   if (screenName == '/spending') {
                     return;
@@ -69,7 +73,26 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
                 }),
               ),
               Expanded(
-                child: navItem("transfer", screenName == '/transfer', () {
+                child: navItem("asset", "Asset", screenName == '/asset', () {
+                  // Check if the current screen is already the spending screen
+                  if (screenName == '/asset') {
+                    return;
+                  }
+                  Navigator.pushNamed(
+                    context,
+                    '/asset',
+                    arguments: CustomPageRouteArguments(
+                      transitionType: TransitionType.slideLeft,
+                    ),
+                  );
+                }),
+              ),
+              Expanded(
+                child: navItem(
+                  "transfer",
+                  "Transfer",
+                  screenName == '/transfer',
+                  () {
                   // Check if the current screen is already the transfer screen
                   if (screenName == '/transfer') {
                     return;
@@ -86,6 +109,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
               Expanded(
                 child: navItem(
                   "setting",
+                  "Setting",
                   screenName.contains('setting') ||
                       screenName.contains('manage'),
                   () {
@@ -110,20 +134,31 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
     );
   }
 
-  Widget navItem(String icon, bool isSelected, Function() onTap) {
-    final Color selectedColor = Theme.of(context).dividerColor;
+  Widget navItem(String icon, String title, bool isSelected, Function() onTap) {
+    final Color selectedColor = Theme.of(context).colorScheme.onSurface;
     final Color unselectedColor = Theme.of(context).disabledColor;
 
     return FlowButton(
       onPressed: () => onTap(),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10),
-        child: Image.asset(
-          'assets/icons/${icon}_icon.png',
-          height: 30,
-          width: 30,
-          color: isSelected ? selectedColor : unselectedColor,
-        ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Image.asset(
+              'assets/icons/${icon}_icon.png',
+              height: 30,
+              width: 30,
+              color: isSelected ? selectedColor : unselectedColor,
+            ),
+          ),
+          Text(
+            title,
+            style: TextStyle(
+              color: isSelected ? selectedColor : unselectedColor,
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }

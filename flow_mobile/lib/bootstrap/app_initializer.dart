@@ -95,6 +95,7 @@ Future<SettingsState> getSettingState() async {
       language: await settingRepository.getLanguage(),
       theme: await settingRepository.getTheme(),
       notification: await settingRepository.getNotificationSetting(),
+      displayBalanceOnHome: await settingRepository.getDisplayBalanceOnHome()
     ),
   );
 }

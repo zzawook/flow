@@ -54,7 +54,7 @@ class _SeeMoreButton extends StatelessWidget {
   void onSeeMorePressed(BuildContext context) {
     Navigator.pushNamed(
       context,
-      '/accounts', // define this route if needed
+      '/bank_account/setting',
       arguments: CustomPageRouteArguments(
         transitionType: TransitionType.slideLeft,
       ),

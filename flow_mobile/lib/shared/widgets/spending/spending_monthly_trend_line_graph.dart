@@ -57,7 +57,7 @@ class SpendingMonthlyTrendLineGraphContent extends StatelessWidget {
               // final isCurrentMonth = currentMonthSpendingByDays[index] != 0;
               return Color(0x22000000);
             },
-            tooltipRoundedRadius: 8,
+            tooltipBorderRadius: BorderRadius.circular(8),
             tooltipPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 8,

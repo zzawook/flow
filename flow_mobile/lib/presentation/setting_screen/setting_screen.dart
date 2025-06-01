@@ -89,7 +89,7 @@ class SettingScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.pushNamed(
                       context,
-                      '/bank_account/setting',
+                      '/bank_accounts/setting',
                       arguments: CustomPageRouteArguments(
                         transitionType: TransitionType.slideLeft,
                       ),

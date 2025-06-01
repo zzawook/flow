@@ -18,11 +18,15 @@ class SettingsV1 {
   @HiveField(3)
   final NotificationSetting notification;
 
+  @HiveField(4)
+  final bool displayBalanceOnHome;
+
   SettingsV1({
     required this.language,
     required this.theme,
     required this.fontScale,
     required this.notification,
+    required this.displayBalanceOnHome,
   });
 
   SettingsV1 copyWith({
@@ -30,12 +34,14 @@ class SettingsV1 {
     String? theme,
     double? fontScale,
     NotificationSetting? notification,
+    bool? displayBalanceOnHome,
   }) {
     return SettingsV1(
       language: language ?? this.language,
       theme: theme ?? this.theme,
       fontScale: fontScale ?? this.fontScale,
       notification: notification ?? this.notification,
+      displayBalanceOnHome: displayBalanceOnHome ?? this.displayBalanceOnHome,
     );
   }
 
@@ -45,6 +51,7 @@ class SettingsV1 {
       theme: 'light',
       fontScale: 1.0,
       notification: NotificationSetting.initial(),
+      displayBalanceOnHome: true,
     );
   }
 
@@ -56,6 +63,7 @@ class SettingsV1 {
       notification: NotificationSetting.initial().copyWith(
         masterEnabled: prev.notification,
       ),
+      displayBalanceOnHome: true,
     );
   }
 }

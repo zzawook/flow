@@ -48,5 +48,12 @@ SettingsState settingsReducer(SettingsState state, dynamic action) {
       ),
     );
   }
+  if (action is ToggleDisplayBalanceOnHomeAction) {
+    return SettingsState(
+      settings: state.settings.copyWith(
+        displayBalanceOnHome: !state.settings.displayBalanceOnHome,
+      ),
+    );
+  }
   return state;
 }

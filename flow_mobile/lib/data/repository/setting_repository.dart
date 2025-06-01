@@ -9,4 +9,6 @@ abstract class SettingRepository {
   Future<double> getFontScale();
   Future<void> setNotificationSetting(NotificationSetting notification);
   Future<NotificationSetting> getNotificationSetting();
+  Future<void> setDisplayBalanceOnHome(bool displayBalanceOnHome);
+  Future<bool> getDisplayBalanceOnHome();
 }

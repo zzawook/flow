@@ -97,4 +97,25 @@ class SettingRepositoryImpl implements SettingRepository {
     final updated = settings.copyWith(theme: theme);
     await _settingsBox.put('settings', updated);
   }
+
+  @override
+  Future<bool> getDisplayBalanceOnHome() async {
+    final settings = _settingsBox.get('settings');
+    if (settings == null) {
+      throw Exception("Settings not found");
+    }
+    return settings.displayBalanceOnHome;
+  }
+
+  @override
+  Future<void> setDisplayBalanceOnHome(bool displayBalanceOnHome) async {
+    final settings = _settingsBox.get('settings');
+    if (settings == null) {
+      throw Exception("Settings not found");
+    }
+    final updated = settings.copyWith(
+      displayBalanceOnHome: displayBalanceOnHome,
+    );
+    await _settingsBox.put('settings', updated);
+  }
 }

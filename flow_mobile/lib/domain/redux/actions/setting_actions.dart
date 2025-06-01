@@ -8,3 +8,5 @@ class ToggleInsightNotificationAction {}
 class TogglePeriodicReminderNotificationAction {}
 
 class TogglePeriodicReminderAutoNotificationAction {}
+
+class ToggleDisplayBalanceOnHomeAction {}

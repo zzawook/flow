@@ -1,7 +1,10 @@
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
 import 'package:flow_mobile/shared/widgets/flow_snackbar.dart';
@@ -30,6 +33,24 @@ class BankAccountDetailScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
+              ),
+              leftWidget: FlowButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    "/bank_account/setting",
+                    arguments: CustomPageRouteArguments(
+                      transitionType: TransitionType.slideRight,
+                    ),
+                  );
+                },
+                child: SizedBox(
+                  width: 25,
+                  child: Icon(
+                    Icons.settings_outlined,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
               ),
             ),
 

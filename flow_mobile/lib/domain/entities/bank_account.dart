@@ -26,6 +26,9 @@ class BankAccount extends TransferReceivable {
   @override
   final int transferCount;
 
+  @HiveField(6)
+  final bool isHidden;
+
   BankAccount({
     required this.accountNumber,
     required this.accountHolder,
@@ -33,6 +36,7 @@ class BankAccount extends TransferReceivable {
     required this.accountName,
     required this.bank,
     required this.transferCount,
+    this.isHidden = false,
   });
 
   factory BankAccount.initial() => BankAccount(
@@ -41,7 +45,8 @@ class BankAccount extends TransferReceivable {
     balance: 0.0,
     accountName: 'My Savings Account',
     bank: Bank.initial(),
-    transferCount: 0
+    transferCount: 0,
+    isHidden: false,
   );
 
   @override

@@ -1,4 +1,6 @@
+import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_account_screen/manage_account_screen.dart';
+import 'package:flow_mobile/presentation/manage_bank_account_screen/manage_bank_account_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_bank_account_screen/manage_bank_account_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_notification_screen/manage_notification_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
@@ -45,7 +47,9 @@ class AppRoutes {
   static const setting = '/setting';
   static const notificationSetting = '/notification/setting';
   static const bankAccountSetting = '/bank_account/setting';
+  static const bankAccountsSetting = '/bank_accounts/setting';
   static const accountSetting = '/account/setting';
+  static const asset = '/asset';
 
   static Route<dynamic> generate(
     RouteSettings settings,
@@ -125,11 +129,19 @@ class AppRoutes {
       case notificationSetting:
         page = const ManageNotificationScreen();
         break;
-      case bankAccountSetting:
-        page = const ManageBankAccountScreen();
+      case bankAccountsSetting:
+        page = const ManageBankAccountsScreen();
         break;
       case accountSetting:
         page = const ManageAccountScreen();
+        break;
+
+
+      case asset:
+        page = const AssetScreen();
+        break;
+      case bankAccountSetting:
+        page = const ManageBankAccountScreen();
         break;
 
       default:

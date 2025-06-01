@@ -2,8 +2,8 @@ import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 
-class ManageBankAccountsScreen extends StatelessWidget {
-  const ManageBankAccountsScreen({super.key});
+class ManageBankAccountScreen extends StatelessWidget {
+  const ManageBankAccountScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class ManageBankAccountsScreen extends StatelessWidget {
           FlowTopBar(
             title: Center(
               child: Text(
-                'Manage Bank Accounts',
+                'Manage Bank Account',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),

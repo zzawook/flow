@@ -16,9 +16,6 @@ class NotificationSettingAdapter extends TypeAdapter<NotificationSetting> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    if (fields[4] is String) {
-      fields[4] = [fields[4]];
-    }
     return NotificationSetting(
       masterEnabled: fields[0] as bool,
       insightNotificationEnabled: fields[1] as bool,

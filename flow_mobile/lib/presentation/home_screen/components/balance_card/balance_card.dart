@@ -67,7 +67,7 @@ class _BalanceCardTitle extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 5),
       child: Text(
-        "This month's Balance",
+        "This Month's Balance",
         style: Theme.of(context).textTheme.titleMedium,
       ),
     );

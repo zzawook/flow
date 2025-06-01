@@ -16,18 +16,25 @@ class SettingsV1Adapter extends TypeAdapter<SettingsV1> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+    bool displayBalanceOnHome = true;
+    if (fields.length != 5) {
+      displayBalanceOnHome = true;
+    } else {
+      displayBalanceOnHome = fields[4] as bool;
+    }
     return SettingsV1(
       language: fields[0] as String,
       theme: fields[1] as String,
       fontScale: fields[2] as double,
       notification: fields[3] as NotificationSetting,
+      displayBalanceOnHome: displayBalanceOnHome,
     );
   }
 
   @override
   void write(BinaryWriter writer, SettingsV1 obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.language)
       ..writeByte(1)
@@ -35,7 +42,9 @@ class SettingsV1Adapter extends TypeAdapter<SettingsV1> {
       ..writeByte(2)
       ..write(obj.fontScale)
       ..writeByte(3)
-      ..write(obj.notification);
+      ..write(obj.notification)
+      ..writeByte(4)
+      ..write(obj.displayBalanceOnHome);
   }
 
   @override

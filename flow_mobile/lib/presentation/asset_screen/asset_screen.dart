@@ -1,0 +1,41 @@
+import 'package:flow_mobile/presentation/asset_screen/components/bank_account_card/bank_account_card.dart';
+import 'package:flow_mobile/presentation/asset_screen/components/total_asset_card/total_asset_card.dart';
+import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
+import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
+import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flutter/material.dart';
+
+class AssetScreen extends StatelessWidget {
+  const AssetScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FlowSafeArea(
+      backgroundColor: Theme.of(context).canvasColor,
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 18, right: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const FlowMainTopBar(),
+                    const BankAccountCard(),
+
+                    const FlowSeparatorBox(height: 16),
+
+                    const TotalAssetCard(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const FlowBottomNavBar(),
+        ],
+      ),
+    );
+  }
+}
