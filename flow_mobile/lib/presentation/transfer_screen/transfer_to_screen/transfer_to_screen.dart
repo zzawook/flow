@@ -159,32 +159,29 @@ class TabRowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 28, right: 28),
-      child: Container(
-        // color: const Color(0xFFECEFF1),
-        child: Row(
-          children: [
-            TabItemWidget(
-              title: "PayNow",
-              index: 0,
-              isSelected: selectedTabIndex == 0,
-              onTap: onTabSelected,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(15),
-                topLeft: Radius.circular(15),
-              ),
+      child: Row(
+        children: [
+          TabItemWidget(
+            title: "PayNow",
+            index: 0,
+            isSelected: selectedTabIndex == 0,
+            onTap: onTabSelected,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(15),
+              topLeft: Radius.circular(15),
             ),
-            TabItemWidget(
-              title: "Account",
-              index: 1,
-              isSelected: selectedTabIndex == 1,
-              onTap: onTabSelected,
-              borderRadius: const BorderRadius.only(
-                bottomRight: Radius.circular(15),
-                topRight: Radius.circular(15),
-              ),
+          ),
+          TabItemWidget(
+            title: "Account",
+            index: 1,
+            isSelected: selectedTabIndex == 1,
+            onTap: onTabSelected,
+            borderRadius: const BorderRadius.only(
+              bottomRight: Radius.circular(15),
+              topRight: Radius.circular(15),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

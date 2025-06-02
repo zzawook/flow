@@ -2,7 +2,6 @@ import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/presentation/transfer_screen/input.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/to_account_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AccountLayoutWidget extends StatelessWidget {
   final TextEditingController accountNumberController;

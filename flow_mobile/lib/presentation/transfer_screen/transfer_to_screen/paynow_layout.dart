@@ -2,7 +2,6 @@ import 'package:flow_mobile/presentation/transfer_screen/input.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/to_account_list.dart';
 import 'package:flow_mobile/domain/entities/paynow_recipient.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class PayNowLayoutWidget extends StatelessWidget {
   final TextEditingController payNowController;

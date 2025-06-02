@@ -49,7 +49,7 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
             decoration: InputDecoration(
               labelText: widget.labelText,
               labelStyle: TextStyle(
-                color: primary.withOpacity(0.6),
+                color: primary.withAlpha(153),
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),

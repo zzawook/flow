@@ -52,7 +52,7 @@ class _ManageBankAccountScreenState extends State<ManageBankAccountScreen> {
                 cursorColor: primary,
                 decoration: InputDecoration(
                   hintText: 'Enter new nickname',
-                  hintStyle: TextStyle(color: primary.withOpacity(.6)),
+                  hintStyle: TextStyle(color: primary.withAlpha(153)),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: primary),
                   ),
@@ -156,7 +156,7 @@ class _ManageBankAccountScreenState extends State<ManageBankAccountScreen> {
                       Text(
                         '${bankAccount.bank.name} ${bankAccount.accountNumber}',
                         style: theme.textTheme.bodyMedium!.copyWith(
-                          color: onSurface.withOpacity(.6),
+                          color: onSurface.withAlpha(153),
                         ),
                       ),
                     ],
@@ -172,7 +172,7 @@ class _ManageBankAccountScreenState extends State<ManageBankAccountScreen> {
                       Text(
                         bankAccount.accountName,
                         style: TextStyle(
-                          color: onSurface.withOpacity(.9),
+                          color: onSurface.withAlpha(153),
                           fontSize: 16,
                         ),
                       ),
