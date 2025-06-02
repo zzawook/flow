@@ -38,21 +38,22 @@ class SettingTabWithIcon extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class SettingTab extends StatelessWidget {
   final String title;
   final Widget trailing;
-  final Function()? onTap;
-  final int indents;
-  final bool enabled;
+  Function()? onTap = () {};
+  int indents = 0;
+  bool enabled = true;
   final Widget? below;
 
-  const SettingTab({
+  SettingTab({
     super.key,
     required this.title,
     required this.trailing,
-    required this.onTap,
-    required this.indents,
-    required this.enabled,
+    this.onTap,
+    this.indents = 0,
+    this.enabled = true,
     this.below,
   });
 

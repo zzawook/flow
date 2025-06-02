@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/entities/setting_v1.dart';
 import 'package:flow_mobile/domain/redux/actions/setting_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/setting_screen/shared.dart';
 import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
@@ -20,20 +21,6 @@ class _ManageBankAccountsScreenState extends State<ManageBankAccountsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final onSurface = theme.colorScheme.onSurface;
-
-    Widget settingsRow({required String label, required Widget trailing}) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label, style: TextStyle(color: onSurface, fontSize: 16)),
-            trailing,
-          ],
-        ),
-      );
-    }
 
     return FlowSafeArea(
       backgroundColor: theme.canvasColor,
@@ -60,8 +47,8 @@ class _ManageBankAccountsScreenState extends State<ManageBankAccountsScreen> {
                 builder: (_, showBalanceOnHome) {
                   return Column(
                     children: [
-                      settingsRow(
-                        label: 'Show balance in Home Screen',
+                      SettingTab(
+                        title: 'Show balance in Home Screen',
                         trailing: Switch.adaptive(
                           value: showBalanceOnHome,
                           onChanged:

@@ -2,10 +2,12 @@ import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
+import 'package:flow_mobile/presentation/setting_screen/shared.dart';
 import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flow_mobile/shared/widgets/flow_text_edit_bottom_sheet.dart';
 
 class ManageBankAccountScreen extends StatefulWidget {
   final BankAccount bankAccount;
@@ -19,8 +21,6 @@ class ManageBankAccountScreen extends StatefulWidget {
 
 class _ManageBankAccountScreenState extends State<ManageBankAccountScreen> {
   Future<void> _editNickname(String initialName) async {
-    final controller = TextEditingController(text: initialName);
-
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -28,70 +28,21 @@ class _ManageBankAccountScreenState extends State<ManageBankAccountScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) {
-        final primary = Theme.of(ctx).primaryColor;
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Change Account Nickname',
-                style: Theme.of(ctx).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: controller,
-                autofocus: true,
-                cursorColor: primary,
-                decoration: InputDecoration(
-                  hintText: 'Enter new nickname',
-                  hintStyle: TextStyle(color: primary.withAlpha(153)),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: primary),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: primary, width: 2),
-                  ),
+      builder:
+          (ctx) => FlowTextEditBottomSheet(
+            title: 'Change Account Nickname',
+            initialValue: initialName,
+            hintText: 'Enter new nickname',
+            saveButtonText: 'Save',
+            onSave: (newName) {
+              StoreProvider.of<FlowState>(context).dispatch(
+                SetBankAccountNameAction(
+                  bankAccount: widget.bankAccount,
+                  newName: newName,
                 ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primary,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(
-                      48,
-                    ), // thicker (default ≈ 40–48)
-                    shape: RoundedRectangleBorder(
-                      // 8-px corner radius
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    StoreProvider.of<FlowState>(context).dispatch(
-                      SetBankAccountNameAction(
-                        bankAccount: widget.bankAccount,
-                        newName: controller.text.trim(),
-                      ),
-                    );
-                    Navigator.pop(ctx);
-                  },
-                  child: Text('Save', style: Theme.of(ctx).textTheme.bodyLarge),
-                ),
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
     );
   }
 
@@ -99,26 +50,6 @@ class _ManageBankAccountScreenState extends State<ManageBankAccountScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final onSurface = theme.colorScheme.onSurface;
-
-    Widget settingsRow({
-      required String label,
-      required Widget trailing,
-      VoidCallback? onTap,
-    }) {
-      return InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(label, style: TextStyle(color: onSurface, fontSize: 16)),
-              trailing,
-            ],
-          ),
-        ),
-      );
-    }
 
     return FlowSafeArea(
       backgroundColor: theme.canvasColor,
@@ -164,8 +95,8 @@ class _ManageBankAccountScreenState extends State<ManageBankAccountScreen> {
                 ),
 
                 // ── settings rows
-                settingsRow(
-                  label: 'Account Nickname',
+                SettingTab(
+                  title: 'Account Nickname',
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -193,8 +124,8 @@ class _ManageBankAccountScreenState extends State<ManageBankAccountScreen> {
                 // ),
 
                 // ── delete row (inside settings list)
-                settingsRow(
-                  label: '',
+                SettingTab(
+                  title: '',
                   trailing: TextButton(
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.redAccent,

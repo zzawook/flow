@@ -11,6 +11,7 @@ import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:flow_mobile/shared/widgets/flow_text_edit_bottom_sheet.dart';
 
 /// The Transfer Confirmation screen using only WidgetsApp-compatible widgets.
 class TransferConfirmationScreen extends StatelessWidget {
@@ -307,8 +308,6 @@ class TransferConfirmationScreen extends StatelessWidget {
     String initialRemark,
     void Function(String) onSave,
   ) async {
-    final controller = TextEditingController(text: initialRemark);
-    final primary = Theme.of(context).primaryColor;
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -316,58 +315,14 @@ class TransferConfirmationScreen extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+      builder:
+          (ctx) => FlowTextEditBottomSheet(
+            title: 'Edit Remark',
+            initialValue: initialRemark,
+            hintText: 'Enter remark',
+            saveButtonText: 'Save',
+            onSave: onSave,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Edit Remark', style: Theme.of(ctx).textTheme.titleMedium),
-              const SizedBox(height: 16),
-              TextField(
-                controller: controller,
-                autofocus: true,
-                cursorColor: primary,
-                decoration: InputDecoration(
-                  hintText: 'Enter remark',
-                  hintStyle: TextStyle(color: primary.withOpacity(.6)),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: primary),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: primary, width: 2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primary,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(48),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    onSave(controller.text.trim());
-                    Navigator.pop(ctx);
-                  },
-                  child: Text('Save', style: Theme.of(ctx).textTheme.bodyLarge),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
