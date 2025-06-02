@@ -34,7 +34,7 @@ TransferState transferReducer(TransferState state, dynamic action) {
       fromAccount: state.fromAccount,
       receiving: state.receiving,
       amount: action.amount,
-      remarks: state.remarks,
+      remarks: '',
       network: state.network,
     );
   }

@@ -18,6 +18,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   static Future<TransactionRepositoryImpl> getInstance() async {
     if (_instance == null) {
       final box = await SecureHive.getBox<Transaction>('transaction');
+      await box.clear();
       List<Transaction> transactionList = box.values.toList();
       _instance = TransactionRepositoryImpl._(box, transactionList);
     }

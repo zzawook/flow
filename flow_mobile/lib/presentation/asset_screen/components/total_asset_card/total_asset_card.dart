@@ -75,7 +75,7 @@ class _TotalAssetCardState extends State<TotalAssetCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Total Assets',
+                  'Total Balance',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 getCurrentMonthStatusComparedToLastMonthMessage(),

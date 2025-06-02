@@ -1,7 +1,9 @@
+import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/shared/widgets/flow_button.dart';
 import 'package:flow_mobile/shared/widgets/flow_cta_button.dart';
 import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
 import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
@@ -137,18 +139,31 @@ class TransferConfirmationScreen extends StatelessWidget {
                                 fontSize: 16,
                                 color: Theme.of(
                                   context,
-                                ).colorScheme.onSurface.withAlpha(160)
+                                ).colorScheme.onSurface.withAlpha(160),
                               ),
                             ),
-                            Row(
-                              children: [
-                                StoreConnector<FlowState, String>(
-                                  converter:
-                                      (store) =>
-                                          store.state.userState.user.name,
-                                  builder:
-                                      (context, name) => Text(
-                                        name,
+                            StoreConnector<FlowState, String>(
+                              converter:
+                                  (store) => store.state.userState.user.name,
+                              builder: (context, userName) {
+                                final remarks =
+                                    transferState.remarks == ''
+                                        ? userName
+                                        : transferState.remarks;
+                                return FlowButton(
+                                  onPressed: () {
+                                    _editRemark(context, remarks, (newRemark) {
+                                      StoreProvider.of<FlowState>(
+                                        context,
+                                      ).dispatch(
+                                        CustomizeRemarksAction(newRemark),
+                                      );
+                                    });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        remarks,
                                         style: TextStyle(
                                           fontFamily: 'Inter',
                                           fontSize: 16,
@@ -159,16 +174,19 @@ class TransferConfirmationScreen extends StatelessWidget {
                                                   : Color(0xFFFFFFFF),
                                         ),
                                       ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: Image.asset(
-                                    "assets/icons/arrow_right.png",
-                                    height: 12,
-                                    width: 12,
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8),
+                                        child: Image.asset(
+                                          "assets/icons/arrow_right.png",
+                                          height: 12,
+                                          width: 12,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -190,7 +208,7 @@ class TransferConfirmationScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'My ${transferState.fromAccount.bank.name} ${transferState.fromAccount.accountName}',
+                                  transferState.fromAccount.accountName,
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: 16,
@@ -199,14 +217,6 @@ class TransferConfirmationScreen extends StatelessWidget {
                                                 Brightness.light
                                             ? Color(0xFF000000)
                                             : Color(0xFFFFFFFF),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: Image.asset(
-                                    "assets/icons/arrow_right.png",
-                                    height: 12,
-                                    width: 12,
                                   ),
                                 ),
                               ],
@@ -290,5 +300,74 @@ class TransferConfirmationScreen extends StatelessWidget {
       print('Error during authentication: $e');
       return false;
     }
+  }
+
+  Future<void> _editRemark(
+    BuildContext context,
+    String initialRemark,
+    void Function(String) onSave,
+  ) async {
+    final controller = TextEditingController(text: initialRemark);
+    final primary = Theme.of(context).primaryColor;
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Edit Remark', style: Theme.of(ctx).textTheme.titleMedium),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                autofocus: true,
+                cursorColor: primary,
+                decoration: InputDecoration(
+                  hintText: 'Enter remark',
+                  hintStyle: TextStyle(color: primary.withOpacity(.6)),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: primary),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: primary, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primary,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {
+                    onSave(controller.text.trim());
+                    Navigator.pop(ctx);
+                  },
+                  child: Text('Save', style: Theme.of(ctx).textTheme.bodyLarge),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

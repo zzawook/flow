@@ -42,11 +42,24 @@ class _BankAccountCardState extends State<BankAccountCard> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 24, top: 8, bottom: 8),
-                  child: Text(
-                    "Bank Accounts",
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Bank Accounts",
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      FlowSeparatorBox(height: 4),
+                      Text(
+                        '\$ ${(bankAccountList.fold<double>(0, (sum, account) => sum + account.balance)).toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 for (final bankAccount in bankAccountList)

@@ -146,8 +146,8 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
             padding: EdgeInsets.symmetric(vertical: 10),
             child: Image.asset(
               'assets/icons/${icon}_icon.png',
-              height: 30,
-              width: 30,
+              height: 25,
+              width: 25,
               color: isSelected ? selectedColor : unselectedColor,
             ),
           ),
