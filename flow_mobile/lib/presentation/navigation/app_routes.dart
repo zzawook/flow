@@ -1,7 +1,7 @@
 import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_account_screen/manage_account_screen.dart';
 import 'package:flow_mobile/presentation/manage_bank_account_screen/manage_bank_account_screen.dart';
-import 'package:flow_mobile/presentation/setting_screen/manage_bank_account_screen/manage_bank_account_screen.dart';
+import 'package:flow_mobile/presentation/setting_screen/manage_bank_accounts_screen/manage_bank_accounts_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_notification_screen/manage_notification_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/setting_screen/setting_screen.dart';
@@ -141,7 +141,8 @@ class AppRoutes {
         page = const AssetScreen();
         break;
       case bankAccountSetting:
-        page = const ManageBankAccountScreen();
+        final data = args!.extraData as BankAccount;
+        page = ManageBankAccountScreen(bankAccount: data);
         break;
 
       default:

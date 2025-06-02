@@ -1,6 +1,7 @@
 import 'package:flow_mobile/presentation/transfer_screen/input.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/to_account_list.dart';
 import 'package:flow_mobile/domain/entities/paynow_recipient.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class PayNowLayoutWidget extends StatelessWidget {
@@ -27,30 +28,36 @@ class PayNowLayoutWidget extends StatelessWidget {
           EditableTextWidget(
             controller: payNowController,
             focusNode: payNowFocus,
-            hintText: "Enter Phone Number / Contact Name",
-            labelText: "Enter Phone Number / Contact Name",
+            hintText: "Phone Number / Contact Name",
+            labelText: "Phone Number / Contact Name",
           ),
           const SizedBox(height: 24),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             "Recommended",
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF000000),
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Color(0xFFFFFFFF)
+                      : Color(0xFF000000),
             ),
           ),
           const SizedBox(height: 8),
           ToAccountsListWidget(transferReceivables: recommended),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             "Contacts",
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF000000),
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Color(0xFFFFFFFF)
+                      : Color(0xFF000000),
             ),
           ),
           ToAccountsListWidget(transferReceivables: fromContact),

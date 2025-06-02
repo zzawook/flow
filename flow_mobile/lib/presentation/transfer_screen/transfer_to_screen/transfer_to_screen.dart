@@ -40,13 +40,11 @@ class _TransferToScreenState extends State<TransferToScreen> {
       child: Column(
         children: [
           FlowTopBar(
-            title: const Center(
+            title: Center(
               child: Text(
                 'Transfer',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
@@ -66,7 +64,7 @@ class _TransferToScreenState extends State<TransferToScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontFamily: "Inter",
-                    color: Color(0xFF000000),
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -162,7 +160,7 @@ class TabRowWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 28, right: 28),
       child: Container(
-        color: const Color(0xFFECEFF1),
+        // color: const Color(0xFFECEFF1),
         child: Row(
           children: [
             TabItemWidget(
@@ -218,7 +216,9 @@ class TabItemWidget extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color:
-                isSelected ? Theme.of(context).primaryColor : Color(0xFFFFFFFF),
+                isSelected
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).disabledColor.withAlpha(160),
             borderRadius: borderRadius,
           ),
           child: Text(
@@ -226,8 +226,11 @@ class TabItemWidget extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? Color(0xFFFFFFFF) : Color(0xFF000000),
+              fontWeight: FontWeight.bold,
+              color:
+                  isSelected
+                      ? Color(0xFFFFFFFF)
+                      : Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),

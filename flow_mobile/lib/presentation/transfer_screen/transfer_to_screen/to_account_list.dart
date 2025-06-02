@@ -4,6 +4,7 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -46,7 +47,7 @@ class ToAccountRow extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
         decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
+          // color: const Color(0xFFF5F5F5),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
@@ -58,7 +59,7 @@ class ToAccountRow extends StatelessWidget {
                   transferReceivable.isPayNow
                       ? null
                       : BoxDecoration(
-                color: Color(0xFFBDBDBD),
+                        // color: Color(0xFFBDBDBD),
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
@@ -75,10 +76,10 @@ class ToAccountRow extends StatelessWidget {
                 children: [
                   Text(
                     transferReceivable.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 16,
-                      color: Color(0xFF000000),
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w500
                     ),
                   ),

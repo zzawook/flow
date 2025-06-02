@@ -17,9 +17,9 @@ class TransferConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: Theme.of(context).canvasColor,
       child: Container(
-        color: const Color(0xFFFFFFFF),
+        color: Theme.of(context).canvasColor,
         child: StoreConnector<FlowState, TransferState>(
           converter: (store) => store.state.transferState,
           builder:
@@ -27,13 +27,11 @@ class TransferConfirmationScreen extends StatelessWidget {
                 children: [
                   // Top bar row
                   FlowTopBar(
-                    title: const Center(
+                    title: Center(
                       child: Text(
                         'Transfer',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ),
@@ -62,13 +60,17 @@ class TransferConfirmationScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          const Text(
+                          Text(
                             'Transfer',
                             style: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 24,
                               fontWeight: FontWeight.normal,
-                              color: Color(0xFF000000),
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Color(0xFF000000)
+                                      : Color(0xFFFFFFFF),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -81,16 +83,24 @@ class TransferConfirmationScreen extends StatelessWidget {
                                   fontFamily: 'Inter',
                                   fontSize: 28,
                                   fontWeight: FontWeight.w900,
-                                  color: Color(0xFF000000),
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Color(0xFF000000)
+                                          : Color(0xFFFFFFFF),
                                 ),
                               ),
-                              const Text(
+                              Text(
                                 ' to ',
                                 style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 28,
                                   fontWeight: FontWeight.normal,
-                                  color: Color(0xFF000000),
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Color(0xFF000000)
+                                          : Color(0xFFFFFFFF),
                                 ),
                               ),
                               Text(
@@ -99,7 +109,11 @@ class TransferConfirmationScreen extends StatelessWidget {
                                   fontFamily: 'Inter',
                                   fontSize: 28,
                                   fontWeight: FontWeight.w900,
-                                  color: Color(0xFF000000),
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Color(0xFF000000)
+                                          : Color(0xFFFFFFFF),
                                 ),
                               ),
                             ],
@@ -116,12 +130,14 @@ class TransferConfirmationScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'Remark to recepient',
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 16,
-                                color: Color(0xFF757575),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withAlpha(160)
                               ),
                             ),
                             Row(
@@ -133,10 +149,14 @@ class TransferConfirmationScreen extends StatelessWidget {
                                   builder:
                                       (context, name) => Text(
                                         name,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontFamily: 'Inter',
                                           fontSize: 16,
-                                          color: Color(0xFF000000),
+                                          color:
+                                              Theme.of(context).brightness ==
+                                                      Brightness.light
+                                                  ? Color(0xFF000000)
+                                                  : Color(0xFFFFFFFF),
                                         ),
                                       ),
                                 ),
@@ -157,12 +177,14 @@ class TransferConfirmationScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'From',
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 16,
-                                color: Color(0xFF757575),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withAlpha(160),
                               ),
                             ),
                             Row(
@@ -172,7 +194,11 @@ class TransferConfirmationScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: 16,
-                                    color: Color(0xFF000000),
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Color(0xFF000000)
+                                            : Color(0xFFFFFFFF),
                                   ),
                                 ),
                                 Padding(

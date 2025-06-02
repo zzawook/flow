@@ -30,6 +30,7 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final primary = Theme.of(context).primaryColor;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
@@ -38,29 +39,40 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
         child: Material(
           child: TextFormField(
             autofocus: true,
-            style: const TextStyle(
-              color: Color(0xFF000000),
+            style: TextStyle(
+              color: primary,
               fontSize: 20,
               fontWeight: FontWeight.bold,
               height: 2,
             ),
+            cursorColor: primary,
             decoration: InputDecoration(
               labelText: widget.labelText,
-              labelStyle: const TextStyle(
-                color: Color(0xFFC8C8C8),
+              labelStyle: TextStyle(
+                color: primary.withOpacity(0.6),
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
-              floatingLabelStyle: const TextStyle(
-                color: Color(0xFF50C878),
+              floatingLabelStyle: TextStyle(
+                color: primary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
               border: UnderlineInputBorder(
-                borderSide: BorderSide(color: const Color(0xFF50C878)),
+                borderSide: BorderSide(color: primary),
               ),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: const Color(0xFF50C878)),
+                borderSide: BorderSide(color: primary),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: primary, width: 2),
+              ),
+              hintText: widget.hintText,
+              hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black54
               ),
               filled: true,
               fillColor: const Color(0x00000000),

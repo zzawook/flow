@@ -26,20 +26,15 @@ class FlowCTAButton extends StatefulWidget {
 
 class _FlowCTAButtonState extends State<FlowCTAButton> {
   @override
-  void initState() {
-    super.initState();
-    widget.color ??= Theme.of(context).primaryColor;
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final primary = Theme.of(context).primaryColor;
     return FlowButton(
       onPressed: widget.onPressed,
       child: Container(
         height: 60,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: widget.color,
+          color: widget.color ?? primary,
           borderRadius: BorderRadius.circular(widget.borderRadius),
         ),
         child: Text(

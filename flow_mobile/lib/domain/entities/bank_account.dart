@@ -49,6 +49,24 @@ class BankAccount extends TransferReceivable {
     isHidden: false,
   );
 
+  BankAccount copyWith({
+    String? accountNumber,
+    String? accountHolder,
+    double? balance,
+    String? accountName,
+    Bank? bank,
+    int? transferCount,
+    bool? isHidden,
+  }) => BankAccount(
+    accountNumber: accountNumber ?? this.accountNumber,
+    accountHolder: accountHolder ?? this.accountHolder,
+    balance: balance ?? this.balance,
+    accountName: accountName ?? this.accountName,
+    bank: bank ?? this.bank,
+    transferCount: transferCount ?? this.transferCount,
+    isHidden: isHidden ?? this.isHidden,
+  );
+
   @override
   String get identifier {
     return accountNumber;
@@ -67,5 +85,9 @@ class BankAccount extends TransferReceivable {
   @override
   String get name {
     return accountName;
+  }
+
+  bool isEqualTo(BankAccount other) {
+    return accountNumber == other.accountNumber && bank.isEqualTo(bank);
   }
 }

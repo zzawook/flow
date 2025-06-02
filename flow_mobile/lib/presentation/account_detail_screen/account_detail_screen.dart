@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
@@ -27,12 +28,26 @@ class BankAccountDetailScreen extends StatelessWidget {
           children: [
             // ── custom top bar ───────────────────────────────────────────────
             FlowTopBar(
-              title: Text(
-                'My ${bankAccount.bank.name} ${bankAccount.accountName}',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                textAlign: TextAlign.center,
+              title: StoreConnector<FlowState, String>(
+                converter: (store) {
+                  BankAccountState bankAccountState =
+                      store.state.bankAccountState;
+                  for (var bankAccount in bankAccountState.bankAccounts) {
+                    if (bankAccount.isEqualTo(this.bankAccount)) {
+                      return bankAccount.accountName;
+                    }
+                  }
+                  return bankAccount.accountName;
+                },
+                builder: (_, accountName) {
+                  return Text(
+                    accountName,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  );
+                },
               ),
               leftWidget: FlowButton(
                 onPressed: () {
@@ -41,6 +56,7 @@ class BankAccountDetailScreen extends StatelessWidget {
                     "/bank_account/setting",
                     arguments: CustomPageRouteArguments(
                       transitionType: TransitionType.slideRight,
+                      extraData: bankAccount,
                     ),
                   );
                 },

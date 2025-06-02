@@ -14,4 +14,8 @@ class Bank {
 
   factory Bank.initial() =>
       Bank(name: '', logoPath: 'assets/bank_logos/DBS.png');
+
+  bool isEqualTo(Bank other) {
+    return name == other.name;
+  }
 }

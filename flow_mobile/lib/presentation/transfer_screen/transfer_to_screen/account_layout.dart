@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/presentation/transfer_screen/input.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/to_account_list.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AccountLayoutWidget extends StatelessWidget {
@@ -32,7 +33,7 @@ class AccountLayoutWidget extends StatelessWidget {
           EditableTextWidget(
             controller: accountNumberController,
             focusNode: accountNumberFocus,
-            hintText: "Enter account number",
+            hintText: "Account number",
             labelText: "Account Number",
           ),
           const SizedBox(height: 8),
@@ -44,25 +45,31 @@ class AccountLayoutWidget extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           const SizedBox(height: 24),
-          const Text(
+          Text(
             "My accounts",
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF000000),
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Color(0xFFFFFFFF)
+                      : Color(0xFF000000),
             ),
           ),
           const SizedBox(height: 8),
           ToAccountsListWidget(transferReceivables: myAccounts),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             "Recommended",
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF000000),
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Color(0xFFFFFFFF)
+                      : Color(0xFF000000),
             ),
           ),
           const SizedBox(height: 8),

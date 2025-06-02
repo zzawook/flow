@@ -68,22 +68,20 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
   Widget build(BuildContext context) {
     // Directionality ensures text is laid out (LTR or RTL).
     return FlowSafeArea(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).canvasColor,
       child: Directionality(
         textDirection: TextDirection.ltr,
         child: Container(
-          color: const Color(0xFFF5F5F5),
+          color: Theme.of(context).canvasColor,
           child: Column(
             children: [
               // Top bar
               FlowTopBar(
-                title: const Center(
+                title: Center(
                   child: Text(
                     'Transfer',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -94,11 +92,11 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
                 child: Center(
                   child: Text(
                     '\$ $_formattedAmount',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF000000),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -183,10 +181,14 @@ class TransferAmountScreenState extends State<TransferAmountScreen> {
                                 fontWeight: FontWeight.w500,
                               );
                             } else {
-                              return const TextStyle(
+                              return TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 24,
-                                color: Color(0xFF000000),
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Color(0xFFFFFFFF)
+                                        : Color(0xFF000000),
                               );
                             }
                           }(),
