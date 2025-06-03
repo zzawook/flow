@@ -27,7 +27,7 @@ class BankAccount extends TransferReceivable {
   final int transferCount;
 
   @HiveField(6)
-  final bool isHidden;
+  bool isHidden;
 
   BankAccount({
     required this.accountNumber,
@@ -85,6 +85,11 @@ class BankAccount extends TransferReceivable {
   @override
   String get name {
     return accountName;
+  }
+
+  @override
+  void setHidden(bool isHidden) {
+    this.isHidden = isHidden;
   }
 
   bool isEqualTo(BankAccount other) {

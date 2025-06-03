@@ -123,7 +123,7 @@ class AccountRow extends StatelessWidget {
             bankAccount.accountName,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 15,
+              fontSize: 16,
               color:
                   Theme.of(context).brightness == Brightness.light
                       ? Color(0xFF565656)
@@ -138,15 +138,7 @@ class AccountRow extends StatelessWidget {
             builder: (context, showBalance) {
               return Text(
                 showBalance ? "\$ ${bankAccount.balance}" : 'View Balance',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color:
-                      Theme.of(context).brightness == Brightness.light
-                          ? Color(0xFF000000)
-                          : Theme.of(context).colorScheme.onSurface,
-                ),
+                style: Theme.of(context).textTheme.titleSmall,
               );
             },
           ),

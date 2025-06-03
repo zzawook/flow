@@ -35,11 +35,11 @@ class AccountsCard extends StatelessWidget {
             children: [
               // One row per account
               for (final account in accounts)
-                AccountRow(
-                  bankAccount: account,
-                  onViewBalance: onToggleBalance,
-                ),
-
+                if (!account.isHidden)
+                  AccountRow(
+                    bankAccount: account,
+                    onViewBalance: onToggleBalance,
+                  ),
               // “See more” button
               _SeeMoreButton(),
             ],

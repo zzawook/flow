@@ -231,6 +231,7 @@ class Bootstrap {
         accountName: 'Savings Account',
         bank: await bankRepository.getBank('Maybank'),
         transferCount: 0,
+        isHidden: true,
       ),
     );
 

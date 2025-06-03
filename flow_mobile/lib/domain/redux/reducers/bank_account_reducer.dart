@@ -1,3 +1,4 @@
+import 'package:flow_mobile/domain/entities/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 
@@ -12,6 +13,32 @@ BankAccountState bankAccountReducer(BankAccountState state, dynamic action) {
             return bankAccount;
           }).toList(),
     );
+  }
+  if (action is ToggleBankAccountHiddenAction) {
+    return state.copyWith(
+      bankAccounts:
+          state.bankAccounts.map((bankAccount) {
+            if (bankAccount.isEqualTo(action.bankAccount)) {
+              return bankAccount.copyWith(isHidden: !bankAccount.isHidden);
+            }
+            return bankAccount;
+          }).toList(),
+    );
+  }
+  if (action is UpdateAccountOrderAction) {
+    List<BankAccount> newList = [...state.bankAccounts];
+
+    BankAccount toMove = newList.removeAt(action.oldIndex);
+    newList.insert(action.newIndex, toMove);
+    // if (action.newIndex < action.oldIndex) {
+
+    // } else {
+    //   newList.insert(action.newIndex + 1, toMove);
+    // }
+
+    print(newList.map((e) => e.bank.name).toList());
+
+    return state.copyWith(bankAccounts: newList);
   }
   return state;
 }
