@@ -183,6 +183,7 @@ void bootstrapUserData() async {
       email: 'kjaehyeok21@gmail.com',
       dateOfBirth: DateTime(2002, 1, 25),
       phoneNumber: '88197184',
+      nickname: 'Jae Hyeok Kim',
     ),
   );
 }

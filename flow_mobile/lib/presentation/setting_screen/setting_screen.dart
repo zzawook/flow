@@ -40,7 +40,7 @@ class SettingScreen extends StatelessWidget {
 
                 // greeting + balance
                 StoreConnector<FlowState, String>(
-                  converter: (store) => store.state.userState.user.name,
+                  converter: (store) => store.state.userState.user.nickname,
                   builder:
                       (_, name) => Text(
                         'Hi $name,',

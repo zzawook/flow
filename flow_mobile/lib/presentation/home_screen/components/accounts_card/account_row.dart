@@ -64,7 +64,7 @@ class AccountRow extends StatelessWidget {
                 children: [
                   _buildAvatar(),
                   const SizedBox(width: 20),
-                  _buildLabels(context),
+                  _buildLabels(context, bankAccount),
                 ],
               ),
             ),
@@ -114,7 +114,7 @@ class AccountRow extends StatelessWidget {
     );
   }
 
-  Widget _buildLabels(BuildContext context) {
+  Widget _buildLabels(BuildContext context, BankAccount bankAccount) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,17 +131,24 @@ class AccountRow extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            'View Balance',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color:
-                  Theme.of(context).brightness == Brightness.light
-                      ? Color(0xFF000000)
-                      : Theme.of(context).colorScheme.onSurface,
-            ),
+          StoreConnector<FlowState, bool>(
+            converter:
+                (store) =>
+                    store.state.settingsState.settings.displayBalanceOnHome,
+            builder: (context, showBalance) {
+              return Text(
+                showBalance ? "\$ ${bankAccount.balance}" : 'View Balance',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Color(0xFF000000)
+                          : Theme.of(context).colorScheme.onSurface,
+                ),
+              );
+            },
           ),
         ],
       ),

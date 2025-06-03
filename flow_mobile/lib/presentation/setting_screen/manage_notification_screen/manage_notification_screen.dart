@@ -51,7 +51,7 @@ class ManageNotificationScreen extends StatelessWidget {
                         indents: 0,
                         title: 'Get Notifications',
                         trailing: ToggleSwitch(
-                          minWidth: 50.0,
+                          minWidth: 45.0,
                           minHeight: 30.0,
                           cornerRadius: 12.0,
                           activeBgColors: [
@@ -272,7 +272,7 @@ class NotificationToggleSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ToggleSwitch(
-      minWidth: 50.0,
+      minWidth: 45.0,
       minHeight: 30.0,
       cornerRadius: 12.0,
       activeBgColors: [
