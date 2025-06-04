@@ -1,6 +1,6 @@
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flutter/material.dart';
 
 /// A placeholder section for a "Quick Transfer" feature.

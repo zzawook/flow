@@ -1,17 +1,17 @@
-import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/home_screen/home_screen_constants.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
-import 'package:flow_mobile/shared/utils/spending_category_util.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
-import 'package:flow_mobile/shared/widgets/month_selector.dart';
-import 'package:flow_mobile/shared/widgets/spending/stacked_bar.dart';
+import 'package:flow_mobile/utils/spending_category_util.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/month_selector.dart';
+import 'package:flow_mobile/presentation/shared/spending/stacked_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

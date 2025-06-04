@@ -1,6 +1,6 @@
-import 'package:flow_mobile/domain/entities/bank_account.dart';
-import 'package:flow_mobile/domain/entities/paynow_recipient.dart';
-import 'package:flow_mobile/domain/entities/transfer_receivable.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/paynow_recipient.dart';
+import 'package:flow_mobile/domain/entity/transfer_receivable.dart';
 
 class TransferReceivableState {
   List<TransferReceivable> transferReceivables;

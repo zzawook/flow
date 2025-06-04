@@ -5,10 +5,10 @@ import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_tag.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
-import 'package:flow_mobile/shared/widgets/month_selector.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/month_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

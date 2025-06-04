@@ -3,15 +3,15 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/shared/widgets/flow_cta_button.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:flow_mobile/shared/widgets/flow_text_edit_bottom_sheet.dart';
+import 'package:flow_mobile/presentation/shared/flow_text_edit_bottom_sheet.dart';
 
 /// The Transfer Confirmation screen using only WidgetsApp-compatible widgets.
 class TransferConfirmationScreen extends StatelessWidget {

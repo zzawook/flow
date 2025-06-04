@@ -1,8 +1,8 @@
-import 'package:flow_mobile/domain/entities/notification.dart' as w;
+import 'package:flow_mobile/domain/entity/notification.dart' as w;
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/notification_state.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

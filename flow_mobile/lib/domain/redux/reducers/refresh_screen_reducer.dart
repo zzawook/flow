@@ -1,4 +1,4 @@
-import 'package:flow_mobile/domain/entities/bank.dart';
+import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/redux/actions/refresh_screen_action.dart';
 import 'package:flow_mobile/domain/redux/states/refresh_screen_state.dart';
 

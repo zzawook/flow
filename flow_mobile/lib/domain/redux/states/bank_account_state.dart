@@ -1,4 +1,4 @@
-import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
 
 class BankAccountState {
   final bool isLoading;

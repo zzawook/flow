@@ -1,4 +1,4 @@
-import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 
@@ -30,13 +30,6 @@ BankAccountState bankAccountReducer(BankAccountState state, dynamic action) {
 
     BankAccount toMove = newList.removeAt(action.oldIndex);
     newList.insert(action.newIndex, toMove);
-    // if (action.newIndex < action.oldIndex) {
-
-    // } else {
-    //   newList.insert(action.newIndex + 1, toMove);
-    // }
-
-    print(newList.map((e) => e.bank.name).toList());
 
     return state.copyWith(bankAccounts: newList);
   }

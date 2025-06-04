@@ -1,4 +1,4 @@
-import 'package:flow_mobile/domain/entities/setting_v1.dart';
+import 'package:flow_mobile/domain/entity/setting_v1.dart';
 
 class SettingsState {
   final SettingsV1 settings;

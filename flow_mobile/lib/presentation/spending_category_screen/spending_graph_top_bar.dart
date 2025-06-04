@@ -1,4 +1,4 @@
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flutter/widgets.dart';
 
 class SpendingGraphTopBar extends StatelessWidget {

@@ -1,12 +1,12 @@
-import 'package:flow_mobile/domain/entities/bank_account.dart';
-import 'package:flow_mobile/domain/entities/paynow_recipient.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/paynow_recipient.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_receivable_state.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/account_layout.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/paynow_layout.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

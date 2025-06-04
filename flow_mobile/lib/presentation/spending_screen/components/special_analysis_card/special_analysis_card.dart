@@ -1,5 +1,5 @@
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/analysis_carousel.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 
 /// Special Analysis Section

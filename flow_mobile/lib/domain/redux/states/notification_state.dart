@@ -1,4 +1,4 @@
-import 'package:flow_mobile/domain/entities/notification.dart';
+import 'package:flow_mobile/domain/entity/notification.dart';
 
 class NotificationState {
   List<Notification> notifications;

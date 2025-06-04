@@ -1,12 +1,12 @@
-import 'package:flow_mobile/domain/entities/notification_setting.dart';
+import 'package:flow_mobile/domain/entity/notification_setting.dart';
 import 'package:flow_mobile/domain/redux/actions/setting_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
-import 'package:flow_mobile/shared/utils/cron_utils.dart';
-import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/utils/cron_util.dart';
+import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -246,7 +246,7 @@ class PeriodicNotificationIntervalTab extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            CronUtils.cronToHuman(cron),
+            CronUtil.cronToHuman(cron),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           FlowButton(

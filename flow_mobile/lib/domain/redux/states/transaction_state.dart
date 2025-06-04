@@ -1,7 +1,7 @@
-import 'package:flow_mobile/domain/entities/bank_account.dart';
-import 'package:flow_mobile/domain/entities/date_spending_statistics.dart';
-import 'package:flow_mobile/domain/entities/transaction.dart';
-import 'package:flow_mobile/shared/utils/date_time_util.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/date_spending_statistics.dart';
+import 'package:flow_mobile/domain/entity/transaction.dart';
+import 'package:flow_mobile/utils/date_time_util.dart';
 
 class TransactionState {
   final List<Transaction> transactions;

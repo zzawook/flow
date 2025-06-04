@@ -1,7 +1,7 @@
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/shared/widgets/flow_cta_button.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_top_bar.dart';

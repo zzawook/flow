@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
 
 class BankAccountCard extends StatefulWidget {
   const BankAccountCard({super.key});
@@ -75,48 +75,72 @@ class _BankAccountCardState extends State<BankAccountCard> {
                 1 +
                 (isHiddenAccountsExpanded ? hidden.length : 0);
 
-            return ReorderableListView.builder(
-              padding: const EdgeInsets.only(top: 12, bottom: 8),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              buildDefaultDragHandles: false,
-              itemCount: itemCount,
-              onReorder: (oldIdx, newIdx) {
-                print(oldIdx);
-                print(newIdx);
-                if (newIdx > oldIdx) newIdx--; // framework quirk
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 24, top: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Bank Accounts",
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      Text(
+                        '\$ ${(vm.accounts.fold<double>(0, (sum, account) => sum + account.balance)).toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ReorderableListView.builder(
+                  padding: const EdgeInsets.only(top: 12, bottom: 8),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  buildDefaultDragHandles: false,
+                  itemCount: itemCount,
+                  onReorder: (oldIdx, newIdx) {
+                    if (newIdx > oldIdx) newIdx--; // framework quirk
 
-                // prevent dragging the toggle row itself
-                if (oldIdx == toggleIdx) return;
+                    // prevent dragging the toggle row itself
+                    if (oldIdx == toggleIdx) return;
 
-                vm.onReorder(oldIdx, newIdx, toggleIdx);
-              },
-              itemBuilder: (ctx, idx) {
-                if (idx == toggleIdx) {
-                  // ─── the fixed "Show Hidden" row ────────────────────────
-                  return _ToggleRow(
-                    key: const ValueKey('toggle-row'),
-                    expanded: isHiddenAccountsExpanded,
-                    hiddenCount: hidden.length,
-                    onTap: _toggleHidden,
-                  );
-                }
+                    vm.onReorder(oldIdx, newIdx, toggleIdx);
+                  },
+                  itemBuilder: (ctx, idx) {
+                    if (idx == toggleIdx) {
+                      // ─── the fixed "Show Hidden" row ────────────────────────
+                      return _ToggleRow(
+                        key: const ValueKey('toggle-row'),
+                        expanded: isHiddenAccountsExpanded,
+                        hiddenCount: hidden.length,
+                        onTap: _toggleHidden,
+                      );
+                    }
 
-                // map index → BankAccount
-                BankAccount acct;
-                if (idx < toggleIdx) {
-                  acct = visible[idx];
-                } else {
-                  final hiddenIdx = idx - toggleIdx - 1;
-                  acct = hidden[hiddenIdx];
-                }
+                    // map index → BankAccount
+                    BankAccount acct;
+                    if (idx < toggleIdx) {
+                      acct = visible[idx];
+                    } else {
+                      final hiddenIdx = idx - toggleIdx - 1;
+                      acct = hidden[hiddenIdx];
+                    }
 
-                return _AccountRow(
-                  key: ValueKey(acct.accountNumber),
-                  bankAccount: acct,
-                  listIndex: idx,
-                );
-              },
+                    return _AccountRow(
+                      key: ValueKey(acct.accountNumber),
+                      bankAccount: acct,
+                      listIndex: idx,
+                    );
+                  },
+                ),
+              ],
             );
           },
         ),
@@ -184,7 +208,7 @@ class _AccountRow extends StatelessWidget {
                       children: [
                         Text(
                           bankAccount.accountName,
-                          style: TextStyle(color: onSurface.withOpacity(.7)),
+                          style: TextStyle(color: onSurface.withAlpha(180)),
                         ),
                         Text(
                           '\$ ${bankAccount.balance}',

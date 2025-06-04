@@ -1,12 +1,12 @@
-import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/insight_sentences/spending_compareto_last_month_insight.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_list.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/weekly_spending_calendar.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/shared/widgets/spending/spending_header.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/spending/spending_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

@@ -1,7 +1,7 @@
-import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';

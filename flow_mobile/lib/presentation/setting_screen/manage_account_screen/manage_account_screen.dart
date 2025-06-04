@@ -1,11 +1,11 @@
 import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flow_mobile/shared/widgets/flow_text_edit_bottom_sheet.dart';
+import 'package:flow_mobile/presentation/shared/flow_text_edit_bottom_sheet.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class ManageAccountScreen extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:flow_mobile/domain/entities/bank.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
+import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flutter/material.dart';
 
 class BankTile extends StatefulWidget {

@@ -1,8 +1,8 @@
-import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_item.dart';
-import 'package:flow_mobile/shared/utils/date_time_util.dart';
-import 'package:flow_mobile/shared/widgets/flow_horizontal_divider.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/utils/date_time_util.dart';
+import 'package:flow_mobile/presentation/shared/flow_horizontal_divider.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 
 class TransactionList extends StatelessWidget {

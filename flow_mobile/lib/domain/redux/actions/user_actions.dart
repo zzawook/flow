@@ -1,4 +1,4 @@
-import 'package:flow_mobile/domain/entities/user.dart';
+import 'package:flow_mobile/domain/entity/user.dart';
 
 class UpdateUserAction {
   final User user;

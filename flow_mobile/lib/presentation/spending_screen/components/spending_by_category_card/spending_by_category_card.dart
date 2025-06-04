@@ -5,9 +5,9 @@ import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 // Import your chart widgets
 import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/horizontal_stacked_bar_with_legend.dart';
-import 'package:flow_mobile/shared/utils/spending_category_util.dart';
-import 'package:flow_mobile/shared/widgets/flow_button.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/utils/spending_category_util.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

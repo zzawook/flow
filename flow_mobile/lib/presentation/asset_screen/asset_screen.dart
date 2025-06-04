@@ -1,10 +1,10 @@
 import 'package:flow_mobile/presentation/asset_screen/components/add_account_card/add_account_card.dart';
 import 'package:flow_mobile/presentation/asset_screen/components/bank_account_card/bank_account_card.dart';
 import 'package:flow_mobile/presentation/asset_screen/components/total_asset_card/total_asset_card.dart';
-import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
-import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_main_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 
 class AssetScreen extends StatelessWidget {

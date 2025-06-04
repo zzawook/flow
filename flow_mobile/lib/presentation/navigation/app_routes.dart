@@ -7,7 +7,7 @@ import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.
 import 'package:flow_mobile/presentation/setting_screen/setting_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/bank_account.dart';
+import '../../domain/entity/bank_account.dart';
 import '../../domain/redux/actions/screen_actions.dart';
 import '../account_detail_screen/account_detail_screen.dart';
 import '../fixed_spending_screen/fixed_spending_screen.dart';

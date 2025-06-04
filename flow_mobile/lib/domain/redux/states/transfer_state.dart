@@ -1,5 +1,5 @@
-import 'package:flow_mobile/domain/entities/bank_account.dart';
-import 'package:flow_mobile/domain/entities/transfer_receivable.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/transfer_receivable.dart';
 
 class TransferState {
   final BankAccount fromAccount;

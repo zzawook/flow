@@ -1,9 +1,9 @@
-import 'package:flow_mobile/domain/entities/transaction.dart';
+import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
-import 'package:flow_mobile/shared/utils/date_time_util.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-import 'package:flow_mobile/shared/widgets/spending/spending_monthly_trend_line_graph.dart';
+import 'package:flow_mobile/utils/date_time_util.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/spending/spending_monthly_trend_line_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

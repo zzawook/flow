@@ -10,15 +10,15 @@ import 'package:flow_mobile/presentation/spending_screen/components/spending_ove
 import 'package:flow_mobile/presentation/spending_screen/components/spending_trend_card/spending_trend_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/top_spending_cluster_card/top_spending_cluster_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/spending_screen_contstants.dart';
-import 'package:flow_mobile/shared/widgets/flow_bottom_nav_bar.dart';
-import 'package:flow_mobile/shared/widgets/flow_main_top_bar.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_separator_box.dart';
-import 'package:flow_mobile/shared/widgets/month_selector.dart';
+import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_main_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/month_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import '../../shared/widgets/flow_top_bar.dart';
+import '../shared/flow_top_bar.dart';
 
 class SpendingScreen extends StatefulWidget {
   const SpendingScreen({super.key});

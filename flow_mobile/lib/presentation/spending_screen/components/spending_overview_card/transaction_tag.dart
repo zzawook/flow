@@ -1,4 +1,4 @@
-import 'package:flow_mobile/shared/utils/spending_category_util.dart';
+import 'package:flow_mobile/utils/spending_category_util.dart';
 import 'package:flutter/widgets.dart';
 
 class TransactionTag extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/shared/utils/date_time_util.dart';
+import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

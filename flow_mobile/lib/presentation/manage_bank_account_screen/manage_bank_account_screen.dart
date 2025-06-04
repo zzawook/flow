@@ -1,13 +1,13 @@
-import 'package:flow_mobile/domain/entities/bank_account.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
-import 'package:flow_mobile/shared/widgets/flow_safe_area.dart';
-import 'package:flow_mobile/shared/widgets/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flow_mobile/shared/widgets/flow_text_edit_bottom_sheet.dart';
+import 'package:flow_mobile/presentation/shared/flow_text_edit_bottom_sheet.dart';
 
 class ManageBankAccountScreen extends StatefulWidget {
   final BankAccount bankAccount;
