@@ -103,11 +103,10 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
             pstm.setLong(1, id);
 
             ResultSet resultSet = pstm.executeQuery();
-            if (resultSet.isLast()) {
+            if (!resultSet.next()) {
                 return Optional.empty();
             }
-            if (resultSet.next()) {
-                TransactionHistory transactionHistory = TransactionHistory.builder()
+            TransactionHistory transactionHistory = TransactionHistory.builder()
                         .id(resultSet.getLong("id"))
                         .transactionReference(resultSet.getString("transaction_reference"))
                         .account(Account.builder()
@@ -136,8 +135,7 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
                         .transactionStatus(resultSet.getString("transaction_status"))
                         .friendlyDescription(resultSet.getString("friendly_description"))
                         .build();
-                return Optional.of(transactionHistory);
-            }
+            return Optional.of(transactionHistory);
         } catch (SQLException e) {
             e.printStackTrace();
             return Optional.empty();
@@ -148,7 +146,7 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
                 e1.printStackTrace();
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
