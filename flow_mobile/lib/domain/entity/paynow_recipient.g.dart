@@ -18,7 +18,7 @@ class PayNowRecipientAdapter extends TypeAdapter<PayNowRecipient> {
     };
     return PayNowRecipient(
       name: fields[0] as String,
-      phoneNumer: fields[1] as String,
+      phoneNumber: fields[1] as String,
       idNumber: fields[2] as String,
       bank: fields[3] as Bank,
       transferCount: fields[4] as int,
@@ -32,7 +32,7 @@ class PayNowRecipientAdapter extends TypeAdapter<PayNowRecipient> {
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.phoneNumer)
+      ..write(obj.phoneNumber)
       ..writeByte(2)
       ..write(obj.idNumber)
       ..writeByte(3)

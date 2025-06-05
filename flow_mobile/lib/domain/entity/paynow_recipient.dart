@@ -11,7 +11,7 @@ class PayNowRecipient implements TransferReceivable {
   final String name;
 
   @HiveField(1)
-  final String phoneNumer;
+  final String phoneNumber;
 
   @HiveField(2)
   final String idNumber;
@@ -26,7 +26,7 @@ class PayNowRecipient implements TransferReceivable {
 
   PayNowRecipient({
     required this.name,
-    required this.phoneNumer,
+    required this.phoneNumber,
     required this.idNumber,
     required this.bank,
     required this.transferCount,
@@ -34,14 +34,14 @@ class PayNowRecipient implements TransferReceivable {
 
   PayNowRecipient copyWith({
     String? name,
-    String? phoneNumer,
+    String? phoneNumber,
     String? idNumber,
     Bank? bank,
     int? transferCount
   }) {
     return PayNowRecipient(
       name: name ?? this.name,
-      phoneNumer: phoneNumer ?? this.phoneNumer,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       idNumber: idNumber ?? this.idNumber,
       bank: bank ?? this.bank,
       transferCount: transferCount ?? this.transferCount,
@@ -50,7 +50,7 @@ class PayNowRecipient implements TransferReceivable {
 
   PayNowRecipient initial() => PayNowRecipient(
     name: '',
-    phoneNumer: '',
+    phoneNumber: '',
     idNumber: '',
     bank: Bank.initial(),
     transferCount: 0
@@ -58,7 +58,7 @@ class PayNowRecipient implements TransferReceivable {
 
   @override
   String get identifier {
-    return phoneNumer;
+    return phoneNumber;
   }
 
   @override
