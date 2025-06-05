@@ -38,6 +38,9 @@ public class RefreshTokenAuthentcationFilter extends AbstractAuthenticationProce
         }
         String refreshToken = header.substring(7);
         Authentication auth = handleRefreshToken(response, refreshToken);
+        if (auth == null) {
+            return null;
+        }
 
         return auth;
     }
@@ -50,6 +53,7 @@ public class RefreshTokenAuthentcationFilter extends AbstractAuthenticationProce
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return null;
         }
         TokenSet newtokenSet = maybeNewTokenSet.get();
         String newAccessToken = newtokenSet.getAccessToken();
