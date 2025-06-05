@@ -204,7 +204,7 @@ class TestDataBootstrap {
     await transferReceivableManager.addTransferReceivable(
       PayNowRecipient(
         name: "Jaebum Cho",
-        phoneNumer: "12345678",
+        phoneNumber: "12345678",
         idNumber: "null",
         bank: Bank.initial(),
         transferCount: 10,
@@ -214,7 +214,7 @@ class TestDataBootstrap {
     await transferReceivableManager.addTransferReceivable(
       PayNowRecipient(
         name: "Woojin Jeon",
-        phoneNumer: "23456789",
+        phoneNumber: "23456789",
         idNumber: "null",
         bank: Bank.initial(),
         transferCount: 4,
@@ -224,7 +224,7 @@ class TestDataBootstrap {
     await transferReceivableManager.addTransferReceivable(
       PayNowRecipient(
         name: "Hyeonsung Kim",
-        phoneNumer: "34567890",
+        phoneNumber: "34567890",
         idNumber: "null",
         bank: Bank.initial(),
         transferCount: 18,
@@ -234,7 +234,7 @@ class TestDataBootstrap {
     await transferReceivableManager.addTransferReceivable(
       PayNowRecipient(
         name: "Park Jongeun",
-        phoneNumer: "82008109",
+        phoneNumber: "82008109",
         idNumber: "null",
         bank: Bank.initial(),
         transferCount: 3,
