@@ -2,6 +2,10 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.0'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.22'
+	id 'org.jetbrains.kotlin.plugin.noarg' version '1.9.22'
+	id 'org.jetbrains.kotlin.plugin.allopen' version '1.9.22'
 }
 
 group = 'sg'
@@ -45,10 +49,57 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.mapstruct:mapstruct:1.6.3'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 	implementation 'com.auth0:java-jwt:4.4.0'
+	implementation platform('org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3')
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+	kotlinOptions {
+		freeCompilerArgs += '-Xjsr305=strict'
+		jvmTarget = '21'
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ['src/main/java']
+		}
+		kotlin {
+			srcDirs = ['src/main/kotlin']
+		}
+	}
+	test {
+		java {
+			srcDirs = ['src/test/java']
+		}
+		kotlin {
+			srcDirs = ['src/test/kotlin']
+		}
+	}
+}
+
+tasks.compileJava {
+	dependsOn tasks.compileKotlin
+	classpath += files(tasks.compileKotlin.destinationDirectory)
+}
+
+allOpen {
+	annotation("org.springframework.context.annotation.Configuration")
+	annotation("org.springframework.stereotype.Service")
+	annotation("org.springframework.stereotype.Component")
+	annotation("org.springframework.stereotype.Repository")
+	annotation("org.springframework.boot.autoconfigure.SpringBootApplication")
+	annotation("org.springframework.scheduling.annotation.Async")
+	annotation("javax.persistence.Entity")
+	annotation("javax.persistence.MappedSuperclass")
+	annotation("javax.persistence.Embeddable")
 }

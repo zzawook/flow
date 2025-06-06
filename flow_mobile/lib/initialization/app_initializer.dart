@@ -4,7 +4,6 @@ import 'package:flow_mobile/initialization/test_data_bootstrap.dart';
 import 'package:flow_mobile/initialization/manager_registry.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/service/api_service.dart';
 import 'package:flow_mobile/utils/env.dart';
 import 'package:get_it/get_it.dart';
 
