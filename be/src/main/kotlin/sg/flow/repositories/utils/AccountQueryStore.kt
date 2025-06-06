@@ -5,14 +5,14 @@ object AccountQueryStore {
             """
         INSERT INTO accounts 
         (account_number, bank_id, user_id, balance, account_name, account_type, last_updated) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
     """
 
     const val SAVE_ACCOUNT_WITH_ID =
             """
         INSERT INTO accounts 
         (id, account_number, bank_id, user_id, balance, account_name, account_type, last_updated) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     """
 
     const val FIND_ACCOUNT_BY_ID =
@@ -40,7 +40,7 @@ object AccountQueryStore {
         FROM accounts a 
         JOIN banks b ON a.bank_id = b.id 
         JOIN users u ON a.user_id = u.id 
-        WHERE a.id = ?
+        WHERE a.id = $1
     """
 
     const val DELETE_ALL_ACCOUNTS = "DELETE FROM accounts"
@@ -55,7 +55,7 @@ object AccountQueryStore {
         b.bank_code 
         FROM accounts a 
         JOIN banks b ON a.bank_id = b.id 
-        WHERE a.user_id = ?
+        WHERE a.user_id = $1
     """
 
     const val FIND_ACCOUNT_WITH_TRANSACTION_HISTORY_OF_USER =
@@ -73,6 +73,6 @@ object AccountQueryStore {
         FROM accounts a 
         JOIN banks b ON a.bank_id = b.id 
         JOIN users u ON a.user_id = u.id 
-        WHERE a.user_id = ?
+        WHERE a.user_id = $1
     """
 }

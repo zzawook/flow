@@ -1,44 +1,32 @@
 package sg.flow.repositories.card
 
-import java.sql.SQLException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import org.springframework.r2dbc.core.DatabaseClient
+import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
-import sg.flow.configs.DatabaseConnectionPool
 import sg.flow.entities.Card
 
 @Repository
-class CardRepositoryImpl(private val databaseConnectionPool: DatabaseConnectionPool) :
-        CardRepository {
+class CardRepositoryImpl(private val databaseClient: DatabaseClient) : CardRepository {
 
-    override suspend fun save(entity: Card): Card =
-            withContext(Dispatchers.IO) {
-                // Simplified implementation for now - just return the entity
-                // Real implementation would insert into database
-                entity
-            }
+    override suspend fun save(entity: Card): Card {
+        // Simplified implementation for now - just return the entity
+        // Real implementation would insert into database
+        return entity
+    }
 
-    override suspend fun findById(id: Long): Card? =
-            withContext(Dispatchers.IO) {
-                // Simplified implementation for now - return null
-                // Real implementation would query database
-                null
-            }
+    override suspend fun findById(id: Long): Card? {
+        // Simplified implementation for now - return null
+        // Real implementation would query database
+        return null
+    }
 
-    override suspend fun deleteAll(): Boolean =
-            withContext(Dispatchers.IO) {
-                val connection = databaseConnectionPool.getConnection() ?: return@withContext false
-
-                try {
-                    connection.use { conn ->
-                        conn.prepareStatement("DELETE FROM cards").use { pstm ->
-                            pstm.executeUpdate()
-                            true
-                        }
-                    }
-                } catch (e: SQLException) {
-                    e.printStackTrace()
-                    false
-                }
-            }
+    override suspend fun deleteAll(): Boolean {
+        return try {
+            databaseClient.sql("DELETE FROM cards").fetch().awaitRowsUpdated()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 }

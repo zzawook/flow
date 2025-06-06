@@ -5,14 +5,14 @@ object UserQueryStore {
             """
         INSERT INTO users 
         (name, email, identification_number, phone_number, date_of_birth, address, setting_json) 
-        VALUES (?, ?, ?, ?, ?, ?, ?::jsonb)
+        VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
     """
 
     const val SAVE_USER_WITH_ID =
             """
         INSERT INTO users 
         (id, name, email, identification_number, phone_number, date_of_birth, address, setting_json) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?::jsonb)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
     """
 
     const val FIND_USER_BY_ID =
@@ -26,7 +26,7 @@ object UserQueryStore {
         u.address, 
         u.setting_json 
         FROM users u 
-        WHERE u.id = ?
+        WHERE u.id = $1
     """
 
     const val DELETE_ALL_USERS = "DELETE FROM users"
@@ -40,20 +40,20 @@ object UserQueryStore {
         u.identification_number, 
         u.address 
         FROM users u 
-        WHERE u.id = ?
+        WHERE u.id = $1
     """
 
     const val FIND_USER_PREFERENCE_JSON =
             """
         SELECT u.setting_json 
         FROM users u 
-        WHERE u.id = ?
+        WHERE u.id = $1
     """
 
     const val UPDATE_USER_PROFILE =
             """
         UPDATE users 
-        SET email = ?, phone_number = ?, address = ? 
-        WHERE id = ?
+        SET email = $1, phone_number = $2, address = $3 
+        WHERE id = $4
     """
 }

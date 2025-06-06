@@ -5,14 +5,14 @@ object TransactionHistoryQueryStore {
             """
         INSERT INTO transaction_histories 
         (transaction_reference, account_id, card_id, transaction_date, transaction_time, amount, transaction_type, description, transaction_status, friendly_description) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     """
 
     const val SAVE_TRANSACTION_HISTORY_WITH_ID =
             """
         INSERT INTO transaction_histories 
         (id, transaction_reference, account_id, card_id, transaction_date, transaction_time, amount, transaction_type, description, transaction_status, friendly_description) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     """
 
     const val FIND_TRANSACTION_HISTORY_BY_ID =
@@ -44,7 +44,7 @@ object TransactionHistoryQueryStore {
         JOIN accounts acc ON th.account_id = acc.id 
         JOIN banks b ON acc.bank_id = b.id 
         LEFT JOIN cards c ON th.card_id = c.id 
-        WHERE th.id = ?
+        WHERE th.id = $1
     """
 
     const val DELETE_ALL_TRANSACTION_HISTORIES = "DELETE FROM transaction_histories"
@@ -78,7 +78,7 @@ object TransactionHistoryQueryStore {
         JOIN accounts acc ON th.account_id = acc.id 
         JOIN banks b ON acc.bank_id = b.id 
         LEFT JOIN cards c ON th.card_id = c.id 
-        WHERE th.account_id = ? 
+        WHERE th.account_id = $1 
         ORDER BY th.transaction_date DESC, th.transaction_time DESC 
         LIMIT 30
     """
@@ -112,9 +112,9 @@ object TransactionHistoryQueryStore {
         JOIN accounts acc ON th.account_id = acc.id 
         JOIN banks b ON acc.bank_id = b.id 
         LEFT JOIN cards c ON th.card_id = c.id 
-        WHERE th.transaction_date BETWEEN ? AND ? AND acc.user_id = ? 
+        WHERE th.transaction_date BETWEEN $1 AND $2 AND acc.user_id = $3 
         ORDER BY th.transaction_date DESC, th.transaction_time DESC 
-        LIMIT ?
+        LIMIT $4
     """
 
     const val FIND_TRANSACTION_DETAIL_BY_ID =
@@ -146,6 +146,6 @@ object TransactionHistoryQueryStore {
         JOIN accounts acc ON th.account_id = acc.id 
         JOIN banks b ON acc.bank_id = b.id 
         LEFT JOIN cards c ON th.card_id = c.id 
-        WHERE th.id = ?
+        WHERE th.id = $1
     """
 }
