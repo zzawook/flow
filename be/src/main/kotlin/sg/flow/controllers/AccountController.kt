@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import sg.flow.models.account.AccountWithTransactionHistory
@@ -11,21 +12,24 @@ import sg.flow.models.account.BriefAccount
 import sg.flow.services.AccountServices.AccountService
 
 @RestController
+@RequestMapping("/account")
 class AccountController(private val accountService: AccountService) {
 
-    @GetMapping("/accounts/getAccounts")
+    @GetMapping("/getAccounts")
     suspend fun getAccounts(
             @AuthenticationPrincipal(expression = "userId") userId: Int
-    ): ResponseEntity<List<BriefAccount>> =
-            ResponseEntity.ok(accountService.getBriefAccounts(userId))
+    ): ResponseEntity<List<BriefAccount>> {
+        var briefAccounts: List<BriefAccount> = accountService.getBriefAccounts(userId)
+        return ResponseEntity.ok(briefAccounts)
+    }
 
-    @GetMapping("/accounts/getAccountsWithTransactionHistory")
+    @GetMapping("/getAccountsWithTransactionHistory")
     suspend fun getAccountsWithTransactionHistory(
             @AuthenticationPrincipal(expression = "userId") userId: Int
     ): ResponseEntity<List<AccountWithTransactionHistory>> =
             ResponseEntity.ok(accountService.getAccountWithTransactionHistory(userId))
 
-    @GetMapping("/accounts/getAccount")
+    @GetMapping("/getAccount")
     suspend fun getAccount(
             @AuthenticationPrincipal(expression = "userId") userId: Int,
             @RequestParam(name = "accountId") accountId: Long
@@ -43,7 +47,7 @@ class AccountController(private val accountService: AccountService) {
         }
     }
 
-    @GetMapping("/accounts/getAccountWithTransactionHistory")
+    @GetMapping("/getAccountWithTransactionHistory")
     suspend fun getAccountWithTransactionHistory(
             @AuthenticationPrincipal(expression = "userId") userId: Int,
             @RequestParam(name = "accountId") accountId: Long

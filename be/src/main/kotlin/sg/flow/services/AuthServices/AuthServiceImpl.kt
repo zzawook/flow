@@ -11,21 +11,25 @@ import sg.flow.services.UtilServices.VaultService
 
 @Service
 class AuthServiceImpl(
-    private val cacheService: CacheService,
-    private val vaultService: VaultService,
-    private val tokenService: FlowTokenService,
+        private val cacheService: CacheService,
+        private val vaultService: VaultService,
+        private val tokenService: FlowTokenService,
 ) : AuthService {
 
-    override suspend fun authenticateUser(request: AuthRequest): TokenSet = withContext(Dispatchers.IO) {
-        // TODO replace with real authentication logic (e.g., Singpass)
-        val tokenSet = TokenSet("accessToken", "refreshToken")
-        cacheService.storeAccessToken(1, tokenSet.accessToken)
-        vaultService.storeAccessToken(1, tokenSet.accessToken)
-        vaultService.storeRefreshToken(1, tokenSet.refreshToken)
-        tokenSet
-    }
+    override suspend fun registerUser(request: AuthRequest): TokenSet =
+            withContext(Dispatchers.IO) {
+                // TODO replace with real authentication logic (e.g., Singpass)
+                val tokenSet = TokenSet("accessToken", "refreshToken")
+                cacheService.storeAccessToken(1, tokenSet.accessToken)
+                vaultService.storeAccessToken(1, tokenSet.accessToken)
+                vaultService.storeRefreshToken(1, tokenSet.refreshToken)
+                tokenSet
+            }
 
-    override suspend fun getAccessTokenByRefreshToken(request: AccessTokenRefreshRequest): TokenSet? = withContext(Dispatchers.IO) {
-        tokenService.getAccessTokenByRefreshToken(request.refreshToken)
-    }
-} 
+    override suspend fun getAccessTokenByRefreshToken(
+            request: AccessTokenRefreshRequest
+    ): TokenSet? =
+            withContext(Dispatchers.IO) {
+                tokenService.getAccessTokenByRefreshToken(request.refreshToken)
+            }
+}

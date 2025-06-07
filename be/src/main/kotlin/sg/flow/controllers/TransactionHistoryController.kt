@@ -43,7 +43,6 @@ class TransactionHistoryController(private val transactionService: TransactionHi
             @AuthenticationPrincipal(expression = "userId") userId: Int,
             @RequestParam(name = "transaction_id") transactionId: String
     ): ResponseEntity<TransactionHistoryDetail> {
-        println("transaction_id: $transactionId")
         return ResponseEntity.ok(transactionService.getTransactionDetails(userId, transactionId))
     }
 

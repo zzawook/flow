@@ -162,33 +162,57 @@ class AccountRepositoryImpl(
         }
 
         override suspend fun findBriefAccountsOfUser(userId: Int): List<BriefAccount> {
-                return databaseClient
-                        .sql(AccountQueryStore.FIND_BRIEF_ACCOUNT_OF_USER)
-                        .bind(0, userId)
-                        .map { row ->
-                                BriefAccount(
-                                        id = row.get("id", Long::class.java)!!,
-                                        balance = row.get("balance", Double::class.java)!!,
-                                        accountName = row.get("account_name", String::class.java)!!,
-                                        bank =
-                                                Bank(
-                                                        id = row.get("bank_id", Int::class.java),
-                                                        name =
+                var temp =
+                        runCatching {
+                                databaseClient
+                                        .sql(AccountQueryStore.FIND_BRIEF_ACCOUNT_OF_USER)
+                                        .bind(0, userId)
+                                        .map { row ->
+                                                BriefAccount(
+                                                        id = row.get("id", Long::class.java)!!,
+                                                        balance =
                                                                 row.get(
-                                                                        "bank_name",
+                                                                        "balance",
+                                                                        Double::class.java
+                                                                )!!,
+                                                        accountName =
+                                                                row.get(
+                                                                        "account_name",
                                                                         String::class.java
                                                                 )!!,
-                                                        bankCode =
-                                                                row.get(
-                                                                        "bank_code",
-                                                                        String::class.java
-                                                                )!!
+                                                        bank =
+                                                                Bank(
+                                                                        id =
+                                                                                row.get(
+                                                                                        "bank_id",
+                                                                                        Int::class
+                                                                                                .java
+                                                                                ),
+                                                                        name =
+                                                                                row.get(
+                                                                                        "bank_name",
+                                                                                        String::class
+                                                                                                .java
+                                                                                )!!,
+                                                                        bankCode =
+                                                                                row.get(
+                                                                                        "bank_code",
+                                                                                        String::class
+                                                                                                .java
+                                                                                )!!
+                                                                )
                                                 )
-                                )
+                                        }
+                                        .all()
+                                        .asFlow()
+                                        .toList()
                         }
-                        .all()
-                        .asFlow()
-                        .toList()
+                                .onFailure { e ->
+                                        e.printStackTrace()
+                                        println("Error fetching brief accounts for userId: $userId")
+                                }
+                                .getOrElse { emptyList<BriefAccount>() }
+                return temp
         }
 
         override suspend fun findAccountWithTransactionHistorysOfUser(
