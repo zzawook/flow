@@ -5,14 +5,14 @@ object CardQueryStore {
             """
         INSERT INTO cards 
         (owner_id, linked_account_id, issuing_bank_id, card_number, card_type, cvv, expiry_date, card_holder_name, pin, card_status, address_line_1, address_line_2, city, state, country, zip_code, phone, daily_limit, monthly_limit) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
     """
 
     const val SAVE_CARD_WITH_ID =
             """
         INSERT INTO cards 
         (id, owner_id, linked_account_id, issuing_bank_id, card_number, card_type, cvv, expiry_date, card_holder_name, pin, card_status, address_line_1, address_line_2, city, state, country, zip_code, phone, daily_limit, monthly_limit) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
     """
 
     const val FIND_CARD_BY_ID =
@@ -44,20 +44,21 @@ object CardQueryStore {
         u.phone_number, 
         u.date_of_birth, 
         u.setting_json, 
+        u.address,
         a.id AS account_id, 
         a.account_number, 
         a.balance, 
         a.account_name, 
         a.account_type, 
         a.last_updated, 
-        b.id AS bank_id, 
+        b.id AS bank_id,
         b.bank_name, 
         b.bank_code 
         FROM cards c 
         JOIN users u ON c.owner_id = u.id 
         JOIN accounts a ON c.linked_account_id = a.id 
         JOIN banks b ON c.issuing_bank_id = b.id 
-        WHERE c.id = ?
+        WHERE c.id = $1
     """
 
     const val DELETE_ALL_CARDS = "DELETE FROM cards"

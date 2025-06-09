@@ -24,6 +24,6 @@ class DBSQueryService : IBankQueryService {
     }
 
     override suspend fun getBank(): Bank {
-        return Bank(id = null, name = "DBS", bankCode = "DBS001")
+        return Bank(id = 1, name = "DBS", bankCode = "DBS001")
     }
 }

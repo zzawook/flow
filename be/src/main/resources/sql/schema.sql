@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS transaction_histories;
+DROP TABLE IF EXISTS cards;
+DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS banks;
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY, 
     name VARCHAR(255) NOT NULL,
@@ -9,11 +15,15 @@ CREATE TABLE IF NOT EXISTS users (
     setting_json JSONB DEFAULT '{}'
 );
 
+CREATE INDEX IF NOT EXISTS user_by_id_index ON users (id);
+
 CREATE TABLE IF NOT EXISTS banks (
     id SERIAL PRIMARY KEY, 
     bank_name VARCHAR(255) NOT NULL,
     bank_code VARCHAR(255) NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS bank_index_by_id ON banks (id);
 
 CREATE TABLE IF NOT EXISTS accounts (
     id BIGSERIAL PRIMARY KEY, 
@@ -26,6 +36,8 @@ CREATE TABLE IF NOT EXISTS accounts (
     interest_rate_per_annum DECIMAL(10,5) NOT NULL DEFAULT 0,
     last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS accounts_index_on_user_id ON accounts (user_id, id);
 
 CREATE TABLE IF NOT EXISTS cards (
     id SERIAL PRIMARY KEY, 
@@ -50,10 +62,13 @@ CREATE TABLE IF NOT EXISTS cards (
     phone VARCHAR(255) NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS card_index_by_user_id ON cards (owner_id);
+
 CREATE TABLE IF NOT EXISTS transaction_histories (
     id BIGSERIAL PRIMARY KEY, 
     transaction_reference VARCHAR(255) NOT NULL,
     account_id BIGINT REFERENCES accounts(id) DEFAULT NULL,
+    user_id INT REFERENCES users(id) DEFAULT NULL,
     card_id INT REFERENCES cards(id) DEFAULT NULL,
     transaction_date DATE NOT NULL,
     transaction_time TIME DEFAULT NULL,
@@ -63,3 +78,5 @@ CREATE TABLE IF NOT EXISTS transaction_histories (
     transaction_status VARCHAR(255) NOT NULL,
     friendly_description VARCHAR(255) DEFAULT ''
 );
+
+CREATE INDEX IF NOT EXISTS transaction_histories_index_by ON transaction_histories (user_id, transaction_date);

@@ -1,10 +1,21 @@
 package sg.flow.repositories.transactionHistory
 
+import io.r2dbc.spi.Row
 import java.time.LocalDate
+import java.time.LocalTime
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
+import sg.flow.entities.Account
+import sg.flow.entities.Bank
 import sg.flow.entities.TransactionHistory
+import sg.flow.entities.utils.AccountType
+import sg.flow.entities.utils.CardType
+import sg.flow.entities.User
+import sg.flow.models.card.BriefCard
 import sg.flow.models.transaction.TransactionHistoryDetail
 import sg.flow.models.transaction.TransactionHistoryList
 import sg.flow.repositories.utils.TransactionHistoryQueryStore
@@ -13,63 +24,810 @@ import sg.flow.repositories.utils.TransactionHistoryQueryStore
 class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClient) :
         TransactionHistoryRepository {
 
-    override suspend fun save(entity: TransactionHistory): TransactionHistory {
-        // R2DBC implementation - simplified stub for now
-        // TODO: Implement full R2DBC save operation using databaseClient
-        return entity
-    }
+        override suspend fun save(entity: TransactionHistory): TransactionHistory {
+                val hasId = entity.id != null
+                val sql =
+                        if (hasId)
+                                TransactionHistoryQueryStore
+                                        .SAVE_TRANSACTION_HISTORY_WITH_ID // INSERT … (id, …)
+                        else TransactionHistoryQueryStore.SAVE_TRANSACTION_HISTORY
 
-    override suspend fun findById(id: Long): TransactionHistory? {
-        // R2DBC implementation - simplified stub for now
-        // TODO: Implement full R2DBC findById operation using databaseClient
-        return null
-    }
+                // ── build the parameter list ─────────────────────────────
+                var i = 0
+                var spec = databaseClient.sql(sql)
 
-    override suspend fun deleteAll(): Boolean {
-        return try {
-            databaseClient
-                    .sql(TransactionHistoryQueryStore.DELETE_ALL_TRANSACTION_HISTORIES)
-                    .fetch()
-                    .awaitRowsUpdated()
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
+                if (hasId) {
+                        spec = spec.bind(i++, entity.id!!) // $1  (id)
+                }
+
+                spec =
+                        spec.bind(i++, entity.transactionReference) // $2 / $1
+                                .bind(i++, entity.account?.id!!) // account_id
+                                .let { s -> // card_id (nullable)
+                                        entity.card?.id?.let { cardId -> s.bind(i++, cardId) }
+                                                ?: s.bindNull(i++, Long::class.java)
+                                }
+                                .bind(i++, entity.account.owner.id)
+                                .bind(i++, entity.transactionDate) // LocalDate → DATE
+                                .let { s -> // LocalTime → TIME (nullable)
+                                        entity.transactionTime?.let { time -> s.bind(i++, time) }
+                                                ?: s.bindNull(i++, java.time.LocalTime::class.java)
+                                }
+                                .bind(i++, entity.amount)
+                                .bind(i++, entity.transactionType.toString())
+                                .bind(i++, entity.description)
+                                .bind(i++, entity.transactionStatus.toString())
+                                .bind(i++, entity.friendlyDescription)
+
+                // ── execute ─────────────────────────────────────────────
+                runCatching {
+                        val rows = spec.fetch().awaitRowsUpdated() // suspend
+                        require(rows == 1L) { "Unexpected rowsUpdated = $rows" }
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                println("Error saving transaction history id=${entity.id}")
+                                throw e // bubble up (or return a sentinel)
+                        }
+
+                return entity
         }
-    }
 
-    override suspend fun findRecentTransactionHistoryDetailOfAccount(
-            accountId: Long
-    ): List<TransactionHistoryDetail> {
-        // R2DBC implementation - simplified stub for now
-        // TODO: Implement full R2DBC query using databaseClient
-        return emptyList()
-    }
+        private fun multiInsertSql(rowCount: Int): String {
+                require(rowCount > 0) { "entities must not be empty" }
+
+                val cols = """
+        (id, transaction_reference, account_id, card_id, user_id, transaction_date,
+         transaction_time, amount, transaction_type, description,
+         transaction_status, friendly_description)
+    """.trimIndent()
+
+                val paramsPerRow = 12
+                val valuesClause = (0 until rowCount).joinToString(", ") { rowIdx ->
+                        val start = rowIdx * paramsPerRow + 1               // 1‑based in Postgres
+                        val end   = start + paramsPerRow - 1
+                        "(" + (start..end).joinToString(", ") { "$$it" } + ")"
+                }
+
+                return "INSERT INTO transaction_histories $cols VALUES $valuesClause"
+        }
+
+
+        override suspend fun saveAllWithId(entities: List<TransactionHistory>): List<TransactionHistory> {
+
+                val sql  = multiInsertSql(entities.size)
+                var spec = databaseClient.sql(sql)
+                var i    = 0                                            // global index across all rows
+
+                entities.forEach { e ->
+                        // non‑null because of the pre‑condition
+                        spec = spec.bind(i++, e.id)                       // id
+                                .bind(i++, e.transactionReference)     // transaction_reference
+                                .bind(i++, e.account!!.id)           // account_id
+
+                        spec = e.card?.id?.let { spec.bind(i++, it) }       // card_id (nullable)
+                                ?: spec.bindNull(i++, Long::class.java)
+
+                        spec = spec.bind(i++, e.account.owner.id)
+
+                        spec = spec.bind(i++, e.transactionDate)            // transaction_date
+
+                        spec = e.transactionTime?.let { spec.bind(i++, it) }// transaction_time (nullable)
+                                ?: spec.bindNull(i++, LocalTime::class.java)
+
+                        spec = spec.bind(i++, e.amount)                     // amount
+                                .bind(i++, e.transactionType.toString())     // transaction_type
+                                .bind(i++, e.description)              // description
+                                .bind(i++, e.transactionStatus.toString())   // transaction_status
+                                .bind(i++, e.friendlyDescription)      // friendly_description
+                }
+
+                val rows = spec.fetch().awaitRowsUpdated()
+                require(rows == entities.size.toLong()) {
+                        "Expected ${entities.size} rows, database reported $rows"
+                }
+                return entities
+        }
+
+        override suspend fun findById(id: Long): TransactionHistory? {
+                return runCatching {
+                                databaseClient
+                                        .sql(
+                                                TransactionHistoryQueryStore
+                                                        .FIND_TRANSACTION_HISTORY_BY_ID
+                                        )
+                                        .bind(0, id) // SQL has “… WHERE th.id = $1”
+                                        .map { row ->
+                                                // ────────────── build nested objects
+                                                // ──────────────
+                                                val account =
+                                                        Account(
+                                                                id =
+                                                                        row.get(
+                                                                                "account_id",
+                                                                                Long::class.java
+                                                                        )!!,
+                                                                accountNumber =
+                                                                        row.get(
+                                                                                "account_number",
+                                                                                String::class.java
+                                                                        )!!,
+                                                                balance =
+                                                                        row.get(
+                                                                                "balance",
+                                                                                Double::class.java
+                                                                        )!!,
+                                                                accountName =
+                                                                        row.get(
+                                                                                "account_name",
+                                                                                String::class.java
+                                                                        )!!,
+                                                                accountType =
+                                                                        AccountType.valueOf(
+                                                                                row.get(
+                                                                                        "account_type",
+                                                                                        String::class
+                                                                                                .java
+                                                                                )!!
+                                                                        ),
+                                                                lastUpdated =
+                                                                        row.get(
+                                                                                "last_updated",
+                                                                                java.time
+                                                                                                .LocalDateTime::class
+                                                                                        .java
+                                                                        )!!,
+                                                                bank =
+                                                                        Bank(
+                                                                                id =
+                                                                                        row.get(
+                                                                                                "bank_id",
+                                                                                                Int::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                name =
+                                                                                        row.get(
+                                                                                                "bank_name",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                bankCode =
+                                                                                        row.get(
+                                                                                                "bank_code",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!
+                                                                        ),
+                                                                owner = User(
+                                                                        id = row.get("user_id", Int::class.java)!!,
+                                                                        name = row.get("user_name", String::class.java)!!,
+                                                                        email = row.get("email", String::class.java)!!,
+                                                                        phoneNumber = row.get("phoneNUmber", String::class.java)!!,
+                                                                        dateOfBirth = row.get("date_of_birth", LocalDate::class.java)!!,
+                                                                        address = row.get("address", String::class.java)!!,
+                                                                        identificationNumber = row.get("identification_number", String::class.java)!!,
+                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}"
+                                                                )
+                                                        )
+
+                                                val cardId = row.get("card_id")
+                                                val card =
+                                                        if (cardId != null)
+                                                                row.get("card_id", Long::class.java)
+                                                                        ?.let {
+                                                                                BriefCard(
+                                                                                        id = it,
+                                                                                        cardNumber =
+                                                                                                row.get(
+                                                                                                        "card_number",
+                                                                                                        String::class
+                                                                                                                .java
+                                                                                                )!!,
+                                                                                        cardType =
+                                                                                                CardType.valueOf(
+                                                                                                        row.get(
+                                                                                                                "card_type",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!
+                                                                                                )
+                                                                                )
+                                                                        }
+                                                        else null
+
+                                                // ────────────── final entity ──────────────
+                                                TransactionHistory(
+                                                        id = row.get("id", Long::class.java)!!,
+                                                        transactionReference =
+                                                                row.get(
+                                                                        "transaction_reference",
+                                                                        String::class.java
+                                                                )!!,
+                                                        account = account,
+                                                        card = card,
+                                                        transactionDate =
+                                                                row.get(
+                                                                        "transaction_date",
+                                                                        java.time.LocalDate::class
+                                                                                .java
+                                                                )!!,
+                                                        transactionTime =
+                                                                row.get(
+                                                                        "transaction_time",
+                                                                        java.time.LocalTime::class
+                                                                                .java
+                                                                )!!,
+                                                        amount =
+                                                                row.get(
+                                                                        "amount",
+                                                                        Double::class.java
+                                                                )!!,
+                                                        transactionType =
+                                                                row.get(
+                                                                        "transaction_type",
+                                                                        String::class.java
+                                                                )!!,
+                                                        description =
+                                                                row.get(
+                                                                        "description",
+                                                                        String::class.java
+                                                                )!!,
+                                                        transactionStatus =
+                                                                row.get(
+                                                                        "transaction_status",
+                                                                        String::class.java
+                                                                )!!,
+                                                        friendlyDescription =
+                                                                row.get(
+                                                                        "friendly_description",
+                                                                        String::class.java
+                                                                )!!
+                                                )
+                                        }
+                                        .one()
+                                        .awaitSingleOrNull() // suspend function to get the first
+                                // result or null
+                        }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                println("Error fetching transaction history id=$id")
+                        }
+                        .getOrNull()
+        }
+
+        override suspend fun deleteAll(): Boolean {
+                return try {
+                        databaseClient
+                                .sql(TransactionHistoryQueryStore.DELETE_ALL_TRANSACTION_HISTORIES)
+                                .fetch()
+                                .awaitRowsUpdated()
+                        true
+                } catch (e: Exception) {
+                        e.printStackTrace()
+                        false
+                }
+        }
+
+        override suspend fun findRecentTransactionHistoryDetailOfAccount(
+                accountId: Long
+        ): List<TransactionHistoryDetail> {
+                return runCatching {
+                        databaseClient
+                                .sql(
+                                        TransactionHistoryQueryStore
+                                                .FIND_RECENT_TRANSACTION_HISTORY_BY_ACCOUNT_ID
+                                )
+                                .bind(0, accountId)
+                                .map { row ->
+
+                                        /* ── nested Account (nullable) ───────────────────────── */
+                                        val account =
+                                                row.get("account_id", Long::class.java)?.let {
+                                                        Account(
+                                                                id = it,
+                                                                accountNumber =
+                                                                        row.get(
+                                                                                "account_number",
+                                                                                String::class.java
+                                                                        )!!,
+                                                                balance =
+                                                                        row.get(
+                                                                                "account_balance",
+                                                                                Double::class.java
+                                                                        )!!,
+                                                                accountName =
+                                                                        row.get(
+                                                                                "account_name",
+                                                                                String::class.java
+                                                                        )!!,
+                                                                accountType =
+                                                                        AccountType.valueOf(
+                                                                                row.get(
+                                                                                        "account_type",
+                                                                                        String::class
+                                                                                                .java
+                                                                                )!!
+                                                                        ),
+                                                                lastUpdated =
+                                                                        row.get(
+                                                                                "account_last_updated",
+                                                                                java.time
+                                                                                                .LocalDateTime::class
+                                                                                        .java
+                                                                        )!!,
+                                                                bank =
+                                                                        Bank(
+                                                                                id =
+                                                                                        row.get(
+                                                                                                "bank_id",
+                                                                                                Int::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                name =
+                                                                                        row.get(
+                                                                                                "bank_name",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                bankCode =
+                                                                                        row.get(
+                                                                                                "bank_code",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!
+                                                                         
+                                                        ),
+                                                               owner = User(
+                                                                                        id = row.get("user_id", Int::class.java) ?: 0,
+                                                                                        name = row.get("user_name", String::class.java) ?: "",
+                                                                                        email = row.get("email", String::class.java) ?: "",
+                                                                                        identificationNumber = row.get("identification_number", String::class.java) ?: "",
+                                                                                        phoneNumber = row.get("phone_number", String::class.java) ?: "",
+                                                                                        dateOfBirth = row.get("date_of_birth", java.time.LocalDate::class.java) ?: java.time.LocalDate.now(),
+                                                                                        address = row.get("address", String::class.java) ?: "",
+                                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}"
+                                                                        ))
+                                                }
+
+                                        /* ── nested Card (nullable) ─────────────────────────── */
+                                        val cardId = row.get("card_id")
+
+                                        val card =
+                                                if (cardId != null)
+                                                        row.get("card_id", Long::class.java)?.let {
+                                                                it ->
+                                                                BriefCard(
+                                                                        id = it,
+                                                                        cardNumber =
+                                                                                row.get(
+                                                                                        "card_number",
+                                                                                        String::class
+                                                                                                .java
+                                                                                )!!,
+                                                                        cardType =
+                                                                                CardType.valueOf(
+                                                                                        row.get(
+                                                                                                "card_type",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!
+                                                                                )
+                                                                )
+                                                        }
+                                                else null
+
+                                        /* ── final DTO ──────────────────────────────────────── */
+                                        TransactionHistoryDetail(
+                                                id = row.get("id", Long::class.java)!!,
+                                                account = account,
+                                                card = card,
+                                                transactionDate =
+                                                        row.get(
+                                                                "transaction_date",
+                                                                java.time.LocalDate::class.java
+                                                        )!!,
+                                                transactionTime =
+                                                        row.get(
+                                                                "transaction_time",
+                                                                java.time.LocalTime::class.java
+                                                        )!!,
+                                                amount = row.get("amount", Double::class.java)!!,
+                                                transactionType =
+                                                        row.get(
+                                                                "transaction_type",
+                                                                String::class.java
+                                                        )!!,
+                                                description =
+                                                        row.get(
+                                                                "description",
+                                                                String::class.java
+                                                        )!!,
+                                        )
+                                }
+                                .all() // Flux<TransactionHistoryDetail>
+                                .asFlow() // Flow<TransactionHistoryDetail>
+                                .toList() // suspend → List<TransactionHistoryDetail>
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                println(
+                                        "Error fetching recent transactions for accountId=$accountId"
+                                )
+                        }
+                        .getOrElse { emptyList() }
+        }
 
         override suspend fun findTransactionBetweenDates(
-        userId: Int,
-        startDate: LocalDate,
-        endDate: LocalDate
-    ): TransactionHistoryList {
-        // R2DBC implementation - simplified stub for now
-        // TODO: Implement full R2DBC query using databaseClient
-        return TransactionHistoryList(startDate, endDate, mutableListOf())
-    }
+                userId: Int,
+                startDate: LocalDate,
+                endDate: LocalDate
+        ): TransactionHistoryList {
+                return findTransactionBetweenDates(userId, startDate, endDate, 30)
+        }
 
-    override suspend fun findTransactionBetweenDates(
-        userId: Int,
-        startDate: LocalDate,
-        endDate: LocalDate,
-        limit: Int
-    ): TransactionHistoryList {
-        // R2DBC implementation - simplified stub for now
-        // TODO: Implement full R2DBC query using databaseClient
-        return TransactionHistoryList(startDate, endDate, mutableListOf())
-    }
+        override suspend fun findTransactionBetweenDates(
+                userId: Int,
+                startDate: LocalDate,
+                endDate: LocalDate,
+                limit: Int
+        ): TransactionHistoryList {
+                return runCatching {
+                        /* ── fetch the rows ───────────────────────────────────────────── */
+                        val details =
+                                databaseClient
+                                        .sql(
+                                                TransactionHistoryQueryStore
+                                                        .FIND_TRANSACTION_BETWEEN_DATES
+                                        )
+                                        .bind(0, startDate) // $1  start_date
+                                        .bind(1, endDate) // $2  end_date
+                                        .bind(2, userId) // $3  user_id
+                                        .bind(3, limit) // $4  limit
+                                        .map { row ->
 
-    override suspend fun findTransactionDetailById(id: Long): TransactionHistoryDetail? {
-        // R2DBC implementation - simplified stub for now
-        // TODO: Implement full R2DBC query using databaseClient
-        return null
-    }
+                                                /* nested Account (nullable) */
+                                                val account =
+                                                        row.get("account_id", Long::class.java)
+                                                                ?.let {
+                                                                        Account(
+                                                                                id = it,
+                                                                                accountNumber =
+                                                                                        row.get(
+                                                                                                "account_number",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                balance =
+                                                                                        row.get(
+                                                                                                "account_balance",
+                                                                                                Double::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                accountName =
+                                                                                        row.get(
+                                                                                                "account_name",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                accountType =
+                                                                                        AccountType
+                                                                                                .valueOf(
+                                                                                                        row.get(
+                                                                                                                "account_type",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!
+                                                                                                ),
+                                                                                lastUpdated =
+                                                                                        row.get(
+                                                                                                "account_last_updated",
+                                                                                                java.time
+                                                                                                                .LocalDateTime::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                bank =
+                                                                                        Bank(
+                                                                                                id =
+                                                                                                        row.get(
+                                                                                                                "bank_id",
+                                                                                                                Int::class
+                                                                                                                        .java
+                                                                                                        )!!,
+                                                                                                name =
+                                                                                                        row.get(
+                                                                                                                "bank_name",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!,
+                                                                                                bankCode =
+                                                                                                        row.get(
+                                                                                                                "bank_code",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!
+                                                                                        ),
+                                                                                owner = User(
+                                                                                        id = userId.toInt(),
+                                                                                        name = row.get("user_name", String::class.java) ?: "",
+                                                                                        email = row.get("email", String::class.java) ?: "",
+                                                                                        identificationNumber = row.get("identification_number", String::class.java) ?: "",
+                                                                                        phoneNumber = row.get("phone_number", String::class.java) ?: "",
+                                                                                        dateOfBirth = row.get("date_of_birth", java.time.LocalDate::class.java) ?: java.time.LocalDate.now(),
+                                                                                        address = row.get("address", String::class.java) ?: "",
+                                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}"
+                                                                        ))
+                                                                }
+
+                                                /* nested Card (nullable) */
+
+                                                val cardId = row.get("card_id")
+
+                                                val card =
+                                                        if (cardId != null)
+                                                                row.get("card_id", Long::class.java)
+                                                                        ?.let { cid ->
+                                                                                BriefCard(
+                                                                                        id =
+                                                                                                cid.toLong(),
+                                                                                        cardNumber =
+                                                                                                row.get(
+                                                                                                        "card_number",
+                                                                                                        String::class
+                                                                                                                .java
+                                                                                                )!!,
+                                                                                        cardType =
+                                                                                                CardType.valueOf(
+                                                                                                        row.get(
+                                                                                                                "card_type",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!
+                                                                                                )
+                                                                                )
+                                                                        }
+                                                        else null
+
+                                                /* final DTO */
+                                                TransactionHistoryDetail(
+                                                        id = row.get("id", Long::class.java)!!,
+                                                        transactionReference =
+                                                                row.get(
+                                                                        "transaction_reference",
+                                                                        String::class.java
+                                                                )!!,
+                                                        account = account,
+                                                        card = card,
+                                                        transactionDate =
+                                                                row.get(
+                                                                        "transaction_date",
+                                                                        java.time.LocalDate::class
+                                                                                .java
+                                                                )!!,
+                                                        transactionTime =
+                                                                row.get(
+                                                                        "transaction_time",
+                                                                        java.time.LocalTime::class
+                                                                                .java
+                                                                )!!,
+                                                        amount =
+                                                                row.get(
+                                                                        "amount",
+                                                                        Double::class.java
+                                                                )!!,
+                                                        transactionType =
+                                                                row.get(
+                                                                        "transaction_type",
+                                                                        String::class.java
+                                                                )!!,
+                                                        description =
+                                                                row.get(
+                                                                        "description",
+                                                                        String::class.java
+                                                                )!!,
+                                                        transactionStatus =
+                                                                row.get(
+                                                                        "transaction_status",
+                                                                        String::class.java
+                                                                )!!,
+                                                        friendlyDescription =
+                                                                row.get(
+                                                                        "friendly_description",
+                                                                        String::class.java
+                                                                )!!
+                                                )
+                                        }
+                                        .all() // Flux<TransactionHistoryDetail>
+                                        .asFlow() // Flow<TransactionHistoryDetail>
+                                        .toList() // suspend → List<TransactionHistoryDetail>
+
+                        /* ── wrap the list in your domain object ─────────────────────── */
+                        TransactionHistoryList(startDate, endDate).apply {
+                                details.forEach(::add) // same as details.forEach { add(it) }
+                        }
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                println(
+                                        "Error fetching transactions between $startDate‑$endDate for userId=$userId"
+                                )
+                        }
+                        .getOrElse { TransactionHistoryList(startDate, endDate) }
+        }
+
+        override suspend fun findTransactionDetailById(id: Long): TransactionHistoryDetail? {
+                return runCatching {
+                                databaseClient
+                                        .sql(
+                                                TransactionHistoryQueryStore
+                                                        .FIND_TRANSACTION_DETAIL_BY_ID
+                                        )
+                                        .bind(0, id) // “… WHERE th.id = $1”
+                                        .map { row ->
+                                                /* ── nested Account (nullable) ───────────────────────── */
+                                                val account =
+                                                        row.get("account_id", Long::class.java)
+                                                                ?.let { accId ->
+                                                                        Account(
+                                                                                id = accId,
+                                                                                accountNumber =
+                                                                                        row.get(
+                                                                                                "account_number",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                balance =
+                                                                                        row.get(
+                                                                                                "account_balance",
+                                                                                                Double::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                accountName =
+                                                                                        row.get(
+                                                                                                "account_name",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                accountType =
+                                                                                        AccountType
+                                                                                                .valueOf(
+                                                                                                        row.get(
+                                                                                                                "account_type",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!
+                                                                                                ),
+                                                                                lastUpdated =
+                                                                                        row.get(
+                                                                                                "account_last_updated",
+                                                                                                java.time
+                                                                                                                .LocalDateTime::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                bank =
+                                                                                        Bank(
+                                                                                                id =
+                                                                                                        row.get(
+                                                                                                                "bank_id",
+                                                                                                                Int::class
+                                                                                                                        .java
+                                                                                                        )!!,
+                                                                                                name =
+                                                                                                        row.get(
+                                                                                                                "bank_name",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!,
+                                                                                                bankCode =
+                                                                                                        row.get(
+                                                                                                                "bank_code",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!
+                                                                                        ),
+                                                                                owner = User(
+                                                                                        id = row.get("user_id", Int::class.java) ?: 0,
+                                                                                        name = row.get("user_name", String::class.java) ?: "",
+                                                                                        email = row.get("email", String::class.java) ?: "",
+                                                                                        identificationNumber = row.get("identification_number", String::class.java) ?: "",
+                                                                                        phoneNumber = row.get("phone_number", String::class.java) ?: "",
+                                                                                        dateOfBirth = row.get("date_of_birth", java.time.LocalDate::class.java) ?: java.time.LocalDate.now(),
+                                                                                        address = row.get("address", String::class.java) ?: "",
+                                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}"
+                                                                                        
+                                                                        ))
+                                                                }
+
+                                                /* ── nested Card (nullable) ─────────────────────────── */
+                                                val cardId = row.get("card_id")
+
+                                                val card =
+                                                        if (cardId != null)
+                                                                row.get("card_id", Long::class.java)
+                                                                        ?.let { it ->
+                                                                                BriefCard(
+                                                                                        id = it,
+                                                                                        cardNumber =
+                                                                                                row.get(
+                                                                                                        "card_number",
+                                                                                                        String::class
+                                                                                                                .java
+                                                                                                )!!,
+                                                                                        cardType =
+                                                                                                CardType.valueOf(
+                                                                                                        row.get(
+                                                                                                                "card_type",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )!!
+                                                                                                )
+                                                                                )
+                                                                        }
+                                                        else null
+
+                                                /* ── final DTO ──────────────────────────────────────── */
+                                                TransactionHistoryDetail(
+                                                        id = row.get("id", Long::class.java)!!,
+                                                        transactionReference =
+                                                                row.get(
+                                                                        "transaction_reference",
+                                                                        String::class.java
+                                                                )!!,
+                                                        account = account,
+                                                        card = card,
+                                                        transactionDate =
+                                                                row.get(
+                                                                        "transaction_date",
+                                                                        java.time.LocalDate::class
+                                                                                .java
+                                                                )!!,
+                                                        transactionTime =
+                                                                row.get(
+                                                                        "transaction_time",
+                                                                        java.time.LocalTime::class
+                                                                                .java
+                                                                )!!,
+                                                        amount =
+                                                                row.get(
+                                                                        "amount",
+                                                                        Double::class.java
+                                                                )!!,
+                                                        transactionType =
+                                                                row.get(
+                                                                        "transaction_type",
+                                                                        String::class.java
+                                                                )!!,
+                                                        description =
+                                                                row.get(
+                                                                        "description",
+                                                                        String::class.java
+                                                                )!!,
+                                                        transactionStatus =
+                                                                row.get(
+                                                                        "transaction_status",
+                                                                        String::class.java
+                                                                )!!,
+                                                        friendlyDescription =
+                                                                row.get(
+                                                                        "friendly_description",
+                                                                        String::class.java
+                                                                )!!,
+                                                )
+                                        }
+                                        .one() // Mono<TransactionHistoryDetail>
+                                        .awaitSingleOrNull() // suspend → TransactionHistoryDetail?
+                        }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                println("Error fetching transaction detail id=$id")
+                        }
+                        .getOrNull()
+        }
+
+        fun Row.hasColumn(name: String): Boolean =
+                try {
+                        this.metadata.getColumnMetadata(name) // throws if absent
+                        true
+                } catch (e: IllegalArgumentException) {
+                        false
+                }
 }

@@ -7,6 +7,7 @@ import sg.flow.models.transaction.TransactionHistoryList
 import sg.flow.repositories.Repository
 
 interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
+    suspend fun saveAllWithId(entities: List<TransactionHistory>): List<TransactionHistory>
     suspend fun findRecentTransactionHistoryDetailOfAccount(
             accountId: Long
     ): List<TransactionHistoryDetail>

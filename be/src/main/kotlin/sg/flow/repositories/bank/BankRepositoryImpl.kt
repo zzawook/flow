@@ -40,7 +40,7 @@ class BankRepositoryImpl(private val databaseClient: DatabaseClient) : BankRepos
                 .bind(0, id)
                 .map { row ->
                     Bank(
-                            id = row.get("id", Int::class.java),
+                            id = row.get("id", Int::class.java)!!,
                             name = row.get("bank_name", String::class.java)!!,
                             bankCode = row.get("bank_code", String::class.java)!!
                     )

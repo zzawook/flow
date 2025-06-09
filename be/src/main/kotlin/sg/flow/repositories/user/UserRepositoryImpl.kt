@@ -53,7 +53,7 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
                 .bind(0, id)
                 .map { row ->
                     User(
-                            id = row.get("id", Int::class.java),
+                            id = row.get("id", Int::class.java)!!,
                             name = row.get("name", String::class.java)!!,
                             email = row.get("email", String::class.java)!!,
                             identificationNumber =

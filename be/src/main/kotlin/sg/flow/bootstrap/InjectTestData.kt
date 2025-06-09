@@ -6,7 +6,10 @@ import java.io.InputStreamReader
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import kotlinx.coroutines.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
@@ -20,6 +23,7 @@ import sg.flow.entities.TransactionHistory
 import sg.flow.entities.User
 import sg.flow.entities.utils.AccountType
 import sg.flow.entities.utils.CardType
+import sg.flow.models.card.BriefCard
 import sg.flow.repositories.account.AccountRepository
 import sg.flow.repositories.bank.BankRepository
 import sg.flow.repositories.card.CardRepository
@@ -38,12 +42,27 @@ class InjectTestData(
 ) : CommandLineRunner {
 
     override fun run(vararg args: String) = runBlocking {
+        println("Starting test data injection...")
+
         clearTestData()
+        println("Cleared existing test data.")
+
         injectUserData()
+        println("Injected user data.")
+
         injectBankData()
+        println("Injected bank data.")
+
         injectAccountData()
+        println("Injected account data.")
+
         injectCardData()
+        println("Injected card data.")
+
         injectTransactionData()
+        println("Injected transaction data.")
+
+        println("Test data injection completed successfully.")
     }
 
     private suspend fun clearTestData() {
@@ -198,41 +217,71 @@ class InjectTestData(
         }
     }
 
-    private suspend fun injectTransactionData() {
-        val br = readCSVFile("testdata/transaction_history.csv")
-        if (br == null) {
-            println("Error reading transaction history data file")
-            return
-        }
+    private suspend fun injectTransactionData(
+        batchSize: Int = 500,
+        parallelism: Int = 20               // active parseLine coroutines at once
+    ) = coroutineScope {
 
-        br.use { reader ->
-            var isFirstLine = true
-            reader.lineSequence().forEach { line ->
-                if (isFirstLine) {
-                    isFirstLine = false
-                    return@forEach
+        val br       = readCSVFile("testdata/transaction_history.csv") ?: return@coroutineScope
+        val gate     = Semaphore(parallelism)                           // the global “traffic‑light”
+
+        br.useLines { lines ->
+            lines
+                .drop(1)                           // skip header
+                .chunked(batchSize)                // Sequence<List<String>>
+                .forEach { chunk ->                // process batches sequentially
+                    val startTime = System.currentTimeMillis()
+                    // ── parse every row concurrently, but capped by gate ──
+                    val entities = chunk.map { row ->
+                        async {
+                            gate.withPermit {       // <= only `parallelism` concurrent connections
+                                parseLine(row, accountRepository, cardRepository)
+                            }
+                        }
+                    }.awaitAll()                    // wait for this batch to finish parsing
+
+                    transactionRepository.saveAllWithId(entities)
+                    val endTime = System.currentTimeMillis() - startTime
+                    println(endTime)
                 }
-
-                val data = line.split(",")
-                val cardId = if (data[3].isEmpty()) null else data[3].toLong()
-
-                val currentTransaction =
-                        TransactionHistory(
-                                id = data[0].toLong(),
-                                transactionReference = data[1],
-                                account = accountRepository.findById(data[2].toLong()),
-                                card = cardId?.let { cardRepository.findById(it) },
-                                transactionDate = LocalDate.parse(data[4]),
-                                transactionTime = LocalTime.parse(data[5]),
-                                amount = data[6].toDouble(),
-                                transactionType = data[7],
-                                description = data[8],
-                                transactionStatus = data[9],
-                                friendlyDescription = data[10]
-                        )
-
-                transactionRepository.save(currentTransaction)
-            }
         }
     }
+
+
+    /**
+     * Convert one CSV row into a fully–populated TransactionHistory.
+     * Uses AccountRepository and CardRepository to hydrate references.
+     */
+    private suspend fun parseLine(
+        line: String,
+        accountRepository: AccountRepository,
+        cardRepository: CardRepository
+    ): TransactionHistory {
+
+        val data = line.split(',')
+
+        val cardId  = data[3].takeIf { it.isNotBlank() }?.toLong()
+        val account = accountRepository.findById(data[2].toLong())
+
+        val briefCard = cardId?.let { id ->
+            cardRepository.findById(id)?.let { full ->
+                BriefCard(full.id.toLong(), full.cardNumber, full.cardType)
+            }
+        }
+
+        return TransactionHistory(
+            id                   = data[0].toLong(),
+            transactionReference = data[1],
+            account              = account,
+            card                 = briefCard,
+            transactionDate      = LocalDate.parse(data[4]),
+            transactionTime      = data[5].takeIf { it.isNotBlank() }?.let { LocalTime.parse(it) },
+            amount               = data[6].toDouble(),
+            transactionType      = data[7],
+            description          = data[8],
+            transactionStatus    = data[9],
+            friendlyDescription  = data[10]
+        )
+    }
+
 }

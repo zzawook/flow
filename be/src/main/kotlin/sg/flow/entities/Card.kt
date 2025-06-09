@@ -8,17 +8,17 @@ import sg.flow.entities.utils.CardType
 
 @Table(name = "cards")
 data class Card(
-        @Id val id: Long? = null,
+        @Id val id: Long,
         val owner: User? = null, // Made nullable for partial loading
         @field:NotNull val cardNumber: String,
         val issuingBank: Bank? = null, // Made nullable for partial loading
         val linkedAccount: Account? = null, // Made nullable for partial loading
         @field:NotNull val cardType: CardType,
-        @field:NotNull val cvv: String,
-        @field:NotNull val expiryDate: LocalDate,
-        @field:NotNull val cardHolderName: String,
-        @field:NotNull val pin: String,
-        @field:NotNull val cardStatus: String,
+        @field:NotNull val cvv: String = "",
+        @field:NotNull val expiryDate: LocalDate = LocalDate.now(),
+        @field:NotNull val cardHolderName: String = "",
+        @field:NotNull val pin: String = "",
+        @field:NotNull val cardStatus: String = "",
         @field:NotNull val addressLine1: String,
         @field:NotNull val addressLine2: String,
         @field:NotNull val city: String,

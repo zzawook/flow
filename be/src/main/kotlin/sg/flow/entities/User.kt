@@ -7,7 +7,7 @@ import org.springframework.data.relational.core.mapping.Table
 
 @Table(name = "users")
 data class User(
-        @Id val id: Int? = null,
+        @Id val id: Int,
         @field:NotNull val name: String,
         @field:NotNull val email: String,
         @field:NotNull val identificationNumber: String, // NRIC or FIN or Singpass ID

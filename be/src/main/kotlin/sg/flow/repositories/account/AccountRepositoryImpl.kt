@@ -64,7 +64,7 @@ class AccountRepositoryImpl(
                         .bind(0, id)
                         .map { row ->
                                 Account(
-                                        id = row.get("id", Long::class.java),
+                                        id = row.get("id", Long::class.java)!!,
                                         accountNumber =
                                                 row.get("account_number", String::class.java)!!,
                                         balance = row.get("balance", Double::class.java)!!,
@@ -88,7 +88,7 @@ class AccountRepositoryImpl(
                                                 )!!,
                                         bank =
                                                 Bank(
-                                                        id = row.get("bank_id", Int::class.java),
+                                                        id = row.get("bank_id", Int::class.java)!!,
                                                         name =
                                                                 row.get(
                                                                         "bank_name",
@@ -102,7 +102,7 @@ class AccountRepositoryImpl(
                                                 ),
                                         owner =
                                                 User(
-                                                        id = row.get("user_id", Int::class.java),
+                                                        id = row.get("user_id", Int::class.java)!!,
                                                         name =
                                                                 row.get(
                                                                         "name",
@@ -187,7 +187,7 @@ class AccountRepositoryImpl(
                                                                                         "bank_id",
                                                                                         Int::class
                                                                                                 .java
-                                                                                ),
+                                                                                )!!,
                                                                         name =
                                                                                 row.get(
                                                                                         "bank_name",
@@ -257,7 +257,7 @@ class AccountRepositoryImpl(
                                                                         row.get(
                                                                                 "bank_id",
                                                                                 Int::class.java
-                                                                        ),
+                                                                        )!!,
                                                                 name =
                                                                         row.get(
                                                                                 "bank_name",

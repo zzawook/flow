@@ -24,6 +24,6 @@ class OCBCQueryService : IBankQueryService {
     }
 
     override suspend fun getBank(): Bank {
-        return Bank(id = null, name = "OCBC", bankCode = "OCBC002")
+        return Bank(id = 1, name = "OCBC", bankCode = "OCBC002")
     }
 }

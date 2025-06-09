@@ -8,10 +8,10 @@ import sg.flow.entities.utils.AccountType
 
 @Table(name = "accounts")
 data class Account(
-        @Id val id: Long? = null,
+        @Id val id: Long,
         @field:NotNull val accountNumber: String,
         @field:NotNull val bank: Bank,
-        val owner: User? = null, // Made nullable for partial loading
+        @field:NotNull val owner: User,
         @field:NotNull val balance: Double,
         @field:NotNull val accountName: String,
         @field:NotNull val accountType: AccountType,
