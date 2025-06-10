@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the Gradle wrapper and source code to the container
 COPY gradlew ./
 COPY gradle ./gradle
-COPY build.gradle ./
+COPY build.gradle.kts ./
 COPY settings.gradle ./
 COPY src ./src
 

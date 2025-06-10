@@ -2,6 +2,7 @@ package sg.flow.repositories.user
 
 import java.time.LocalDate
 import kotlinx.coroutines.reactive.awaitFirstOrNull
+import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
@@ -110,31 +111,34 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
     }
 
     override suspend fun updateUserProfile(
-            userId: Int,
-            userProfile: UpdateUserProfile
+        userId: Int,
+        userProfile: UpdateUserProfile
     ): UserProfile {
-        val updateQuery =
-                """
-            UPDATE users 
-            SET email = COALESCE(?, email), 
-                phone_number = COALESCE(?, phone_number)
-            WHERE id = ?
-        """.trimIndent()
+        val updateQuery = """
+        UPDATE users 
+        SET email = COALESCE($1, email), 
+            phone_number = COALESCE($2, phone_number)
+        WHERE id = $3
+    """.trimIndent()
 
-        val rowsUpdated =
-                databaseClient
-                        .sql(updateQuery)
-                        .bind(0, userProfile.email ?: "")
-                        .bind(1, userProfile.phoneNumber ?: "")
-                        .bind(2, userId)
-                        .fetch()
-                        .awaitRowsUpdated()
+        // 1) println before to confirm we enter the method
+        println("updateUserProfile called for userId=$userId")
+
+        // 2) bind & execute, without .fetch()
+        val rowsUpdated = databaseClient
+            .sql(updateQuery)
+            .bind(0, userProfile.email ?: "")
+            .bind(1, userProfile.phoneNumber ?: "")
+            .bind(2, userId)
+            .fetch()
+            .rowsUpdated()
+            .awaitSingle()
+
+        println("HERE — rowsUpdated = $rowsUpdated")
 
         if (rowsUpdated == 0L) {
             throw RuntimeException("User with id $userId not found")
         }
-
-        // Return the updated user profile
         return getUserProfile(userId)
     }
 }

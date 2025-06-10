@@ -1,0 +1,62 @@
+syntax = "proto3";
+package sg.flow.transfer.v1;
+
+import "common/v1/bank.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files  = true;
+option java_package         = "sg.flow.transfer.v1";
+option java_outer_classname = "TransferServiceProto";
+
+service TransferService {
+  // GET /send/getRelevantRecepient/accountNumber
+  rpc GetRelevantRecepientByAccountNumber(GetRelevantRecepientByAccountNumberRequest)
+      returns (GetRelevantRecepientByAccountNumberResponse);
+
+  // GET /send/getRelevantRecepient/contact
+  rpc GetRelevantRecepientByContact(GetRelevantRecepientByContactRequest)
+      returns (TransferRecepient);
+
+  // GET /send/getRelevantRecepient
+  rpc GetRelevantRecepient(google.protobuf.Empty)
+      returns (GetRelevantRecepientResponse);
+
+  // POST /send/sendTransaction
+  rpc SendTransaction(TransferRequest) returns (TransferResult);
+}
+
+message GetRelevantRecepientByAccountNumberRequest {
+  string keyword = 1;
+}
+
+message GetRelevantRecepientByAccountNumberResponse {
+  repeated sg.flow.common.v1.Bank banks = 1;
+}
+
+message GetRelevantRecepientByContactRequest {
+  string keyword = 1;
+}
+
+message GetRelevantRecepientResponse {
+  repeated TransferRecepient recipients = 1;
+}
+
+message TransferRecepient {
+  string name           = 1;
+  string account_number = 2;
+  string bank_code      = 3;
+}
+
+message TransferRequest {
+  string                      sender_account_number = 1;
+  TransferRecepient           recepient             = 2;
+  double                      amount                = 3;
+  string                      note                  = 4;
+  google.protobuf.Timestamp   scheduled_at          = 5; // optional
+}
+
+message TransferResult {
+  bool   success = 1;
+  string message = 2;
+}

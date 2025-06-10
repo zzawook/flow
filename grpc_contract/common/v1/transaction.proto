@@ -1,0 +1,29 @@
+syntax = "proto3";
+package sg.flow.common.v1;
+
+option java_multiple_files = true;
+option java_package        = "sg.flow.common.v1";
+option java_outer_classname = "CommonTransactionProto";
+
+import "google/protobuf/timestamp.proto";
+import "common/v1/brief_account.proto";
+import "common/v1/brief_card.proto";
+
+message TransactionHistoryDetail {
+  int64                         id                    = 1;
+  string                        transaction_reference = 2;
+  BriefAccount                  account               = 3;
+  BriefCard     card                  = 4;
+  google.protobuf.Timestamp     transaction_timestamp = 5; // date+time
+  double                        amount                = 6;
+  string                        transaction_type      = 7;
+  string                        description           = 8;
+  string                        transaction_status    = 9;
+  string                        friendly_description  = 10;
+}
+
+message TransactionHistoryList {
+  google.protobuf.Timestamp      start_timestamp = 1;
+  google.protobuf.Timestamp      end_timestamp   = 2;
+  repeated TransactionHistoryDetail transactions = 3;
+}

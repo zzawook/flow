@@ -1,0 +1,41 @@
+syntax = "proto3";
+package sg.flow.transaction.v1;
+
+option java_multiple_files  = true;
+option java_package         = "sg.flow.transaction.v1";
+option java_outer_classname = "TransactionHistoryServiceProto";
+
+import "google/protobuf/timestamp.proto";
+import "common/v1/transaction.proto";
+
+service TransactionHistoryService {
+  rpc GetLast30DaysHistoryList (GetLast30DaysHistoryListRequest) returns (sg.flow.common.v1.TransactionHistoryList);
+  rpc GetMonthlyTransaction    (GetMonthlyTransactionRequest)    returns (sg.flow.common.v1.TransactionHistoryList);
+  rpc GetDailyTransaction      (GetDailyTransactionRequest)      returns (sg.flow.common.v1.TransactionHistoryList);
+  rpc GetTransactionDetails    (GetTransactionDetailsRequest)    returns (sg.flow.common.v1.TransactionHistoryDetail);
+  rpc GetTransactionWithinRange(GetTransactionWithinRangeRequest)returns (sg.flow.common.v1.TransactionHistoryList);
+}
+
+/* ── Requests ── */
+
+message GetLast30DaysHistoryListRequest {}
+
+message GetMonthlyTransactionRequest {
+  int32 year  = 1;
+  int32 month = 2; // 1-12
+}
+
+message GetDailyTransactionRequest {
+  int32 year  = 1;
+  int32 month = 2;
+  int32 day   = 3;
+}
+
+message GetTransactionDetailsRequest {
+  string transaction_id = 1;
+}
+
+message GetTransactionWithinRangeRequest {
+  google.protobuf.Timestamp start_timestamp = 1;
+  google.protobuf.Timestamp end_timestamp   = 2;
+}

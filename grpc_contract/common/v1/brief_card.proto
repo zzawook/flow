@@ -1,0 +1,22 @@
+syntax = "proto3";
+package sg.flow.common.v1;
+
+option java_multiple_files = true;
+option java_package        = "sg.flow.common.v1";
+option java_outer_classname = "CardProto";
+
+message BriefCard {
+  int64    id          = 1;
+  string   card_number = 2;
+  CardType card_type   = 3;
+}
+
+enum CardType {
+  CARD_TYPE_UNSPECIFIED = 0;
+  CREDIT    = 1;
+  DEBIT     = 2;
+  PREPAID   = 3;
+  CORPORATE = 4;
+  ATM       = 5;
+  OTHERS    = 6;
+}

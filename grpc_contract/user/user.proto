@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package sg.flow.user.v1;
+
+option java_multiple_files  = true;
+option java_package         = "sg.flow.user.v1";
+option java_outer_classname = "UserServiceProto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+service UserService {
+  rpc GetUserProfile        (GetUserProfileRequest)         returns (UserProfile);
+  rpc GetUserPreferenceJson (GetUserPreferenceJsonRequest)  returns (GetUserPreferenceJsonResponse);
+  rpc UpdateUserProfile     (UpdateUserProfileRequest)      returns (UserProfile);
+}
+
+/* ── Requests & Responses ── */
+
+message GetUserProfileRequest {}            // userId via metadata
+message GetUserPreferenceJsonRequest {}     // userId via metadata
+
+message GetUserPreferenceJsonResponse {
+  string preference_json = 1;               // raw JSON string
+}
+
+message UpdateUserProfileRequest {
+  optional string name                  = 1;   // nullable/patch‑style
+  optional string email                 = 2;
+  optional string identification_number = 3;
+  optional string phone_number          = 4;
+}
+
+/* ── Domain objects ── */
+
+message UserProfile {
+  int32                    id                    = 1;
+  string                   name                  = 2;
+  string                   email                 = 3;
+  string                   identification_number = 4;
+  string                   phone_number          = 5;
+  google.protobuf.Timestamp date_of_birth        = 6;
+  google.protobuf.StringValue setting_json       = 7;  // nullable
+}

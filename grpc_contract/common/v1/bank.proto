@@ -1,0 +1,12 @@
+syntax = "proto3";
+package sg.flow.common.v1;
+
+option java_package = "sg.flow.common.v1";
+option java_outer_classname = "CommonBankProto";
+
+// Reusable Bank message
+message Bank {
+  int32  id        = 1;
+  string name      = 2;
+  string bank_code = 3;
+}

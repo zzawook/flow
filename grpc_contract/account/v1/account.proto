@@ -1,0 +1,68 @@
+// ── ../grpc_contract/account/account_service.proto ────────────────────────────
+syntax = "proto3";
+
+package sg.flow.account.v1;
+
+option java_multiple_files  = true;
+option java_package         = "sg.flow.account.v1";
+option java_outer_classname = "AccountServiceProto";
+
+import "common/v1/bank.proto";
+import "common/v1/brief_card.proto";
+import "common/v1/brief_account.proto";
+import "common/v1/transaction.proto";
+import "google/protobuf/wrappers.proto";          // for optional DoubleValue
+import "google/protobuf/timestamp.proto";
+
+
+service AccountService {
+  rpc GetAccounts                       (GetAccountsRequest)                       returns (GetAccountsResponse);
+  rpc GetAccountsWithTransactionHistory (GetAccountsWithTransactionHistoryRequest) returns (GetAccountsWithTransactionHistoryResponse);
+  rpc GetAccount                        (GetAccountRequest)                        returns (sg.flow.common.v1.BriefAccount);
+  rpc GetAccountWithTransactionHistory  (GetAccountWithTransactionHistoryRequest)  returns (AccountWithTransactionHistory);
+}
+
+message GetAccountsRequest {
+  // userId is extracted from metadata by your ServerInterceptor,
+  // so no field needed here.
+}
+
+message GetAccountsResponse {
+  repeated sg.flow.common.v1.BriefAccount accounts = 1;
+}
+
+message GetAccountsWithTransactionHistoryRequest {
+  // userId via metadata
+}
+
+message GetAccountsWithTransactionHistoryResponse {
+  repeated AccountWithTransactionHistory accounts = 1;
+}
+
+message GetAccountRequest {
+  int64 account_id = 1;
+}
+
+message GetAccountWithTransactionHistoryRequest {
+  int64 account_id = 1;
+}
+
+message AccountWithTransactionHistory {
+  int64                              id                                  = 1;
+  string                             account_number                      = 2;
+  double                             balance                             = 3;
+  string                             account_name                        = 4;
+  AccountType                        account_type                        = 5;
+  google.protobuf.DoubleValue        interest_rate_per_annum             = 6;  // nullable
+  sg.flow.common.v1.Bank             bank                                = 7;
+  repeated sg.flow.common.v1.TransactionHistoryDetail  recent_transaction_history_details = 8;
+}
+
+enum AccountType {
+  ACCOUNT_TYPE_UNSPECIFIED = 0;
+  SAVINGS                  = 1;
+  CURRENT                  = 2;
+  FIXED_DEPOSIT            = 3;
+  FOREIGN_CURRENCY         = 4;
+  OTHERS                   = 5;
+}

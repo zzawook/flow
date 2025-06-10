@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package sg.flow.auth.v1;
+
+option java_multiple_files = true;
+option java_package = "sg.flow.auth.v1";
+option java_outer_classname = "AuthServiceProto";
+
+service AuthService {
+  rpc SignUp (AuthRequest) returns (TokenSet);
+  rpc GetAccessTokenByRefreshToken (AccessTokenRefreshRequest) returns (TokenSet);
+}
+
+message AuthRequest {
+  string username = 1;  // validated: not blank, size 1-100
+  string password = 2;  // validated: not blank, size 6-100
+}
+
+message AccessTokenRefreshRequest {
+  string refresh_token = 1; // validated: size exactly 64
+}
+
+message TokenSet {
+  string access_token = 1;
+  string refresh_token = 2;
+}
