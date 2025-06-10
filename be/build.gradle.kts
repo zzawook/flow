@@ -9,10 +9,17 @@ plugins {
 	kotlin("plugin.noarg") version "1.9.22"
 	kotlin("plugin.allopen") version "1.9.22"
 	id("com.google.protobuf") version "0.9.4"
+	id("io.gitlab.arturbosch.detekt") version "1.23.5"
 }
 
 group = "sg"
 version = "0.0.1-SNAPSHOT"
+
+detekt {
+	config.setFrom(files("$rootDir/detekt.yml"))
+	buildUponDefaultConfig = true
+	allRules = false
+}
 
 java {
 	toolchain {

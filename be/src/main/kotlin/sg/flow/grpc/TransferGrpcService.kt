@@ -1,12 +1,8 @@
 package sg.flow.grpc
 
 import com.google.protobuf.Empty
-import com.google.protobuf.Timestamp
-import io.grpc.Status
 import org.springframework.grpc.server.service.GrpcService
-import org.springframework.security.core.context.SecurityContextHolder
 import sg.flow.grpc.mapper.TransferMapper
-import sg.flow.common.v1.CommonBankProto.Bank as ProtoBank
 import sg.flow.entities.Bank as DomainBank
 import sg.flow.transfer.v1.GetRelevantRecepientByAccountNumberRequest
 import sg.flow.transfer.v1.GetRelevantRecepientByAccountNumberResponse
@@ -16,7 +12,6 @@ import sg.flow.transfer.v1.TransferRecepient as ProtoTransferRecepient
 import sg.flow.transfer.v1.TransferRequest
 import sg.flow.transfer.v1.TransferResult
 import sg.flow.transfer.v1.TransferServiceGrpcKt.TransferServiceCoroutineImplBase
-import sg.flow.models.auth.FlowUserDetails
 import sg.flow.models.transfer.TransferRecepient as DomainTransferRecepient
 import sg.flow.models.transfer.TransferRequestBody
 import sg.flow.models.transfer.TransferResult as DomainTransferResult

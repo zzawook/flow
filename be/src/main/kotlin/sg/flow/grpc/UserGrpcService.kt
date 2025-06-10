@@ -1,16 +1,9 @@
 package sg.flow.grpc
 
-import com.google.protobuf.Empty
-import com.google.protobuf.StringValue
-import com.google.protobuf.Timestamp
-import com.google.type.Date
 import io.grpc.Status
 import org.springframework.grpc.server.service.GrpcService
-import org.springframework.security.core.context.SecurityContextHolder
 import sg.flow.auth.GrpcSecurityContext
-import sg.flow.grpc.mapper.AccountMapper
 import sg.flow.grpc.mapper.UserMapper
-import sg.flow.models.auth.FlowUserDetails
 import sg.flow.user.v1.UserServiceGrpcKt
 import sg.flow.user.v1.UserProfile as ProtoUserProfile
 import sg.flow.user.v1.GetUserPreferenceJsonResponse
@@ -18,9 +11,6 @@ import sg.flow.user.v1.UpdateUserProfileRequest
 import sg.flow.services.UserServices.UserService
 import sg.flow.user.v1.GetUserPreferenceJsonRequest
 import sg.flow.user.v1.GetUserProfileRequest
-import java.time.ZoneOffset
-import sg.flow.models.user.UserProfile as DomainUserProfile
-import sg.flow.models.user.UpdateUserProfile as DomainUpdateUserProfile
 
 @GrpcService
 class UserGrpcService(

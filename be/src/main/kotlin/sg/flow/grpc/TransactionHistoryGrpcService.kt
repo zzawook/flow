@@ -3,7 +3,6 @@ package sg.flow.grpc
 import java.time.LocalDate
 import io.grpc.Status
 import org.springframework.grpc.server.service.GrpcService
-import org.springframework.security.core.context.SecurityContextHolder
 import sg.flow.auth.GrpcSecurityContext
 import sg.flow.grpc.mapper.DateTimeMapper
 import sg.flow.grpc.mapper.TransactionHistoryMapper
@@ -15,7 +14,6 @@ import sg.flow.transaction.v1.GetMonthlyTransactionRequest
 import sg.flow.transaction.v1.GetDailyTransactionRequest
 import sg.flow.transaction.v1.GetTransactionDetailsRequest
 import sg.flow.transaction.v1.GetTransactionWithinRangeRequest
-import sg.flow.models.auth.FlowUserDetails
 import sg.flow.models.transaction.TransactionHistoryList       as DomainHistoryList
 import sg.flow.services.TransactionHistoryServices.TransactionHistoryService
 

@@ -1,10 +1,7 @@
 package sg.flow.grpc
 
 import io.grpc.Status
-import com.google.protobuf.DoubleValue
-import com.google.protobuf.Timestamp
 import org.springframework.grpc.server.service.GrpcService
-import org.springframework.security.core.context.SecurityContextHolder
 import sg.flow.account.v1.AccountServiceGrpcKt.AccountServiceCoroutineImplBase
 import sg.flow.account.v1.GetAccountsRequest
 import sg.flow.account.v1.GetAccountsResponse
@@ -15,21 +12,11 @@ import sg.flow.account.v1.GetAccountWithTransactionHistoryRequest
 import sg.flow.auth.GrpcSecurityContext
 import sg.flow.grpc.mapper.AccountMapper
 import sg.flow.grpc.mapper.TransactionHistoryMapper
-import sg.flow.models.auth.FlowUserDetails
 import sg.flow.common.v1.BriefAccount as ProtoBriefAccount
-import sg.flow.common.v1.BriefCard as ProtoBriefCard
-import sg.flow.common.v1.CardType as ProtoCardType
 import sg.flow.account.v1.AccountWithTransactionHistory as ProtoAccountWithTransactionHistory
-import sg.flow.common.v1.TransactionHistoryDetail as ProtoTransactionHistoryDetail
-import sg.flow.common.v1.CommonBankProto.Bank as ProtoBank
 import sg.flow.models.account.BriefAccount as DomainBriefAccount
-import sg.flow.models.card.BriefCard as DomainBriefCard
-import sg.flow.entities.Account as DomainAccount
 import sg.flow.models.account.AccountWithTransactionHistory as DomainAccountWithTransactionHistory
-import sg.flow.models.transaction.TransactionHistoryDetail as DomainTransactionHistoryDetail
 import sg.flow.services.AccountServices.AccountService
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 @GrpcService
 class AccountGrpcService(
