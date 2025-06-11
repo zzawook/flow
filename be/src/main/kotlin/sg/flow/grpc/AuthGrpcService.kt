@@ -7,8 +7,11 @@ import sg.flow.auth.v1.AuthServiceGrpcKt              // generated from auth_ser
 import sg.flow.auth.v1.AuthRequest
 import sg.flow.auth.v1.AccessTokenRefreshRequest
 import sg.flow.auth.v1.TokenSet
+import sg.flow.grpc.exception.InvalidRefreshTokenException
+import sg.flow.grpc.exception.InvalidSignupCredentialException
 import sg.flow.grpc.mapper.AuthMapper
 import sg.flow.services.AuthServices.AuthService
+import sg.flow.validation.ValidationException
 import sg.flow.validation.Validator                        // validation helper we built earlier
 
 @GrpcService
@@ -18,10 +21,13 @@ class AuthGrpcService(
 ) : AuthServiceGrpcKt.AuthServiceCoroutineImplBase() {
 
         override suspend fun signUp(request: AuthRequest): TokenSet {
-                Validator.notBlank(request.username, "Username")
-                Validator.lengthBetween(request.username, 1, 100, "Username")
-                Validator.notBlank(request.password, "Password")
-                Validator.lengthBetween(request.password, 6, 100, "Password")
+                try {
+                        Validator.validateUsername(request.username)
+                        Validator.validatePassword(request.password)
+                } catch (e: ValidationException) {
+                        throw InvalidSignupCredentialException(e.message ?: "")
+                }
+
 
                 val token = authService.registerUser(
                         sg.flow.models.auth.AuthRequest(request.username, request.password)
@@ -32,7 +38,12 @@ class AuthGrpcService(
         override suspend fun getAccessTokenByRefreshToken(
                 request: AccessTokenRefreshRequest
         ): TokenSet {
-                Validator.exactLength(request.refreshToken, 64, "Refresh token")
+                try {
+                        Validator.validateRefreshToken(request.refreshToken)
+                } catch (e: ValidationException) {
+                        throw InvalidRefreshTokenException(e.message ?: "")
+                }
+
 
                 val token = authService.getAccessTokenByRefreshToken(
                         sg.flow.models.auth.AccessTokenRefreshRequest(request.refreshToken)

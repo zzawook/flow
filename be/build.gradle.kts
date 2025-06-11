@@ -55,7 +55,6 @@ dependencies {
 
 	// JWT, MapStruct
 	implementation("com.auth0:java-jwt:4.4.0")
-	implementation("org.mapstruct:mapstruct:1.6.3")
 
 	// gRPC + Kotlin
 	implementation("io.grpc:grpc-kotlin-stub:1.4.3")
@@ -66,6 +65,9 @@ dependencies {
 
 	// Optional: gRPC health & reflection services
 	implementation("io.grpc:grpc-services:1.63.0")
+
+	// Utils
+	implementation("com.googlecode.libphonenumber:libphonenumber:9.0.7")
 
 	// Spring gRPC integration
 	implementation("org.springframework.grpc:spring-grpc-spring-boot-starter:0.8.0")

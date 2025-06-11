@@ -1,6 +1,8 @@
 package sg.flow.services.AccountServices
 
 import org.springframework.stereotype.Service
+import sg.flow.grpc.exception.AccountDoesNotExistException
+import sg.flow.grpc.exception.RequestedAccountNotBelongException
 import sg.flow.models.account.AccountWithTransactionHistory
 import sg.flow.models.account.BriefAccount
 import sg.flow.repositories.account.AccountRepository
@@ -23,14 +25,14 @@ class AccountServiceImpl(
         override suspend fun getBriefAccount(userId: Int, accountId: Long): BriefAccount {
                 val account =
                         accountRepository.findById(accountId)
-                                ?: throw IllegalArgumentException("Account not found")
+                                ?: throw AccountDoesNotExistException(accountId)
 
-                if (account.owner?.id != userId) {
-                        throw IllegalArgumentException("Account does not belong to user")
+                if (account.owner.id != userId) {
+                        throw RequestedAccountNotBelongException(userId, accountId)
                 }
 
                 return BriefAccount(
-                        id = account.id!!,
+                        id = account.id,
                         bank = account.bank,
                         balance = account.balance,
                         accountName = account.accountName
@@ -43,10 +45,10 @@ class AccountServiceImpl(
         ): AccountWithTransactionHistory {
                 val account =
                         accountRepository.findById(accountId)
-                                ?: throw IllegalArgumentException("Account not found")
+                                ?: throw AccountDoesNotExistException(accountId)
 
-                if (account.owner?.id != userId) {
-                        throw IllegalArgumentException("Account does not belong to user")
+                if (account.owner.id != userId) {
+                        throw RequestedAccountNotBelongException(userId, accountId)
                 }
 
                 val recentTransactionDetails =
@@ -55,7 +57,7 @@ class AccountServiceImpl(
                         )
 
                 return AccountWithTransactionHistory(
-                        id = account.id!!,
+                        id = account.id,
                         accountNumber = account.accountNumber,
                         bank = account.bank,
                         balance = account.balance,

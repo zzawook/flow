@@ -10,6 +10,7 @@ import sg.flow.account.v1.GetAccountsWithTransactionHistoryResponse
 import sg.flow.account.v1.GetAccountRequest
 import sg.flow.account.v1.GetAccountWithTransactionHistoryRequest
 import sg.flow.auth.GrpcSecurityContext
+import sg.flow.grpc.exception.InvalidAccountIdException
 import sg.flow.grpc.mapper.AccountMapper
 import sg.flow.grpc.mapper.TransactionHistoryMapper
 import sg.flow.common.v1.BriefAccount as ProtoBriefAccount
@@ -17,6 +18,8 @@ import sg.flow.account.v1.AccountWithTransactionHistory as ProtoAccountWithTrans
 import sg.flow.models.account.BriefAccount as DomainBriefAccount
 import sg.flow.models.account.AccountWithTransactionHistory as DomainAccountWithTransactionHistory
 import sg.flow.services.AccountServices.AccountService
+import sg.flow.validation.ValidationException
+import sg.flow.validation.Validator
 
 @GrpcService
 class AccountGrpcService(
@@ -59,6 +62,12 @@ class AccountGrpcService(
     }
 
     override suspend fun getAccount(request: GetAccountRequest): ProtoBriefAccount {
+        try {
+            Validator.validateAccountId(request.accountId)
+        } catch (e : ValidationException) {
+            throw InvalidAccountIdException(e.message ?: "Invalid accountId")
+        }
+
         val userId = currentUserId()
         val accountId = request.accountId
 
@@ -81,6 +90,12 @@ class AccountGrpcService(
     override suspend fun getAccountWithTransactionHistory(
         request: GetAccountWithTransactionHistoryRequest
     ): ProtoAccountWithTransactionHistory {
+        try {
+            Validator.validateAccountId(request.accountId)
+        } catch (e : ValidationException) {
+            throw InvalidAccountIdException(e.message ?: "Invalid accountId")
+        }
+
         val userId = currentUserId()
         val accountId = request.accountId
 
