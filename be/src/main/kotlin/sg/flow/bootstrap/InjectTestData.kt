@@ -230,7 +230,6 @@ class InjectTestData(
                 .drop(1)                           // skip header
                 .chunked(batchSize)                // Sequence<List<String>>
                 .forEach { chunk ->                // process batches sequentially
-                    val startTime = System.currentTimeMillis()
                     // ── parse every row concurrently, but capped by gate ──
                     val entities = chunk.map { row ->
                         async {
@@ -241,8 +240,6 @@ class InjectTestData(
                     }.awaitAll()                    // wait for this batch to finish parsing
 
                     transactionRepository.saveAllWithId(entities)
-                    val endTime = System.currentTimeMillis() - startTime
-                    println(endTime)
                 }
         }
     }

@@ -6,9 +6,8 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import sg.flow.entities.utils.AccountType
 
-@Table(name = "accounts")
 data class Account(
-        @Id val id: Long,
+        @field:Id val id: Long,
         @field:NotNull val accountNumber: String,
         @field:NotNull val bank: Bank,
         @field:NotNull val owner: User,

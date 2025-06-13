@@ -7,9 +7,8 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import sg.flow.models.card.BriefCard
 
-@Table(name = "transaction_history")
 data class TransactionHistory(
-        @Id val id: Long,
+        @field:Id val id: Long,
         @field:NotNull val transactionReference: String,
         val account: Account? = null,
         val card: BriefCard? = null,

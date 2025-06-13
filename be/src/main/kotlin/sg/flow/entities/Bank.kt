@@ -4,9 +4,8 @@ import jakarta.validation.constraints.NotNull
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 
-@Table(name = "banks")
 data class Bank(
-    @Id
+    @field:Id
     val id: Int,
 
     @field:NotNull
