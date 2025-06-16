@@ -1,0 +1,32 @@
+syntax = "proto3";
+package sg.flow.refresh.v1;
+
+option java_multiple_files  = true;
+option java_package         = "sg.flow.refresh.v1";
+option java_outer_classname = "RefreshServiceProto";
+
+service RefreshService {
+    rpc GetRefreshUrl (GetRefreshUrlRequest) returns (GetRefreshUrlResponse);
+    rpc RegisterLinkCompleteWithCode (RegisterLinkCompleteWithCodeRequest) returns (RegisterLinkCompleteWithCodeResponse);
+}
+
+/* ── Requests ── */
+message GetRefreshUrlRequest {
+    string institution_id = 1; // Institution ID for which the refresh link is requested
+    optional bool automatic_refresh = 2;
+    optional string country_code = 3;
+}
+
+message RegisterLinkCompleteWithCodeRequest {
+    string code = 1; // Code provided by the institution to complete the link
+}
+
+message GetRefreshUrlResponse {
+    string refresh_url = 1; // The generated refresh URL for the user
+}
+
+message RegisterLinkCompleteWithCodeResponse {
+    bool success = 1; // Indicates whether the registration of the link completion was successful
+    string ticketNumber = 2; // Ticket number for tracking the registration
+    string message = 3; // Additional message or information regarding the registration
+}

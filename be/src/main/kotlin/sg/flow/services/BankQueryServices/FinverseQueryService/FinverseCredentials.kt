@@ -1,5 +1,8 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
+import org.springframework.context.annotation.Configuration
+
+@Configuration
 class FinverseCredentials {
     val clientId: String = "01JR0XFWQVS7NHGH4NVCERGB40"
     val clientAppId: String = "01JR0XFWSA1A90FGWMS4B12QHN"
