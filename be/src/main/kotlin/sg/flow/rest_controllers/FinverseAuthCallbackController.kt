@@ -11,23 +11,15 @@ import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseQueryServ
 @RestController
 @RequestMapping("/finverse")
 class FinverseAuthCallbackController(
-    private val finverseService: FinverseQueryService  // your service that exchanges the code
+    private val finverseService: FinverseQueryService,
 ) {
     @GetMapping("/callback")
     suspend fun onCallback(
         @RequestParam("code") code: String,
         @RequestParam("state") state: String
     ): ResponseEntity<String> {
-        println("CALLBACK RECEIVED")
-        println(code)
-        println(state)
-        // 1️⃣ Exchange the code for login-identity
-        val identity = finverseService.fetchLoginIdentity(code)
+        finverseService.fetchLoginIdentity(1, code, "testbank")
 
-        // 2️⃣ Persist identity.loginIdentityId / token under your user,
-        //    for example by looking up the user via `state` or via the session.
-
-        // 3️⃣ Return something to the browser (you can redirect back to your app UI):
         return ResponseEntity
             .status(HttpStatus.OK)
             .build()

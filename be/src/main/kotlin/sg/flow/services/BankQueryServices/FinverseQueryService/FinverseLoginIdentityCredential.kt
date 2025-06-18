@@ -1,4 +1,6 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
-class FinverseLoginIdentityCredential {
-}
+data class FinverseLoginIdentityCredential(
+    val loginIdentityId: String,
+    val loginIdentityToken: String
+)

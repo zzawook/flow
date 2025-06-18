@@ -14,4 +14,12 @@ class CacheServiceImpl : CacheService {
     override fun storeAccessToken(userId: Int, accessToken: String) {
         TODO("Not yet implemented: integrate with real cache")
     }
+
+    override fun storeUserIdByLoginIdentityId(loginIdentityId: String, userId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUserIdByLoginIdentityId(loginIdentityId: String): Optional<Int> {
+        TODO("Not yet implemented")
+    }
 }

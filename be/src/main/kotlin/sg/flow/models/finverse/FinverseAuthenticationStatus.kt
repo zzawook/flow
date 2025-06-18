@@ -1,4 +1,12 @@
 package sg.flow.models.finverse
 
-enum class FinverseAuthenticationStatus {
+enum class FinverseAuthenticationStatus(
+    val success: Boolean,
+    val message: String,
+) {
+    AUTHENTICATED(true, ""),
+    AUTHENTICATION_FAILED(false, "AUTHENTICATION FAILED"),
+    AUTHENTICATION_TEMPORARILY_UNAVAILABLE_FOR_INSTITUTION(false, "AUTHENTICATION TEMPORARY UNAVAILABLE"),
+    AUTHENTICATION_TOO_MANY_ATTEMPTS(false, "AUTHENTICATION TOO MANY ATTEMPTS"),
+    AUTHENTICATION_TIMEOUT(false, "AUTHENTICATION TIMEOUT"),
 }

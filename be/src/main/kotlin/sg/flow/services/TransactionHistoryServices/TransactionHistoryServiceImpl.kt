@@ -1,6 +1,5 @@
 package sg.flow.services.TransactionHistoryServices
 
-import jakarta.websocket.SendResult
 import java.time.LocalDate
 import org.springframework.stereotype.Service
 import sg.flow.models.transaction.TransactionHistoryDetail
@@ -45,16 +44,6 @@ class TransactionHistoryServiceImpl(
     override suspend fun getRelevantRecepient(keyword: String): TransferRecepient {
         // TODO: Implement getRelevantRecepient
         throw NotImplementedError("getRelevantRecepient not implemented")
-    }
-
-    override suspend fun sendTransaction(recepientId: String, amount: Double): SendResult {
-        // TODO: Implement sendTransaction
-        throw NotImplementedError("sendTransaction not implemented")
-    }
-
-    override suspend fun sendTransaction(sendRequestBody: TransferRequestBody): SendResult {
-        // TODO: Implement sendTransaction
-        throw NotImplementedError("sendTransaction not implemented")
     }
 
     override suspend fun getLast30DaysHistoryList(userId: Int): TransactionHistoryList {

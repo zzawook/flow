@@ -14,4 +14,12 @@ class MockCacheServiceImpl : CacheService {
     override fun storeAccessToken(userId: Int, accessToken: String) {
         tokenToUserId[accessToken] = userId
     }
+
+    override fun storeUserIdByLoginIdentityId(loginIdentityId: String, userId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUserIdByLoginIdentityId(loginIdentityId: String): Optional<Int> {
+        TODO("Not yet implemented")
+    }
 }

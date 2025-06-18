@@ -6,17 +6,16 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.grpc.server.GlobalServerInterceptor
 import org.springframework.http.HttpMethod
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
+import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.web.reactive.config.CorsRegistry
-import org.springframework.web.reactive.config.WebFluxConfigurer
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.web.cors.reactive.CorsWebFilter
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import sg.flow.auth.AccessTokenValidationInterceptor
 import sg.flow.services.AuthServices.FlowTokenService
 
+@EnableWebFluxSecurity
 @Configuration
 class FlowSecurityConfig {
 
@@ -28,35 +27,38 @@ class FlowSecurityConfig {
     ): ServerInterceptor = AccessTokenValidationInterceptor(flowTokenService)
 
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http
-            .cors { cors -> /* no-op: picks up corsConfigurationSource() bean */ }
-            .csrf { it.disable() }
-            .authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers(HttpMethod.OPTIONS, "/finverse/**").permitAll()
-                    .requestMatchers("/finverse/**").permitAll()
-                    .anyRequest().authenticated()
+    fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
+        return http
+            .csrf { it.disable() }                          // use lambda‐style DSL
+            .cors { cors ->                                 // reactive CORS
+                cors.configurationSource(corsConfigSource())
             }
-        // your JWT/session/etc. config here…
-        return http.build()
+            .authorizeExchange { exchanges ->
+                exchanges
+                    .pathMatchers(HttpMethod.OPTIONS, "/webhooks/finverse/**").permitAll()
+                    .pathMatchers("/webhooks/finverse/**").permitAll()
+                    .anyExchange().authenticated()
+            }
+            // if you need JWT/OAuth2 resource‐server, add:
+            // .oauth2ResourceServer { it.jwt() }
+            .build()
     }
 
     @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
+    fun corsConfigSource(): UrlBasedCorsConfigurationSource {
         val config = CorsConfiguration().apply {
-            allowedOrigins = listOf(
-                "http://localhost:8081",
-                "https://link.prod.finverse.net"
-            )
+            allowedOrigins = listOf("http://localhost:8081", "https://link.prod.finverse.net")
             allowedMethods = listOf("GET", "POST", "OPTIONS")
             allowedHeaders = listOf("*")
             allowCredentials = true
         }
         return UrlBasedCorsConfigurationSource().apply {
-            registerCorsConfiguration("/finverse/**", config)
+            registerCorsConfiguration("/webhooks/finverse/**", config)
         }
     }
 
-
+    @Bean
+    fun corsWebFilter(source: UrlBasedCorsConfigurationSource): CorsWebFilter {
+        return CorsWebFilter(source)
+    }
 }

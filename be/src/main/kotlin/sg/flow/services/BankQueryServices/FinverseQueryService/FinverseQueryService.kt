@@ -6,15 +6,30 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import sg.flow.models.finverse.FinverseAuthenticationEventTypeParser
+import sg.flow.models.finverse.FinverseAuthenticationStatus
+import sg.flow.models.finverse.FinverseDataRetrievalEvent
+import sg.flow.models.finverse.FinverseOverallRetrievalStatus
+import sg.flow.models.finverse.FinverseProductRetrieval
+import sg.flow.models.finverse.FinverseRetrievalStatus
 import sg.flow.models.finverse.responses.CustomerTokenResponse
 import sg.flow.models.finverse.responses.LinkTokenResponse
 import sg.flow.models.finverse.responses.LoginIdentityResponse
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
+import sg.flow.services.UtilServices.CacheService
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @Service
-class FinverseQueryService(private val finverseCredentials: FinverseCredentials, private val finverseWebClient: WebClient) {
+class FinverseQueryService(
+    private val finverseCredentials: FinverseCredentials,
+    private val finverseWebClient: WebClient,
+    private val finverseAuthCache: FinverseAuthCache,
+    private val finverseDataRetrievalEventsManager: FinverseDataRetrievalEventsManager,
+    private val finverseTimeoutWatcher: FinverseTimeoutWatcher
+) {
     private val customerTokenRef = AtomicReference<String>()
     private var tokenExpiry: Instant = Instant.EPOCH
 
@@ -110,7 +125,7 @@ class FinverseQueryService(private val finverseCredentials: FinverseCredentials,
         }
     }
 
-    suspend fun fetchLoginIdentity(code: String): String {
+    suspend fun fetchLoginIdentity(userId: Int, code: String, institutionId: String): String {
         val token = getCustomerToken()
         val loginIdentityResponse: LoginIdentityResponse = finverseWebClient.post()
             .uri("/auth/token")
@@ -126,8 +141,65 @@ class FinverseQueryService(private val finverseCredentials: FinverseCredentials,
             .bodyToMono(LoginIdentityResponse::class.java)
             .awaitSingle()
 
-        println(loginIdentityResponse.loginIdentityToken)
+        val requestedProduct: List<FinverseProductRetrieval> = listOf()
+
+        finverseAuthCache.saveLoginIdentityToken(
+            userId,
+            institutionId,
+            loginIdentityResponse.loginIdentityId,
+            loginIdentityResponse.loginIdentityToken
+        )
+
+        finverseDataRetrievalEventsManager.registerFinverseDataRetrievalEvent(userId, FinverseDataRetrievalEvent(
+            loginIdentityResponse.loginIdentityId,
+            userId,
+            institutionId,
+            requestedProduct,
+        ))
 
         return "RETRIEVING"
     }
+
+    suspend fun getInstitutionAuthenticationResult(userId: Int, institutionId: String): FinverseAuthenticationStatus {
+        val loginIdentityCredential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
+
+        val loginIdentityId = loginIdentityCredential?.loginIdentityId
+        val loginIdentityToken = loginIdentityCredential?.loginIdentityToken
+
+        if (loginIdentityId == null || loginIdentityToken == null) {
+            return FinverseAuthenticationStatus.AUTHENTICATION_FAILED
+        }
+
+        val timeout = 30.seconds
+        val status = finverseTimeoutWatcher.watchAuthentication(
+            loginIdentityCredential.loginIdentityId,
+            timeout
+        )
+
+        return status
+    }
+
+    suspend fun getUserDataRetrievalResult(userId: Int, institutionId: String): FinverseOverallRetrievalStatus {
+        val loginIdentityCredential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
+
+        val loginIdentityId = loginIdentityCredential?.loginIdentityId
+        val loginIdentityToken = loginIdentityCredential?.loginIdentityToken
+
+        if (loginIdentityId == null || loginIdentityToken == null) {
+            return FinverseOverallRetrievalStatus(
+                success = false,
+                message = "NO LOGIN IDENTITY INFORMATION FOUND",
+                loginIdentityId = ""
+            )
+        }
+
+        val timeout = 5.minutes
+        val status = finverseTimeoutWatcher.watchDataRetrievalCompletion(
+            loginIdentityId,
+            timeout
+        )
+
+        return status
+    }
+
 }

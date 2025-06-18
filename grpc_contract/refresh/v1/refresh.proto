@@ -8,6 +8,8 @@ option java_outer_classname = "RefreshServiceProto";
 service RefreshService {
     rpc GetRefreshUrl (GetRefreshUrlRequest) returns (GetRefreshUrlResponse);
     rpc RegisterLinkCompleteWithCode (RegisterLinkCompleteWithCodeRequest) returns (RegisterLinkCompleteWithCodeResponse);
+    rpc GetInstitutionAuthenticationResult (GetInstitutionAuthenticationResultRequest) returns (GetInstitutionAuthenticationResultResponse);
+    rpc GetDataRetrievalResult (GetDataRetrievalResultRequest) returns (GetDataRetrievalResultResponse);
 }
 
 /* ── Requests ── */
@@ -19,6 +21,7 @@ message GetRefreshUrlRequest {
 
 message RegisterLinkCompleteWithCodeRequest {
     string code = 1; // Code provided by the institution to complete the link
+    string institution_id = 2;
 }
 
 message GetRefreshUrlResponse {
@@ -29,4 +32,23 @@ message RegisterLinkCompleteWithCodeResponse {
     bool success = 1; // Indicates whether the registration of the link completion was successful
     string ticketNumber = 2; // Ticket number for tracking the registration
     string message = 3; // Additional message or information regarding the registration
+}
+
+message GetInstitutionAuthenticationResultRequest {
+    string institution_id = 1; // Institution ID for which the authentication result is requested
+    string state = 2; // State parameter to maintain context
+}
+
+message GetInstitutionAuthenticationResultResponse {
+    bool success = 1; // Indicates whether the authentication was successful
+    string message = 2; // Additional message or information regarding the authentication result
+}
+
+message GetDataRetrievalResultRequest {
+    string institution_id = 1; // Institution ID for which the data retrieval result is requested
+}
+
+message GetDataRetrievalResultResponse {
+    bool success = 1; // Indicates whether the data retrieval was successful
+    string message = 2; // Additional message or information regarding the data retrieval result
 }

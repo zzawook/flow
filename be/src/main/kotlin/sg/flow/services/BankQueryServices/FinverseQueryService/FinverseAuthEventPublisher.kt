@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import sg.flow.models.finverse.webhook_events.FinverseWebhookEvent
 
 @Service
-class FinverseAuthWebhookEventPublisher {
+class FinverseAuthEventPublisher {
     private val _events = MutableSharedFlow<FinverseWebhookEvent>(
         replay = 100,
         extraBufferCapacity = 100,

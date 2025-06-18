@@ -1,4 +1,6 @@
 package sg.flow.models.finverse
 
-class FinverseProductStatus {
-}
+data class FinverseProductStatus(
+    val product: FinverseProduct,
+    val status: FinverseRetrievalStatus
+)

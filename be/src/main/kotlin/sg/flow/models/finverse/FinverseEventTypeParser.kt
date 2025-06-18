@@ -1,6 +1,6 @@
 package sg.flow.models.finverse
 
-object EventTypeParser {
+object FinverseEventTypeParser {
     private val regex = Regex("""^([A-Z_]+?)_([A-Z_]+)$""")
     fun parse(raw: String): FinverseProductStatus? =
         regex.matchEntire(raw)?.let { m ->
