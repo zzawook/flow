@@ -18,6 +18,7 @@ class FinverseAuthCallbackController(
         @RequestParam("code") code: String,
         @RequestParam("state") state: String
     ): ResponseEntity<String> {
+        println("Received Callback: $code")
         finverseService.fetchLoginIdentity(1, code, "testbank")
 
         return ResponseEntity

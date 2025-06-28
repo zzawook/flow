@@ -29,18 +29,19 @@ class FlowSecurityConfig {
     @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
-            .csrf { it.disable() }                          // use lambda‐style DSL
-            .cors { cors ->                                 // reactive CORS
+            .csrf { it.disable() }
+            .cors { cors ->
                 cors.configurationSource(corsConfigSource())
             }
             .authorizeExchange { exchanges ->
                 exchanges
-                    .pathMatchers(HttpMethod.OPTIONS, "/webhooks/finverse/**").permitAll()
-                    .pathMatchers("/webhooks/finverse/**").permitAll()
+                    .pathMatchers(HttpMethod.OPTIONS, "/finverse/webhooks/**").permitAll()
+                    .pathMatchers(HttpMethod.OPTIONS, "/finverse/callback").permitAll()
+                    .pathMatchers(HttpMethod.POST, "/finverse/webhooks/**").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/finverse/callback").permitAll()
+                    .pathMatchers(HttpMethod.POST, "/finverse/callback").permitAll()
                     .anyExchange().authenticated()
             }
-            // if you need JWT/OAuth2 resource‐server, add:
-            // .oauth2ResourceServer { it.jwt() }
             .build()
     }
 
@@ -53,7 +54,7 @@ class FlowSecurityConfig {
             allowCredentials = true
         }
         return UrlBasedCorsConfigurationSource().apply {
-            registerCorsConfiguration("/webhooks/finverse/**", config)
+            registerCorsConfiguration("/finverse/**", config)
         }
     }
 

@@ -43,7 +43,8 @@ class FinverseDataRetrievalEvent(
     fun putOrUpdate(product: FinverseProduct, status: FinverseRetrievalStatus) {
         when (product) {
             FinverseProduct.ACCOUNTS -> updateAccountStatus(status)
-            FinverseProduct.TRANSACTIONS -> updateTransactionStatus(status)
+            FinverseProduct.ONLINE_TRANSACTIONS -> updateOnlineTransactionStatus(status)
+            FinverseProduct.HISTORICAL_TRANSACTIONS -> updateHistoricalTransactionStatus(status)
             FinverseProduct.ACCOUNT_NUMBERS -> updateAccountNumberStatus(status)
             FinverseProduct.STATEMENTS -> updateStatementStatus(status)
             FinverseProduct.IDENTITY -> updateIdentityStatus(status)
@@ -56,14 +57,25 @@ class FinverseDataRetrievalEvent(
         for (finverseProductRetrieval in requestedProducts) {
             if (finverseProductRetrieval.getProduct().productName == "ACCOUNTS") {
                finverseProductRetrieval.setStatus(status)
+                return
             }
         }
     }
 
-    private fun updateTransactionStatus(status: FinverseRetrievalStatus) {
+    private fun updateOnlineTransactionStatus(status: FinverseRetrievalStatus) {
         for (finverseProductRetrieval in requestedProducts) {
-            if (finverseProductRetrieval.getProduct().productName == "TRANSACTIONS") {
+            if (finverseProductRetrieval.getProduct().productName == "ONLINE_TRANSACTIONS") {
                 finverseProductRetrieval.setStatus(status)
+                return
+            }
+        }
+    }
+
+    private fun updateHistoricalTransactionStatus(status: FinverseRetrievalStatus) {
+        for (finverseProductRetrieval in requestedProducts) {
+            if (finverseProductRetrieval.getProduct().productName == "HISTORICAL_TRANSACTIONS") {
+                finverseProductRetrieval.setStatus(status)
+                return
             }
         }
     }
@@ -72,6 +84,7 @@ class FinverseDataRetrievalEvent(
         for (finverseProductRetrieval in requestedProducts) {
             if (finverseProductRetrieval.getProduct().productName == "ACCOUNT_NUMBERS") {
                 finverseProductRetrieval.setStatus(status)
+                return
             }
         }
     }
@@ -80,6 +93,7 @@ class FinverseDataRetrievalEvent(
         for (finverseProductRetrieval in requestedProducts) {
             if (finverseProductRetrieval.getProduct().productName == "STATEMENTS") {
                 finverseProductRetrieval.setStatus(status)
+                return
             }
         }
     }
@@ -88,6 +102,7 @@ class FinverseDataRetrievalEvent(
         for (finverseProductRetrieval in requestedProducts) {
             if (finverseProductRetrieval.getProduct().productName == "IDENTITY") {
                 finverseProductRetrieval.setStatus(status)
+                return
             }
         }
     }
@@ -96,6 +111,7 @@ class FinverseDataRetrievalEvent(
         for (finverseProductRetrieval in requestedProducts) {
             if (finverseProductRetrieval.getProduct().productName == "BALANCE_HISTORY") {
                 finverseProductRetrieval.setStatus(status)
+                return
             }
         }
     }
@@ -104,6 +120,7 @@ class FinverseDataRetrievalEvent(
         for (finverseProductRetrieval in requestedProducts) {
             if (finverseProductRetrieval.getProduct().productName == "INCOME_ESTIMATION") {
                 finverseProductRetrieval.setStatus(status)
+                return
             }
         }
     }

@@ -100,7 +100,6 @@ class FinverseQueryService(
         )
 
         return try {
-            // 1️⃣ Issue the HTTP call, mapping error‑status into exceptions
             val resp = finverseWebClient.post()
                 .uri("/link/token")
                 .headers { it.setBearerAuth(token) }
@@ -126,6 +125,7 @@ class FinverseQueryService(
     }
 
     suspend fun fetchLoginIdentity(userId: Int, code: String, institutionId: String): String {
+        println("Fetching login identity")
         val token = getCustomerToken()
         val loginIdentityResponse: LoginIdentityResponse = finverseWebClient.post()
             .uri("/auth/token")
@@ -136,6 +136,7 @@ class FinverseQueryService(
                     .with("client_id", finverseCredentials.clientId)
                     .with("code", code)
                     .with("redirect_uri", "http://localhost:8081/api/finverse/callback")
+                    .with("grant_type", "authorization_code")
             )
             .retrieve()
             .bodyToMono(LoginIdentityResponse::class.java)
@@ -143,6 +144,7 @@ class FinverseQueryService(
 
         val requestedProduct: List<FinverseProductRetrieval> = listOf()
 
+        println("Saving LoginIdentity: ${loginIdentityResponse.loginIdentityToken}")
         finverseAuthCache.saveLoginIdentityToken(
             userId,
             institutionId,
@@ -165,6 +167,9 @@ class FinverseQueryService(
 
         val loginIdentityId = loginIdentityCredential?.loginIdentityId
         val loginIdentityToken = loginIdentityCredential?.loginIdentityToken
+
+        println(loginIdentityId)
+        println(loginIdentityToken)
 
         if (loginIdentityId == null || loginIdentityToken == null) {
             return FinverseAuthenticationStatus.AUTHENTICATION_FAILED

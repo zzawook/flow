@@ -14,7 +14,7 @@ import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseAuthEvent
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseDataRetrievalEventsManager
 
 @RestController
-@RequestMapping("/webhooks/finverse")
+@RequestMapping("/finverse/webhooks")
 class FinverseWebhookController(
     private val objectMapper: ObjectMapper,
     private val verifier: FinverseSignatureVerifier,
@@ -24,12 +24,12 @@ class FinverseWebhookController(
 
     @PostMapping
     suspend fun handleWebhook(
-        @RequestHeader("FV_SIGNATURE") signature: String,
-        @RequestHeader("X-Finverse-Timestamp") timestamp: String,
+//        @RequestHeader("FV_SIGNATURE") signature: String,
+//        @RequestHeader("X-Finverse-Timestamp") timestamp: String,
         @RequestBody rawBody: ByteArray
     ): ResponseEntity<Void> {
         println("webhookReceived")
-        verifier.verify(signature, timestamp, rawBody)
+//        verifier.verify(signature, timestamp, rawBody)
 
         val event = objectMapper.readValue(rawBody, FinverseWebhookEvent::class.java)
 

@@ -9,6 +9,11 @@ class FinverseAuthCache {
     private final val userIdTologinIdentityCache =
         AtomicReference<HashMap<Int, HashMap<String, FinverseLoginIdentityCredential>>>()
 
+    init {
+        userIdTologinIdentityCache.set(HashMap())
+    }
+
+
     suspend fun saveLoginIdentityToken(
         userId: Int,
         institutionId: String,
