@@ -6,17 +6,15 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import sg.flow.models.finverse.FinverseAuthenticationEventTypeParser
 import sg.flow.models.finverse.FinverseAuthenticationStatus
-import sg.flow.models.finverse.FinverseDataRetrievalEvent
+import sg.flow.models.finverse.FinverseDataRetrievalRequest
+import sg.flow.models.finverse.FinverseInstitution
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
 import sg.flow.models.finverse.FinverseProductRetrieval
-import sg.flow.models.finverse.FinverseRetrievalStatus
 import sg.flow.models.finverse.responses.CustomerTokenResponse
 import sg.flow.models.finverse.responses.LinkTokenResponse
 import sg.flow.models.finverse.responses.LoginIdentityResponse
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
-import sg.flow.services.UtilServices.CacheService
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.Duration.Companion.minutes
@@ -27,7 +25,7 @@ class FinverseQueryService(
     private val finverseCredentials: FinverseCredentials,
     private val finverseWebClient: WebClient,
     private val finverseAuthCache: FinverseAuthCache,
-    private val finverseDataRetrievalEventsManager: FinverseDataRetrievalEventsManager,
+    private val finverseDataRetrievalRequestsManager: FinverseDataRetrievalRequestsManager,
     private val finverseTimeoutWatcher: FinverseTimeoutWatcher
 ) {
     private val customerTokenRef = AtomicReference<String>()
@@ -54,6 +52,20 @@ class FinverseQueryService(
         // Store token and calculate expiry time
         customerTokenRef.set(response.accessToken)
         tokenExpiry = Instant.now().plusSeconds(response.expiresIn)
+    }
+
+    private fun fetchInstitutionData() {
+        val countries = "SGP"
+        val response = finverseWebClient.get()
+            .uri("/auth/institution?countries=$countries")
+            .headers { it -> it.setBearerAuth(getCustomerToken()) }
+            .retrieve()
+            .bodyToFlux(FinverseInstitution::class.java)
+            .collectList()
+            .block() ?: throw IllegalStateException("Failed to fetch institution data")
+
+
+
     }
 
     private fun getCustomerToken(): String {
@@ -94,9 +106,9 @@ class FinverseQueryService(
             "countries" to listOf(country),
             "link_mode" to "real test",
             "ui_mode" to "",
-            "response_mode" to "form_post", // NO CHANGE
-            "response_type" to "code", // NO CHANGE
-            "grant_type" to "client_credentials" // NO CHANGE
+            "response_mode" to "form_post", // DO NOT CHANGE
+            "response_type" to "code", // DO NOT CHANGE
+            "grant_type" to "client_credentials" // DO NOT CHANGE
         )
 
         return try {
@@ -112,12 +124,10 @@ class FinverseQueryService(
             resp.linkUrl
         }
         catch (e: WebClientResponseException) {
-            // 2 Handle 400 / 500 Errors
             println("Finverse returned HTTP ${e.statusCode}: ${e.responseBodyAsString}")
             throw FinverseException("Failed to generate link URL: ${e.responseBodyAsString}")
         }
         catch (e: Exception) {
-            // 3️⃣ Handle other failures (serialization, network, etc.)
             println("Unexpected error while generating link URL")
             println(e.message)
             throw FinverseException("Unexpected error: ${e.message}")
@@ -152,7 +162,7 @@ class FinverseQueryService(
             loginIdentityResponse.loginIdentityToken
         )
 
-        finverseDataRetrievalEventsManager.registerFinverseDataRetrievalEvent(userId, FinverseDataRetrievalEvent(
+        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(userId, FinverseDataRetrievalRequest(
             loginIdentityResponse.loginIdentityId,
             userId,
             institutionId,

@@ -1,6 +1,6 @@
 package sg.flow.models.finverse
 
-class FinverseDataRetrievalEvent(
+class FinverseDataRetrievalRequest(
     private val loginIdentityId: String,
     private val userId: Int,
     private val institutionId: String,
@@ -38,6 +38,25 @@ class FinverseDataRetrievalEvent(
             message = "$userId - $institutionId - ${requestedProducts.size}",
             loginIdentityId = loginIdentityId
         )
+    }
+
+    fun isBothTransactionComplete(): Boolean {
+        var isOnlineTransactionComplete = false
+        var isHistoryTransactionComplete = false
+
+        for (finverseProductRetrieval in requestedProducts) {
+            when (finverseProductRetrieval.getProduct()) {
+                FinverseProduct.ONLINE_TRANSACTIONS -> {
+                    isOnlineTransactionComplete = finverseProductRetrieval.isComplete()
+                }
+                FinverseProduct.HISTORICAL_TRANSACTIONS ->  (it)  {
+                    isHistoryTransactionComplete = finverseProductRetrieval.isComplete()
+                }
+                else -> {}
+            }
+        }
+
+        return isOnlineTransactionComplete && isHistoryTransactionComplete
     }
 
     fun putOrUpdate(product: FinverseProduct, status: FinverseRetrievalStatus) {
