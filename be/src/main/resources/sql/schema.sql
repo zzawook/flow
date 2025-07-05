@@ -20,9 +20,7 @@ CREATE INDEX IF NOT EXISTS user_by_id_index ON users (id);
 CREATE TABLE IF NOT EXISTS banks (
     id SERIAL PRIMARY KEY, 
     bank_name VARCHAR(255) NOT NULL,
-    bank_code VARCHAR(255) NOT NULL,
-    bank_id   VARCHAR(255) NOT NULL,
-
+    bank_code VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS bank_index_by_id ON banks (id);

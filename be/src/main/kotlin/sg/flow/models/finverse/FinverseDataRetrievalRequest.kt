@@ -1,14 +1,14 @@
 package sg.flow.models.finverse
 
 class FinverseDataRetrievalRequest(
-    private val loginIdentityId: String,
-    private val userId: Int,
-    private val institutionId: String,
-    private val requestedProducts: List<FinverseProductRetrieval>
+        private val loginIdentityId: String,
+        private val userId: Int,
+        private val institutionId: String,
+        private val requestedProducts: List<FinverseProductRetrieval>
 ) {
     fun isComplete(): Boolean {
         for (finverseProductRetrieval in requestedProducts) {
-            if (! finverseProductRetrieval.isComplete()) {
+            if (!finverseProductRetrieval.isComplete()) {
                 return false
             }
         }
@@ -16,27 +16,33 @@ class FinverseDataRetrievalRequest(
         return true
     }
 
-    fun getOverallRetrievalStatus() : FinverseOverallRetrievalStatus {
-        val allowedList: List<FinverseRetrievalStatus> = listOf(
-            FinverseRetrievalStatus.RETRIEVED,
-            FinverseRetrievalStatus.PARTIALLY_RETRIEVED
-        )
+    fun getLoginIdentityId(): String {
+        return loginIdentityId
+    }
+
+    fun getOverallRetrievalStatus(): FinverseOverallRetrievalStatus {
+        val allowedList: List<FinverseRetrievalStatus> =
+                listOf(
+                        FinverseRetrievalStatus.RETRIEVED,
+                        FinverseRetrievalStatus.PARTIALLY_RETRIEVED
+                )
 
         for (finverseProductRetrieval in requestedProducts) {
             val thisStatus = finverseProductRetrieval.getStatus()
-            if (! allowedList.contains(thisStatus)) {
+            if (!allowedList.contains(thisStatus)) {
                 return FinverseOverallRetrievalStatus(
-                    success = false,
-                    message = "${finverseProductRetrieval.getProduct().productName} - $thisStatus",
-                    loginIdentityId = loginIdentityId
+                        success = false,
+                        message =
+                                "${finverseProductRetrieval.getProduct().productName} - $thisStatus",
+                        loginIdentityId = loginIdentityId
                 )
             }
         }
 
         return FinverseOverallRetrievalStatus(
-            success = true,
-            message = "$userId - $institutionId - ${requestedProducts.size}",
-            loginIdentityId = loginIdentityId
+                success = true,
+                message = "$userId - $institutionId - ${requestedProducts.size}",
+                loginIdentityId = loginIdentityId
         )
     }
 
@@ -49,7 +55,7 @@ class FinverseDataRetrievalRequest(
                 FinverseProduct.ONLINE_TRANSACTIONS -> {
                     isOnlineTransactionComplete = finverseProductRetrieval.isComplete()
                 }
-                FinverseProduct.HISTORICAL_TRANSACTIONS ->  (it)  {
+                FinverseProduct.HISTORICAL_TRANSACTIONS -> {
                     isHistoryTransactionComplete = finverseProductRetrieval.isComplete()
                 }
                 else -> {}
@@ -57,6 +63,19 @@ class FinverseDataRetrievalRequest(
         }
 
         return isOnlineTransactionComplete && isHistoryTransactionComplete
+    }
+
+    fun isAccountComplete(): Boolean {
+        for (finverseProductRetrieval in requestedProducts) {
+            when (finverseProductRetrieval.getProduct()) {
+                FinverseProduct.ACCOUNTS -> {
+                    return true
+                }
+                else -> {}
+            }
+        }
+
+        return false
     }
 
     fun putOrUpdate(product: FinverseProduct, status: FinverseRetrievalStatus) {
@@ -75,7 +94,7 @@ class FinverseDataRetrievalRequest(
     private fun updateAccountStatus(status: FinverseRetrievalStatus) {
         for (finverseProductRetrieval in requestedProducts) {
             if (finverseProductRetrieval.getProduct().productName == "ACCOUNTS") {
-               finverseProductRetrieval.setStatus(status)
+                finverseProductRetrieval.setStatus(status)
                 return
             }
         }

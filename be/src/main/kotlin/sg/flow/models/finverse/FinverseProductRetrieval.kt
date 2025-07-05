@@ -1,6 +1,6 @@
 package sg.flow.models.finverse
 
-class FinverseProductRetrieval(private val finverseProduct: FinverseProduct) {
+class FinverseProductRetrieval(private val FinverseProduct: FinverseProduct) {
     private var isComplete = false
     private var status: FinverseRetrievalStatus = FinverseRetrievalStatus.PARTIALLY_RETRIEVED
 
@@ -17,6 +17,6 @@ class FinverseProductRetrieval(private val finverseProduct: FinverseProduct) {
     }
 
     fun getProduct(): FinverseProduct {
-        return finverseProduct
+        return FinverseProduct
     }
 }

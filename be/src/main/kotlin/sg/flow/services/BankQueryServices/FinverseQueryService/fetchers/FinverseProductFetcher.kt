@@ -8,8 +8,8 @@ import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseDataInges
 
 @Service
 abstract class FinverseProductFetcher<A>(
-    private val finverseIngestor: FinverseDataIngest,
-    private val webClient: WebClient
+        private val finverseIngestor: FinverseDataIngest,
+        private val webClient: WebClient
 ) {
     abstract fun fetch(product: FinverseProduct, loginIdentityId: String): Mono<A>
 }

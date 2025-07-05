@@ -3,21 +3,20 @@ package sg.flow.models.finverse
 import sg.flow.models.finverse.FinverseProduct.ACCOUNTS
 import sg.flow.models.finverse.FinverseProduct.ACCOUNT_NUMBERS
 import sg.flow.models.finverse.FinverseProduct.BALANCE_HISTORY
+import sg.flow.models.finverse.FinverseProduct.HISTORICAL_TRANSACTIONS
 import sg.flow.models.finverse.FinverseProduct.IDENTITY
 import sg.flow.models.finverse.FinverseProduct.INCOME_ESTIMATION
-import sg.flow.models.finverse.FinverseProduct.STATEMENTS
-import sg.flow.models.finverse.FinverseProduct.HISTORICAL_TRANSACTIONS
 import sg.flow.models.finverse.FinverseProduct.ONLINE_TRANSACTIONS
+import sg.flow.models.finverse.FinverseProduct.STATEMENTS
 
 object FinverseEventTypeParser {
     fun parse(raw: String): FinverseProductStatus? {
-        val product  = getProductThatBelongs(raw)
+        val product = getProductThatBelongs(raw)
         val statusString = raw.substringAfter(product.productName + "_")
-        val status   = FinverseRetrievalStatus.valueOf(statusString)
+        val status = FinverseRetrievalStatus.valueOf(statusString)
 
         return FinverseProductStatus(product, status)
     }
-
 
     fun getProductThatBelongs(eventTypeString: String): FinverseProduct {
         if (eventTypeString.startsWith(ACCOUNT_NUMBERS.productName)) {

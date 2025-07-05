@@ -6,5 +6,9 @@ import sg.flow.models.finverse.FinverseProduct
 @Component
 class FinverseDataIngest {
 
-    fun ingest(product: FinverseProduct, )
+    fun ingest(
+            product: FinverseProduct,
+    ) {
+
+    }
 }

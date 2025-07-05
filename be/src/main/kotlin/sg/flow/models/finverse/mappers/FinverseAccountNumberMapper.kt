@@ -5,14 +5,14 @@ import sg.flow.entities.Account
 import sg.flow.entities.Bank
 import sg.flow.entities.User
 import sg.flow.entities.utils.AccountType
-import sg.flow.models.finverse.responses.FinverseAccountData
+import sg.flow.models.finverse.responses.FinverseAccountNumberData
 
-class FinverseAccountToAccountMapper(
+class FinverseAccountNumberMapper(
         private val userMapper: (String) -> User,
         private val bankMapper: (String, String?) -> Bank
-) : Mapper<FinverseAccountData, Account> {
+) : Mapper<FinverseAccountNumberData, Account> {
 
-    override fun map(input: FinverseAccountData): Account {
+    override fun map(input: FinverseAccountNumberData): Account {
         return Account(
                 id = 0, // Will be set by database
                 accountNumber = input.accountNumber,
@@ -21,11 +21,11 @@ class FinverseAccountToAccountMapper(
                         userMapper(
                                 input.accountId
                         ), // This would need to be mapped from user context
-                balance = input.balance,
+                balance = 0.0, // Account number response might not include balance
                 accountName = input.accountName,
                 accountType = mapAccountType(input.accountType),
-                interestRatePerAnnum = input.interestRate ?: 0.0,
-                lastUpdated = input.lastUpdated ?: LocalDateTime.now()
+                interestRatePerAnnum = 0.0, // Not available in account number response
+                lastUpdated = LocalDateTime.now()
         )
     }
 

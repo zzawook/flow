@@ -1,6 +1,7 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.WebClient
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
 import sg.flow.models.finverse.FinverseProduct
@@ -9,14 +10,20 @@ import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.Finver
 
 @Component
 class FinverseDataRetrievalRequestsManager(
-    private val finverseAuthCache: FinverseAuthCache,
-    private val finverseProductCompleteEventPublisher: FinverseProductCompleteEventPublisher,
-    private val finverseShouldFetchDecider: FinverseShouldFetchDecider,
-    private val finverseProductFetchManager: FinverseProductFetchManager
+        private val finverseAuthCache: FinverseAuthCache,
+        private val finverseProductCompleteEventPublisher: FinverseProductCompleteEventPublisher,
+        private val finverseShouldFetchDecider: FinverseShouldFetchDecider,
+        private val finverseResponseProcessor: FinverseResponseProcessor,
+        private val finverseWebClient: WebClient
 ) {
-    private val userIdToFinverseDataRetrievalRequestMap: HashMap<Int, FinverseDataRetrievalRequest> = hashMapOf()
+    private val userIdToFinverseDataRetrievalRequestMap:
+            HashMap<Int, FinverseDataRetrievalRequest> =
+            hashMapOf()
 
-    fun registerFinverseDataRetrievalEvent(userId: Int, finverseDataRetrievalRequest: FinverseDataRetrievalRequest) {
+    fun registerFinverseDataRetrievalEvent(
+            userId: Int,
+            finverseDataRetrievalRequest: FinverseDataRetrievalRequest
+    ) {
         userIdToFinverseDataRetrievalRequestMap[userId] = finverseDataRetrievalRequest
     }
 
@@ -26,17 +33,26 @@ class FinverseDataRetrievalRequestsManager(
         return userDataRetrievalEvent.isComplete()
     }
 
-    suspend fun getOverallRetrievalStatus(userId: Int, loginIdentityId: String) : FinverseOverallRetrievalStatus {
-        val userDataRetrievalEvent = userIdToFinverseDataRetrievalRequestMap[userId] ?: return FinverseOverallRetrievalStatus(
-            success = false,
-            message = "CANNOT FIND REGISTERED DATA RETRIEVAL EVENT",
-            loginIdentityId = loginIdentityId
-        )
+    suspend fun getOverallRetrievalStatus(
+            userId: Int,
+            loginIdentityId: String
+    ): FinverseOverallRetrievalStatus {
+        val userDataRetrievalEvent =
+                userIdToFinverseDataRetrievalRequestMap[userId]
+                        ?: return FinverseOverallRetrievalStatus(
+                                success = false,
+                                message = "CANNOT FIND REGISTERED DATA RETRIEVAL EVENT",
+                                loginIdentityId = loginIdentityId
+                        )
 
         return userDataRetrievalEvent.getOverallRetrievalStatus()
     }
 
-    suspend fun updateAndFetchIfSuccess(loginIdentityId: String, product: FinverseProduct, status: FinverseRetrievalStatus) {
+    suspend fun updateAndFetchIfSuccess(
+            loginIdentityId: String,
+            product: FinverseProduct,
+            status: FinverseRetrievalStatus
+    ) {
         val userId = finverseAuthCache.getUserId(loginIdentityId)
 
         if (userId < 0) {
@@ -51,7 +67,11 @@ class FinverseDataRetrievalRequestsManager(
         finverseDataRetrievalRequest.putOrUpdate(product, status)
 
         if (finverseShouldFetchDecider.shouldFetch(finverseDataRetrievalRequest, product, status)) {
-            finverseProductFetchManager.fetch(finverseDataRetrievalRequest, product)
+            product.fetch(
+                loginIdentityId,
+                finverseResponseProcessor,
+                finverseWebClient
+            )
         }
 
         if (isUserComplete(userId)) {
