@@ -1,11 +1,15 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.WebClient
 import sg.flow.entities.Account
 import sg.flow.entities.Bank
 import sg.flow.entities.TransactionHistory
 import sg.flow.entities.User
 import sg.flow.models.card.BriefCard
+import sg.flow.models.finverse.FinverseInstitution
+import sg.flow.models.finverse.FinverseProduct
 import sg.flow.models.finverse.mappers.*
 import sg.flow.models.finverse.responses.*
 import sg.flow.repositories.account.AccountRepository
@@ -15,9 +19,10 @@ import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.Finver
 
 @Component
 class FinverseResponseProcessor(
-        private val userRepository: UserRepository,
-        private val bankRepository: BankRepository,
-        private val accountRepository: AccountRepository
+    private val userRepository: UserRepository,
+    private val bankRepository: BankRepository,
+    private val accountRepository: AccountRepository,
+    private val finverseWebClient: WebClient,
 ) {
 
     private val accountMapper =
@@ -34,25 +39,33 @@ class FinverseResponseProcessor(
                     cardMapper = { cardNumber -> findCardByNumber(cardNumber) }
             )
 
-    private val accountNumberMapper =
-            FinverseAccountNumberMapper(
-                    userMapper = { accountId -> findOrCreateUser(accountId) },
-                    bankMapper = { institutionName, bankCode ->
-                        findOrCreateBank(institutionName, bankCode)
-                    }
-            )
+//    private val accountNumberMapper =
+//            FinverseAccountNumberMapper(
+//                    userMapper = { accountId -> findOrCreateUser(accountId) },
+//                    bankMapper = { institutionName, bankCode ->
+//                        findOrCreateBank(institutionName, bankCode)
+//                    }
+//            )
 
     private val identityMapper = FinverseIdentityMapper()
 
+    private val institutionMapper = FinverseInstitutionToBankMapper()
+
     /** Process accounts response and convert to domain entities */
-    fun processAccountsResponse(response: FinverseAccountResponse): List<Account> {
-        val accountList = response.accounts?.map { accountData -> accountMapper.map(accountData) } ?: emptyList()
+    suspend fun processAccountList(accountList: List<Account>) {
+        for (account in accountList) {
+            accountRepository.save(account)
+        }
+    }
+
+    fun processAccountsResponseIntoAccountList(response: FinverseAccountResponse): List<Account> {
+        val accountList =
+            response.accounts?.map { accountData -> accountMapper.map(accountData) }
+                ?: emptyList()
 
         if (accountList.isEmpty()) {
             throw FinverseException("ACCOUNT RESPONSE IS EMPTY")
         }
-
-        
 
         return accountList
     }
@@ -67,17 +80,14 @@ class FinverseResponseProcessor(
                 ?: emptyList()
     }
 
-    /** Process account numbers response and convert to domain entities */
-    fun processAccountNumbersResponse(response: FinverseAccountNumberResponse): List<Account> {
-        return response.accountNumbers?.map { accountNumberData ->
-            accountNumberMapper.map(accountNumberData)
-        }
-                ?: emptyList()
-    }
-
     /** Process identity response and convert to domain entity */
     fun processIdentityResponse(response: FinverseIdentityResponse): User? {
         return response.identity?.let { identityData -> identityMapper.map(identityData) }
+    }
+
+    /** Process institution response and convert to domain entity */
+    fun processInstitutionResponse(institution: FinverseInstitution): Bank {
+        return institutionMapper.map(institution)
     }
 
     /** Process balance history response */

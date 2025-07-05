@@ -26,6 +26,7 @@ object AccountQueryStore {
         a.account_type, 
         a.interest_rate_per_annum,
         a.last_updated, 
+        a.finverse_id,
         b.id AS bank_id, 
         b.bank_name, 
         b.bank_code, 
@@ -67,6 +68,7 @@ object AccountQueryStore {
         a.account_name, 
         a.interest_rate_per_annum, 
         a.account_type, 
+        a.finverse_id,
         b.id AS bank_id, 
         b.bank_name, 
         b.bank_code 

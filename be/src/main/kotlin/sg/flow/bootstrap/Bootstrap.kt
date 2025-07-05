@@ -7,10 +7,11 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Component
 import org.springframework.r2dbc.core.awaitRowsUpdated
+import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseQueryService
 
 @Component
 @Order(1)
-class Bootstrap(private val databaseClient: DatabaseClient) : CommandLineRunner {
+class Bootstrap(private val databaseClient: DatabaseClient, private val finverseQueryService: FinverseQueryService) : CommandLineRunner {
 
     override fun run(vararg args: String) {
         println("R2DBC Bootstrap starting – applying schema.sql…")
@@ -34,6 +35,8 @@ class Bootstrap(private val databaseClient: DatabaseClient) : CommandLineRunner 
                     .awaitRowsUpdated()   // suspend until the update completes
             }
         }
+
+        finverseQueryService.fetchInstitutionData()
 
         println("R2DBC Bootstrap completed – schema applied.")
     }

@@ -141,7 +141,8 @@ class InjectTestData(
                                 accountName = data[5],
                                 accountType = AccountType.valueOf(data[6]),
                                 interestRatePerAnnum = data[7].toDouble(),
-                                lastUpdated = LocalDateTime.parse(data[8])
+                                lastUpdated = LocalDateTime.parse(data[8]),
+                                finverseId = null,
                         )
 
                 accountRepository.save(currentAccount)
@@ -262,7 +263,7 @@ class InjectTestData(
 
         val briefCard = cardId?.let { id ->
             cardRepository.findById(id)?.let { full ->
-                BriefCard(full.id.toLong(), full.cardNumber, full.cardType)
+                BriefCard(full.id ?: -1, full.cardNumber, full.cardType)
             }
         }
 

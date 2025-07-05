@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table
 import sg.flow.models.card.BriefCard
 
 data class TransactionHistory(
-        @field:Id val id: Long,
+        @field:Id val id: Long?,
         @field:NotNull val transactionReference: String,
         val account: Account? = null,
         val card: BriefCard? = null,

@@ -47,7 +47,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                         entity.card?.id?.let { cardId -> s.bind(i++, cardId) }
                                                 ?: s.bindNull(i++, Long::class.java)
                                 }
-                                .bind(i++, entity.account.owner.id)
+                                .bind(i++, entity.account.owner.id ?: -1)
                                 .bind(i++, entity.transactionDate) // LocalDate → DATE
                                 .let { s -> // LocalTime → TIME (nullable)
                                         entity.transactionTime?.let { time -> s.bind(i++, time) }
@@ -101,14 +101,14 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
 
                 entities.forEach { e ->
                         // non‑null because of the pre‑condition
-                        spec = spec.bind(i++, e.id)                       // id
+                        spec = spec.bind(i++, e.id ?: 0)                       // id
                                 .bind(i++, e.transactionReference)     // transaction_reference
-                                .bind(i++, e.account!!.id)           // account_id
+                                .bind(i++, e.account?.id ?: -1)           // account_id
 
                         spec = e.card?.id?.let { spec.bind(i++, it) }       // card_id (nullable)
                                 ?: spec.bindNull(i++, Long::class.java)
 
-                        spec = spec.bind(i++, e.account.owner.id)
+                        spec = spec.bind(i++, e.account?.owner?.id ?: -1)
 
                         spec = spec.bind(i++, e.transactionDate)            // transaction_date
 
@@ -206,8 +206,10 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                         dateOfBirth = row.get("date_of_birth", LocalDate::class.java)!!,
                                                                         address = row.get("address", String::class.java)!!,
                                                                         identificationNumber = row.get("identification_number", String::class.java)!!,
-                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}"
-                                                                )
+                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}",
+
+                                                                ),
+                                                                finverseId =  row.get("finverse_id", String::class.java) ?: "",
                                                         )
 
                                                 val cardId = row.get("card_id")
@@ -377,6 +379,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                         )!!
                                                                          
                                                         ),
+                                                                finverseId = row.get("finverse_id", String::class.java) ?: "",
                                                                owner = User(
                                                                                         id = row.get("user_id", Int::class.java) ?: 0,
                                                                                         name = row.get("user_name", String::class.java) ?: "",
@@ -555,7 +558,9 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                         dateOfBirth = row.get("date_of_birth", java.time.LocalDate::class.java) ?: java.time.LocalDate.now(),
                                                                                         address = row.get("address", String::class.java) ?: "",
                                                                                         settingJson = row.get("setting_json", String::class.java) ?: "{}"
-                                                                        ))
+                                                                        ),
+                                                                                finverseId = row.get("finverse_id", String::class.java) ?: ""
+                                                                                )
                                                                 }
 
                                                 /* nested Card (nullable) */
@@ -724,6 +729,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                                                         .java
                                                                                                         )!!
                                                                                         ),
+                                                                                finverseId = row.get("finverse_id", String::class.java) ?: "",
                                                                                 owner = User(
                                                                                         id = row.get("user_id", Int::class.java) ?: 0,
                                                                                         name = row.get("user_name", String::class.java) ?: "",

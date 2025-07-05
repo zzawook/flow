@@ -14,7 +14,7 @@ class FinverseAccountToAccountMapper(
 
     override fun map(input: FinverseAccountData): Account {
         return Account(
-                id = 0, // Will be set by database
+                id = null,
                 accountNumber = input.accountNumber,
                 bank = bankMapper(input.institutionName, input.bankCode),
                 owner =
@@ -25,7 +25,8 @@ class FinverseAccountToAccountMapper(
                 accountName = input.accountName,
                 accountType = mapAccountType(input.accountType),
                 interestRatePerAnnum = input.interestRate ?: 0.0,
-                lastUpdated = input.lastUpdated ?: LocalDateTime.now()
+                lastUpdated = input.lastUpdated ?: LocalDateTime.now(),
+                finverseId = input.accountId
         )
     }
 

@@ -32,7 +32,7 @@ class AccountServiceImpl(
                 }
 
                 return BriefAccount(
-                        id = account.id,
+                        id = account.id ?: -1,
                         bank = account.bank,
                         balance = account.balance,
                         accountName = account.accountName
@@ -57,7 +57,7 @@ class AccountServiceImpl(
                         )
 
                 return AccountWithTransactionHistory(
-                        id = account.id,
+                        id = account.id ?: -1,
                         accountNumber = account.accountNumber,
                         bank = account.bank,
                         balance = account.balance,

@@ -12,7 +12,7 @@ class FinverseTransactionToTransactionHistoryMapper(
 
     override fun map(input: FinverseTransactionData): TransactionHistory {
         return TransactionHistory(
-                id = 0, // Will be set by database
+                id = null,
                 transactionReference = input.reference ?: input.transactionId,
                 account = accountMapper(input.accountId),
                 card = cardMapper(input.cardNumber),

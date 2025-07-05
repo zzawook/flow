@@ -5,7 +5,7 @@ import java.time.LocalDate
 import org.springframework.data.annotation.Id
 
 data class User(
-        @field:Id val id: Int,
+        @field:Id val id: Int?,
         @field:NotNull val name: String,
         @field:NotNull val email: String,
         @field:NotNull val identificationNumber: String,

@@ -12,7 +12,7 @@ import sg.flow.transfer.v1.TransferResult
 class TransferMapper {
     fun toProto(domain: DomainBank): ProtoBank =
         ProtoBank.newBuilder()
-            .setId(domain.id)
+            .setId(domain.id ?: -1)
             .setName(domain.name)
             .setBankCode(domain.bankCode)
             .build()

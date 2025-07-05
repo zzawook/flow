@@ -7,8 +7,9 @@ import org.springframework.data.relational.core.mapping.Table
 import sg.flow.entities.utils.AccountType
 
 data class Account(
-        @field:Id val id: Long,
-        @field:NotNull val accountNumber: String,
+        @field:Id val id: Long?,
+        val finverseId: String?,
+        @field:NotNull var accountNumber: String,
         @field:NotNull val bank: Bank,
         @field:NotNull val owner: User,
         @field:NotNull val balance: Double,

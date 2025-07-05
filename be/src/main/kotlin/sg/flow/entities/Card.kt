@@ -7,7 +7,7 @@ import org.springframework.data.relational.core.mapping.Table
 import sg.flow.entities.utils.CardType
 
 data class Card(
-        @field:Id val id: Long,
+        @field:Id val id: Long?,
         val owner: User? = null, // Made nullable for partial loading
         @field:NotNull val cardNumber: String,
         val issuingBank: Bank? = null, // Made nullable for partial loading

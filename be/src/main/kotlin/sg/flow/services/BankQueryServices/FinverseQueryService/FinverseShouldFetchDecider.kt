@@ -31,4 +31,8 @@ class FinverseShouldFetchDecider() {
     private fun shouldFetchAccountNumber(finverseDataRetrievalRequest: FinverseDataRetrievalRequest): Boolean {
         return finverseDataRetrievalRequest.isAccountComplete()
     }
+
+    private fun shouldFetchAccount(finverseDataRetrievalRequest: FinverseDataRetrievalRequest): Boolean {
+        return finverseDataRetrievalRequest.isAccountNumberComplete()
+    }
 }

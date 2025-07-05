@@ -22,7 +22,7 @@ class AccountMapper(
     /** Maps your JPA entity → common.v1.BriefAccount */
     fun toProto(domain: DomainAccount): ProtoBriefAccount =
         ProtoBriefAccount.newBuilder()
-            .setId(domain.id)
+            .setId(domain.id ?: -1)
             .setBalance(domain.balance)
             .setAccountName(domain.accountName)
             .setBank(bankMapper.toProto(domain.bank))  // relies on the Bank.toProto() you already wrote

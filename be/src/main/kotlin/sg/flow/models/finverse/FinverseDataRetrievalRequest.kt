@@ -69,7 +69,20 @@ class FinverseDataRetrievalRequest(
         for (finverseProductRetrieval in requestedProducts) {
             when (finverseProductRetrieval.getProduct()) {
                 FinverseProduct.ACCOUNTS -> {
-                    return true
+                    return finverseProductRetrieval.isComplete()
+                }
+                else -> {}
+            }
+        }
+
+        return false
+    }
+
+    fun isAccountNumberComplete(): Boolean {
+        for (finverseProductRetrieval in requestedProducts) {
+            when (finverseProductRetrieval.getProduct()) {
+                FinverseProduct.ACCOUNT_NUMBERS -> {
+                    return finverseProductRetrieval.isComplete()
                 }
                 else -> {}
             }

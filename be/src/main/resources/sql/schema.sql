@@ -20,7 +20,8 @@ CREATE INDEX IF NOT EXISTS user_by_id_index ON users (id);
 CREATE TABLE IF NOT EXISTS banks (
     id SERIAL PRIMARY KEY, 
     bank_name VARCHAR(255) NOT NULL,
-    bank_code VARCHAR(255) NOT NULL
+    bank_code VARCHAR(255) NOT NULL,
+    finverse_id VARCHAR(255)
 );
 
 CREATE INDEX IF NOT EXISTS bank_index_by_id ON banks (id);
@@ -34,7 +35,8 @@ CREATE TABLE IF NOT EXISTS accounts (
     account_name VARCHAR(255) NOT NULL,
     account_type VARCHAR(255) NOT NULL,
     interest_rate_per_annum DECIMAL(10,5) NOT NULL DEFAULT 0,
-    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    finverse_id VARCHAR(255)
 );
 
 CREATE INDEX IF NOT EXISTS accounts_index_on_user_id ON accounts (user_id, id);

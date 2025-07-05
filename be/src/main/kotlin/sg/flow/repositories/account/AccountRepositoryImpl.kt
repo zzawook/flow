@@ -100,6 +100,10 @@ class AccountRepositoryImpl(
                                                                         String::class.java
                                                                 )!!
                                                 ),
+                                        finverseId = row.get(
+                                                "finverse_id",
+                                                String::class.java
+                                        ),
                                         owner =
                                                 User(
                                                         id = row.get("user_id", Int::class.java)!!,

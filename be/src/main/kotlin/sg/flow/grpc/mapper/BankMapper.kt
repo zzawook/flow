@@ -8,7 +8,7 @@ import sg.flow.entities.Bank as DomainBank
 class BankMapper {
     fun toProto(domain: DomainBank): ProtoBank =
         ProtoBank.newBuilder()
-            .setId(domain.id)
+            .setId(domain.id ?: -1)
             .setName(domain.name)
             .setBankCode(domain.bankCode)
             .build()

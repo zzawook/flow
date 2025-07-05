@@ -1,11 +1,13 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
 import kotlinx.coroutines.reactor.awaitSingle
+import kotlinx.coroutines.runBlocking
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.bodyToMono
 import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseInstitution
@@ -14,7 +16,9 @@ import sg.flow.models.finverse.FinverseProductRetrieval
 import sg.flow.models.finverse.responses.CustomerTokenResponse
 import sg.flow.models.finverse.responses.LinkTokenResponse
 import sg.flow.models.finverse.responses.LoginIdentityResponse
+import sg.flow.repositories.bank.BankRepositoryImpl
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
+import java.lang.Thread.sleep
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.Duration.Companion.minutes
@@ -26,13 +30,16 @@ class FinverseQueryService(
     private val finverseWebClient: WebClient,
     private val finverseAuthCache: FinverseAuthCache,
     private val finverseDataRetrievalRequestsManager: FinverseDataRetrievalRequestsManager,
-    private val finverseTimeoutWatcher: FinverseTimeoutWatcher
+    private val finverseTimeoutWatcher: FinverseTimeoutWatcher,
+    private val finverseResponseProcessor: FinverseResponseProcessor,
+    private val bankRepositoryImpl: BankRepositoryImpl
 ) {
     private val customerTokenRef = AtomicReference<String>()
     private var tokenExpiry: Instant = Instant.EPOCH
 
     init {
         this.fetchCustomerToken()
+//        this.fetchInstitutionData()
     }
 
     private fun fetchCustomerToken() {
@@ -54,17 +61,23 @@ class FinverseQueryService(
         tokenExpiry = Instant.now().plusSeconds(response.expiresIn)
     }
 
-    private fun fetchInstitutionData() {
+    fun fetchInstitutionData() {
         val countries = "SGP"
-        val response = finverseWebClient.get()
-            .uri("/auth/institution?countries=$countries")
+        finverseWebClient.get()
+            .uri("/institutions?countries=$countries")
             .headers { it -> it.setBearerAuth(getCustomerToken()) }
             .retrieve()
-            .bodyToFlux(FinverseInstitution::class.java)
-            .collectList()
-            .block() ?: throw IllegalStateException("Failed to fetch institution data")
-
-
+            .bodyToMono(Array<FinverseInstitution>::class.java)
+            .map { institutions ->
+                institutions.map { institution ->
+                    println(institution.institutionName)
+                    val bank = finverseResponseProcessor.processInstitutionResponse(institution)
+                    runBlocking {
+                        bankRepositoryImpl.save(bank)
+                    }
+                    bank
+                }
+            }.block()
 
     }
 
