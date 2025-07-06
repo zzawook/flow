@@ -77,7 +77,6 @@ class FinverseQueryService(
                     }
                 }
             }.block()
-
     }
 
     private fun getCustomerToken(): String {
@@ -94,7 +93,7 @@ class FinverseQueryService(
     suspend fun generateLinkUrl(userId: Int, institutionId: String, country: String = "SGP", automaticRefresh: Boolean = true): String {
         val token = getCustomerToken()
         val productsRequested =
-            listOf("ACCOUNTS", "TRANSACTIONS", "ACCOUNT_NUMBERS", "BALANCE_HISTORY", "IDENTITY")
+            listOf("ACCOUNTS", "TRANSACTIONS", "ACCOUNT_NUMBERS")
         val productSupported = productsRequested;
 
         val automaticRefreshVal: String = if (automaticRefresh) {

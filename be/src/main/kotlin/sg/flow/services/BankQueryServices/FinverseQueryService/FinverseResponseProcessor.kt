@@ -24,14 +24,14 @@ class FinverseResponseProcessor(
     private val bankRepository: BankRepository,
     private val accountRepository: AccountRepository,
     private val transactionRepository: TransactionHistoryRepository,
-    private val finverseWebClient: WebClient,
+    private val finverseAuthCache: FinverseAuthCache
 ) {
 
     private val accountMapper =
             FinverseAccountToAccountMapper(
                     userMapper = { accountId -> findOrCreateUser(accountId) },
-                    bankMapper = { institutionName, bankCode ->
-                        findOrCreateBank(institutionName, bankCode)
+                    bankMapper = { finverseId ->
+                        findOrCreateBank(finverseId)
                     }
             )
 
@@ -62,7 +62,7 @@ class FinverseResponseProcessor(
 
     fun processAccountsResponseIntoAccountList(response: FinverseAccountResponse): List<Account> {
         val accountList =
-            response.accounts?.map { accountData -> accountMapper.map(accountData) }
+            response.accounts?.map { accountData -> accountMapper.map(accountData, response.institution, response.loginIdentity.loginIdentityId) }
                 ?: emptyList()
 
         if (accountList.isEmpty()) {
@@ -127,24 +127,26 @@ class FinverseResponseProcessor(
     }
 
     // Helper methods for entity lookup/creation
-    private fun findOrCreateUser(externalId: String): User {
-        // Implementation would depend on your business logic
-        // This is a placeholder that shows the pattern
-        return User(
-                id = 0,
-                name = "Unknown User",
-                email = "",
-                identificationNumber = externalId,
-                phoneNumber = "",
-                dateOfBirth = java.time.LocalDate.now(),
-                address = "",
-                settingJson = "{}"
-        )
+    private fun findOrCreateUser(loginIdentityId: String): User {
+        var user: User? = null;
+
+        runBlocking {
+            val userId = finverseAuthCache.getUserId(loginIdentityId).toLong()
+            println("user ID: $userId")
+            user = userRepository.findById(userId)
+            println("user: $user")
+        }
+
+        return user ?: throw FinverseException("User with given login identity ID not found")
     }
 
-    private fun findOrCreateBank(institutionName: String, bankCode: String?): Bank {
-        // Implementation would depend on your business logic
-        return Bank(id = 0, name = institutionName, bankCode = bankCode ?: "UNKNOWN")
+    private fun findOrCreateBank(finverseId: String): Bank {
+        var bank: Bank? = null;
+        runBlocking {
+            bank = bankRepository.findByFinverseId(finverseId)
+        }
+
+        return bank ?: throw FinverseException("Bank not found")
     }
 
     private fun findAccountByExternalId(externalId: String): Account? {

@@ -7,11 +7,12 @@ import sg.flow.models.finverse.FinverseInstitution
 @Component
 class FinverseInstitutionToBankMapper : Mapper<FinverseInstitution, Bank> {
 
-    override fun map(input: FinverseInstitution): Bank {
+    fun map(input: FinverseInstitution): Bank {
         return Bank(
                 id = null, // Will be set by database
                 name = input.institutionName,
-                bankCode = generateBankCode(input)
+                bankCode = generateBankCode(input),
+                finverseId = input.institutionId
         )
     }
 

@@ -44,23 +44,23 @@ class InjectTestData(
     override fun run(vararg args: String) = runBlocking {
         println("Starting test data injection...")
 
-        clearTestData()
-        println("Cleared existing test data.")
+//        clearTestData()
+//        println("Cleared existing test data.")
 
         injectUserData()
         println("Injected user data.")
 
-        injectBankData()
-        println("Injected bank data.")
+//        injectBankData()
+//        println("Injected bank data.")
 
-        injectAccountData()
-        println("Injected account data.")
-
-        injectCardData()
-        println("Injected card data.")
-
-        injectTransactionData()
-        println("Injected transaction data.")
+//        injectAccountData()
+//        println("Injected account data.")
+//
+//        injectCardData()
+//        println("Injected card data.")
+//
+//        injectTransactionData()
+//        println("Injected transaction data.")
 
         println("Test data injection completed successfully.")
     }

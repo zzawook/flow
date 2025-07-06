@@ -5,7 +5,7 @@ import sg.flow.models.finverse.responses.FinverseIdentityData
 
 class FinverseIdentityMapper : Mapper<FinverseIdentityData, User> {
 
-    override fun map(input: FinverseIdentityData): User {
+    fun map(input: FinverseIdentityData): User {
         val primaryAddress =
                 input.addresses?.firstOrNull { it.type == "primary" }
                         ?: input.addresses?.firstOrNull()

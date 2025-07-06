@@ -12,5 +12,7 @@ data class Bank(
     val name: String,
 
     @field:NotNull
-    val bankCode: String
+    val bankCode: String,
+
+    val finverseId: String? = null,
 ) 

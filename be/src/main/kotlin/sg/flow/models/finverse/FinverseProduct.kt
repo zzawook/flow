@@ -216,5 +216,14 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
                         INCOME_ESTIMATION,
                         STATEMENTS
                 )
+
+        val supported: List<FinverseProduct> =
+                listOf(
+                    ACCOUNTS,
+                    ACCOUNT_NUMBERS,
+                    ONLINE_TRANSACTIONS,
+                    HISTORICAL_TRANSACTIONS,
+
+                )
     }
 }

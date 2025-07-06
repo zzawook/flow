@@ -34,9 +34,11 @@ class Bootstrap(private val databaseClient: DatabaseClient, private val finverse
                     .fetch()
                     .awaitRowsUpdated()   // suspend until the update completes
             }
+
+            finverseQueryService.fetchInstitutionData()
         }
 
-        finverseQueryService.fetchInstitutionData()
+
 
         println("R2DBC Bootstrap completed – schema applied.")
     }

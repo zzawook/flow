@@ -6,26 +6,27 @@ import sg.flow.entities.Bank
 import sg.flow.entities.User
 import sg.flow.entities.utils.AccountType
 import sg.flow.models.finverse.responses.FinverseAccountData
+import sg.flow.models.finverse.responses.FinverseInstitutionForAccountResponse
 
 class FinverseAccountToAccountMapper(
         private val userMapper: (String) -> User,
-        private val bankMapper: (String, String?) -> Bank
+        private val bankMapper: (String) -> Bank
 ) : Mapper<FinverseAccountData, Account> {
 
-    override fun map(input: FinverseAccountData): Account {
+    fun map(input: FinverseAccountData, institution: FinverseInstitutionForAccountResponse, loginIdentityId: String): Account {
         return Account(
                 id = null,
-                accountNumber = input.accountNumber,
-                bank = bankMapper(input.institutionName, input.bankCode),
+                accountNumber = input.accountNumberMasked,
+                bank = bankMapper(institution.institutionId),
                 owner =
                         userMapper(
-                                input.accountId
+                                loginIdentityId
                         ), // This would need to be mapped from user context
-                balance = input.balance,
+                balance = input.balance.amount,
                 accountName = input.accountName,
-                accountType = mapAccountType(input.accountType),
-                interestRatePerAnnum = input.interestRate ?: 0.0,
-                lastUpdated = input.lastUpdated ?: LocalDateTime.now(),
+                accountType = mapAccountType(input.accountType.type),
+                interestRatePerAnnum = 0.0, // CANNOT BE IMPLEMENTED NOW DUE TO FINVERSE DATA API's NOT SUPPORTING
+                lastUpdated = LocalDateTime.now(),
                 finverseId = input.accountId
         )
     }

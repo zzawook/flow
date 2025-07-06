@@ -4,7 +4,7 @@ import sg.flow.entities.Card
 import sg.flow.models.finverse.FinverseCardDetail
 
 class FinverseCardDetailToCardMapper : Mapper<FinverseCardDetail, Card> {
-    override fun map(input: FinverseCardDetail): Card {
+    fun map(input: FinverseCardDetail): Card {
         TODO("Not yet implemented")
     }
 }

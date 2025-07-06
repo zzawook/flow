@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import sg.flow.models.finverse.FinverseAuthenticationEventTypeParser
 import sg.flow.models.finverse.FinverseEventTypeParser
+import sg.flow.models.finverse.FinverseProduct
 import sg.flow.models.finverse.webhook_events.FinverseWebhookEvent
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseAuthEventPublisher
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseDataRetrievalRequestsManager
@@ -23,26 +24,24 @@ class FinverseWebhookController(
 
     @PostMapping
     suspend fun handleWebhook(
-//        @RequestHeader("FV_SIGNATURE") signature: String,
-//        @RequestHeader("X-Finverse-Timestamp") timestamp: String,
         @RequestBody rawBody: ByteArray
     ): ResponseEntity<Void> {
-        println("webhookReceived")
-//        verifier.verify(signature, timestamp, rawBody)
 
         val event = objectMapper.readValue(rawBody, FinverseWebhookEvent::class.java)
+        println("webhookReceived: $event")
 
         if (isAuthenticationEvent(event.event_type)) {
             FinverseAuthenticationEventTypeParser.parse(event.event_type)?.let { _ ->
                 authPublisher.publish(event)
             }
+
         } else {
             FinverseEventTypeParser.parse(event.event_type)?.let { ps ->
-                finverseDataRetrievalRequestsManager.updateAndFetchIfSuccess(event.loginIdentityId, ps.product, ps.status)
+                if (ps.product in FinverseProduct.supported) {
+                    finverseDataRetrievalRequestsManager.updateAndFetchIfSuccess(event.loginIdentityId, ps.product, ps.status)
+                }
             }
         }
-
-
 
         return ResponseEntity.ok().build()
     }

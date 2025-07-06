@@ -10,52 +10,26 @@ class FinverseTransactionToTransactionHistoryMapper(
         private val cardMapper: (String?) -> BriefCard?
 ) : Mapper<FinverseTransactionData, TransactionHistory> {
 
-    override fun map(input: FinverseTransactionData): TransactionHistory {
+    fun map(input: FinverseTransactionData): TransactionHistory {
         return TransactionHistory(
                 id = null,
                 transactionReference = input.reference ?: input.transactionId,
                 account = accountMapper(input.accountId),
-                card = cardMapper(input.cardNumber),
-                transactionDate = input.date,
-                transactionTime = input.time,
-                amount = input.amount,
-                transactionType = mapTransactionType(input.transactionType),
+                card = null,
+                transactionDate = input.transactionDate,
+                transactionTime = input.transactionTime,
+                amount = input.amount.value,
+                transactionType = "", // TO BE LATER POPULATED WITH AMAZON BEDROCK
                 description = input.description,
-                transactionStatus = mapTransactionStatus(input.status),
-                friendlyDescription = generateFriendlyDescription(input)
+                transactionStatus = mapTransactionStatus(input.isPending),
+                friendlyDescription = "" // TO BE LATER POPULATED WITH AMAZON BEDROCK
         )
     }
 
-    private fun mapTransactionType(finverseType: String): String {
-        return when (finverseType.uppercase()) {
-            "CREDIT", "DEPOSIT", "INCOMING" -> "CREDIT"
-            "DEBIT", "WITHDRAWAL", "OUTGOING" -> "DEBIT"
-            "TRANSFER_IN", "TRANSFER_OUT" -> "TRANSFER"
-            "PAYMENT" -> "PAYMENT"
-            "FEE", "CHARGE" -> "FEE"
-            else -> finverseType.uppercase()
-        }
-    }
+    private fun mapTransactionStatus(isPending: Boolean): String {
+        if (isPending)
+            return "PENDING"
+        return "COMPLETE"
 
-    private fun mapTransactionStatus(finverseStatus: String): String {
-        return when (finverseStatus.uppercase()) {
-            "COMPLETED", "SETTLED", "POSTED" -> "COMPLETED"
-            "PENDING", "PROCESSING" -> "PENDING"
-            "FAILED", "DECLINED" -> "FAILED"
-            "CANCELLED", "CANCELED" -> "CANCELLED"
-            else -> finverseStatus.uppercase()
-        }
-    }
-
-    private fun generateFriendlyDescription(input: FinverseTransactionData): String {
-        val merchantName = input.merchantName
-        val category = input.transactionCategory
-        val description = input.description
-
-        return when {
-            !merchantName.isNullOrBlank() -> merchantName
-            !category.isNullOrBlank() -> "$category - $description"
-            else -> description
-        }
     }
 }
