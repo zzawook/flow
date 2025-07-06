@@ -47,4 +47,18 @@ class FinverseAuthCache {
 
         return -1
     }
+
+    suspend fun getLoginIdentityTokenWithLoginIdentityID(loginIdentityId: String): String {
+        val map = userIdTologinIdentityCache.get()
+
+        for ((userId, innerMap) in map) {
+            for ((institutionId, loginIdentityCredential) in innerMap) {
+                if (loginIdentityCredential.loginIdentityId == loginIdentityId) {
+                    return loginIdentityCredential.loginIdentityToken
+                }
+            }
+        }
+
+        return ""
+    }
 }

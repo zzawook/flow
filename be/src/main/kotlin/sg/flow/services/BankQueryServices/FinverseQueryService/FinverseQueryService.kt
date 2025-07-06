@@ -70,12 +70,11 @@ class FinverseQueryService(
             .bodyToMono(Array<FinverseInstitution>::class.java)
             .map { institutions ->
                 institutions.map { institution ->
-                    println(institution.institutionName)
-                    val bank = finverseResponseProcessor.processInstitutionResponse(institution)
                     runBlocking {
+                        val bank = finverseResponseProcessor.processInstitutionResponse(institution)
                         bankRepositoryImpl.save(bank)
+                        bank
                     }
-                    bank
                 }
             }.block()
 

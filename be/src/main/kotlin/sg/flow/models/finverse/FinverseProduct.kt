@@ -1,6 +1,7 @@
 package sg.flow.models.finverse
 
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBody
 import sg.flow.models.finverse.responses.*
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseResponseProcessor
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
@@ -9,6 +10,7 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
     /** Every product must implement its own fetch logic (or share a default). */
     abstract suspend fun fetch(
             loginIdentityId: String,
+            loginIdentityToken: String,
             finverseResponseProcessor: FinverseResponseProcessor,
             finverseWebclient: WebClient
     )
@@ -16,28 +18,26 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
     object ACCOUNTS : FinverseProduct("ACCOUNTS", "accounts") {
         override suspend fun fetch(
                 loginIdentityId: String,
+                loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            val response =
+            val response: FinverseAccountResponse =
                     finverseWebclient
                             .get()
-                            .uri("/$apiEndpoint/$loginIdentityId")
+                            .uri("/$apiEndpoint")
+                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
                             .retrieve()
-                            .bodyToMono(FinverseAccountResponse::class.java)
-                            .block()
+                            .awaitBody()
 
-            val accountList = response?.let { finverseResponseProcessor.processAccountsResponseIntoAccountList(response) }
-
-            if (accountList == null) {
-                throw FinverseException("ACCOUNT LIST FAILED TO PARSE")
-            }
+            val accountList = response.let { finverseResponseProcessor.processAccountsResponseIntoAccountList(response) }
 
             for (account in accountList) {
                 val accountNumber = FinverseProduct.ACCOUNT_NUMBERS.fetchAccountNumberForAccountId(
                     finverseWebclient,
                     account.finverseId ?: "", // WILL ALWAYS HAVE FINVERSE ID
-                    loginIdentityId
+                    loginIdentityId,
+                    loginIdentityToken
                 )
 
                 account.accountNumber = accountNumber
@@ -50,29 +50,31 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
     object ACCOUNT_NUMBERS : FinverseProduct("ACCOUNT_NUMBERS", "account_numbers") {
         override suspend fun fetch(
                 loginIdentityId: String,
+                loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            // DOES NOT HAVE EXPLICIT FETCH METHOD FOR ACCOUNT NUMBERS
+            FinverseProduct.ACCOUNTS.fetch(
+                loginIdentityId,
+                loginIdentityToken,
+                finverseResponseProcessor,
+                finverseWebclient
+            )
         }
 
         suspend fun fetchAccountNumberForAccountId(
                 finverseWebClient: WebClient,
                 accountId: String,
-                loginIdentityId: String
+                loginIdentityId: String,
+                loginIdentityToken: String
         ): String {
-            val response =
+            val response: FinverseAccountNumberResponse =
                     finverseWebClient
                             .get()
                             .uri("/$apiEndpoint/$accountId")
-                            .headers { it -> it.setBearerAuth(loginIdentityId) }
+                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
                             .retrieve()
-                            .bodyToMono(FinverseAccountNumberResponse::class.java)
-                            .block()
-
-            if (response == null) {
-                throw FinverseException("ACCOUNT NUMBER NOT FETCHED")
-            }
+                            .awaitBody()
 
             return response.accountNumber.accountNumberRaw
         }
@@ -81,117 +83,123 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
     object ONLINE_TRANSACTIONS : FinverseProduct("ONLINE_TRANSACTIONS", "transactions") {
         override suspend fun fetch(
                 loginIdentityId: String,
+                loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
             // perhaps use a query param or header specific to online vs. historical
-            val response =
+            val response: FinverseTransactionResponse =
                     finverseWebclient
                             .get()
                             .uri { builder ->
-                                builder.path("/$apiEndpoint/$loginIdentityId")
+                                builder.path("/$apiEndpoint")
                                         .queryParam("type", "online")
                                         .build()
                             }
+                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
                             .retrieve()
-                            .bodyToMono(FinverseTransactionResponse::class.java)
-                            .block()
+                            .awaitBody()
 
-            response?.let { finverseResponseProcessor.processTransactionsResponse(response) }
+            response.let { finverseResponseProcessor.processTransactionsResponse(response) }
         }
     }
 
     object HISTORICAL_TRANSACTIONS : FinverseProduct("HISTORICAL_TRANSACTIONS", "transactions") {
         override suspend fun fetch(
                 loginIdentityId: String,
+                loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            val response =
+            val response: FinverseTransactionResponse =
                     finverseWebclient
                             .get()
                             .uri { builder ->
-                                builder.path("/$apiEndpoint/$loginIdentityId")
+                                builder.path("/$apiEndpoint")
                                         .queryParam("type", "history")
                                         .build()
                             }
+                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
                             .retrieve()
-                            .bodyToMono(FinverseTransactionResponse::class.java)
-                            .block()
+                            .awaitBody()
 
-            response?.let { finverseResponseProcessor.processTransactionsResponse(response) }
+            response.let { finverseResponseProcessor.processTransactionsResponse(response) }
         }
     }
 
     object IDENTITY : FinverseProduct("IDENTITY", "identity") {
         override suspend fun fetch(
                 loginIdentityId: String,
+                loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            val response =
+            val response: FinverseIdentityResponse =
                     finverseWebclient
                             .get()
-                            .uri("/$apiEndpoint/$loginIdentityId")
+                            .uri("/$apiEndpoint")
+                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
                             .retrieve()
-                            .bodyToMono(FinverseIdentityResponse::class.java)
-                            .block()
+                            .awaitBody()
 
-            response?.let { finverseResponseProcessor.processIdentityResponse(response) }
+            response.let { finverseResponseProcessor.processIdentityResponse(response) }
         }
     }
 
     object BALANCE_HISTORY : FinverseProduct("BALANCE_HISTORY", "balance_history") {
         override suspend fun fetch(
                 loginIdentityId: String,
+                loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            val response =
+            val response: FinverseBalanceHistoryResponse =
                     finverseWebclient
                             .get()
-                            .uri("/$apiEndpoint/$loginIdentityId")
+                            .uri("/$apiEndpoint")
+                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
                             .retrieve()
-                            .bodyToMono(FinverseBalanceHistoryResponse::class.java)
-                            .block()
+                            .awaitBody()
 
-            response?.let { finverseResponseProcessor.processBalanceHistoryResponse(response) }
+            response.let { finverseResponseProcessor.processBalanceHistoryResponse(response) }
         }
     }
 
     object INCOME_ESTIMATION : FinverseProduct("INCOME_ESTIMATION", "income") {
         override suspend fun fetch(
                 loginIdentityId: String,
+                loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            val response =
+            val response: FinverseIncomeEstimationResponse =
                     finverseWebclient
                             .get()
-                            .uri("/$apiEndpoint/$loginIdentityId")
+                            .uri("/$apiEndpoint")
+                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
                             .retrieve()
-                            .bodyToMono(FinverseIncomeEstimationResponse::class.java)
-                            .block()
+                            .awaitBody()
 
-            response?.let { finverseResponseProcessor.processIncomeEstimationResponse(response) }
+            response.let { finverseResponseProcessor.processIncomeEstimationResponse(response) }
         }
     }
 
     object STATEMENTS : FinverseProduct("STATEMENTS", "statements") {
         override suspend fun fetch(
                 loginIdentityId: String,
+                loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            val response =
+            val response: FinverseStatementsResponse =
                     finverseWebclient
                             .get()
-                            .uri("/$apiEndpoint/$loginIdentityId")
+                            .uri("/$apiEndpoint")
+                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
                             .retrieve()
-                            .bodyToMono(FinverseStatementsResponse::class.java)
-                            .block()
+                            .awaitBody()
 
-            response?.let { finverseResponseProcessor.processStatementsResponse(response) }
+            response.let { finverseResponseProcessor.processStatementsResponse(response) }
         }
     }
 

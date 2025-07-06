@@ -54,6 +54,8 @@ class FinverseDataRetrievalRequestsManager(
             status: FinverseRetrievalStatus
     ) {
         val userId = finverseAuthCache.getUserId(loginIdentityId)
+        var loginIdentityToken = finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
+
 
         if (userId < 0) {
             return
@@ -69,6 +71,7 @@ class FinverseDataRetrievalRequestsManager(
         if (finverseShouldFetchDecider.shouldFetch(finverseDataRetrievalRequest, product, status)) {
             product.fetch(
                 loginIdentityId,
+                loginIdentityToken,
                 finverseResponseProcessor,
                 finverseWebClient
             )
