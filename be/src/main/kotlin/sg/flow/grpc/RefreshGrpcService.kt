@@ -35,7 +35,7 @@ class RefreshGrpcService(
             link = finverseQueryService.generateLinkUrl(userId, institutionId, automaticRefresh=request.automaticRefresh)
         }
         else {
-            val link = finverseQueryService.generateLinkUrl(userId, institutionId)
+            link = finverseQueryService.generateLinkUrl(userId, institutionId)
         }
 
         return GetRefreshUrlResponse.newBuilder().setRefreshUrl(link).build()

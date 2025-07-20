@@ -17,7 +17,9 @@ class FinverseShouldFetchDecider() {
             FinverseProduct.ONLINE_TRANSACTIONS ->
                 shouldFetchTransaction(finverseDataRetrievalRequest)
             FinverseProduct.ACCOUNTS ->
-                shouldFetchAccountNumber(finverseDataRetrievalRequest)
+                shouldFetchAccount(finverseDataRetrievalRequest)
+            FinverseProduct.ACCOUNT_NUMBERS ->
+                shouldFetchAccount(finverseDataRetrievalRequest)
             else -> return true
         }
     }
@@ -28,11 +30,7 @@ class FinverseShouldFetchDecider() {
         return finverseDataRetrievalRequest.isBothTransactionComplete()
     }
 
-    private fun shouldFetchAccountNumber(finverseDataRetrievalRequest: FinverseDataRetrievalRequest): Boolean {
-        return finverseDataRetrievalRequest.isAccountComplete()
-    }
-
     private fun shouldFetchAccount(finverseDataRetrievalRequest: FinverseDataRetrievalRequest): Boolean {
-        return finverseDataRetrievalRequest.isAccountNumberComplete()
+        return finverseDataRetrievalRequest.isAccountNumberComplete() && finverseDataRetrievalRequest.isAccountComplete()
     }
 }

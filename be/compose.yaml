@@ -6,7 +6,7 @@ services:
       - 'POSTGRES_PASSWORD=flowdev123'
       - 'POSTGRES_USER=flow_developer'
     ports:
-      - '5432'
+      - '5432:5432'
   redis:
     image: 'redis:latest'
     ports:

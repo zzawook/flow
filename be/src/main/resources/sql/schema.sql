@@ -78,7 +78,8 @@ CREATE TABLE IF NOT EXISTS transaction_histories (
     transaction_type VARCHAR(255) NOT NULL,
     description VARCHAR(255) DEFAULT '',
     transaction_status VARCHAR(255) NOT NULL,
-    friendly_description VARCHAR(255) DEFAULT ''
+    friendly_description VARCHAR(255) DEFAULT '',
+    is_processed BOOLEAN DEFAULT false
 );
 
 CREATE INDEX IF NOT EXISTS transaction_histories_index_by ON transaction_histories (user_id, transaction_date);

@@ -1,6 +1,7 @@
 package sg.flow.models.finverse
 
 enum class FinverseRetrievalStatus {
+    NOT_YET,
     RETRIEVED,
     RETRIEVAL_FAILED,
     PARTIALLY_RETRIEVED,

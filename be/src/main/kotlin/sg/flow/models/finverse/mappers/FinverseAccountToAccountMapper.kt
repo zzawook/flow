@@ -21,10 +21,10 @@ class FinverseAccountToAccountMapper(
                 owner =
                         userMapper(
                                 loginIdentityId
-                        ), // This would need to be mapped from user context
+                        ),
                 balance = input.balance.amount,
                 accountName = input.accountName,
-                accountType = mapAccountType(input.accountType.type),
+                accountType = mapAccountType(input.accountType.subtype),
                 interestRatePerAnnum = 0.0, // CANNOT BE IMPLEMENTED NOW DUE TO FINVERSE DATA API's NOT SUPPORTING
                 lastUpdated = LocalDateTime.now(),
                 finverseId = input.accountId

@@ -19,5 +19,6 @@ data class TransactionHistory(
         @field:NotBlank val transactionType: String,
         val description: String = "",
         @field:NotBlank val transactionStatus: String,
-        val friendlyDescription: String = ""
+        val friendlyDescription: String = "",
+        val transactionCategory: String = ""
 )

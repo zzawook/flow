@@ -12,6 +12,7 @@ import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseInstitution
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
+import sg.flow.models.finverse.FinverseProduct
 import sg.flow.models.finverse.FinverseProductRetrieval
 import sg.flow.models.finverse.responses.CustomerTokenResponse
 import sg.flow.models.finverse.responses.LinkTokenResponse
@@ -163,7 +164,21 @@ class FinverseQueryService(
             .bodyToMono(LoginIdentityResponse::class.java)
             .awaitSingle()
 
-        val requestedProduct: List<FinverseProductRetrieval> = listOf()
+        val requestedProduct: List<FinverseProductRetrieval> = listOf(
+                FinverseProductRetrieval(
+                    FinverseProduct.ACCOUNTS
+                ),
+                FinverseProductRetrieval(
+                    FinverseProduct.ACCOUNT_NUMBERS
+                ),
+                FinverseProductRetrieval(
+                    FinverseProduct.HISTORICAL_TRANSACTIONS
+                ),
+                FinverseProductRetrieval(
+                    FinverseProduct.ONLINE_TRANSACTIONS
+                ),
+            )
+
 
         println("Saving LoginIdentity: ${loginIdentityResponse.loginIdentityToken}")
         finverseAuthCache.saveLoginIdentityToken(
@@ -188,9 +203,6 @@ class FinverseQueryService(
 
         val loginIdentityId = loginIdentityCredential?.loginIdentityId
         val loginIdentityToken = loginIdentityCredential?.loginIdentityToken
-
-        println(loginIdentityId)
-        println(loginIdentityToken)
 
         if (loginIdentityId == null || loginIdentityToken == null) {
             return FinverseAuthenticationStatus.AUTHENTICATION_FAILED

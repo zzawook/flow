@@ -69,6 +69,8 @@ class FinverseDataRetrievalRequest(
         for (finverseProductRetrieval in requestedProducts) {
             when (finverseProductRetrieval.getProduct()) {
                 FinverseProduct.ACCOUNTS -> {
+                    println("ACCOUNT COMPLETE?:")
+                    println(finverseProductRetrieval.isComplete())
                     return finverseProductRetrieval.isComplete()
                 }
                 else -> {}
@@ -82,6 +84,8 @@ class FinverseDataRetrievalRequest(
         for (finverseProductRetrieval in requestedProducts) {
             when (finverseProductRetrieval.getProduct()) {
                 FinverseProduct.ACCOUNT_NUMBERS -> {
+                    println("ACCOUNT NUMBER COMPLETE?:")
+                    println(finverseProductRetrieval.isComplete())
                     return finverseProductRetrieval.isComplete()
                 }
                 else -> {}

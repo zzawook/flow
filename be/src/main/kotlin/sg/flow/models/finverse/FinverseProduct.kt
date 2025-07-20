@@ -22,6 +22,7 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
+            println("FETCHING ACCOUNT")
             val response: FinverseAccountResponse =
                     finverseWebclient
                             .get()
@@ -33,7 +34,7 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
             val accountList = response.let { finverseResponseProcessor.processAccountsResponseIntoAccountList(response) }
 
             for (account in accountList) {
-                val accountNumber = FinverseProduct.ACCOUNT_NUMBERS.fetchAccountNumberForAccountId(
+                val accountNumber = ACCOUNT_NUMBERS.fetchAccountNumberForAccountId(
                     finverseWebclient,
                     account.finverseId ?: "", // WILL ALWAYS HAVE FINVERSE ID
                     loginIdentityId,
@@ -54,7 +55,7 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            FinverseProduct.ACCOUNTS.fetch(
+            ACCOUNTS.fetch(
                 loginIdentityId,
                 loginIdentityToken,
                 finverseResponseProcessor,
@@ -217,13 +218,12 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
                         STATEMENTS
                 )
 
-        val supported: List<FinverseProduct> =
-                listOf(
-                    ACCOUNTS,
-                    ACCOUNT_NUMBERS,
-                    ONLINE_TRANSACTIONS,
-                    HISTORICAL_TRANSACTIONS,
-
-                )
+        val supported: List<FinverseProduct>
+            get() = listOf(
+                ACCOUNTS,
+                ACCOUNT_NUMBERS,
+                ONLINE_TRANSACTIONS,
+                HISTORICAL_TRANSACTIONS
+            )
     }
 }

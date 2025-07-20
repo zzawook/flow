@@ -8,4 +8,5 @@ import sg.flow.repositories.Repository
 interface AccountRepository : Repository<Account, Long> {
     suspend fun findBriefAccountsOfUser(userId: Int): List<BriefAccount>
     suspend fun findAccountWithTransactionHistorysOfUser(userId: Int): List<AccountWithTransactionHistory>
+    suspend fun findByFinverseAccountId(finverseAccountId: String): Account?
 } 

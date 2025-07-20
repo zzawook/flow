@@ -34,11 +34,12 @@ class AccountRepositoryImpl(
                                 .bind(0, entity.id!!)
                                 .bind(1, entity.accountNumber)
                                 .bind(2, entity.bank.id!!)
-                                .bind(3, entity.owner?.id!!)
+                                .bind(3, entity.owner.id!!)
                                 .bind(4, entity.balance)
                                 .bind(5, entity.accountName)
                                 .bind(6, entity.accountType.toString())
                                 .bind(7, entity.lastUpdated)
+                                .bind(8, entity.finverseId ?: "")
                                 .fetch()
                                 .awaitRowsUpdated()
                 } else {
@@ -46,11 +47,12 @@ class AccountRepositoryImpl(
                                 .sql(queryString)
                                 .bind(0, entity.accountNumber)
                                 .bind(1, entity.bank.id!!)
-                                .bind(2, entity.owner?.id!!)
+                                .bind(2, entity.owner.id!!)
                                 .bind(3, entity.balance)
                                 .bind(4, entity.accountName)
                                 .bind(5, entity.accountType.toString())
                                 .bind(6, entity.lastUpdated)
+                                .bind(7, entity.finverseId ?: "")
                                 .fetch()
                                 .awaitRowsUpdated()
                 }
@@ -287,5 +289,101 @@ class AccountRepositoryImpl(
                 }
 
                 return accounts
+        }
+
+        override suspend fun findByFinverseAccountId(finverseAccountId: String): Account? {
+                val account = databaseClient
+                        .sql(AccountQueryStore.FIND_ACCOUNT_BY_FINVERSE_ID)
+                        .bind(0, finverseAccountId)
+                        .map {
+                                row -> Account(
+                                        id = row.get("id", Long::class.java)!!,
+                                        accountNumber =
+                                                row.get("account_number", String::class.java)!!,
+                                        balance = row.get("balance", Double::class.java)!!,
+                                        accountName = row.get("account_name", String::class.java)!!,
+                                        accountType =
+                                                AccountType.valueOf(
+                                                        row.get(
+                                                                "account_type",
+                                                                String::class.java
+                                                        )!!
+                                                ),
+                                        lastUpdated =
+                                                row.get(
+                                                        "last_updated",
+                                                        LocalDateTime::class.java
+                                                )!!,
+                                        interestRatePerAnnum =
+                                                row.get(
+                                                        "interest_rate_per_annum",
+                                                        Double::class.java
+                                                )!!,
+                                        bank =
+                                                Bank(
+                                                        id = row.get("bank_id", Int::class.java)!!,
+                                                        name =
+                                                                row.get(
+                                                                        "bank_name",
+                                                                        String::class.java
+                                                                )!!,
+                                                        bankCode =
+                                                                row.get(
+                                                                        "bank_code",
+                                                                        String::class.java
+                                                                )!!
+                                                ),
+                                        finverseId = row.get(
+                                                "finverse_id",
+                                                String::class.java
+                                        ),
+                                        owner =
+                                                User(
+                                                        id = row.get("user_id", Int::class.java)!!,
+                                                        name =
+                                                                row.get(
+                                                                        "name",
+                                                                        String::class.java
+                                                                )!!,
+                                                        email =
+                                                                row.get(
+                                                                        "email",
+                                                                        String::class.java
+                                                                )!!,
+                                                        identificationNumber =
+                                                                row.get(
+                                                                        "identification_number",
+                                                                        String::class.java
+                                                                )!!,
+                                                        phoneNumber =
+                                                                row.get(
+                                                                        "phone_number",
+                                                                        String::class.java
+                                                                )!!,
+                                                        dateOfBirth =
+                                                                row.get(
+                                                                        "date_of_birth",
+                                                                        java.time.LocalDate::class
+                                                                                .java
+                                                                )!!,
+                                                        address =
+                                                                row.get(
+                                                                        "address",
+                                                                        String::class.java
+                                                                )
+                                                                        ?: "",
+                                                        settingJson =
+                                                                row.get(
+                                                                        "setting_json",
+                                                                        String::class.java
+                                                                )
+                                                                        ?: "{}"
+                                                )
+                                )
+                        }
+                        .one()
+                        .awaitFirstOrNull()
+
+                return account
         }
 }

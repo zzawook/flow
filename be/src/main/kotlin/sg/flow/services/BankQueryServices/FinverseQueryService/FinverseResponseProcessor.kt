@@ -37,17 +37,9 @@ class FinverseResponseProcessor(
 
     private val transactionMapper =
             FinverseTransactionToTransactionHistoryMapper(
-                    accountMapper = { accountId -> findAccountByExternalId(accountId) },
+                    accountMapper = { accountId -> findAccountByFinverseId(accountId) },
                     cardMapper = { cardNumber -> findCardByNumber(cardNumber) }
             )
-
-//    private val accountNumberMapper =
-//            FinverseAccountNumberMapper(
-//                    userMapper = { accountId -> findOrCreateUser(accountId) },
-//                    bankMapper = { institutionName, bankCode ->
-//                        findOrCreateBank(institutionName, bankCode)
-//                    }
-//            )
 
     private val identityMapper = FinverseIdentityMapper()
 
@@ -56,6 +48,7 @@ class FinverseResponseProcessor(
     /** Process accounts response and convert to domain entities */
     suspend fun processAccountList(accountList: List<Account>) {
         for (account in accountList) {
+            println("Saving Account: $account")
             accountRepository.save(account)
         }
     }
@@ -149,9 +142,12 @@ class FinverseResponseProcessor(
         return bank ?: throw FinverseException("Bank not found")
     }
 
-    private fun findAccountByExternalId(externalId: String): Account? {
-        // Implementation would look up account by external ID
-        return null
+    private fun findAccountByFinverseId(externalId: String): Account? {
+        var account: Account? = null;
+        runBlocking {
+            account = accountRepository.findByFinverseAccountId(externalId)
+        }
+        return account ?: throw FinverseException("Account Not Found");
     }
 
     private fun findCardByNumber(cardNumber: String?): BriefCard? {
