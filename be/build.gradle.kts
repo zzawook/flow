@@ -81,6 +81,7 @@ dependencies {
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+	testImplementation("io.mockk:mockk:1.13.8")
 
 	testRuntimeOnly("io.r2dbc:r2dbc-h2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

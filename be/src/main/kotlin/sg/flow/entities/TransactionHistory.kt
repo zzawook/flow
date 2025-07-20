@@ -1,5 +1,6 @@
 package sg.flow.entities
 
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 import java.time.LocalTime
@@ -9,14 +10,14 @@ import sg.flow.models.card.BriefCard
 
 data class TransactionHistory(
         @field:Id val id: Long?,
-        @field:NotNull val transactionReference: String,
+        @field:NotBlank val transactionReference: String,
         val account: Account? = null,
         val card: BriefCard? = null,
         @field:NotNull val transactionDate: LocalDate,
         val transactionTime: LocalTime? = null,
         @field:NotNull val amount: Double,
-        @field:NotNull val transactionType: String,
+        @field:NotBlank val transactionType: String,
         val description: String = "",
-        @field:NotNull val transactionStatus: String,
+        @field:NotBlank val transactionStatus: String,
         val friendlyDescription: String = ""
 )

@@ -1,5 +1,6 @@
 package sg.flow.entities
 
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDateTime
 import org.springframework.data.annotation.Id
@@ -9,11 +10,11 @@ import sg.flow.entities.utils.AccountType
 data class Account(
         @field:Id val id: Long?,
         val finverseId: String?,
-        @field:NotNull var accountNumber: String,
+        @field:NotBlank var accountNumber: String,
         @field:NotNull val bank: Bank,
         @field:NotNull val owner: User,
         @field:NotNull val balance: Double,
-        @field:NotNull val accountName: String,
+        @field:NotBlank val accountName: String,
         @field:NotNull val accountType: AccountType,
         @field:NotNull val interestRatePerAnnum: Double = 0.0,
         @field:NotNull val lastUpdated: LocalDateTime
