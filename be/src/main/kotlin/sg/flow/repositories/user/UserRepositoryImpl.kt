@@ -121,8 +121,6 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
         WHERE id = $3
     """.trimIndent()
 
-        // 1) println before to confirm we enter the method
-        println("updateUserProfile called for userId=$userId")
 
         // 2) bind & execute, without .fetch()
         val rowsUpdated = databaseClient
@@ -134,7 +132,6 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
             .rowsUpdated()
             .awaitSingle()
 
-        println("HERE — rowsUpdated = $rowsUpdated")
 
         if (rowsUpdated == 0L) {
             throw RuntimeException("User with id $userId not found")

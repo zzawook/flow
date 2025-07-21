@@ -20,5 +20,6 @@ data class TransactionHistory(
         val description: String = "",
         @field:NotBlank val transactionStatus: String,
         val friendlyDescription: String = "",
-        val transactionCategory: String = ""
+        val transactionCategory: String = "",
+        val finverseId: String,
 )

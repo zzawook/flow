@@ -30,6 +30,8 @@ class FinverseTimeoutWatcher(
                     .filter { it.loginIdentityId == loginIdentityId && it.event_type == "AUTHENTICATED" }
                     .first()
             }
+            println("HERE IS THE EVENT")
+            println(event)
             FinverseAuthenticationEventTypeParser
                 .parse(event.event_type)
                 ?: FinverseAuthenticationStatus.AUTHENTICATION_FAILED

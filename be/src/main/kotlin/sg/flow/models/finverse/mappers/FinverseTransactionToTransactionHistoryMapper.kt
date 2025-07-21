@@ -24,7 +24,8 @@ class FinverseTransactionToTransactionHistoryMapper(
                 transactionType = "", // TO BE LATER POPULATED WITH AMAZON BEDROCK
                 description = input.description,
                 transactionStatus = mapTransactionStatus(input.isPending),
-                friendlyDescription = "" // TO BE LATER POPULATED WITH AMAZON BEDROCK
+                friendlyDescription = "", // TO BE LATER POPULATED WITH AMAZON BEDROCK,
+                finverseId = input.transactionId
         )
     }
 

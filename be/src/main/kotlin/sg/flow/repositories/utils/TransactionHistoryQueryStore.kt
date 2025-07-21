@@ -4,15 +4,15 @@ object TransactionHistoryQueryStore {
     const val SAVE_TRANSACTION_HISTORY =
             """
         INSERT INTO transaction_histories 
-        (transaction_reference, account_id, card_id, user_id, transaction_date, transaction_time, amount, transaction_type, description, transaction_status, friendly_description) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        (transaction_reference, account_id, card_id, user_id, transaction_date, transaction_time, amount, transaction_type, description, transaction_status, friendly_description, finverse_id) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) ON CONFLICT (finverse_id) DO NOTHING RETURNING finverse_id
     """
 
     const val SAVE_TRANSACTION_HISTORY_WITH_ID =
             """
         INSERT INTO transaction_histories 
-        (id, transaction_reference, account_id, card_id, user_id, transaction_date, transaction_time, amount, transaction_type, description, transaction_status, friendly_description) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        (id, transaction_reference, account_id, card_id, user_id, transaction_date, transaction_time, amount, transaction_type, description, transaction_status, friendly_description, finverse_id) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)  ON CONFLICT (finverse_id) DO NOTHING RETURNING finverse_id
     """
 
     const val FIND_TRANSACTION_HISTORY_BY_ID =

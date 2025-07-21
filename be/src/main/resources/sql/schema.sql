@@ -36,8 +36,10 @@ CREATE TABLE IF NOT EXISTS accounts (
     account_type VARCHAR(255) NOT NULL,
     interest_rate_per_annum DECIMAL(10,5) NOT NULL DEFAULT 0,
     last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    finverse_id VARCHAR(255)
+    finverse_id VARCHAR(255) UNIQUE
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS finverse_id ON accounts (finverse_id);
 
 CREATE INDEX IF NOT EXISTS accounts_index_on_user_id ON accounts (user_id, id);
 
@@ -79,7 +81,8 @@ CREATE TABLE IF NOT EXISTS transaction_histories (
     description VARCHAR(255) DEFAULT '',
     transaction_status VARCHAR(255) NOT NULL,
     friendly_description VARCHAR(255) DEFAULT '',
-    is_processed BOOLEAN DEFAULT false
+    is_processed BOOLEAN DEFAULT false,
+    finverse_id VARCHAR(255) UNIQUE
 );
 
 CREATE INDEX IF NOT EXISTS transaction_histories_index_by ON transaction_histories (user_id, transaction_date);

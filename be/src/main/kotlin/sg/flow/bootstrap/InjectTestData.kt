@@ -278,8 +278,16 @@ class InjectTestData(
             transactionType      = data[7],
             description          = data[8],
             transactionStatus    = data[9],
-            friendlyDescription  = data[10]
+            friendlyDescription  = data[10],
+            finverseId = generateRandomString(255)
         )
+    }
+
+    private fun generateRandomString(length: Int = 255): String {
+        val allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        return (1..length)
+            .map { allowedChars.random() }
+            .joinToString("")
     }
 
 }

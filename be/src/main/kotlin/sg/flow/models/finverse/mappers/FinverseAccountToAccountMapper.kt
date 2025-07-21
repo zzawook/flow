@@ -6,6 +6,7 @@ import sg.flow.entities.Bank
 import sg.flow.entities.User
 import sg.flow.entities.utils.AccountType
 import sg.flow.models.finverse.responses.FinverseAccountData
+import sg.flow.models.finverse.responses.FinverseAccountType
 import sg.flow.models.finverse.responses.FinverseInstitutionForAccountResponse
 
 class FinverseAccountToAccountMapper(
@@ -24,15 +25,15 @@ class FinverseAccountToAccountMapper(
                         ),
                 balance = input.balance.amount,
                 accountName = input.accountName,
-                accountType = mapAccountType(input.accountType.subtype),
+                accountType = mapAccountType(input.accountType),
                 interestRatePerAnnum = 0.0, // CANNOT BE IMPLEMENTED NOW DUE TO FINVERSE DATA API's NOT SUPPORTING
                 lastUpdated = LocalDateTime.now(),
                 finverseId = input.accountId
         )
     }
 
-    private fun mapAccountType(finverseAccountType: String): AccountType {
-        return when (finverseAccountType.uppercase()) {
+    private fun mapAccountType(finverseAccountType: FinverseAccountType): AccountType {
+        return when (finverseAccountType.subtype.uppercase()) {
             "SAVINGS", "SAVINGS_ACCOUNT" -> AccountType.SAVINGS
             "CURRENT", "CHECKING", "CURRENT_ACCOUNT" -> AccountType.CURRENT
             "TIME_DEPOSIT", "FIXED_DEPOSIT", "CD" -> AccountType.TIME_DEPOSIT
@@ -40,6 +41,8 @@ class FinverseAccountToAccountMapper(
             "DEBIT_CARD" -> AccountType.DEBIT_CARD
             "MORTGAGE", "HOME_LOAN" -> AccountType.MORTGAGE
             "PERSONAL_LOAN" -> AccountType.PERSONAL_LOAN
+            "REVOLVING_LOAN" -> AccountType.REVOLVING_LOAN
+            "STOCKS" -> AccountType.STOCKS
             "INVESTMENT", "SECURITIES" -> AccountType.SECURITIES
             "RETIREMENT", "PENSION" -> AccountType.RETIREMENT
             else -> AccountType.OTHERS

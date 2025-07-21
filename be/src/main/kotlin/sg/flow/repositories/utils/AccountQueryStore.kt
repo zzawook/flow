@@ -5,14 +5,14 @@ object AccountQueryStore {
             """
         INSERT INTO accounts 
         (account_number, bank_id, user_id, balance, account_name, account_type, last_updated, finverse_id) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (finverse_id) DO NOTHING RETURNING finverse_id
     """
 
     const val SAVE_ACCOUNT_WITH_ID =
             """
         INSERT INTO accounts 
         (id, account_number, bank_id, user_id, balance, account_name, account_type, last_updated, finverse_id) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (finverse_id) DO NOTHING RETURNING finverse_id
     """
 
     const val FIND_ACCOUNT_BY_ID =

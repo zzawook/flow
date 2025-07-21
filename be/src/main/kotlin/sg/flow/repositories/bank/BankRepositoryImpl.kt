@@ -57,7 +57,6 @@ class BankRepositoryImpl(private val databaseClient: DatabaseClient) : BankRepos
                 .sql(BankQueryStore.FIND_BANK_BY_FINVERSE_ID)
                 .bind(0, finverseId)
                 .map { row ->
-                    println(row.get("bank_name", String::class.java))
                     Bank(
                         id = row.get("id", Int::class.java)!!,
                         name = row.get("bank_name", String::class.java)!!,

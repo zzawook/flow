@@ -48,7 +48,6 @@ class FinverseResponseProcessor(
     /** Process accounts response and convert to domain entities */
     suspend fun processAccountList(accountList: List<Account>) {
         for (account in accountList) {
-            println("Saving Account: $account")
             accountRepository.save(account)
         }
     }
@@ -144,10 +143,16 @@ class FinverseResponseProcessor(
 
     private fun findAccountByFinverseId(externalId: String): Account? {
         var account: Account? = null;
+
         runBlocking {
             account = accountRepository.findByFinverseAccountId(externalId)
         }
-        return account ?: throw FinverseException("Account Not Found");
+        if (account == null) {
+            println(externalId)
+
+        }
+
+        return account;
     }
 
     private fun findCardByNumber(cardNumber: String?): BriefCard? {

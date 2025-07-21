@@ -37,7 +37,6 @@ class FinverseWebhookController(
 
         } else {
             FinverseEventTypeParser.parse(event.event_type).let { ps ->
-                println(ps.product in FinverseProduct.supported)
                 if (ps.product in FinverseProduct.supported) {
                     finverseDataRetrievalRequestsManager.updateAndFetchIfSuccess(event.loginIdentityId, ps.product, ps.status)
                 }

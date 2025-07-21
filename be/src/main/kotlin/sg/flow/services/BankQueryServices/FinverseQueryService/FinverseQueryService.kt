@@ -164,20 +164,7 @@ class FinverseQueryService(
             .bodyToMono(LoginIdentityResponse::class.java)
             .awaitSingle()
 
-        val requestedProduct: List<FinverseProductRetrieval> = listOf(
-                FinverseProductRetrieval(
-                    FinverseProduct.ACCOUNTS
-                ),
-                FinverseProductRetrieval(
-                    FinverseProduct.ACCOUNT_NUMBERS
-                ),
-                FinverseProductRetrieval(
-                    FinverseProduct.HISTORICAL_TRANSACTIONS
-                ),
-                FinverseProductRetrieval(
-                    FinverseProduct.ONLINE_TRANSACTIONS
-                ),
-            )
+        val requestedProduct: List<FinverseProductRetrieval> = FinverseProduct.supported.map { it -> FinverseProductRetrieval(it) }
 
 
         println("Saving LoginIdentity: ${loginIdentityResponse.loginIdentityToken}")

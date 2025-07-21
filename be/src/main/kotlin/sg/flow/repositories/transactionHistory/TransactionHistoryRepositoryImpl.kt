@@ -42,12 +42,20 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
 
                 spec =
                         spec.bind(i++, entity.transactionReference) // $2 / $1
-                                .bind(i++, entity.account?.id!!) // account_id
+                                .let { s ->
+                                        entity.account?.id
+                                                ?.let { accId -> s.bind(i++, accId) }
+                                                ?: s.bindNull(i++, Long::class.java)
+                                }
                                 .let { s -> // card_id (nullable)
                                         entity.card?.id?.let { cardId -> s.bind(i++, cardId) }
                                                 ?: s.bindNull(i++, Long::class.java)
                                 }
-                                .bind(i++, entity.account.owner.id ?: -1)
+                                .let { s ->
+                                        entity.account?.owner
+                                                ?.let { owner -> s.bind(i++, owner.id ?: -1) }
+                                                ?: s.bindNull(i++, Int::class.java)
+                                }
                                 .bind(i++, entity.transactionDate) // LocalDate → DATE
                                 .let { s -> // LocalTime → TIME (nullable)
                                         entity.transactionTime?.let { time -> s.bind(i++, time) }
@@ -58,6 +66,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                 .bind(i++, entity.description)
                                 .bind(i++, entity.transactionStatus.toString())
                                 .bind(i++, entity.friendlyDescription)
+                                .bind(i++, entity.finverseId)
 
                 // ── execute ─────────────────────────────────────────────
                 runCatching {
@@ -282,6 +291,11 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                         friendlyDescription =
                                                                 row.get(
                                                                         "friendly_description",
+                                                                        String::class.java
+                                                                )!!,
+                                                        finverseId =
+                                                                row.get(
+                                                                        "finverse_id",
                                                                         String::class.java
                                                                 )!!
                                                 )
