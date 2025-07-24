@@ -35,6 +35,7 @@ class Bootstrap(private val databaseClient: DatabaseClient, private val finverse
                     .awaitRowsUpdated()   // suspend until the update completes
             }
 
+            // RUNNING THIS FUNCTION HERE TO AVOID DB QUERY FOR THIS FUNCTION TO RUN BEFORE DB TABLE INITIALIZATION
             finverseQueryService.fetchInstitutionData()
         }
 

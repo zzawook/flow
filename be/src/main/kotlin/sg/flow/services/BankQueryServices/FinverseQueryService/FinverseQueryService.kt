@@ -40,7 +40,6 @@ class FinverseQueryService(
 
     init {
         this.fetchCustomerToken()
-//        this.fetchInstitutionData()
     }
 
     private fun fetchCustomerToken() {
@@ -85,6 +84,10 @@ class FinverseQueryService(
             fetchCustomerToken()
         }
         return customerTokenRef.get()
+    }
+
+    suspend fun hasRunningRefreshSession(userId: Int, institutionId: String): Boolean {
+        return finverseAuthCache.hasRunningRefreshSession(userId, institutionId);
     }
 
     /**
@@ -147,7 +150,7 @@ class FinverseQueryService(
     }
 
     suspend fun fetchLoginIdentity(userId: Int, code: String, institutionId: String): String {
-        println("Fetching login identity")
+        finverseAuthCache.startRefreshSession(userId, institutionId)
         val token = getCustomerToken()
         val loginIdentityResponse: LoginIdentityResponse = finverseWebClient.post()
             .uri("/auth/token")

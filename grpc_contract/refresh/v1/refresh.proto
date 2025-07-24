@@ -6,8 +6,8 @@ option java_package         = "sg.flow.refresh.v1";
 option java_outer_classname = "RefreshServiceProto";
 
 service RefreshService {
+    rpc CanStartRefreshSession (CanStartRefreshSessionRequest) returns (CanStartRefreshSessionResponse);
     rpc GetRefreshUrl (GetRefreshUrlRequest) returns (GetRefreshUrlResponse);
-    rpc RegisterLinkCompleteWithCode (RegisterLinkCompleteWithCodeRequest) returns (RegisterLinkCompleteWithCodeResponse);
     rpc GetInstitutionAuthenticationResult (GetInstitutionAuthenticationResultRequest) returns (GetInstitutionAuthenticationResultResponse);
     rpc GetDataRetrievalResult (GetDataRetrievalResultRequest) returns (GetDataRetrievalResultResponse);
 }
@@ -19,19 +19,17 @@ message GetRefreshUrlRequest {
     optional string country_code = 3;
 }
 
-message RegisterLinkCompleteWithCodeRequest {
-    string code = 1; // Code provided by the institution to complete the link
-    string institution_id = 2;
+message CanStartRefreshSessionRequest {
+    string institution_id = 1;
+}
+
+message CanStartRefreshSessionResponse {
+    bool can_start = 1;
+    string description = 2;
 }
 
 message GetRefreshUrlResponse {
     string refresh_url = 1; // The generated refresh URL for the user
-}
-
-message RegisterLinkCompleteWithCodeResponse {
-    bool success = 1; // Indicates whether the registration of the link completion was successful
-    string ticketNumber = 2; // Ticket number for tracking the registration
-    string message = 3; // Additional message or information regarding the registration
 }
 
 message GetInstitutionAuthenticationResultRequest {

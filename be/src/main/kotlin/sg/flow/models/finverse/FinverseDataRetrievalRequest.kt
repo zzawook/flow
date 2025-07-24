@@ -20,6 +20,10 @@ class FinverseDataRetrievalRequest(
         return loginIdentityId
     }
 
+fun getInstitutionId(): String {
+    return institutionId
+}
+
     fun getOverallRetrievalStatus(): FinverseOverallRetrievalStatus {
         val allowedList: List<FinverseRetrievalStatus> =
                 listOf(

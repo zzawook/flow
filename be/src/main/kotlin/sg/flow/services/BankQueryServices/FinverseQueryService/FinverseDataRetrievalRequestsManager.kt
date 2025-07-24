@@ -81,6 +81,8 @@ class FinverseDataRetrievalRequestsManager(
         }
 
         if (isUserComplete(userId)) {
+finverseAuthCache.finishRefreshSession(userId, finverseDataRetrievalRequest.getInstitutionId())
+
             val overallRetrievalStatus = getOverallRetrievalStatus(userId, loginIdentityId)
             finverseProductCompleteEventPublisher.publish(overallRetrievalStatus)
         }

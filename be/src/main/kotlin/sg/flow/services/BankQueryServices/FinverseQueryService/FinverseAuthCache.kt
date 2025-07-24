@@ -2,17 +2,12 @@ package sg.flow.services.BankQueryServices.FinverseQueryService
 
 import org.springframework.stereotype.Component
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseCacheMissException
-import java.util.concurrent.atomic.AtomicReference
+import sg.flow.services.UtilServices.CacheService
 
 @Component
-class FinverseAuthCache {
-    private final val userIdTologinIdentityCache =
-        AtomicReference<HashMap<Int, HashMap<String, FinverseLoginIdentityCredential>>>()
-
-    init {
-        userIdTologinIdentityCache.set(HashMap())
-    }
-
+class FinverseAuthCache(
+    private val cacheService: CacheService
+) {
 
     suspend fun saveLoginIdentityToken(
         userId: Int,
@@ -20,45 +15,40 @@ class FinverseAuthCache {
         loginIdentityId: String,
         loginIdentityToken: String
     ) {
-        val map = userIdTologinIdentityCache.get()
-
-        if (!map.containsKey(userId)) {
-            map[userId] = HashMap()
-        }
-        val userMap = map[userId] ?: HashMap() // Defensive programming
-
-        userMap[institutionId] = FinverseLoginIdentityCredential(loginIdentityId, loginIdentityToken)
+        cacheService.saveLoginIdentityToken(userId, institutionId, loginIdentityId, loginIdentityToken)
     }
 
     suspend fun getLoginIdentityCredential(userId: Int, institutionId: String): FinverseLoginIdentityCredential? {
-        return userIdTologinIdentityCache.get()[userId]?.get(institutionId)
+        return cacheService.getLoginIdentityCredential(userId, institutionId)
     }
 
     suspend fun getUserId(loginIdentityId: String): Int {
-        val map = userIdTologinIdentityCache.get()
-
-        for ((userId, innerMap) in map) {
-            for ((institutionId, loginIdentityCredential) in innerMap) {
-                if (loginIdentityCredential.loginIdentityId == loginIdentityId) {
-                    return userId
-                }
-            }
+        // Try to get from the cache service using the helper method in Redis implementation
+        // For MockCacheServiceImpl, we'll use the existing method
+        if (cacheService is sg.flow.services.UtilServices.RedisCacheServiceImpl) {
+            return cacheService.getUserIdByLoginIdentityIdFinverse(loginIdentityId)
+        } else if (cacheService is sg.flow.services.UtilServices.MockCacheServiceImpl) {
+            return cacheService.getUserIdByLoginIdentityIdFinverse(loginIdentityId)
+        } else {
+            // Fallback: use existing method and convert Optional to Int
+            val userIdOptional = cacheService.getUserIdByLoginIdentityId(loginIdentityId)
+            return userIdOptional.orElse(-1)
         }
-
-        return -1
     }
 
     suspend fun getLoginIdentityTokenWithLoginIdentityID(loginIdentityId: String): String {
-        val map = userIdTologinIdentityCache.get()
+        return cacheService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
+    }
 
-        for ((userId, innerMap) in map) {
-            for ((institutionId, loginIdentityCredential) in innerMap) {
-                if (loginIdentityCredential.loginIdentityId == loginIdentityId) {
-                    return loginIdentityCredential.loginIdentityToken
-                }
-            }
-        }
+    suspend fun startRefreshSession(userId: Int, institutionId: String) {
+        cacheService.startRefreshSession(userId, institutionId)
+    }
 
-        return ""
+    suspend fun hasRunningRefreshSession(userId: Int, institutionId: String): Boolean {
+        return cacheService.doesUserHasRunningRefreshSession(userId, institutionId)
+    }
+
+    suspend fun finishRefreshSession(userId: Int, institutionId: String) {
+        cacheService.clearRefreshSessionCache(userId, institutionId)
     }
 }
