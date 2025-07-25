@@ -29,16 +29,8 @@ class FinverseTimeoutWatcherTest {
 
         @BeforeEach
         fun setUp() {
-                authPublisher = mockk()
-                productPublisher = mockk()
-
-                authEventsFlow = MutableSharedFlow()
-                productEventsFlow = MutableSharedFlow()
-
-                every { authPublisher.events } returns authEventsFlow.asSharedFlow()
-                every { productPublisher.events } returns productEventsFlow.asSharedFlow()
-
-                finverseTimeoutWatcher = FinverseTimeoutWatcher(authPublisher, productPublisher)
+                // Note: FinverseTimeoutWatcher is now Kafka-based and doesn't need constructor dependencies
+                finverseTimeoutWatcher = FinverseTimeoutWatcher()
         }
 
         @Nested

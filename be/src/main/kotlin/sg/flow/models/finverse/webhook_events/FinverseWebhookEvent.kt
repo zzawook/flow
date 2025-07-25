@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class FinverseWebhookEvent(
     @JsonProperty("login_identity_id")
-    val loginIdentityId: String,
+    val login_identity_id: String,
 
     @JsonProperty("event_type")
     val event_type: String,

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Service
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIdentityCredential
+import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import java.time.Duration
 
 @Service
@@ -23,8 +24,10 @@ class RedisCacheServiceImpl(
     private val FINVERSE_LOGIN_IDENTITY_USER_PREFIX = "finverse:login_identity:"
     private val FINVERSE_LOGIN_IDENTITY_TOKEN_PREFIX = "finverse:login_identity:"
     private val REFRESH_SESSION_PREFIX = "refresh_session:"
+    private val DATA_RETRIEVAL_REQUEST_PREFIX = "data_retrieval_request:"
     private val TOKEN_TTL = Duration.ofHours(24) // 24 hour TTL for tokens
-    private val SESSION_TTL = Duration.ofMinutes(30) // 30 minutes for refresh sessions
+    private val SESSION_TTL = Duration.ofMinutes(5) // 5 minutes for refresh sessions
+    private val DATA_RETRIEVAL_TTL = Duration.ofMinutes(5) // 5 minutes for data retrieval requests
     
     override fun getUserIdByAccessToken(token: String): Optional<Int> {
         val key = ACCESS_TOKEN_PREFIX + token
@@ -108,6 +111,11 @@ class RedisCacheServiceImpl(
         }
     }
 
+    override suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean {
+        val credential = getLoginIdentityCredential(userId, institutionId)
+        return credential != null
+    }
+
     override suspend fun getLoginIdentityCredential(userId: Int, institutionId: String): FinverseLoginIdentityCredential? {
         return try {
             val userInstitutionKey = "${FINVERSE_USER_INSTITUTION_PREFIX}${userId}:institution:${institutionId}"
@@ -156,27 +164,8 @@ class RedisCacheServiceImpl(
 
     override suspend fun clearRefreshSessionCache(userId: Int, institutionId: String) {
         try {
-            // Clear the specific user-institution credential
-            val userInstitutionKey = "${FINVERSE_USER_INSTITUTION_PREFIX}${userId}:institution:${institutionId}"
-            val credentialJson = redisTemplate.opsForValue().get(userInstitutionKey).awaitSingleOrNull()
-            
             val keysToDelete = mutableListOf<String>()
-            keysToDelete.add(userInstitutionKey)
-            
-            // If we have the credential, clean up related login identity keys
-            if (credentialJson != null) {
-                try {
-                    val credential = objectMapper.readValue(credentialJson, FinverseLoginIdentityCredential::class.java)
-                    val loginIdentityId = credential.loginIdentityId
-                    
-                    // Add related keys to deletion list
-                    keysToDelete.add("${FINVERSE_LOGIN_IDENTITY_USER_PREFIX}${loginIdentityId}:user_id")
-                    keysToDelete.add("${FINVERSE_LOGIN_IDENTITY_TOKEN_PREFIX}${loginIdentityId}:token")
-                } catch (e: Exception) {
-                    println("Error parsing credential JSON during cleanup: ${e.message}")
-                }
-            }
-            
+
             // Add the refresh session key for this specific user-institution pair
             keysToDelete.add("${REFRESH_SESSION_PREFIX}${userId}:institution:${institutionId}")
             
@@ -216,5 +205,80 @@ class RedisCacheServiceImpl(
             println("Error retrieving user ID by login identity from Redis: ${e.message}")
             -1
         }
+    }
+
+    // Data Retrieval Request management methods
+    override suspend fun storeDataRetrievalRequest(userId: Int, request: FinverseDataRetrievalRequest) {
+        try {
+            val key = "${DATA_RETRIEVAL_REQUEST_PREFIX}${userId}"
+            val jsonString = objectMapper.writeValueAsString(request)
+            redisTemplate.opsForValue()
+                .set(key, jsonString, DATA_RETRIEVAL_TTL)
+                .awaitSingleOrNull()
+            println("Stored data retrieval request for user $userId")
+        } catch (e: Exception) {
+            println("Error storing data retrieval request in Redis: ${e.message}")
+        }
+    }
+    
+    override suspend fun getDataRetrievalRequest(userId: Int): FinverseDataRetrievalRequest? {
+        return try {
+            val key = "${DATA_RETRIEVAL_REQUEST_PREFIX}${userId}"
+            val jsonString = redisTemplate.opsForValue()
+                .get(key)
+                .awaitSingleOrNull()
+            
+            if (jsonString != null) {
+                objectMapper.readValue(jsonString, FinverseDataRetrievalRequest::class.java)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            println("Error retrieving data retrieval request from Redis: ${e.message}")
+            null
+        }
+    }
+    
+    override suspend fun removeDataRetrievalRequest(userId: Int) {
+        try {
+            val key = "${DATA_RETRIEVAL_REQUEST_PREFIX}${userId}"
+            redisTemplate.delete(key).awaitSingleOrNull()
+            println("Removed data retrieval request for user $userId")
+        } catch (e: Exception) {
+            println("Error removing data retrieval request from Redis: ${e.message}")
+        }
+    }
+    
+    override suspend fun getAllIncompleteDataRetrievalRequests(): Map<Int, FinverseDataRetrievalRequest> {
+        return try {
+            val pattern = "${DATA_RETRIEVAL_REQUEST_PREFIX}*"
+            val keys = redisTemplate.keys(pattern).collectList().awaitSingle()
+            val result = mutableMapOf<Int, FinverseDataRetrievalRequest>()
+            
+            for (key in keys) {
+                try {
+                    val jsonString = redisTemplate.opsForValue().get(key).awaitSingleOrNull()
+                    if (jsonString != null) {
+                        val request = objectMapper.readValue(jsonString, FinverseDataRetrievalRequest::class.java)
+                        if (!request.isComplete()) {
+                            val userId = key.removePrefix(DATA_RETRIEVAL_REQUEST_PREFIX).toInt()
+                            result[userId] = request
+                        }
+                    }
+                } catch (e: Exception) {
+                    println("Error processing key $key: ${e.message}")
+                }
+            }
+            
+            result
+        } catch (e: Exception) {
+            println("Error getting incomplete data retrieval requests from Redis: ${e.message}")
+            emptyMap()
+        }
+    }
+    
+    override suspend fun updateDataRetrievalRequest(userId: Int, request: FinverseDataRetrievalRequest) {
+        // Same as store - just overwrite with new TTL
+        storeDataRetrievalRequest(userId, request)
     }
 }

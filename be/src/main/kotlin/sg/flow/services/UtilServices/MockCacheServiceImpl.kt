@@ -3,7 +3,10 @@ package sg.flow.services.UtilServices
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import org.springframework.stereotype.Service
+import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIdentityCredential
+
+
 
 //@Service
 class MockCacheServiceImpl : CacheService {
@@ -16,6 +19,10 @@ class MockCacheServiceImpl : CacheService {
     
     // Refresh session storage - now per user-institution pair
     private val refreshSessions: MutableMap<String, Boolean> = ConcurrentHashMap()
+    
+// Data retrieval requests storage
+private val dataRetrievalRequests: MutableMap<Int, FinverseDataRetrievalRequest> =
+        ConcurrentHashMap()
 
     override fun getUserIdByAccessToken(token: String): Optional<Int> =
             Optional.ofNullable(tokenToUserId[token])
@@ -46,6 +53,12 @@ class MockCacheServiceImpl : CacheService {
         loginIdentityToUserId[loginIdentityId] = userId
         loginIdentityToToken[loginIdentityId] = loginIdentityToken
     }
+
+override suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean {
+    val key = "${userId}:${institutionId}"
+    val data = userInstitutionToCredential[key]
+    return data != null
+}
 
     override suspend fun getLoginIdentityCredential(userId: Int, institutionId: String): FinverseLoginIdentityCredential? {
         val key = "${userId}:${institutionId}"
@@ -85,9 +98,35 @@ class MockCacheServiceImpl : CacheService {
         return loginIdentityToUserId[loginIdentityId] ?: -1
     }
     
-    // Helper method to mark a refresh session as started for a specific user-institution pair
     override suspend fun startRefreshSession(userId: Int, institutionId: String) {
         val sessionKey = "${userId}:${institutionId}"
         refreshSessions[sessionKey] = true
     }
+// Data Retrieval Request management methods
+override suspend fun storeDataRetrievalRequest(userId: Int, request: FinverseDataRetrievalRequest) {
+    dataRetrievalRequests[userId] = request
+    println("Stored data retrieval request for user $userId (Mock)")
+}
+
+override suspend fun getDataRetrievalRequest(userId: Int): FinverseDataRetrievalRequest? {
+    return dataRetrievalRequests[userId]
+}
+
+override suspend fun removeDataRetrievalRequest(userId: Int) {
+    dataRetrievalRequests.remove(userId)
+    println("Removed data retrieval request for user $userId (Mock)")
+}
+
+override suspend fun getAllIncompleteDataRetrievalRequests():
+        Map<Int, FinverseDataRetrievalRequest> {
+    return dataRetrievalRequests.filterValues { !it.isComplete() }
+}
+
+override suspend fun updateDataRetrievalRequest(
+        userId: Int,
+        request: FinverseDataRetrievalRequest
+) {
+    dataRetrievalRequests[userId] = request
+}
+
 }

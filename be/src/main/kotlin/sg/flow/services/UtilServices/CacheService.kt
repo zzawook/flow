@@ -1,7 +1,10 @@
 package sg.flow.services.UtilServices
 
+import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import java.util.Optional
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIdentityCredential
+
+
 
 interface CacheService {
     fun getUserIdByAccessToken(token: String): Optional<Int>
@@ -16,7 +19,10 @@ interface CacheService {
         loginIdentityId: String,
         loginIdentityToken: String
     )
-    
+
+
+suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean
+
     suspend fun getLoginIdentityCredential(userId: Int, institutionId: String): FinverseLoginIdentityCredential?
     
     suspend fun getLoginIdentityTokenWithLoginIdentityID(loginIdentityId: String): String
@@ -26,4 +32,15 @@ interface CacheService {
     suspend fun clearRefreshSessionCache(userId: Int, institutionId: String)
 
     suspend fun startRefreshSession(userId: Int, institutionId: String)
+// Data Retrieval Request management methods
+suspend fun storeDataRetrievalRequest(userId: Int, request: FinverseDataRetrievalRequest)
+
+suspend fun getDataRetrievalRequest(userId: Int): FinverseDataRetrievalRequest?
+
+suspend fun removeDataRetrievalRequest(userId: Int)
+
+suspend fun getAllIncompleteDataRetrievalRequests(): Map<Int, FinverseDataRetrievalRequest>
+
+suspend fun updateDataRetrievalRequest(userId: Int, request: FinverseDataRetrievalRequest)
+
 } 

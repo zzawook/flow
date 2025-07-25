@@ -42,6 +42,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-configuration-processor")
+	
+	// Kafka
+	implementation("org.springframework.kafka:spring-kafka")
+	implementation("io.projectreactor.kafka:reactor-kafka")
 
 	// Kotlin + coroutines
 	implementation("org.jetbrains.kotlin:kotlin-reflect")

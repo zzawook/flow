@@ -95,7 +95,7 @@ class FinverseQueryService(
      * returning the URL the front-end can open for user authentication.
      */
     suspend fun generateLinkUrl(userId: Int, institutionId: String, country: String = "SGP", automaticRefresh: Boolean = true): String {
-        val token = getCustomerToken()
+        var token = getCustomerToken()
         val productsRequested =
             listOf("ACCOUNTS", "TRANSACTIONS", "ACCOUNT_NUMBERS")
         val productSupported = productsRequested;
@@ -108,7 +108,7 @@ class FinverseQueryService(
 
         val userIdString = userId.toString().padEnd(4)
 
-        val requestBody = mapOf(
+        var requestBody = mapOf(
             "client_id" to finverseCredentials.clientId,
             "institution_id" to institutionId,
             "institution_status" to "",
@@ -125,6 +125,18 @@ class FinverseQueryService(
             "response_type" to "code", // DO NOT CHANGE
             "grant_type" to "client_credentials" // DO NOT CHANGE
         )
+
+        if (userHasLoginIdentity(userId, institutionId)) {
+            val credential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
+
+            if (credential == null) {
+                println("Login Identity was reported existing, but could not be fetched")
+            } else {
+                requestBody = requestBody + mapOf(
+                    "login_identity_id" to credential.loginIdentityId
+                )
+            }
+        }
 
         return try {
             val resp = finverseWebClient.post()
@@ -147,6 +159,10 @@ class FinverseQueryService(
             println(e.message)
             throw FinverseException("Unexpected error: ${e.message}")
         }
+    }
+
+    private suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean {
+        return finverseAuthCache.userHasLoginIdentity(userId, institutionId)
     }
 
     suspend fun fetchLoginIdentity(userId: Int, code: String, institutionId: String): String {

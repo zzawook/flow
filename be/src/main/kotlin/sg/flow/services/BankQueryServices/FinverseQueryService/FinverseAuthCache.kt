@@ -22,6 +22,10 @@ class FinverseAuthCache(
         return cacheService.getLoginIdentityCredential(userId, institutionId)
     }
 
+    suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean {
+        return cacheService.userHasLoginIdentity(userId, institutionId)
+    }
+
     suspend fun getUserId(loginIdentityId: String): Int {
         // Try to get from the cache service using the helper method in Redis implementation
         // For MockCacheServiceImpl, we'll use the existing method
