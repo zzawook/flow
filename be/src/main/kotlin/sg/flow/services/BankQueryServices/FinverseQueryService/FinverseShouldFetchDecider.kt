@@ -14,20 +14,12 @@ class FinverseShouldFetchDecider() {
     ): Boolean {
         if (status != FinverseRetrievalStatus.RETRIEVED) return false
         return when (product) {
-            FinverseProduct.ONLINE_TRANSACTIONS ->
-                shouldFetchTransaction(finverseDataRetrievalRequest)
             FinverseProduct.ACCOUNTS ->
                 shouldFetchAccount(finverseDataRetrievalRequest)
             FinverseProduct.ACCOUNT_NUMBERS ->
                 shouldFetchAccount(finverseDataRetrievalRequest)
             else -> return true
         }
-    }
-
-    private fun shouldFetchTransaction(
-            finverseDataRetrievalRequest: FinverseDataRetrievalRequest
-    ): Boolean {
-        return finverseDataRetrievalRequest.isBothTransactionComplete()
     }
 
     private fun shouldFetchAccount(finverseDataRetrievalRequest: FinverseDataRetrievalRequest): Boolean {

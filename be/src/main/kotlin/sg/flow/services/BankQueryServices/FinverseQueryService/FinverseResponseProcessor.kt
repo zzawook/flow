@@ -123,7 +123,7 @@ class FinverseResponseProcessor(
         var user: User? = null;
 
         runBlocking {
-            val userId = finverseAuthCache.getUserId(loginIdentityId).toLong()
+            val userId = finverseAuthCache.getUserIdAndInstitutionId(loginIdentityId).userId.toLong()
             println("user ID: $userId")
             user = userRepository.findById(userId)
             println("user: $user")

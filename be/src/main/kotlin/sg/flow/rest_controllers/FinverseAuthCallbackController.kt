@@ -17,18 +17,20 @@ class FinverseAuthCallbackController(
     private val finverseQueryService: FinverseQueryService
 ) {
     @GetMapping("/callback")
-    suspend fun onCallback(
+    suspend fun onSuccessfulCallback(
         @RequestParam("code") code: String,
         @RequestParam("state") state: String
     ): ResponseEntity<String> {
-        
+        // ONLY HANDLES SUCCESSFUL CALLBACKS
+        // UNSUCCESSFUL CALLBACKS ARE NOT RECEIVED AT ALL IN THIS ENDPOINT DUE TO DIFFERENT REQUEST PARAMS SENT FROM FINVERSE IN CASE OF ERROR
+
         // Create and publish event to Kafka
         val kafkaEvent = FinverseAuthCallbackEvent(
             userId = 1, // TODO: Extract from state parameter
             code = code,
             state = state
         )
-        
+
         kafkaEventProducerService.publishAuthCallbackEvent(kafkaEvent)
 
         return ResponseEntity

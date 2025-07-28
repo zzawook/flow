@@ -1,12 +1,14 @@
 package sg.flow.models.finverse
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonValue
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
 import sg.flow.models.finverse.responses.*
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseResponseProcessor
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
 
-sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
+sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint: String) {
     /** Every product must implement its own fetch logic (or share a default). */
     abstract suspend fun fetch(
             loginIdentityId: String,
@@ -223,7 +225,21 @@ sealed class FinverseProduct(val productName: String, val apiEndpoint: String) {
                 ACCOUNTS,
                 ACCOUNT_NUMBERS,
                 ONLINE_TRANSACTIONS,
-                HISTORICAL_TRANSACTIONS
+//                HISTORICAL_TRANSACTIONS
             )
+
+        @JsonCreator
+        @JvmStatic
+        fun fromString(name: String): FinverseProduct = when(name) {
+            ACCOUNTS.productName             -> ACCOUNTS
+            ACCOUNT_NUMBERS.productName      -> ACCOUNT_NUMBERS
+            ONLINE_TRANSACTIONS.productName  -> ONLINE_TRANSACTIONS
+            HISTORICAL_TRANSACTIONS.productName -> HISTORICAL_TRANSACTIONS
+            IDENTITY.productName             -> IDENTITY
+            BALANCE_HISTORY.productName      -> BALANCE_HISTORY
+            INCOME_ESTIMATION.productName    -> INCOME_ESTIMATION
+            STATEMENTS.productName           -> STATEMENTS
+            else -> throw IllegalArgumentException("Unknown FinverseProduct: $name")
+        }
     }
 }

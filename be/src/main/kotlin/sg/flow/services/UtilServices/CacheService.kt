@@ -9,19 +9,10 @@ import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIden
 interface CacheService {
     fun getUserIdByAccessToken(token: String): Optional<Int>
     fun storeAccessToken(userId: Int, accessToken: String)
-    fun storeUserIdByLoginIdentityId(loginIdentityId: String, userId: Int)
-    fun getUserIdByLoginIdentityId(loginIdentityId: String): Optional<Int>
-    
-    // Finverse-specific caching methods
-    suspend fun saveLoginIdentityToken(
-        userId: Int,
-        institutionId: String,
-        loginIdentityId: String,
-        loginIdentityToken: String
-    )
+    suspend fun storeUserIdByLoginIdentityId(loginIdentityId: String, loginIdentityToken: String, userId: Int, institutionId: String)
+    suspend fun getUserIdAndInstitutionIdByLoginIdentityId(loginIdentityId: String): Optional<UserIdAndInstitutionId>
 
-
-suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean
+    suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean
 
     suspend fun getLoginIdentityCredential(userId: Int, institutionId: String): FinverseLoginIdentityCredential?
     
@@ -31,16 +22,11 @@ suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean
 
     suspend fun clearRefreshSessionCache(userId: Int, institutionId: String)
 
-    suspend fun startRefreshSession(userId: Int, institutionId: String)
-// Data Retrieval Request management methods
-suspend fun storeDataRetrievalRequest(userId: Int, request: FinverseDataRetrievalRequest)
+    suspend fun startRefreshSession(userId: Int, institutionId: String, request: FinverseDataRetrievalRequest)
 
-suspend fun getDataRetrievalRequest(userId: Int): FinverseDataRetrievalRequest?
+    suspend fun updateDataRetrievalRequest(userId: Int, institutionId: String, request: FinverseDataRetrievalRequest)
 
-suspend fun removeDataRetrievalRequest(userId: Int)
+    suspend fun getDataRetrievalRequest(userId: Int, institutionId: String): FinverseDataRetrievalRequest?
 
-suspend fun getAllIncompleteDataRetrievalRequests(): Map<Int, FinverseDataRetrievalRequest>
-
-suspend fun updateDataRetrievalRequest(userId: Int, request: FinverseDataRetrievalRequest)
-
+    suspend fun removeDataRetrievalRequest(userId: Int)
 } 

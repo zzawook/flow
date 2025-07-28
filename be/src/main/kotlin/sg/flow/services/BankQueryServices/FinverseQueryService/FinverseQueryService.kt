@@ -165,8 +165,7 @@ class FinverseQueryService(
         return finverseAuthCache.userHasLoginIdentity(userId, institutionId)
     }
 
-    suspend fun fetchLoginIdentity(userId: Int, code: String, institutionId: String): String {
-        finverseAuthCache.startRefreshSession(userId, institutionId)
+    suspend fun fetchLoginIdentityToken(userId: Int, code: String, institutionId: String): String {
         val token = getCustomerToken()
         val loginIdentityResponse: LoginIdentityResponse = finverseWebClient.post()
             .uri("/auth/token")
@@ -183,9 +182,6 @@ class FinverseQueryService(
             .bodyToMono(LoginIdentityResponse::class.java)
             .awaitSingle()
 
-        val requestedProduct: List<FinverseProductRetrieval> = FinverseProduct.supported.map { it -> FinverseProductRetrieval(it) }
-
-
         println("Saving LoginIdentity: ${loginIdentityResponse.loginIdentityToken}")
         finverseAuthCache.saveLoginIdentityToken(
             userId,
@@ -194,29 +190,16 @@ class FinverseQueryService(
             loginIdentityResponse.loginIdentityToken
         )
 
-        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(userId, FinverseDataRetrievalRequest(
-            loginIdentityResponse.loginIdentityId,
-            userId,
-            institutionId,
-            requestedProduct,
-        ))
+        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(loginIdentityResponse.loginIdentityId)
 
         return "RETRIEVING"
     }
 
     suspend fun getInstitutionAuthenticationResult(userId: Int, institutionId: String): FinverseAuthenticationStatus {
-        val loginIdentityCredential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
-
-        val loginIdentityId = loginIdentityCredential?.loginIdentityId
-        val loginIdentityToken = loginIdentityCredential?.loginIdentityToken
-
-        if (loginIdentityId == null || loginIdentityToken == null) {
-            return FinverseAuthenticationStatus.AUTHENTICATION_FAILED
-        }
-
         val timeout = 30.seconds
         val status = finverseTimeoutWatcher.watchAuthentication(
-            loginIdentityCredential.loginIdentityId,
+            userId,
+            institutionId,
             timeout
         )
 
@@ -224,22 +207,10 @@ class FinverseQueryService(
     }
 
     suspend fun getUserDataRetrievalResult(userId: Int, institutionId: String): FinverseOverallRetrievalStatus {
-        val loginIdentityCredential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
-
-        val loginIdentityId = loginIdentityCredential?.loginIdentityId
-        val loginIdentityToken = loginIdentityCredential?.loginIdentityToken
-
-        if (loginIdentityId == null || loginIdentityToken == null) {
-            return FinverseOverallRetrievalStatus(
-                success = false,
-                message = "NO LOGIN IDENTITY INFORMATION FOUND",
-                loginIdentityId = ""
-            )
-        }
-
-        val timeout = 5.minutes
+        val timeout = 2.minutes
         val status = finverseTimeoutWatcher.watchDataRetrievalCompletion(
-            loginIdentityId,
+            userId,
+            institutionId,
             timeout
         )
 

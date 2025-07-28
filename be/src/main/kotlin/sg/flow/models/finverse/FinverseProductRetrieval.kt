@@ -1,25 +1,26 @@
 package sg.flow.models.finverse
 
-class FinverseProductRetrieval(private val FinverseProduct: FinverseProduct) {
-    private var isComplete = false
-    private var status: FinverseRetrievalStatus = FinverseRetrievalStatus.NOT_YET
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 
-    fun isComplete(): Boolean {
-        return isComplete
-    }
+class FinverseProductRetrieval @JsonCreator constructor(
+    @JsonProperty("product")
+    private val product: FinverseProduct,
 
-    fun setStatus(status: FinverseRetrievalStatus) {
-        this.status = status
+    @JsonProperty("status")
+    private var status: FinverseRetrievalStatus = FinverseRetrievalStatus.NOT_YET,
+
+    @JsonProperty("complete")
+    private var complete: Boolean = false
+) {
+    fun isComplete() = complete
+    fun getStatus()  = status
+    fun getProduct() = product
+
+    fun setStatus(newStatus: FinverseRetrievalStatus) {
+        this.status = newStatus
         if (this.status != FinverseRetrievalStatus.NOT_YET) {
-            this.isComplete = true
+            this.complete = true
         }
-    }
-
-    fun getStatus(): FinverseRetrievalStatus {
-        return status
-    }
-
-    fun getProduct(): FinverseProduct {
-        return FinverseProduct
     }
 }

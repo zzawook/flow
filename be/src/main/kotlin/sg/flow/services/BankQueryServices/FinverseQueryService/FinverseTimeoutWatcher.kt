@@ -1,137 +1,143 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.nimbusds.jose.util.StandardCharset
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.reactive.awaitSingle
+import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
+import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.listener.PatternTopic
+import org.springframework.data.redis.listener.ReactiveRedisMessageListenerContainer
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
 import sg.flow.models.finverse.FinverseAuthenticationStatus
+import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
 import sg.flow.models.finverse.webhook_events.FinverseWebhookEvent
+import sg.flow.services.UtilServices.CacheService
+import sg.flow.services.UtilServices.RedisCacheServiceImpl
+import java.nio.charset.StandardCharsets
 import kotlin.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CompletableFuture
+import kotlin.time.toJavaDuration
 
 @Component
-class FinverseTimeoutWatcher {
-    
+class FinverseTimeoutWatcher(
+    private val cacheService: RedisCacheServiceImpl,
+    private val container: ReactiveRedisMessageListenerContainer,
+    private val redis: ReactiveRedisTemplate<String, String>,
+    private val objectMapper: ObjectMapper
+) {
+
     private val logger = LoggerFactory.getLogger(FinverseTimeoutWatcher::class.java)
-    
-    // Storage for results - these will be populated by Kafka listeners
-    private val authResults = ConcurrentHashMap<String, FinverseAuthenticationStatus>()
-    private val dataRetrievalResults = ConcurrentHashMap<String, FinverseOverallRetrievalStatus>()
-    
-    // Futures for waiting operations
-    private val authWaiters = ConcurrentHashMap<String, CompletableFuture<FinverseAuthenticationStatus>>()
-    private val dataRetrievalWaiters = ConcurrentHashMap<String, CompletableFuture<FinverseOverallRetrievalStatus>>()
 
-    @KafkaListener(
-        topics = ["\${flow.kafka.topics.finverse-auth-complete}"],
-        groupId = "\${spring.kafka.consumer.group-id}",
-        containerFactory = "webhookKafkaListenerContainerFactory"
-    )
-    suspend fun handleAuthCompleteEvent(event: FinverseWebhookEvent, acknowledgment: Acknowledgment) {
-        try {
-            val loginIdentityId = event.login_identity_id
-            val status = when (event.event_type) {
-                "AUTHENTICATED" -> FinverseAuthenticationStatus.AUTHENTICATED
-                "AUTHENTICATION_FAILED" -> FinverseAuthenticationStatus.AUTHENTICATION_FAILED
-                else -> FinverseAuthenticationStatus.AUTHENTICATION_FAILED
-            }
-            
-            logger.info("Received auth complete event for loginIdentityId: {} with status: {}", loginIdentityId, status)
-            
-            // Store result and notify waiters
-            authResults[loginIdentityId] = status
-            authWaiters[loginIdentityId]?.complete(status)
-            
-            acknowledgment.acknowledge()
-        } catch (e: Exception) {
-            logger.error("Error processing auth complete event", e)
-            throw e
-        }
-    }
-
-    @KafkaListener(
-        topics = ["\${flow.kafka.topics.finverse-product-complete}"],
-        groupId = "\${spring.kafka.consumer.group-id}",
-        containerFactory = "kafkaListenerContainerFactory"
-    )
-    suspend fun handleProductCompleteEvent(event: FinverseOverallRetrievalStatus, acknowledgment: Acknowledgment) {
-        try {
-            val loginIdentityId = event.loginIdentityId
-            
-            logger.info("Received product complete event for loginIdentityId: {} with success: {}", loginIdentityId, event.success)
-            
-            // Store result and notify waiters
-            dataRetrievalResults[loginIdentityId] = event
-            dataRetrievalWaiters[loginIdentityId]?.complete(event)
-            
-            acknowledgment.acknowledge()
-        } catch (e: Exception) {
-            logger.error("Error processing product complete event", e)
-            throw e
-        }
-    }
 
     suspend fun watchAuthentication(
-        loginIdentityId: String,
+        userId: Int,
+        institutionId: String,
         timeout: Duration
     ): FinverseAuthenticationStatus {
-        return try {
-            // Check if result already exists
-            authResults[loginIdentityId]?.let { return it }
-            
-            // Create a future to wait for the result
-            val future = CompletableFuture<FinverseAuthenticationStatus>()
-            authWaiters[loginIdentityId] = future
-            
-            val result = withTimeout(timeout) {
-                future.get()
+        val key = cacheService.getRefreshSessionPrefix(userId, institutionId)
+
+        // 1) build a Mono<FinverseAuthenticationStatus> that completes on the first SET event
+        val statusMono: Mono<FinverseAuthenticationStatus> = container
+            .receive(PatternTopic("__keyevent@0__:set"))
+            .map { msg ->
+                println(msg)
+                msg.message
             }
-            
-            // Cleanup
-            authResults.remove(loginIdentityId)
-            authWaiters.remove(loginIdentityId)
-            
-            result
-        } catch (e: TimeoutCancellationException) {
-            // Cleanup on timeout
-            authWaiters.remove(loginIdentityId)
-            FinverseAuthenticationStatus.AUTHENTICATION_TIMEOUT
-        }
+            .filter { it == key }       // only our key
+            .next()                     // take the first matching element, convert Flux→Mono
+            .flatMap {
+                // once we see the SET, grab the current value and map to a status
+                redis.opsForValue().get(key)
+                    .map { newVal ->
+                        try {
+                            objectMapper.readValue(
+                                newVal,
+                                FinverseDataRetrievalRequest::class.java
+                            )
+                            FinverseAuthenticationStatus.AUTHENTICATED
+                        } catch (_: Exception) {
+                            FinverseAuthenticationStatus.AUTHENTICATION_FAILED
+                        }
+                    }
+            }
+            .timeout(timeout.toJavaDuration())             // if we never see it, time out
+            .onErrorReturn(FinverseAuthenticationStatus.AUTHENTICATION_FAILED)
+
+        // 2) await the single result
+        return statusMono.awaitSingle()
     }
 
     suspend fun watchDataRetrievalCompletion(
-        loginIdentityId: String,
+        userId: Int,
+        institutionId: String,
         timeout: Duration
     ): FinverseOverallRetrievalStatus {
-        return try {
-            // Check if result already exists
-            dataRetrievalResults[loginIdentityId]?.let { return it }
-            
-            // Create a future to wait for the result
-            val future = CompletableFuture<FinverseOverallRetrievalStatus>()
-            dataRetrievalWaiters[loginIdentityId] = future
-            
-            val result = withTimeout(timeout) {
-                future.get()
+        val key = cacheService.getRefreshSessionPrefix(userId, institutionId)
+        val loginIdentity = cacheService
+            .getLoginIdentityCredential(userId, institutionId)
+            ?: throw IllegalStateException("No loginIdentity")
+
+        val topic = "__keyspace@0__:$key"
+
+        val statusMono: Mono<FinverseOverallRetrievalStatus> = container
+            .receive(PatternTopic(topic))
+            .map { msg ->
+                println(msg)
+                msg.message
             }
-            
-            // Cleanup
-            dataRetrievalResults.remove(loginIdentityId)
-            dataRetrievalWaiters.remove(loginIdentityId)
-            
-            result
-        } catch (e: TimeoutCancellationException) {
-            // Cleanup on timeout
-            dataRetrievalWaiters.remove(loginIdentityId)
-            FinverseOverallRetrievalStatus(
-                success = false,
-                message = "TIME OUT: $timeout",
-                loginIdentityId = loginIdentityId,
+            .filter { it == "set" || it == "expire" }
+            .flatMap { ev ->
+                if (ev == "expire") {
+                    println("EXPIRED")
+                    Mono.just(FinverseOverallRetrievalStatus(
+                        loginIdentityId = loginIdentity.loginIdentityId,
+                        success = true,
+                        message = ""
+                    ))
+                } else {
+                    // On SET: fetch the JSON, parse, and only emit if complete
+                    redis.opsForValue().get(key)
+                        .flatMap { rawJson ->
+                            try {
+                                val dto = objectMapper.readValue(
+                                    rawJson,
+                                    FinverseDataRetrievalRequest::class.java
+                                )
+                                if (dto.isComplete()) {
+                                    println("COMPLETED")
+                                    Mono.just(dto.getOverallRetrievalStatus())
+                                } else {
+                                    Mono.empty()
+                                }
+                            } catch (_: Exception) {
+                                // parse‑error → emit failure
+                                Mono.just(FinverseOverallRetrievalStatus(
+                                    loginIdentityId = loginIdentity.loginIdentityId,
+                                    success = false,
+                                    message = "Failed to parse"
+                                ))
+                            }
+                        }
+                }
+            }
+            .next() // take the first status we actually emitted
+            .timeout(timeout.toJavaDuration())     // optional overall timeout
+            .onErrorReturn(                       // fallback on timeout or error
+                FinverseOverallRetrievalStatus(
+                    loginIdentityId = loginIdentity.loginIdentityId,
+                    success = false,
+                    message = "timeout"
+                )
             )
-        }
+
+        return statusMono.awaitSingle()
     }
 }

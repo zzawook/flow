@@ -20,9 +20,10 @@ class FinverseAuthCallbackEventConsumer(private val finverseService: FinverseQue
         suspend fun handleAuthCallbackEvent(event: FinverseAuthCallbackEvent, acknowledgment: Acknowledgment) {
         try {
             logger.info("Processing auth callback event: {}", event.eventId)
+            println(event)
             
             // Call the original service method
-            finverseService.fetchLoginIdentity(
+            finverseService.fetchLoginIdentityToken(
                 userId = event.userId,
                 code = event.code,
                 institutionId = event.institutionId

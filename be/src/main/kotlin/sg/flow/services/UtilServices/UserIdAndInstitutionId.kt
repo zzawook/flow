@@ -1,3 +1,8 @@
 package sg.flow.services.UtilServices
 
-data class UserIdAndInstitutionId()
+import com.google.common.math.IntMath
+
+data class UserIdAndInstitutionId(
+    val userId: Int,
+    val institutionId: String
+)

@@ -6,8 +6,10 @@ import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Service
 import sg.flow.events.FinverseWebhookEvent
 import sg.flow.models.finverse.FinverseAuthenticationEventTypeParser
+import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseEventTypeParser
 import sg.flow.models.finverse.FinverseProduct
+import sg.flow.models.finverse.FinverseProductRetrieval
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseAuthEventPublisher
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseDataRetrievalRequestsManager
 
@@ -32,7 +34,7 @@ class FinverseWebhookEventConsumer(
             
             if (isAuthenticationEvent(event.eventType)) {
                 FinverseAuthenticationEventTypeParser.parse(event.eventType)?.let { _ ->
-                    authPublisher.publish(originalEvent)
+//                    finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(event.loginIdentityId)
                 }
             } else {
                 FinverseEventTypeParser.parse(event.eventType).let { ps ->

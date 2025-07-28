@@ -5,6 +5,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
 import sg.flow.models.finverse.FinverseProduct
+import sg.flow.models.finverse.FinverseProductRetrieval
 import sg.flow.models.finverse.FinverseRetrievalStatus
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
 import sg.flow.services.UtilServices.CacheService
@@ -21,30 +22,36 @@ class FinverseDataRetrievalRequestsManager(
 ) {
 
     suspend fun registerFinverseDataRetrievalEvent(
-            userId: Int,
-            finverseDataRetrievalRequest: FinverseDataRetrievalRequest
+            loginIdentityId: String,
     ) {
-        // Store the request in Redis cache
-        cacheService.storeDataRetrievalRequest(userId, finverseDataRetrievalRequest)
-        
-        // Schedule timeout events
-        kafkaEventProducerService.scheduleTimeouts(
-            userId = userId,
-            loginIdentityId = finverseDataRetrievalRequest.getLoginIdentityId(),
-            institutionId = finverseDataRetrievalRequest.getInstitutionId()
+        val userIdAndInstitutionId = cacheService.getUserIdAndInstitutionIdByLoginIdentityId(loginIdentityId).get()
+
+        val userId = userIdAndInstitutionId.userId
+        val institutionId = userIdAndInstitutionId.institutionId
+
+        val requestedProduct: List<FinverseProductRetrieval> = FinverseProduct.supported.map { it -> FinverseProductRetrieval(it) }
+        val finverseDataRetrievalRequest = FinverseDataRetrievalRequest(
+            loginIdentityId,
+            userId,
+            institutionId,
+            requestedProduct,
         )
+
+        // Store the request in Redis cache
+        cacheService.startRefreshSession(userId, institutionId, finverseDataRetrievalRequest)
     }
 
-    suspend fun isUserComplete(userId: Int): Boolean {
-        val userDataRetrievalEvent = cacheService.getDataRetrievalRequest(userId) ?: return false
+    suspend fun isUserComplete(userId: Int, institutionId: String): Boolean {
+        val userDataRetrievalEvent = cacheService.getDataRetrievalRequest(userId, institutionId) ?: return false
         return userDataRetrievalEvent.isComplete()
     }
 
     suspend fun getOverallRetrievalStatus(
             userId: Int,
+            institutionId: String,
             loginIdentityId: String
     ): FinverseOverallRetrievalStatus {
-        val userDataRetrievalEvent = cacheService.getDataRetrievalRequest(userId)
+        val userDataRetrievalEvent = cacheService.getDataRetrievalRequest(userId, institutionId)
                 ?: return FinverseOverallRetrievalStatus(
                         success = false,
                         message = "CANNOT FIND REGISTERED DATA RETRIEVAL EVENT",
@@ -59,7 +66,9 @@ class FinverseDataRetrievalRequestsManager(
             product: FinverseProduct,
             status: FinverseRetrievalStatus
     ) {
-        val userId = finverseAuthCache.getUserId(loginIdentityId)
+        val userIdAndInstitutionId = finverseAuthCache.getUserIdAndInstitutionId(loginIdentityId)
+        val userId = userIdAndInstitutionId.userId
+        val institutionId = userIdAndInstitutionId.institutionId
         val loginIdentityToken = finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
 
         if (userId < 0) {
@@ -67,18 +76,18 @@ class FinverseDataRetrievalRequestsManager(
             return
         }
         
-        val finverseDataRetrievalRequest = cacheService.getDataRetrievalRequest(userId)
+        val finverseDataRetrievalRequest = cacheService.getDataRetrievalRequest(userId, institutionId)
         if (finverseDataRetrievalRequest == null) {
-            throw FinverseException("Could not find update request")
+            // If Data Retrieval Request does not exist, it means Data Retrieval Session has expired. Stop processing and discard webhook
+            println("Discarding webhook as Finverse Data Retrieval Request is not found. Possibly due to Refresh session has expired")
+            return
         }
 
         finverseDataRetrievalRequest.putOrUpdate(product, status)
         
         // Update the request in cache
-        cacheService.updateDataRetrievalRequest(userId, finverseDataRetrievalRequest)
+        cacheService.updateDataRetrievalRequest(userId, institutionId, finverseDataRetrievalRequest)
 
-        println(product.productName)
-        println(finverseShouldFetchDecider.shouldFetch(finverseDataRetrievalRequest, product, status))
 
         if (finverseShouldFetchDecider.shouldFetch(finverseDataRetrievalRequest, product, status)) {
             product.fetch(
@@ -89,14 +98,14 @@ class FinverseDataRetrievalRequestsManager(
             )
         }
 
-        if (isUserComplete(userId)) {
+        if (isUserComplete(userId, institutionId)) {
             finverseAuthCache.finishRefreshSession(userId, finverseDataRetrievalRequest.getInstitutionId())
 
-            val overallRetrievalStatus = getOverallRetrievalStatus(userId, loginIdentityId)
+            val overallRetrievalStatus = getOverallRetrievalStatus(userId, institutionId, loginIdentityId)
             finverseProductCompleteEventPublisher.publish(overallRetrievalStatus)
             
             // Remove completed request from cache
-            cacheService.removeDataRetrievalRequest(userId)
+            cacheService.clearRefreshSessionCache(userId, institutionId)
         }
     }
 }

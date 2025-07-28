@@ -2,20 +2,22 @@ package sg.flow.configs
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.listener.ReactiveRedisMessageListenerContainer
 import org.springframework.data.redis.serializer.RedisSerializationContext
 import org.springframework.data.redis.serializer.StringRedisSerializer
 
+
 @Configuration
-@Profile("prod")
+//@Profile("prod")
 class RedisConfig {
 
     @Bean
-    fun reactiveRedisTemplate(
-            factory: ReactiveRedisConnectionFactory
-    ): ReactiveRedisTemplate<String, String> {
+    @Primary
+    fun reactiveRedisTemplate(factory: ReactiveRedisConnectionFactory): ReactiveRedisTemplate<String, String> {
         val stringSerializer = StringRedisSerializer()
         val serializationContext =
                 RedisSerializationContext.newSerializationContext<String, String>()
@@ -26,5 +28,10 @@ class RedisConfig {
                         .build()
 
         return ReactiveRedisTemplate(factory, serializationContext)
+    }
+
+    @Bean
+    fun reactiveContainer(cf: ReactiveRedisConnectionFactory): ReactiveRedisMessageListenerContainer {
+        return ReactiveRedisMessageListenerContainer(cf)
     }
 }

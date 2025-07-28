@@ -71,7 +71,9 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 // ── execute ─────────────────────────────────────────────
                 runCatching {
                         val rows = spec.fetch().awaitRowsUpdated() // suspend
-                        require(rows == 1L) { "Unexpected rowsUpdated = $rows" }
+                        if (rows != 1L) {
+                                println("Duplicate row - skipping insertion")
+                        }
                 }
                         .onFailure { e ->
                                 e.printStackTrace()

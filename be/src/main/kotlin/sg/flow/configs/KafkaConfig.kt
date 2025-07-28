@@ -1,10 +1,12 @@
 package sg.flow.configs
 
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
@@ -12,6 +14,7 @@ import org.springframework.kafka.core.*
 import org.springframework.kafka.listener.ContainerProperties
 import org.springframework.kafka.support.serializer.JsonDeserializer
 import org.springframework.kafka.support.serializer.JsonSerializer
+import java.time.Duration
 
 @Configuration
 class KafkaConfig(
@@ -33,6 +36,22 @@ class KafkaConfig(
                                 ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to true
                         )
                 return DefaultKafkaProducerFactory(configProps)
+        }
+
+        @Bean
+        fun kafkaProducerInitializer(
+                producerFactory: ProducerFactory<String, Any>
+        ): ApplicationRunner = ApplicationRunner {
+                // create (and immediately close) a real Kafka Producer at startup
+                val producer: Producer<String, Any> = producerFactory.createProducer()
+                try {
+                        // Optionally, do a no‑op metadata fetch to verify connectivity:
+                        producer.partitionsFor("___dummy_topic___")
+                        // (replace with one of your real topics if you prefer)
+                } finally {
+                        // clean up
+                        producer.close(Duration.ofSeconds(1))
+                }
         }
 
         @Bean
@@ -98,25 +117,6 @@ class KafkaConfig(
         }
 
         @Bean
-        fun timeoutConsumerFactory(): ConsumerFactory<String, sg.flow.events.FinverseTimeoutEvent> {
-                val configProps =
-                        mapOf<String, Any>(
-                                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
-                                ConsumerConfig.GROUP_ID_CONFIG to groupId,
-                                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to
-                                        StringDeserializer::class.java,
-                                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to
-                                        JsonDeserializer::class.java,
-                                ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
-                                JsonDeserializer.TRUSTED_PACKAGES to "sg.flow.events",
-                                JsonDeserializer.VALUE_DEFAULT_TYPE to
-                                        "sg.flow.events.FinverseTimeoutEvent",
-                                JsonDeserializer.USE_TYPE_INFO_HEADERS to false
-                        )
-                return DefaultKafkaConsumerFactory(configProps)
-        }
-
-        @Bean
         fun webhookKafkaListenerContainerFactory():
                 ConcurrentKafkaListenerContainerFactory<
                         String, sg.flow.events.FinverseWebhookEvent> {
@@ -137,19 +137,6 @@ class KafkaConfig(
                         ConcurrentKafkaListenerContainerFactory<
                                 String, sg.flow.events.FinverseAuthCallbackEvent>()
                 factory.consumerFactory = authCallbackConsumerFactory()
-                // Use MANUAL_IMMEDIATE mode for suspend functions to properly handle async ack
-                factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
-                return factory
-        }
-
-        @Bean
-        fun timeoutKafkaListenerContainerFactory():
-                ConcurrentKafkaListenerContainerFactory<
-                        String, sg.flow.events.FinverseTimeoutEvent> {
-                val factory =
-                        ConcurrentKafkaListenerContainerFactory<
-                                String, sg.flow.events.FinverseTimeoutEvent>()
-                factory.consumerFactory = timeoutConsumerFactory()
                 // Use MANUAL_IMMEDIATE mode for suspend functions to properly handle async ack
                 factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
                 return factory

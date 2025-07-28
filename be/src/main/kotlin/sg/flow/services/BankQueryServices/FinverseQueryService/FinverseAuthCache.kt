@@ -1,8 +1,10 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
 import org.springframework.stereotype.Component
+import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseCacheMissException
 import sg.flow.services.UtilServices.CacheService
+import sg.flow.services.UtilServices.UserIdAndInstitutionId
 
 @Component
 class FinverseAuthCache(
@@ -15,7 +17,7 @@ class FinverseAuthCache(
         loginIdentityId: String,
         loginIdentityToken: String
     ) {
-        cacheService.saveLoginIdentityToken(userId, institutionId, loginIdentityId, loginIdentityToken)
+        cacheService.storeUserIdByLoginIdentityId(loginIdentityId, loginIdentityToken, userId, institutionId)
     }
 
     suspend fun getLoginIdentityCredential(userId: Int, institutionId: String): FinverseLoginIdentityCredential? {
@@ -27,25 +29,27 @@ class FinverseAuthCache(
     }
 
     suspend fun getUserId(loginIdentityId: String): Int {
-        // Try to get from the cache service using the helper method in Redis implementation
-        // For MockCacheServiceImpl, we'll use the existing method
-        if (cacheService is sg.flow.services.UtilServices.RedisCacheServiceImpl) {
-            return cacheService.getUserIdByLoginIdentityIdFinverse(loginIdentityId)
-        } else if (cacheService is sg.flow.services.UtilServices.MockCacheServiceImpl) {
-            return cacheService.getUserIdByLoginIdentityIdFinverse(loginIdentityId)
-        } else {
-            // Fallback: use existing method and convert Optional to Int
-            val userIdOptional = cacheService.getUserIdByLoginIdentityId(loginIdentityId)
-            return userIdOptional.orElse(-1)
+        val userIdAndInstitutionIdOptional = cacheService.getUserIdAndInstitutionIdByLoginIdentityId(loginIdentityId)
+        if (userIdAndInstitutionIdOptional.isEmpty) {
+            return -1
         }
+        return userIdAndInstitutionIdOptional.get().userId
+    }
+
+    suspend fun getUserIdAndInstitutionId(loginIdentityId: String): UserIdAndInstitutionId {
+        val userIdAndInstitutionIdOptional = cacheService.getUserIdAndInstitutionIdByLoginIdentityId(loginIdentityId)
+        if (userIdAndInstitutionIdOptional.isEmpty) {
+            return UserIdAndInstitutionId(-1, "")
+        }
+        return userIdAndInstitutionIdOptional.get()
     }
 
     suspend fun getLoginIdentityTokenWithLoginIdentityID(loginIdentityId: String): String {
         return cacheService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
     }
 
-    suspend fun startRefreshSession(userId: Int, institutionId: String) {
-        cacheService.startRefreshSession(userId, institutionId)
+    suspend fun startRefreshSession(userId: Int, institutionId: String, request: FinverseDataRetrievalRequest) {
+        cacheService.startRefreshSession(userId, institutionId, request)
     }
 
     suspend fun hasRunningRefreshSession(userId: Int, institutionId: String): Boolean {
