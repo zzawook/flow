@@ -11,7 +11,7 @@ object FinverseAuthenticationEventTypeParser {
             return status
         }
         println("FINVERSE AUTHENTICATION WEBHOOK PARSE FAILED")
-        return FinverseAuthenticationStatus.AUTHENTICATION_FAILED
+        return FinverseAuthenticationStatus.FAILED
     }
 
 }

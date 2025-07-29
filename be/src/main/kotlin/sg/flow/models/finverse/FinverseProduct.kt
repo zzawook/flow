@@ -24,7 +24,6 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 finverseResponseProcessor: FinverseResponseProcessor,
                 finverseWebclient: WebClient
         ) {
-            println("FETCHING ACCOUNT")
             val response: FinverseAccountResponse =
                     finverseWebclient
                             .get()

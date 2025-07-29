@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrNull
+import org.slf4j.LoggerFactory
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
@@ -21,6 +22,8 @@ class AccountRepositoryImpl(
         private val databaseClient: DatabaseClient,
         private val transactionHistoryRepository: TransactionHistoryRepository,
 ) : AccountRepository {
+
+        private val logger = LoggerFactory.getLogger(AccountRepositoryImpl::class.java)
 
         override suspend fun save(entity: Account): Account {
                 val hasId = entity.id != null
@@ -215,7 +218,7 @@ class AccountRepositoryImpl(
                         }
                                 .onFailure { e ->
                                         e.printStackTrace()
-                                        println("Error fetching brief accounts for userId: $userId")
+                                        logger.error("Error fetching brief accounts for userId: $userId")
                                 }
                                 .getOrElse { emptyList<BriefAccount>() }
                 return temp

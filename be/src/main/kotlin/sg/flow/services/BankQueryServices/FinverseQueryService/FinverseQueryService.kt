@@ -2,6 +2,7 @@ package sg.flow.services.BankQueryServices.FinverseQueryService
 
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
@@ -37,6 +38,7 @@ class FinverseQueryService(
 ) {
     private val customerTokenRef = AtomicReference<String>()
     private var tokenExpiry: Instant = Instant.EPOCH
+    private val logger = LoggerFactory.getLogger(FinverseQueryService::class.java)
 
     init {
         this.fetchCustomerToken()
@@ -108,11 +110,13 @@ class FinverseQueryService(
 
         val userIdString = userId.toString().padEnd(4)
 
+        val state = fnv1a32("$userId$institutionId${System.currentTimeMillis()}")
+
         var requestBody = mapOf(
             "client_id" to finverseCredentials.clientId,
             "institution_id" to institutionId,
             "institution_status" to "",
-            "state" to "someCustomStateParameter",
+            "state" to state,
             "user_id" to userIdString,
             "redirect_uri" to "http://localhost:8081/api/finverse/callback",
             "automatic_data_refresh" to automaticRefreshVal,
@@ -130,13 +134,15 @@ class FinverseQueryService(
             val credential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
 
             if (credential == null) {
-                println("Login Identity was reported existing, but could not be fetched")
+                logger.error("Login Identity was reported existing, but could not be fetched")
             } else {
                 requestBody = requestBody + mapOf(
                     "login_identity_id" to credential.loginIdentityId
                 )
             }
         }
+
+        finverseAuthCache.startPreAuthSession(userId, institutionId, state)
 
         return try {
             val resp = finverseWebClient.post()
@@ -151,14 +157,30 @@ class FinverseQueryService(
             resp.linkUrl
         }
         catch (e: WebClientResponseException) {
-            println("Finverse returned HTTP ${e.statusCode}: ${e.responseBodyAsString}")
+            e.printStackTrace()
+            logger.error("Finverse returned HTTP ${e.statusCode}: ${e.responseBodyAsString}")
             throw FinverseException("Failed to generate link URL: ${e.responseBodyAsString}")
         }
         catch (e: Exception) {
-            println("Unexpected error while generating link URL")
-            println(e.message)
+            logger.error("Unexpected error while generating link URL", e)
             throw FinverseException("Unexpected error: ${e.message}")
         }
+    }
+
+    /** 32‑bit FNV‑1a hash of a String. */
+    /** 32‑bit FNV‑1a hash of a String, returned as 8‑char hex. */
+    fun fnv1a32(str: String): String {
+        // use unsigned to avoid sign‑extension issues
+        var hash = 0x811c9dc5u
+        val prime = 0x01000193u
+
+        for (c in str) {
+            hash = hash xor c.code.toUInt()
+            hash *= prime
+        }
+
+        // format as 8‑digit hex (lowercase)
+        return hash.toString(16).padStart(8, '0')
     }
 
     private suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean {
@@ -182,7 +204,6 @@ class FinverseQueryService(
             .bodyToMono(LoginIdentityResponse::class.java)
             .awaitSingle()
 
-        println("Saving LoginIdentity: ${loginIdentityResponse.loginIdentityToken}")
         finverseAuthCache.saveLoginIdentityToken(
             userId,
             institutionId,
@@ -196,7 +217,7 @@ class FinverseQueryService(
     }
 
     suspend fun getInstitutionAuthenticationResult(userId: Int, institutionId: String): FinverseAuthenticationStatus {
-        val timeout = 30.seconds
+        val timeout = 5.minutes
         val status = finverseTimeoutWatcher.watchAuthentication(
             userId,
             institutionId,

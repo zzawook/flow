@@ -1,6 +1,7 @@
 package sg.flow.rest_controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -18,6 +19,7 @@ class FinverseWebhookController(
     private val verifier: FinverseSignatureVerifier,
     private val kafkaEventProducerService: KafkaEventProducerService
 ) {
+    private val logger = LoggerFactory.getLogger(FinverseWebhookController::class.java)
 
     @PostMapping
     suspend fun handleWebhook(
@@ -29,14 +31,14 @@ class FinverseWebhookController(
         // Commented out for now as Finverse Data API does not have FV-Signature header as documented
 //        try {
 //            verifier.verify(signature, rawBody)
-//            println("Webhook signature verified successfully")
+//            logger.info("Webhook signature verified successfully")
 //        } catch (e: Exception) {
-//            println("Webhook signature verification failed: ${e.message}")
+//            logger.error("Webhook signature verification failed: ${e.message}")
 //            return ResponseEntity.badRequest().build()
 //        }
 
         val event = objectMapper.readValue(rawBody, FinverseWebhookEvent::class.java)
-        println("webhookReceived: $event")
+        logger.info("webhookReceived: $event")
 
         // Create and publish event to Kafka
         val kafkaEvent = FlowFinverseWebhookEvent(

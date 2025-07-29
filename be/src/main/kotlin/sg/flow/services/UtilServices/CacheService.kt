@@ -1,5 +1,6 @@
 package sg.flow.services.UtilServices
 
+import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import java.util.Optional
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIdentityCredential
@@ -29,4 +30,16 @@ interface CacheService {
     suspend fun getDataRetrievalRequest(userId: Int, institutionId: String): FinverseDataRetrievalRequest?
 
     suspend fun removeDataRetrievalRequest(userId: Int)
+
+    suspend fun storePreAuthSession(userId: Int, institutionId: String, state: String)
+
+    suspend fun getPreAuthSession(state: String): UserIdAndInstitutionId
+
+    suspend fun clearPreAuthSession(state: String)
+
+    suspend fun getPreAuthStateFor(userId: Int, institutionId: String): String
+
+    suspend fun storeFinalAuth(userId: Int, institutionId: String, authStatus: FinverseAuthenticationStatus)
+
+    suspend fun getFinalAuth(userId: Int, institutionId: String): FinverseAuthenticationStatus
 } 

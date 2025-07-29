@@ -72,7 +72,6 @@ object Validator {
         lengthBetween(notBlank(username, "Username"), 1, 100, "Username")
 
     fun validatePassword(password: String) {
-        println("Validating password: $password")
         lengthBetween(notBlank(password, "Password"), 6, 100, "Password")
     }
 

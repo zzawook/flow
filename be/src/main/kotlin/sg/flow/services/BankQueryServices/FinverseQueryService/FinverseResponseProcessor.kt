@@ -1,6 +1,7 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import sg.flow.entities.Account
@@ -26,6 +27,8 @@ class FinverseResponseProcessor(
     private val transactionRepository: TransactionHistoryRepository,
     private val finverseAuthCache: FinverseAuthCache
 ) {
+
+    private val logger = LoggerFactory.getLogger(FinverseResponseProcessor::class.java)
 
     private val accountMapper =
             FinverseAccountToAccountMapper(
@@ -124,9 +127,7 @@ class FinverseResponseProcessor(
 
         runBlocking {
             val userId = finverseAuthCache.getUserIdAndInstitutionId(loginIdentityId).userId.toLong()
-            println("user ID: $userId")
             user = userRepository.findById(userId)
-            println("user: $user")
         }
 
         return user ?: throw FinverseException("User with given login identity ID not found")
@@ -148,8 +149,7 @@ class FinverseResponseProcessor(
             account = accountRepository.findByFinverseAccountId(externalId)
         }
         if (account == null) {
-            println(externalId)
-
+            logger.error("Could not find account, returning null")
         }
 
         return account;

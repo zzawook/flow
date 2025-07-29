@@ -65,7 +65,7 @@ class KafkaEventProducerService(
             val future: CompletableFuture<SendResult<String, Any>> =
                     kafkaTemplate.send(
                             authCallbackTopic,
-                            event.userId.toString(), // Use loginIdentityId as partition key
+                            event.state.toString(), // Use loginIdentityId as partition key
                             event
                     )
 
@@ -74,14 +74,14 @@ class KafkaEventProducerService(
                     logger.info(
                             "Published auth callback event to topic: {} with key: {} at offset: {}",
                             authCallbackTopic,
-                            event.userId.toString(),
+                            event.state.toString(),
                             result?.recordMetadata?.offset()
                     )
                 } else {
                     logger.error(
                             "Failed to publish auth callback event to topic: {} with key: {}",
                             authCallbackTopic,
-                            event.userId.toString(),
+                            event.state.toString(),
                             exception
                     )
                 }

@@ -6,6 +6,7 @@ import java.time.LocalTime
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.slf4j.LoggerFactory
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
@@ -21,8 +22,9 @@ import sg.flow.models.transaction.TransactionHistoryList
 import sg.flow.repositories.utils.TransactionHistoryQueryStore
 
 @Repository
-class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClient) :
-        TransactionHistoryRepository {
+class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClient) : TransactionHistoryRepository {
+
+        private val logger = LoggerFactory.getLogger(TransactionHistoryRepositoryImpl::class.java)
 
         override suspend fun save(entity: TransactionHistory): TransactionHistory {
                 val hasId = entity.id != null
@@ -72,12 +74,12 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 runCatching {
                         val rows = spec.fetch().awaitRowsUpdated() // suspend
                         if (rows != 1L) {
-                                println("Duplicate row - skipping insertion")
+                                logger.info("Duplicate row - skipping insertion: ${spec.toString()}")
                         }
                 }
                         .onFailure { e ->
                                 e.printStackTrace()
-                                println("Error saving transaction history id=${entity.id}")
+                                logger.error("Error saving transaction history id=${entity.id}")
                                 throw e // bubble up (or return a sentinel)
                         }
 
@@ -308,7 +310,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                         }
                         .onFailure { e ->
                                 e.printStackTrace()
-                                println("Error fetching transaction history id=$id")
+                                logger.error("Error fetching transaction history id=$id")
                         }
                         .getOrNull()
         }
@@ -469,7 +471,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 }
                         .onFailure { e ->
                                 e.printStackTrace()
-                                println(
+                                logger.error(
                                         "Error fetching recent transactions for accountId=$accountId"
                                 )
                         }
@@ -668,7 +670,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 }
                         .onFailure { e ->
                                 e.printStackTrace()
-                                println(
+                                logger.error(
                                         "Error fetching transactions between $startDate‑$endDate for userId=$userId"
                                 )
                         }
@@ -840,7 +842,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                         }
                         .onFailure { e ->
                                 e.printStackTrace()
-                                println("Error fetching transaction detail id=$id")
+                                logger.error("Error fetching transaction detail id=$id")
                         }
                         .getOrNull()
         }

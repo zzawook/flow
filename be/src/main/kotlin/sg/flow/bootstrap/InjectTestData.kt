@@ -29,6 +29,7 @@ import sg.flow.repositories.bank.BankRepository
 import sg.flow.repositories.card.CardRepository
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
 import sg.flow.repositories.user.UserRepository
+import org.slf4j.LoggerFactory
 
 @Profile("!prod")
 @Component
@@ -41,28 +42,30 @@ class InjectTestData(
         @Autowired private val transactionRepository: TransactionHistoryRepository
 ) : CommandLineRunner {
 
+    private val logger = LoggerFactory.getLogger(InjectTestData::class.java)
+
     override fun run(vararg args: String) = runBlocking {
-        println("Starting test data injection...")
+        logger.info("Starting test data injection...")
 
 //        clearTestData()
-//        println("Cleared existing test data.")
+//        logger.info("Cleared existing test data.")
 
         injectUserData()
-        println("Injected user data.")
+        logger.info("Injected user data.")
 
 //        injectBankData()
-//        println("Injected bank data.")
+//        logger.info("Injected bank data.")
 
 //        injectAccountData()
-//        println("Injected account data.")
+//        logger.info("Injected account data.")
 //
 //        injectCardData()
-//        println("Injected card data.")
+//        logger.info("Injected card data.")
 //
 //        injectTransactionData()
-//        println("Injected transaction data.")
+//        logger.info("Injected transaction data.")
 
-        println("Test data injection completed successfully.")
+        logger.info("Test data injection completed successfully.")
     }
 
     private suspend fun clearTestData() {
@@ -85,7 +88,7 @@ class InjectTestData(
     private suspend fun injectUserData() {
         val br = readCSVFile("testdata/users.csv")
         if (br == null) {
-            println("Error reading user data file")
+            logger.error("Error reading user data file")
             return
         }
 
@@ -118,7 +121,7 @@ class InjectTestData(
     private suspend fun injectAccountData() {
         val br = readCSVFile("testdata/accounts.csv")
         if (br == null) {
-            println("Error reading account data file")
+            logger.error("Error reading account data file")
             return
         }
 
@@ -153,7 +156,7 @@ class InjectTestData(
     private suspend fun injectCardData() {
         val br = readCSVFile("testdata/cards.csv")
         if (br == null) {
-            println("Error reading card data file")
+            logger.error("Error reading card data file")
             return
         }
 
@@ -198,7 +201,7 @@ class InjectTestData(
     private suspend fun injectBankData() {
         val br = readCSVFile("testdata/banks.csv")
         if (br == null) {
-            println("Error reading bank data file")
+            logger.error("Error reading bank data file")
             return
         }
 

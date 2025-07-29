@@ -10,20 +10,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.listener.PatternTopic
 import org.springframework.data.redis.listener.ReactiveRedisMessageListenerContainer
-import org.springframework.kafka.annotation.KafkaListener
-import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
-import sg.flow.models.finverse.webhook_events.FinverseWebhookEvent
-import sg.flow.services.UtilServices.CacheService
 import sg.flow.services.UtilServices.RedisCacheServiceImpl
-import java.nio.charset.StandardCharsets
 import kotlin.time.Duration
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CompletableFuture
 import kotlin.time.toJavaDuration
 
 @Component
@@ -42,13 +35,12 @@ class FinverseTimeoutWatcher(
         institutionId: String,
         timeout: Duration
     ): FinverseAuthenticationStatus {
-        val key = cacheService.getRefreshSessionPrefix(userId, institutionId)
+        val key = cacheService.getPostAuthKey(userId, institutionId)
 
         // 1) build a Mono<FinverseAuthenticationStatus> that completes on the first SET event
         val statusMono: Mono<FinverseAuthenticationStatus> = container
             .receive(PatternTopic("__keyevent@0__:set"))
             .map { msg ->
-                println(msg)
                 msg.message
             }
             .filter { it == key }       // only our key
@@ -60,16 +52,15 @@ class FinverseTimeoutWatcher(
                         try {
                             objectMapper.readValue(
                                 newVal,
-                                FinverseDataRetrievalRequest::class.java
+                                FinverseAuthenticationStatus::class.java
                             )
-                            FinverseAuthenticationStatus.AUTHENTICATED
                         } catch (_: Exception) {
-                            FinverseAuthenticationStatus.AUTHENTICATION_FAILED
+                            FinverseAuthenticationStatus.FAILED
                         }
                     }
             }
             .timeout(timeout.toJavaDuration())             // if we never see it, time out
-            .onErrorReturn(FinverseAuthenticationStatus.AUTHENTICATION_FAILED)
+            .onErrorReturn(FinverseAuthenticationStatus.FAILED)
 
         // 2) await the single result
         return statusMono.awaitSingle()
@@ -90,17 +81,15 @@ class FinverseTimeoutWatcher(
         val statusMono: Mono<FinverseOverallRetrievalStatus> = container
             .receive(PatternTopic(topic))
             .map { msg ->
-                println(msg)
                 msg.message
             }
             .filter { it == "set" || it == "expire" }
             .flatMap { ev ->
                 if (ev == "expire") {
-                    println("EXPIRED")
                     Mono.just(FinverseOverallRetrievalStatus(
                         loginIdentityId = loginIdentity.loginIdentityId,
-                        success = true,
-                        message = ""
+                        success = false,
+                        message = "expired"
                     ))
                 } else {
                     // On SET: fetch the JSON, parse, and only emit if complete
@@ -112,7 +101,6 @@ class FinverseTimeoutWatcher(
                                     FinverseDataRetrievalRequest::class.java
                                 )
                                 if (dto.isComplete()) {
-                                    println("COMPLETED")
                                     Mono.just(dto.getOverallRetrievalStatus())
                                 } else {
                                     Mono.empty()

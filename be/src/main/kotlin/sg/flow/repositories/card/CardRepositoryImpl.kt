@@ -2,6 +2,7 @@ package sg.flow.repositories.card
 
 import CardNotJoined
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.slf4j.LoggerFactory
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
@@ -19,6 +20,8 @@ class CardRepositoryImpl(
         private val userRepository: UserRepository,
         private val accountRepository: AccountRepository
 ) : CardRepository {
+
+        private val logger = LoggerFactory.getLogger(CardRepositoryImpl::class.java)
 
     override suspend fun save(entity: Card): Card {
         val hasId = entity.id != null
@@ -151,7 +154,7 @@ class CardRepositoryImpl(
                 }
                 .onFailure { e ->
                     e.printStackTrace()
-                    println("Error fetching card id=$id")
+                    logger.error("Error fetching card id=$id", e)
                 }
                 .getOrNull()
     }

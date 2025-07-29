@@ -12,9 +12,6 @@ data class FinverseAuthCallbackEvent(
     @JsonProperty("timestamp")
     val timestamp: Instant = Instant.now(),
     
-    @JsonProperty("userId")
-    val userId: Int,
-    
     @JsonProperty("code")
     val code: String,
     
