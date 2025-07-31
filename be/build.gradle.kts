@@ -73,6 +73,12 @@ dependencies {
 	// Utils
 	implementation("com.googlecode.libphonenumber:libphonenumber:9.0.7")
 
+	// AWS SDK for Bedrock
+	implementation(platform("software.amazon.awssdk:bom:2.28.17"))
+	implementation("software.amazon.awssdk:bedrockruntime")
+	implementation("software.amazon.awssdk:auth")
+	implementation("software.amazon.awssdk:regions")
+
 	// Spring gRPC integration
 	implementation("org.springframework.grpc:spring-grpc-spring-boot-starter:0.8.0")
 

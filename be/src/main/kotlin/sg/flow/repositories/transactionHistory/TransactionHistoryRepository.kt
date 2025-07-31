@@ -7,20 +7,42 @@ import sg.flow.models.transaction.TransactionHistoryList
 import sg.flow.repositories.Repository
 
 interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
-    suspend fun saveAllWithId(entities: List<TransactionHistory>): List<TransactionHistory>
-    suspend fun findRecentTransactionHistoryDetailOfAccount(
-            accountId: Long
-    ): List<TransactionHistoryDetail>
-    suspend fun findTransactionBetweenDates(
-            userId: Int,
-            startDate: LocalDate,
-            endDate: LocalDate
-    ): TransactionHistoryList
-    suspend fun findTransactionBetweenDates(
-            userId: Int,
-            startDate: LocalDate,
-            endDate: LocalDate,
-            limit: Int
-    ): TransactionHistoryList
-    suspend fun findTransactionDetailById(id: Long): TransactionHistoryDetail?
+        suspend fun saveAllWithId(entities: List<TransactionHistory>): List<TransactionHistory>
+        suspend fun findRecentTransactionHistoryDetailOfAccount(
+                accountId: Long
+        ): List<TransactionHistoryDetail>
+        suspend fun findTransactionBetweenDates(
+                userId: Int,
+                startDate: LocalDate,
+                endDate: LocalDate
+        ): TransactionHistoryList
+        suspend fun findTransactionBetweenDates(
+                userId: Int,
+                startDate: LocalDate,
+                endDate: LocalDate,
+                limit: Int
+        ): TransactionHistoryList
+        suspend fun findTransactionDetailById(id: Long): TransactionHistoryDetail?
+
+        // Transaction analysis methods
+        suspend fun findUnprocessedTransactions(): List<TransactionHistory>
+        suspend fun findUnprocessedTransactionsByUserId(userId: Int): List<TransactionHistory>
+        suspend fun updateTransactionAnalysis(
+                id: Long,
+                category: String?,
+                friendlyDescription: String?,
+                extractedCardNumber: String?,
+                revisedTransactionDate: LocalDate?,
+                isProcessed: Boolean
+        ): Boolean
+        suspend fun batchUpdateTransactionAnalysis(updates: List<TransactionAnalysisUpdate>): Int
 }
+
+data class TransactionAnalysisUpdate(
+        val transactionId: Long,
+        val category: String?,
+        val friendlyDescription: String?,
+        val extractedCardNumber: String?,
+        val revisedTransactionDate: LocalDate?,
+        val isProcessed: Boolean = true
+)

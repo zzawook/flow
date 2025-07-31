@@ -81,6 +81,9 @@ CREATE TABLE IF NOT EXISTS transaction_histories (
     description VARCHAR(255) DEFAULT '',
     transaction_status VARCHAR(255) NOT NULL,
     friendly_description VARCHAR(255) DEFAULT '',
+    transaction_category VARCHAR(255) DEFAULT NULL,
+    extracted_card_number VARCHAR(255) DEFAULT NULL,
+    revised_transaction_date DATE DEFAULT NULL,
     is_processed BOOLEAN DEFAULT false,
     finverse_id VARCHAR(255) UNIQUE
 );

@@ -13,16 +13,17 @@ import org.springframework.stereotype.Repository
 import sg.flow.entities.Account
 import sg.flow.entities.Bank
 import sg.flow.entities.TransactionHistory
+import sg.flow.entities.User
 import sg.flow.entities.utils.AccountType
 import sg.flow.entities.utils.CardType
-import sg.flow.entities.User
 import sg.flow.models.card.BriefCard
 import sg.flow.models.transaction.TransactionHistoryDetail
 import sg.flow.models.transaction.TransactionHistoryList
 import sg.flow.repositories.utils.TransactionHistoryQueryStore
 
 @Repository
-class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClient) : TransactionHistoryRepository {
+class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClient) :
+        TransactionHistoryRepository {
 
         private val logger = LoggerFactory.getLogger(TransactionHistoryRepositoryImpl::class.java)
 
@@ -45,8 +46,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 spec =
                         spec.bind(i++, entity.transactionReference) // $2 / $1
                                 .let { s ->
-                                        entity.account?.id
-                                                ?.let { accId -> s.bind(i++, accId) }
+                                        entity.account?.id?.let { accId -> s.bind(i++, accId) }
                                                 ?: s.bindNull(i++, Long::class.java)
                                 }
                                 .let { s -> // card_id (nullable)
@@ -54,8 +54,9 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                 ?: s.bindNull(i++, Long::class.java)
                                 }
                                 .let { s ->
-                                        entity.account?.owner
-                                                ?.let { owner -> s.bind(i++, owner.id ?: -1) }
+                                        entity.account?.owner?.let { owner ->
+                                                s.bind(i++, owner.id ?: -1)
+                                        }
                                                 ?: s.bindNull(i++, Int::class.java)
                                 }
                                 .bind(i++, entity.transactionDate) // LocalDate → DATE
@@ -74,7 +75,9 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 runCatching {
                         val rows = spec.fetch().awaitRowsUpdated() // suspend
                         if (rows != 1L) {
-                                logger.info("Duplicate row - skipping insertion: ${spec.toString()}")
+                                logger.info(
+                                        "Duplicate row - skipping insertion: ${spec.toString()}"
+                                )
                         }
                 }
                         .onFailure { e ->
@@ -89,50 +92,62 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
         private fun multiInsertSql(rowCount: Int): String {
                 require(rowCount > 0) { "entities must not be empty" }
 
-                val cols = """
+                val cols =
+                        """
         (id, transaction_reference, account_id, card_id, user_id, transaction_date,
          transaction_time, amount, transaction_type, description,
          transaction_status, friendly_description)
     """.trimIndent()
 
                 val paramsPerRow = 12
-                val valuesClause = (0 until rowCount).joinToString(", ") { rowIdx ->
-                        val start = rowIdx * paramsPerRow + 1               // 1‑based in Postgres
-                        val end   = start + paramsPerRow - 1
-                        "(" + (start..end).joinToString(", ") { "$$it" } + ")"
-                }
+                val valuesClause =
+                        (0 until rowCount).joinToString(", ") { rowIdx ->
+                                val start = rowIdx * paramsPerRow + 1 // 1‑based in Postgres
+                                val end = start + paramsPerRow - 1
+                                "(" + (start..end).joinToString(", ") { "$$it" } + ")"
+                        }
 
                 return "INSERT INTO transaction_histories $cols VALUES $valuesClause"
         }
 
+        override suspend fun saveAllWithId(
+                entities: List<TransactionHistory>
+        ): List<TransactionHistory> {
 
-        override suspend fun saveAllWithId(entities: List<TransactionHistory>): List<TransactionHistory> {
-
-                val sql  = multiInsertSql(entities.size)
+                val sql = multiInsertSql(entities.size)
                 var spec = databaseClient.sql(sql)
-                var i    = 0                                            // global index across all rows
+                var i = 0 // global index across all rows
 
                 entities.forEach { e ->
                         // non‑null because of the pre‑condition
-                        spec = spec.bind(i++, e.id ?: 0)                       // id
-                                .bind(i++, e.transactionReference)     // transaction_reference
-                                .bind(i++, e.account?.id ?: -1)           // account_id
+                        spec =
+                                spec.bind(i++, e.id ?: 0) // id
+                                        .bind(i++, e.transactionReference) // transaction_reference
+                                        .bind(i++, e.account?.id ?: -1) // account_id
 
-                        spec = e.card?.id?.let { spec.bind(i++, it) }       // card_id (nullable)
-                                ?: spec.bindNull(i++, Long::class.java)
+                        spec =
+                                e.card?.id?.let { spec.bind(i++, it) } // card_id (nullable)
+                                 ?: spec.bindNull(i++, Long::class.java)
 
                         spec = spec.bind(i++, e.account?.owner?.id ?: -1)
 
-                        spec = spec.bind(i++, e.transactionDate)            // transaction_date
+                        spec = spec.bind(i++, e.transactionDate) // transaction_date
 
-                        spec = e.transactionTime?.let { spec.bind(i++, it) }// transaction_time (nullable)
-                                ?: spec.bindNull(i++, LocalTime::class.java)
+                        spec =
+                                e.transactionTime?.let {
+                                        spec.bind(i++, it)
+                                } // transaction_time (nullable)
+                                 ?: spec.bindNull(i++, LocalTime::class.java)
 
-                        spec = spec.bind(i++, e.amount)                     // amount
-                                .bind(i++, e.transactionType.toString())     // transaction_type
-                                .bind(i++, e.description)              // description
-                                .bind(i++, e.transactionStatus.toString())   // transaction_status
-                                .bind(i++, e.friendlyDescription)      // friendly_description
+                        spec =
+                                spec.bind(i++, e.amount) // amount
+                                        .bind(i++, e.transactionType.toString()) // transaction_type
+                                        .bind(i++, e.description) // description
+                                        .bind(
+                                                i++,
+                                                e.transactionStatus.toString()
+                                        ) // transaction_status
+                                        .bind(i++, e.friendlyDescription) // friendly_description
                 }
 
                 val rows = spec.fetch().awaitRowsUpdated()
@@ -211,18 +226,64 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                                         .java
                                                                                         )!!
                                                                         ),
-                                                                owner = User(
-                                                                        id = row.get("user_id", Int::class.java)!!,
-                                                                        name = row.get("user_name", String::class.java)!!,
-                                                                        email = row.get("email", String::class.java)!!,
-                                                                        phoneNumber = row.get("phoneNUmber", String::class.java)!!,
-                                                                        dateOfBirth = row.get("date_of_birth", LocalDate::class.java)!!,
-                                                                        address = row.get("address", String::class.java)!!,
-                                                                        identificationNumber = row.get("identification_number", String::class.java)!!,
-                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}",
-
-                                                                ),
-                                                                finverseId =  row.get("finverse_id", String::class.java) ?: "",
+                                                                owner =
+                                                                        User(
+                                                                                id =
+                                                                                        row.get(
+                                                                                                "user_id",
+                                                                                                Int::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                name =
+                                                                                        row.get(
+                                                                                                "user_name",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                email =
+                                                                                        row.get(
+                                                                                                "email",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                phoneNumber =
+                                                                                        row.get(
+                                                                                                "phoneNUmber",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                dateOfBirth =
+                                                                                        row.get(
+                                                                                                "date_of_birth",
+                                                                                                LocalDate::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                address =
+                                                                                        row.get(
+                                                                                                "address",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                identificationNumber =
+                                                                                        row.get(
+                                                                                                "identification_number",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )!!,
+                                                                                settingJson =
+                                                                                        row.get(
+                                                                                                "setting_json",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: "{}",
+                                                                        ),
+                                                                finverseId =
+                                                                        row.get(
+                                                                                "finverse_id",
+                                                                                String::class.java
+                                                                        )
+                                                                                ?: "",
                                                         )
 
                                                 val cardId = row.get("card_id")
@@ -395,19 +456,76 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                                 String::class
                                                                                                         .java
                                                                                         )!!
-                                                                         
-                                                        ),
-                                                                finverseId = row.get("finverse_id", String::class.java) ?: "",
-                                                               owner = User(
-                                                                                        id = row.get("user_id", Int::class.java) ?: 0,
-                                                                                        name = row.get("user_name", String::class.java) ?: "",
-                                                                                        email = row.get("email", String::class.java) ?: "",
-                                                                                        identificationNumber = row.get("identification_number", String::class.java) ?: "",
-                                                                                        phoneNumber = row.get("phone_number", String::class.java) ?: "",
-                                                                                        dateOfBirth = row.get("date_of_birth", java.time.LocalDate::class.java) ?: java.time.LocalDate.now(),
-                                                                                        address = row.get("address", String::class.java) ?: "",
-                                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}"
-                                                                        ))
+                                                                        ),
+                                                                finverseId =
+                                                                        row.get(
+                                                                                "finverse_id",
+                                                                                String::class.java
+                                                                        )
+                                                                                ?: "",
+                                                                owner =
+                                                                        User(
+                                                                                id =
+                                                                                        row.get(
+                                                                                                "user_id",
+                                                                                                Int::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: 0,
+                                                                                name =
+                                                                                        row.get(
+                                                                                                "user_name",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: "",
+                                                                                email =
+                                                                                        row.get(
+                                                                                                "email",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: "",
+                                                                                identificationNumber =
+                                                                                        row.get(
+                                                                                                "identification_number",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: "",
+                                                                                phoneNumber =
+                                                                                        row.get(
+                                                                                                "phone_number",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: "",
+                                                                                dateOfBirth =
+                                                                                        row.get(
+                                                                                                "date_of_birth",
+                                                                                                java.time
+                                                                                                                .LocalDate::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: java.time
+                                                                                                        .LocalDate
+                                                                                                        .now(),
+                                                                                address =
+                                                                                        row.get(
+                                                                                                "address",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: "",
+                                                                                settingJson =
+                                                                                        row.get(
+                                                                                                "setting_json",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: "{}"
+                                                                        )
+                                                        )
                                                 }
 
                                         /* ── nested Card (nullable) ─────────────────────────── */
@@ -567,18 +685,71 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                                                         .java
                                                                                                         )!!
                                                                                         ),
-                                                                                owner = User(
-                                                                                        id = userId.toInt(),
-                                                                                        name = row.get("user_name", String::class.java) ?: "",
-                                                                                        email = row.get("email", String::class.java) ?: "",
-                                                                                        identificationNumber = row.get("identification_number", String::class.java) ?: "",
-                                                                                        phoneNumber = row.get("phone_number", String::class.java) ?: "",
-                                                                                        dateOfBirth = row.get("date_of_birth", java.time.LocalDate::class.java) ?: java.time.LocalDate.now(),
-                                                                                        address = row.get("address", String::class.java) ?: "",
-                                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}"
-                                                                        ),
-                                                                                finverseId = row.get("finverse_id", String::class.java) ?: ""
-                                                                                )
+                                                                                owner =
+                                                                                        User(
+                                                                                                id =
+                                                                                                        userId.toInt(),
+                                                                                                name =
+                                                                                                        row.get(
+                                                                                                                "user_name",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                email =
+                                                                                                        row.get(
+                                                                                                                "email",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                identificationNumber =
+                                                                                                        row.get(
+                                                                                                                "identification_number",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                phoneNumber =
+                                                                                                        row.get(
+                                                                                                                "phone_number",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                dateOfBirth =
+                                                                                                        row.get(
+                                                                                                                "date_of_birth",
+                                                                                                                java.time
+                                                                                                                                .LocalDate::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: java.time
+                                                                                                                        .LocalDate
+                                                                                                                        .now(),
+                                                                                                address =
+                                                                                                        row.get(
+                                                                                                                "address",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                settingJson =
+                                                                                                        row.get(
+                                                                                                                "setting_json",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "{}"
+                                                                                        ),
+                                                                                finverseId =
+                                                                                        row.get(
+                                                                                                "finverse_id",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: ""
+                                                                        )
                                                                 }
 
                                                 /* nested Card (nullable) */
@@ -747,18 +918,76 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                                                         .java
                                                                                                         )!!
                                                                                         ),
-                                                                                finverseId = row.get("finverse_id", String::class.java) ?: "",
-                                                                                owner = User(
-                                                                                        id = row.get("user_id", Int::class.java) ?: 0,
-                                                                                        name = row.get("user_name", String::class.java) ?: "",
-                                                                                        email = row.get("email", String::class.java) ?: "",
-                                                                                        identificationNumber = row.get("identification_number", String::class.java) ?: "",
-                                                                                        phoneNumber = row.get("phone_number", String::class.java) ?: "",
-                                                                                        dateOfBirth = row.get("date_of_birth", java.time.LocalDate::class.java) ?: java.time.LocalDate.now(),
-                                                                                        address = row.get("address", String::class.java) ?: "",
-                                                                                        settingJson = row.get("setting_json", String::class.java) ?: "{}"
-                                                                                        
-                                                                        ))
+                                                                                finverseId =
+                                                                                        row.get(
+                                                                                                "finverse_id",
+                                                                                                String::class
+                                                                                                        .java
+                                                                                        )
+                                                                                                ?: "",
+                                                                                owner =
+                                                                                        User(
+                                                                                                id =
+                                                                                                        row.get(
+                                                                                                                "user_id",
+                                                                                                                Int::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: 0,
+                                                                                                name =
+                                                                                                        row.get(
+                                                                                                                "user_name",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                email =
+                                                                                                        row.get(
+                                                                                                                "email",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                identificationNumber =
+                                                                                                        row.get(
+                                                                                                                "identification_number",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                phoneNumber =
+                                                                                                        row.get(
+                                                                                                                "phone_number",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                dateOfBirth =
+                                                                                                        row.get(
+                                                                                                                "date_of_birth",
+                                                                                                                java.time
+                                                                                                                                .LocalDate::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: java.time
+                                                                                                                        .LocalDate
+                                                                                                                        .now(),
+                                                                                                address =
+                                                                                                        row.get(
+                                                                                                                "address",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "",
+                                                                                                settingJson =
+                                                                                                        row.get(
+                                                                                                                "setting_json",
+                                                                                                                String::class
+                                                                                                                        .java
+                                                                                                        )
+                                                                                                                ?: "{}"
+                                                                                        )
+                                                                        )
                                                                 }
 
                                                 /* ── nested Card (nullable) ─────────────────────────── */
@@ -845,6 +1074,221 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                 logger.error("Error fetching transaction detail id=$id")
                         }
                         .getOrNull()
+        }
+
+        override suspend fun findUnprocessedTransactions(): List<TransactionHistory> {
+                return runCatching {
+                        databaseClient
+                                .sql(TransactionHistoryQueryStore.FIND_UNPROCESSED_TRANSACTIONS)
+                                .map { row -> mapRowToTransactionHistory(row as Row) }
+                                .all()
+                                .asFlow()
+                                .toList()
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                logger.error("Error fetching unprocessed transactions", e)
+                        }
+                        .getOrElse { emptyList() }
+        }
+
+        override suspend fun findUnprocessedTransactionsByUserId(
+                userId: Int
+        ): List<TransactionHistory> {
+                return runCatching {
+                        databaseClient
+                                .sql(
+                                        TransactionHistoryQueryStore
+                                                .FIND_UNPROCESSED_TRANSACTIONS_BY_USER_ID
+                                )
+                                .bind(0, userId)
+                                .map { row -> mapRowToTransactionHistory(row as Row) }
+                                .all()
+                                .asFlow()
+                                .toList()
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                logger.error(
+                                        "Error fetching unprocessed transactions for user $userId",
+                                        e
+                                )
+                        }
+                        .getOrElse { emptyList() }
+        }
+
+        override suspend fun updateTransactionAnalysis(
+                id: Long,
+                category: String?,
+                friendlyDescription: String?,
+                extractedCardNumber: String?,
+                revisedTransactionDate: LocalDate?,
+                isProcessed: Boolean
+        ): Boolean {
+                return runCatching {
+                        val rowsUpdated =
+                                databaseClient
+                                        .sql(
+                                                TransactionHistoryQueryStore
+                                                        .UPDATE_TRANSACTION_ANALYSIS
+                                        )
+                                        .bind(0, id)
+                                        .let { spec ->
+                                                category?.let { spec.bind(1, it) }
+                                                        ?: spec.bindNull(1, String::class.java)
+                                        }
+                                        .let { spec ->
+                                                friendlyDescription?.let { spec.bind(2, it) }
+                                                        ?: spec.bindNull(2, String::class.java)
+                                        }
+                                        .let { spec ->
+                                                extractedCardNumber?.let { spec.bind(3, it) }
+                                                        ?: spec.bindNull(3, String::class.java)
+                                        }
+                                        .let { spec ->
+                                                revisedTransactionDate?.let { spec.bind(4, it) }
+                                                        ?: spec.bindNull(4, LocalDate::class.java)
+                                        }
+                                        .bind(5, isProcessed)
+                                        .fetch()
+                                        .awaitRowsUpdated()
+
+                        rowsUpdated == 1L
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                logger.error("Error updating transaction analysis for id=$id", e)
+                        }
+                        .getOrElse { false }
+        }
+
+        override suspend fun batchUpdateTransactionAnalysis(
+                updates: List<TransactionAnalysisUpdate>
+        ): Int {
+                if (updates.isEmpty()) return 0
+
+                return runCatching {
+                        var totalUpdated = 0
+
+                        // Process updates in batches for efficient batch operations
+                        updates.chunked(50).forEach { batch ->
+                                logger.info("Processing batch of ${batch.size} transaction updates")
+
+                                batch.forEach { update ->
+                                        val success =
+                                                updateTransactionAnalysis(
+                                                        update.transactionId,
+                                                        update.category,
+                                                        update.friendlyDescription,
+                                                        update.extractedCardNumber,
+                                                        update.revisedTransactionDate,
+                                                        update.isProcessed
+                                                )
+                                        if (success) totalUpdated++
+                                }
+
+                                logger.info("Completed batch: $totalUpdated total updates so far")
+                        }
+
+                        logger.info("Batch update completed: $totalUpdated transactions updated")
+                        totalUpdated
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                logger.error("Error in batch update of transaction analysis", e)
+                        }
+                        .getOrElse { 0 }
+        }
+
+        private fun mapRowToTransactionHistory(row: Row): TransactionHistory {
+                // Build nested Account object
+                val account =
+                        Account(
+                                id = row.get("account_id", Long::class.java)!!,
+                                accountNumber = row.get("account_number", String::class.java)!!,
+                                balance = row.get("account_balance", Double::class.java)!!,
+                                accountName = row.get("account_name", String::class.java)!!,
+                                accountType =
+                                        AccountType.valueOf(
+                                                row.get("account_type", String::class.java)!!
+                                        ),
+                                lastUpdated =
+                                        row.get(
+                                                "account_last_updated",
+                                                java.time.LocalDateTime::class.java
+                                        )!!,
+                                bank =
+                                        Bank(
+                                                id = row.get("bank_id", Int::class.java)!!,
+                                                name = row.get("bank_name", String::class.java)!!,
+                                                bankCode =
+                                                        row.get("bank_code", String::class.java)!!
+                                        ),
+                                owner =
+                                        User(
+                                                id = row.get("user_id", Int::class.java)!!,
+                                                name = row.get("user_name", String::class.java)!!,
+                                                email = row.get("email", String::class.java)!!,
+                                                phoneNumber =
+                                                        row.get(
+                                                                "phone_number",
+                                                                String::class.java
+                                                        )!!,
+                                                dateOfBirth =
+                                                        row.get(
+                                                                "date_of_birth",
+                                                                LocalDate::class.java
+                                                        )!!,
+                                                address = row.get("address", String::class.java)!!,
+                                                identificationNumber =
+                                                        row.get(
+                                                                "identification_number",
+                                                                String::class.java
+                                                        )!!,
+                                                settingJson =
+                                                        row.get("setting_json", String::class.java)
+                                                                ?: "{}"
+                                        ),
+                                finverseId = row.get("account_finverse_id", String::class.java)
+                                                ?: ""
+                        )
+
+                // Build nested Card object (nullable)
+                val card =
+                        row.get("card_id", Long::class.java)?.let { cardId ->
+                                BriefCard(
+                                        id = cardId,
+                                        cardNumber = row.get("card_number", String::class.java)!!,
+                                        cardType =
+                                                CardType.valueOf(
+                                                        row.get("card_type", String::class.java)!!
+                                                )
+                                )
+                        }
+
+                // Build TransactionHistory entity
+                return TransactionHistory(
+                        id = row.get("id", Long::class.java)!!,
+                        transactionReference =
+                                row.get("transaction_reference", String::class.java)!!,
+                        account = account,
+                        card = card,
+                        transactionDate = row.get("transaction_date", LocalDate::class.java)!!,
+                        transactionTime = row.get("transaction_time", LocalTime::class.java),
+                        amount = row.get("amount", Double::class.java)!!,
+                        transactionType = row.get("transaction_type", String::class.java)!!,
+                        description = row.get("description", String::class.java) ?: "",
+                        transactionStatus = row.get("transaction_status", String::class.java)!!,
+                        friendlyDescription = row.get("friendly_description", String::class.java)
+                                        ?: "",
+                        transactionCategory = row.get("transaction_category", String::class.java)
+                                        ?: "",
+                        extractedCardNumber = row.get("extracted_card_number", String::class.java),
+                        revisedTransactionDate =
+                                row.get("revised_transaction_date", LocalDate::class.java),
+                        isProcessed = row.get("is_processed", Boolean::class.java) ?: false,
+                        finverseId = row.get("finverse_id", String::class.java)!!
+                )
         }
 
         fun Row.hasColumn(name: String): Boolean =

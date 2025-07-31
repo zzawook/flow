@@ -1,5 +1,6 @@
 package sg.flow.configs
 
+import java.time.Duration
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -14,7 +15,6 @@ import org.springframework.kafka.core.*
 import org.springframework.kafka.listener.ContainerProperties
 import org.springframework.kafka.support.serializer.JsonDeserializer
 import org.springframework.kafka.support.serializer.JsonSerializer
-import java.time.Duration
 
 @Configuration
 class KafkaConfig(
@@ -117,6 +117,26 @@ class KafkaConfig(
         }
 
         @Bean
+        fun transactionAnalysisConsumerFactory():
+                ConsumerFactory<String, sg.flow.events.TransactionAnalysisTriggerEvent> {
+                val configProps =
+                        mapOf<String, Any>(
+                                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
+                                ConsumerConfig.GROUP_ID_CONFIG to groupId,
+                                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to
+                                        StringDeserializer::class.java,
+                                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to
+                                        JsonDeserializer::class.java,
+                                ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
+                                JsonDeserializer.TRUSTED_PACKAGES to "sg.flow.events",
+                                JsonDeserializer.VALUE_DEFAULT_TYPE to
+                                        "sg.flow.events.TransactionAnalysisTriggerEvent",
+                                JsonDeserializer.USE_TYPE_INFO_HEADERS to false
+                        )
+                return DefaultKafkaConsumerFactory(configProps)
+        }
+
+        @Bean
         fun webhookKafkaListenerContainerFactory():
                 ConcurrentKafkaListenerContainerFactory<
                         String, sg.flow.events.FinverseWebhookEvent> {
@@ -137,6 +157,19 @@ class KafkaConfig(
                         ConcurrentKafkaListenerContainerFactory<
                                 String, sg.flow.events.FinverseAuthCallbackEvent>()
                 factory.consumerFactory = authCallbackConsumerFactory()
+                // Use MANUAL_IMMEDIATE mode for suspend functions to properly handle async ack
+                factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
+                return factory
+        }
+
+        @Bean
+        fun transactionAnalysisKafkaListenerContainerFactory():
+                ConcurrentKafkaListenerContainerFactory<
+                        String, sg.flow.events.TransactionAnalysisTriggerEvent> {
+                val factory =
+                        ConcurrentKafkaListenerContainerFactory<
+                                String, sg.flow.events.TransactionAnalysisTriggerEvent>()
+                factory.consumerFactory = transactionAnalysisConsumerFactory()
                 // Use MANUAL_IMMEDIATE mode for suspend functions to properly handle async ack
                 factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
                 return factory

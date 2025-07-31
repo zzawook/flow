@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 import java.time.LocalTime
 import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Table
 import sg.flow.models.card.BriefCard
 
 data class TransactionHistory(
@@ -21,5 +20,8 @@ data class TransactionHistory(
         @field:NotBlank val transactionStatus: String,
         val friendlyDescription: String = "",
         val transactionCategory: String = "",
+        val extractedCardNumber: String? = null,
+        val revisedTransactionDate: LocalDate? = null,
+        val isProcessed: Boolean = false,
         val finverseId: String,
 )
