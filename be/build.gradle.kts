@@ -7,9 +7,9 @@ plugins {
 	id("org.springframework.boot") version "3.4.0"
 	id("io.spring.dependency-management") version "1.1.6"
 	kotlin("jvm") version "2.2.0"
-	kotlin("plugin.spring") version "1.9.22"
-	kotlin("plugin.noarg") version "1.9.22"
-	kotlin("plugin.allopen") version "1.9.22"
+	kotlin("plugin.spring") version "2.2.0"
+	kotlin("plugin.noarg") version "2.2.0"
+	kotlin("plugin.allopen") version "2.2.0"
 	id("com.google.protobuf") version "0.9.4"
 	id("io.gitlab.arturbosch.detekt") version "1.23.5"
 }
@@ -95,6 +95,22 @@ dependencies {
 
 	testRuntimeOnly("io.r2dbc:r2dbc-h2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+configurations.all {
+	resolutionStrategy.eachDependency {
+		// keep exactly kotlinx-coroutines-core:1.7.3
+		if (requested.group == "org.jetbrains.kotlinx"
+			&& requested.name.startsWith("kotlinx-coroutines")) {
+			useVersion("1.7.3")
+			because("Match coroutines BOM and AWS SDK expectations")
+		}
+		// force OkHttp 5.x for AWS SDK’s OkHttp coroutine adapter
+		if (requested.group == "com.squareup.okhttp3" && (requested.name == "okhttp" || requested.name == "okhttp-coroutines")) {
+			useVersion("5.0.0-alpha.14")
+			because("AWS SDK Kotlin’s OkHttp extensions require 5.x")
+		}
+	}
 }
 
 tasks.test {

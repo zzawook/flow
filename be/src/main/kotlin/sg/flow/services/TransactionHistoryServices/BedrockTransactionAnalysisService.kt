@@ -10,6 +10,7 @@ import sg.flow.entities.TransactionHistory
 import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentRequest
 import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentResponse
 import aws.sdk.kotlin.services.bedrockagentruntime.BedrockAgentRuntimeClient
+import aws.sdk.kotlin.services.bedrockagentruntime.model.ResponseStream
 import java.time.LocalDate
 import java.util.*
 import kotlin.math.min
@@ -23,13 +24,14 @@ class BedrockTransactionAnalysisService(
 ) {
 
     private val logger = LoggerFactory.getLogger(BedrockTransactionAnalysisService::class.java)
-    private val session_id = UUID.randomUUID()
 
     suspend fun analyzeTransaction(transaction: TransactionHistory): TransactionAnalysisResult {
         return try {
             val prompt = createAnalysisPrompt(transaction.description)
             val response = invokeAgentWithRetry(prompt, transaction.id ?: -1)
-            parseAnalysisResponse(response, transaction.id ?: -1)
+            println(response)
+            val analysisResponse = parseAnalysisResponse(response, transaction.id ?: -1)
+            analysisResponse
         } catch (e: Exception) {
             logger.error("Failed to analyze transaction ${transaction.id}: ${e.message}", e)
             TransactionAnalysisResult(
@@ -73,8 +75,9 @@ class BedrockTransactionAnalysisService(
         """.trimIndent()
     }
 
-    private suspend fun invokeAgentWithRetry(prompt: String, transactionId: Long): InvokeAgentResponse {
+    private suspend fun invokeAgentWithRetry(prompt: String, transactionId: Long): String {
         var lastException: Exception? = null
+        val sid = "txn-$transactionId"
 
         repeat(bedrockProperties.maxRetries) { attempt ->
             try {
@@ -84,11 +87,21 @@ class BedrockTransactionAnalysisService(
                     agentId =  bedrockProperties.agentId
                     agentAliasId = bedrockProperties.agentAliasId
                     inputText = prompt
+                    sessionId = sid
                 }
-
+                // Extract the completion text from the response
+                val completionBuilder = StringBuilder()
 
                 return bedrockAgentRuntimeClient.invokeAgent(request) { response ->
-                    response
+                    response.completion?.collect { rs: ResponseStream ->
+                        rs.asChunkOrNull()?.let { part ->
+                            part.bytes?.let { bytes ->
+                                completionBuilder.append(bytes.decodeToString())
+                            }
+                        }
+                    }
+
+                    completionBuilder.toString()
                 }
 
             } catch (e: Exception) {
@@ -111,14 +124,12 @@ class BedrockTransactionAnalysisService(
         return min(exponentialDelay, bedrockProperties.maxRetryDelayMs)
     }
 
-    private fun parseAnalysisResponse(response: InvokeAgentResponse, transactionId: Long): TransactionAnalysisResult {
+    private suspend fun parseAnalysisResponse(response: String, transactionId: Long): TransactionAnalysisResult {
         return try {
-            // Extract the completion text from the response
-            val completionText = response.toString()
-            logger.debug("Bedrock agent response for transaction $transactionId: $completionText")
+            logger.debug("Bedrock agent response for transaction $transactionId: $response")
 
             // Try to extract JSON from the response
-            val jsonResponse = extractJsonFromResponse(completionText)
+            val jsonResponse = extractJsonFromResponse(response)
             val jsonNode = objectMapper.readTree(jsonResponse)
 
             TransactionAnalysisResult(

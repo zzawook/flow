@@ -22,12 +22,12 @@ data class BedrockProperties(
         @field:NotBlank(message = "Agent ID cannot be blank")
         var agentId: String = "N8IR2MXV8S",
         @field:NotBlank(message = "Agent ID cannot be blank")
-        var agentAliasId: String = "FEVGAIMVUS",
+        var agentAliasId: String = "L1TQAYDO1T",
         @field:NotBlank(message = "Model ID cannot be blank")
         var modelId: String = "anthropic.claude-3-sonnet-20240229-v1:0",
         @field:Min(value = 1, message = "Max tokens must be at least 1")
         @field:Max(value = 100000, message = "Max tokens cannot exceed 100,000")
-        var maxTokens: Int = 1000,
+        var maxTokens: Int = 8192,
         @field:DecimalMin(value = "0.0", message = "Temperature must be between 0.0 and 2.0")
         @field:DecimalMax(value = "2.0", message = "Temperature must be between 0.0 and 2.0")
         var temperature: Double = 0.1,
