@@ -1,10 +1,12 @@
 import com.google.protobuf.gradle.*
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	java
 	id("org.springframework.boot") version "3.4.0"
 	id("io.spring.dependency-management") version "1.1.6"
-	kotlin("jvm") version "1.9.22"
+	kotlin("jvm") version "2.2.0"
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.noarg") version "1.9.22"
 	kotlin("plugin.allopen") version "1.9.22"
@@ -74,10 +76,8 @@ dependencies {
 	implementation("com.googlecode.libphonenumber:libphonenumber:9.0.7")
 
 	// AWS SDK for Bedrock
-	implementation(platform("software.amazon.awssdk:bom:2.28.17"))
-	implementation("software.amazon.awssdk:bedrockruntime")
-	implementation("software.amazon.awssdk:auth")
-	implementation("software.amazon.awssdk:regions")
+	implementation("aws.sdk.kotlin:bedrockagentruntime:1.5.7")
+
 
 	// Spring gRPC integration
 	implementation("org.springframework.grpc:spring-grpc-spring-boot-starter:0.8.0")
@@ -101,10 +101,12 @@ tasks.test {
 	useJUnitPlatform()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	kotlinOptions {
-		freeCompilerArgs += "-Xjsr305=strict"
-		jvmTarget = "21"
+tasks.withType<KotlinCompile>().configureEach {
+	compilerOptions {
+		// append args instead of re-assigning
+		freeCompilerArgs.addAll("-Xjsr305=strict")
+		// set the JVM target via the typed property
+		jvmTarget.set(JvmTarget.JVM_21)
 	}
 }
 

@@ -35,7 +35,7 @@ class FinverseWebhookEventConsumer(
                     finverseAuthCache.storePostAuthResult(userIdAndInstitutionId.userId, userIdAndInstitutionId.institutionId, authStatus)
 
                     if (authStatus == FinverseAuthenticationStatus.AUTHENTICATED) {
-                        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(event.loginIdentityId)
+//                        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(event.loginIdentityId)
                     }
                 }
             } else {

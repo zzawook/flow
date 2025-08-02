@@ -14,7 +14,7 @@ import sg.flow.configs.TransactionAnalysisProperties
 import sg.flow.entities.TransactionHistory
 import sg.flow.events.TransactionAnalysisTriggerEvent
 import sg.flow.models.exceptions.transaction.*
-import software.amazon.awssdk.services.bedrockruntime.model.BedrockRuntimeException
+import aws.sdk.kotlin.services.bedrockagentruntime.model.BedrockAgentRuntimeException
 
 @Service
 class TransactionAnalysisErrorHandler(
@@ -50,7 +50,7 @@ class TransactionAnalysisErrorHandler(
                 try {
                         val bedrockException =
                                 when (error) {
-                                        is BedrockRuntimeException -> {
+                                        is BedrockAgentRuntimeException -> {
                                                 val retryable = isBedrockErrorRetryable(error)
                                                 BedrockAnalysisException(
                                                         "Bedrock API error: ${error.message}",
@@ -366,7 +366,7 @@ class TransactionAnalysisErrorHandler(
                 )
         }
 
-        private fun isBedrockErrorRetryable(error: BedrockRuntimeException): Boolean {
+        private fun isBedrockErrorRetryable(error: BedrockAgentRuntimeException): Boolean {
                 return when {
                         error.statusCode() in 500..599 -> true // Server errors
                         error.statusCode() == 429 -> true // Rate limiting

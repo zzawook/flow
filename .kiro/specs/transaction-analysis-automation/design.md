@@ -122,17 +122,20 @@ data class TransactionAnalysisUpdate(
 )
 ```
 
-### 5. Bedrock Integration Service
+### 5. Bedrock Agent Integration Service
 
 **BedrockTransactionAnalysisService**
 ```kotlin
 @Service
 class BedrockTransactionAnalysisService(
-    private val bedrockClient: BedrockRuntimeClient,
-    @Value("\${aws.bedrock.model-id}") private val modelId: String
+    private val bedrockAgentRuntimeClient: BedrockAgentRuntimeClient,
+    private val bedrockProperties: BedrockProperties,
+    private val objectMapper: ObjectMapper
 ) {
     suspend fun analyzeTransaction(transaction: TransactionHistory): TransactionAnalysisResult
     suspend fun analyzeTransactionBatch(transactions: List<TransactionHistory>): List<TransactionAnalysisResult>
+    private suspend fun invokeAgentWithRetry(prompt: String, transactionId: Long): InvokeAgentResponse
+    private fun parseAnalysisResponse(response: InvokeAgentResponse, transactionId: Long): TransactionAnalysisResult
 }
 
 data class TransactionAnalysisResult(
@@ -185,25 +188,23 @@ ADD COLUMN IF NOT EXISTS revised_transaction_date DATE DEFAULT NULL;
 - `extracted_card_number VARCHAR(255)` - Card number extracted from description (new)
 - `revised_transaction_date DATE` - Corrected transaction date if found (new)
 
-### Bedrock Request/Response Models
+### Bedrock Agent Request/Response Models
 
-**BedrockAnalysisRequest**
-```kotlin
-data class BedrockAnalysisRequest(
-    val transactions: List<TransactionForAnalysis>
-)
+**Agent Invocation Flow**
+- Uses `InvokeAgentRequest` with custom agent ID and alias
+- Sends transaction description as input text
+- Receives structured JSON response from custom agent
+- Parses response to extract analysis results
 
-data class TransactionForAnalysis(
-    val id: Long,
-    val description: String
-)
-```
-
-**BedrockAnalysisResponse**
-```kotlin
-data class BedrockAnalysisResponse(
-    val results: List<TransactionAnalysisResult>
-)
+**Agent Response Format**
+```json
+{
+    "category": "Food & Dining",
+    "card_number": "*1234",
+    "friendly_description": "McDonald's Restaurant",
+    "revised_transaction_date": "2024-01-15",
+    "confidence": 0.95
+}
 ```
 
 ## Error Handling
@@ -294,12 +295,20 @@ flow.transaction-analysis.max-retries=3
 flow.transaction-analysis.retry-delay-ms=1000
 flow.transaction-analysis.enabled=true
 
-# AWS Bedrock Configuration
+# AWS Configuration
+aws.region=us-east-1
+
+# AWS Bedrock Agent Configuration
 aws.bedrock.region=us-east-1
-aws.bedrock.model-id=anthropic.claude-3-sonnet-20240229-v1:0
+aws.bedrock.agent-id=YOUR_AGENT_ID_HERE
+aws.bedrock.agent-alias-id=TSTALIASID
+aws.bedrock.session-id=transaction-analysis-session
 aws.bedrock.max-tokens=1000
 aws.bedrock.temperature=0.1
 aws.bedrock.timeout-ms=30000
+aws.bedrock.max-retries=3
+aws.bedrock.base-retry-delay-ms=1000
+aws.bedrock.max-retry-delay-ms=30000
 
 # Kafka Topics
 flow.kafka.topics.transaction-analysis-trigger=transaction-analysis-trigger
@@ -319,10 +328,15 @@ data class TransactionAnalysisProperties(
 @ConfigurationProperties(prefix = "aws.bedrock")
 data class BedrockProperties(
     val region: String = "us-east-1",
-    val modelId: String,
+    val agentId: String = "",
+    val agentAliasId: String = "TSTALIASID",
+    val sessionId: String = "transaction-analysis-session",
     val maxTokens: Int = 1000,
     val temperature: Double = 0.1,
-    val timeoutMs: Long = 30000
+    val timeoutMs: Long = 30000,
+    val maxRetries: Int = 3,
+    val baseRetryDelayMs: Long = 1000,
+    val maxRetryDelayMs: Long = 30000
 )
 ```
 

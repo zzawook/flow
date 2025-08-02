@@ -1254,17 +1254,15 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                         )
 
                 // Build nested Card object (nullable)
-                val card =
-                        row.get("card_id", Long::class.java)?.let { cardId ->
-                                BriefCard(
-                                        id = cardId,
-                                        cardNumber = row.get("card_number", String::class.java)!!,
-                                        cardType =
-                                                CardType.valueOf(
-                                                        row.get("card_type", String::class.java)!!
-                                                )
-                                )
-                        }
+            val card = row
+                .get("card_id", java.lang.Long::class.java)    // boxed type
+                ?.let { cardId ->
+                    BriefCard(
+                        id         = cardId.toLong(),
+                        cardNumber = row.get("card_number", String::class.java)!!,
+                        cardType   = CardType.valueOf(row.get("card_type", String::class.java)!!)
+                    )
+                }
 
                 // Build TransactionHistory entity
                 return TransactionHistory(

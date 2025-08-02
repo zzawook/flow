@@ -38,10 +38,10 @@ class ConfigurationManagementService(
      */
     fun updateTransactionAnalysisConfiguration(@Valid config: TransactionAnalysisProperties): Boolean {
         return try {
-            if (!config.isValidConfiguration()) {
-                logger.warn("Invalid transaction analysis configuration provided: {}", config)
-                return false
-            }
+//            if (!config.isValidConfiguration()) {
+//                logger.warn("Invalid transaction analysis configuration provided: {}", config)
+//                return false
+//            }
             
             // Update runtime properties
             runtimeProperties["flow.transaction-analysis.batch-size"] = config.batchSize
