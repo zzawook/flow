@@ -30,9 +30,7 @@ class BedrockTransactionAnalysisService(
     suspend fun analyzeTransaction(transaction: List<TransactionHistory>): List<TransactionAnalysisResult> {
         return try {
             val prompt = createAnalysisPrompt(transaction)
-            println(prompt)
             val response = invokeAgentWithRetry(prompt)
-            println(response)
             val analysisResponse = parseAnalysisResponse(response)
             analysisResponse
         } catch (e: Exception) {
@@ -81,8 +79,6 @@ class BedrockTransactionAnalysisService(
 
         repeat(bedrockProperties.maxRetries) { attempt ->
             try {
-                println(bedrockProperties.agentId)
-                println(bedrockProperties.agentAliasId)
                 val request = InvokeAgentRequest {
                     agentId =  bedrockProperties.agentId
                     agentAliasId = bedrockProperties.agentAliasId
