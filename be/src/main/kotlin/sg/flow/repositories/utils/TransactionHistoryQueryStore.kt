@@ -287,8 +287,9 @@ object TransactionHistoryQueryStore {
         SET transaction_category = $2,
             friendly_description = $3,
             extracted_card_number = $4,
-            revised_transaction_date = $5,
-            is_processed = $6
+            brand_name = $5,
+            revised_transaction_date = $6,
+            is_processed = $7
         WHERE id = $1
     """
 }

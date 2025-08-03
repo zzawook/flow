@@ -6,6 +6,7 @@ ALTER TABLE transaction_histories
 ADD COLUMN IF NOT EXISTS transaction_category VARCHAR(255) DEFAULT NULL,
 ADD COLUMN IF NOT EXISTS extracted_card_number VARCHAR(255) DEFAULT NULL,
 ADD COLUMN IF NOT EXISTS revised_transaction_date DATE DEFAULT NULL;
+ADD COLUMN IF NOT EXISTS brand_name VARCHAR(255) DEFAULT NULL;
 
 -- Add index for efficient querying of unprocessed transactions
 CREATE INDEX IF NOT EXISTS transaction_histories_is_processed_idx ON transaction_histories (is_processed, user_id);

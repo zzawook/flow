@@ -9,12 +9,10 @@ import sg.flow.events.TransactionAnalysisTriggerEvent
 import sg.flow.repositories.transactionHistory.TransactionAnalysisUpdate
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
 import sg.flow.services.TransactionHistoryServices.BedrockTransactionAnalysisService
-import sg.flow.services.TransactionHistoryServices.TransactionHistoryProcessingService
 
 @Service
 class TransactionAnalysisConsumer(
         private val transactionHistoryRepository: TransactionHistoryRepository,
-        private val transactionHistoryProcessingService: TransactionHistoryProcessingService,
         private val bedrockTransactionAnalysisService: BedrockTransactionAnalysisService,
         private val transactionAnalysisProperties: TransactionAnalysisProperties
 ) {
@@ -104,6 +102,7 @@ class TransactionAnalysisConsumer(
                                                                         result.friendlyDescription,
                                                                 extractedCardNumber =
                                                                         result.cardNumber,
+                                                                brandName = result.brandName,
                                                                 revisedTransactionDate =
                                                                         result.revisedTransactionDate,
                                                                 isProcessed = true

@@ -32,6 +32,7 @@ interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
                 category: String?,
                 friendlyDescription: String?,
                 extractedCardNumber: String?,
+                brandName: String?,
                 revisedTransactionDate: LocalDate?,
                 isProcessed: Boolean
         ): Boolean
@@ -43,6 +44,7 @@ data class TransactionAnalysisUpdate(
         val category: String?,
         val friendlyDescription: String?,
         val extractedCardNumber: String?,
+        val brandName: String?,
         val revisedTransactionDate: LocalDate?,
         val isProcessed: Boolean = true
 )

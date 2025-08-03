@@ -1122,6 +1122,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 category: String?,
                 friendlyDescription: String?,
                 extractedCardNumber: String?,
+                brandName: String?,
                 revisedTransactionDate: LocalDate?,
                 isProcessed: Boolean
         ): Boolean {
@@ -1146,10 +1147,14 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                         ?: spec.bindNull(3, String::class.java)
                                         }
                                         .let { spec ->
-                                                revisedTransactionDate?.let { spec.bind(4, it) }
-                                                        ?: spec.bindNull(4, LocalDate::class.java)
+                                                brandName?.let { spec.bind(4, it) }
+                                                        ?: spec.bindNull(4, String::class.java)
                                         }
-                                        .bind(5, isProcessed)
+                                        .let { spec ->
+                                                revisedTransactionDate?.let { spec.bind(5, it) }
+                                                        ?: spec.bindNull(5, LocalDate::class.java)
+                                        }
+                                        .bind(6, isProcessed)
                                         .fetch()
                                         .awaitRowsUpdated()
 
@@ -1181,6 +1186,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                         update.category,
                                                         update.friendlyDescription,
                                                         update.extractedCardNumber,
+                                                        update.brandName,
                                                         update.revisedTransactionDate,
                                                         update.isProcessed
                                                 )

@@ -21,8 +21,8 @@ data class BedrockProperties(
         var region: String = "us-east-1",
         @field:NotBlank(message = "Agent ID cannot be blank")
         var agentId: String = "N8IR2MXV8S",
-        @field:NotBlank(message = "Agent ID cannot be blank")
-        var agentAliasId: String = "L1TQAYDO1T",
+        @field:NotBlank(message = "Agent alias ID cannot be blank")
+        var agentAliasId: String = "6WQOGYU4HS",
         @field:NotBlank(message = "Model ID cannot be blank")
         var modelId: String = "anthropic.claude-3-sonnet-20240229-v1:0",
         @field:Min(value = 1, message = "Max tokens must be at least 1")

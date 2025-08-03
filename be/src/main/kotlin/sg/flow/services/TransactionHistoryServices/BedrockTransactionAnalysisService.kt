@@ -10,7 +10,9 @@ import sg.flow.entities.TransactionHistory
 import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentRequest
 import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentResponse
 import aws.sdk.kotlin.services.bedrockagentruntime.BedrockAgentRuntimeClient
+import aws.sdk.kotlin.services.bedrockagentruntime.model.BedrockModelConfigurations
 import aws.sdk.kotlin.services.bedrockagentruntime.model.ResponseStream
+import kotlinx.coroutines.flow.single
 import java.time.LocalDate
 import java.util.*
 import kotlin.math.min
@@ -25,80 +27,82 @@ class BedrockTransactionAnalysisService(
 
     private val logger = LoggerFactory.getLogger(BedrockTransactionAnalysisService::class.java)
 
-    suspend fun analyzeTransaction(transaction: TransactionHistory): TransactionAnalysisResult {
+    suspend fun analyzeTransaction(transaction: List<TransactionHistory>): List<TransactionAnalysisResult> {
         return try {
-            val prompt = createAnalysisPrompt(transaction.description)
-            val response = invokeAgentWithRetry(prompt, transaction.id ?: -1)
+            val prompt = createAnalysisPrompt(transaction)
+            println(prompt)
+            val response = invokeAgentWithRetry(prompt)
             println(response)
-            val analysisResponse = parseAnalysisResponse(response, transaction.id ?: -1)
+            val analysisResponse = parseAnalysisResponse(response)
             analysisResponse
         } catch (e: Exception) {
-            logger.error("Failed to analyze transaction ${transaction.id}: ${e.message}", e)
-            TransactionAnalysisResult(
-                transactionId = transaction.id ?: -1,
+            logger.error("Failed to analyze transaction ${transaction}: ${e.message}", e)
+            listOf(TransactionAnalysisResult(
+                transactionId = -1,
                 revisedTransactionDate = null,
                 category = null,
                 cardNumber = null,
+                brandName = null,
                 friendlyDescription = null,
                 confidence = 0.0,
                 success = false,
                 errorMessage = e.message
-            )
+            ))
         }
     }
 
     suspend fun analyzeTransactionBatch(transactions: List<TransactionHistory>): List<TransactionAnalysisResult> {
         logger.info("Starting batch analysis of ${transactions.size} transactions")
 
-        return transactions.map { transaction ->
-            try {
-                analyzeTransaction(transaction)
-            } catch (e: Exception) {
-                logger.error("Failed to analyze transaction ${transaction.id} in batch: ${e.message}", e)
-                TransactionAnalysisResult(
-                    transactionId = transaction.id ?: -1,
-                    revisedTransactionDate = null,
-                    category = null,
-                    cardNumber = null,
-                    friendlyDescription = null,
-                    confidence = 0.0,
-                    success = false,
-                    errorMessage = e.message
-                )
-            }
+        val analysisResultList: MutableList<TransactionAnalysisResult> = mutableListOf()
+        try {
+            val analysisResults = analyzeTransaction(transactions)
+            analysisResults.map { analysisResult -> analysisResultList.add(analysisResult) }
+
+        } catch (e: Exception) {
+            logger.error("Failed to analyze transaction in batch: ${e.message}", e)
         }
+
+        return analysisResultList
     }
 
-    private fun createAnalysisPrompt(description: String): String {
+    private fun createAnalysisPrompt(transactions: List<TransactionHistory>): String {
         return """
-            Transaction Description: "$description"
+            Transactions: 
+                ${transactions.map { transaction ->
+                    "{transaction_id: " + transaction.id + ", \nDescription: " + transaction.description + ", \nTransaction registry date: " + transaction.transactionDate + "}\n"
+        }}
         """.trimIndent()
     }
 
-    private suspend fun invokeAgentWithRetry(prompt: String, transactionId: Long): String {
+    private suspend fun invokeAgentWithRetry(prompt: String): String {
         var lastException: Exception? = null
-        val sid = "txn-$transactionId"
+        val sid = "txn-${System.currentTimeMillis()}"
 
         repeat(bedrockProperties.maxRetries) { attempt ->
             try {
-                logger.debug("Invoking Bedrock agent for transaction $transactionId, attempt ${attempt + 1}")
-
+                println(bedrockProperties.agentId)
+                println(bedrockProperties.agentAliasId)
                 val request = InvokeAgentRequest {
                     agentId =  bedrockProperties.agentId
                     agentAliasId = bedrockProperties.agentAliasId
                     inputText = prompt
                     sessionId = sid
+                    enableTrace = false
+
+                    BedrockModelConfigurations
+
+                    streamingConfigurations {
+                        streamFinalResponse = false
+                    }
                 }
                 // Extract the completion text from the response
                 val completionBuilder = StringBuilder()
 
                 return bedrockAgentRuntimeClient.invokeAgent(request) { response ->
-                    response.completion?.collect { rs: ResponseStream ->
-                        rs.asChunkOrNull()?.let { part ->
-                            part.bytes?.let { bytes ->
-                                completionBuilder.append(bytes.decodeToString())
-                            }
-                        }
+                    val chunk = response.completion?.single()?.asChunkOrNull()?.bytes?.decodeToString()
+                    if (chunk != null) {
+                        completionBuilder.append(chunk)
                     }
 
                     completionBuilder.toString()
@@ -106,7 +110,7 @@ class BedrockTransactionAnalysisService(
 
             } catch (e: Exception) {
                 lastException = e
-                logger.warn("Bedrock agent invocation failed for transaction $transactionId, attempt ${attempt + 1}: ${e.message}")
+                logger.warn("Bedrock agent invocation failed for transaction, attempt ${attempt + 1}: ${e.message}")
 
                 if (attempt < bedrockProperties.maxRetries - 1) {
                     val delayMs = calculateRetryDelay(attempt)
@@ -124,36 +128,53 @@ class BedrockTransactionAnalysisService(
         return min(exponentialDelay, bedrockProperties.maxRetryDelayMs)
     }
 
-    private suspend fun parseAnalysisResponse(response: String, transactionId: Long): TransactionAnalysisResult {
+    private suspend fun parseAnalysisResponse(response: String): List<TransactionAnalysisResult> {
         return try {
-            logger.debug("Bedrock agent response for transaction $transactionId: $response")
+            logger.debug("Bedrock agent raw response: {}", response)
+            val jsonStart = response.indexOf('{')
+            val jsonEnd = response.lastIndexOf('}')
 
-            // Try to extract JSON from the response
-            val jsonResponse = extractJsonFromResponse(response)
-            val jsonNode = objectMapper.readTree(jsonResponse)
+            var jsonPart = ""
 
-            TransactionAnalysisResult(
-                transactionId = transactionId,
-                revisedTransactionDate = parseDate(jsonNode.get("revised_transaction_date")),
-                category = parseStringField(jsonNode.get("category")),
-                cardNumber = parseStringField(jsonNode.get("card_number")),
-                friendlyDescription = parseStringField(jsonNode.get("friendly_description")),
-                confidence = jsonNode.get("confidence")?.asDouble() ?: 0.0,
-                success = true,
-                errorMessage = null
-            )
+            if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
+                jsonPart = response.substring(jsonStart, jsonEnd + 1)
+            }
 
+            // 1️⃣ Parse the full JSON
+            val root = objectMapper.readTree(jsonPart)
+
+            // 2️⃣ Find the "results" array
+            val resultsNode = root.get("results")
+                ?: throw IllegalArgumentException("No 'results' field in response")
+
+            // 3️⃣ Map each object in the array to your data class
+            resultsNode.map { node ->
+                TransactionAnalysisResult(
+                    transactionId           = node["transaction_id"]?.asLong() ?: -1,
+                    revisedTransactionDate  = parseDate(node["revised_transaction_date"]),
+                    category                = parseStringField(node["category"]),
+                    cardNumber              = parseStringField(node["extracted_card_number"]),
+                    brandName               = parseStringField(node["brand_name"]),
+                    friendlyDescription     = parseStringField(node["friendly_description"]),
+                    confidence              = node["confidence"]?.asDouble() ?: 0.0,
+                    success                 = true,
+                    errorMessage            = null
+                )
+            }
         } catch (e: Exception) {
-            logger.error("Failed to parse Bedrock agent response for transaction $transactionId: ${e.message}", e)
-            TransactionAnalysisResult(
-                transactionId = transactionId,
-                revisedTransactionDate = null,
-                category = null,
-                cardNumber = null,
-                friendlyDescription = null,
-                confidence = 0.0,
-                success = false,
-                errorMessage = "Failed to parse response: ${e.message}"
+            logger.error("Failed to parse agent response: {}", e.message, e)
+            listOf(
+                TransactionAnalysisResult(
+                    transactionId           = -1,
+                    revisedTransactionDate  = null,
+                    category                = null,
+                    cardNumber              = null,
+                    brandName               = null,
+                    friendlyDescription     = null,
+                    confidence              = 0.0,
+                    success                 = false,
+                    errorMessage            = "Parse error: ${e.message}"
+                )
             )
         }
     }
@@ -202,6 +223,7 @@ data class TransactionAnalysisResult(
     val revisedTransactionDate: LocalDate?,
     val category: String?,
     val cardNumber: String?,
+    val brandName: String?,
     val friendlyDescription: String?,
     val confidence: Double,
     val success: Boolean,
