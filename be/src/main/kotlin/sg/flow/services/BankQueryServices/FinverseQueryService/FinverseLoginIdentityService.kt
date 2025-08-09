@@ -1,15 +1,22 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
+import kotlinx.coroutines.reactor.awaitSingle
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.WebClient
 import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
+import sg.flow.models.finverse.LoginIdentity
+import sg.flow.models.finverse.responses.FinverseAuthTokenResponse
+import sg.flow.repositories.loginIdentity.LoginIdentityRepository
 import sg.flow.services.UtilServices.CacheService
 import sg.flow.services.UtilServices.UserIdAndInstitutionId
 
 @Component
 class FinverseAuthCache(
-    private val cacheService: CacheService
+    private val cacheService: CacheService,
+    private val loginIdentityRepository: LoginIdentityRepository,
+    private val finverseWebclient: WebClient
 ) {
     private val logger = LoggerFactory.getLogger(FinverseAuthCache::class.java)
 
@@ -17,9 +24,33 @@ class FinverseAuthCache(
         userId: Int,
         institutionId: String,
         loginIdentityId: String,
-        loginIdentityToken: String
+        loginIdentityToken: String,
+        loginIdentityRefreshToken: String,
+        refreshAllowed: Boolean
     ) {
-        cacheService.storeUserIdByLoginIdentityId(loginIdentityId, loginIdentityToken, userId, institutionId)
+        loginIdentityRepository.saveOrUpdateLoginIdentity(LoginIdentity(
+            userId,
+            institutionId,
+            loginIdentityId,
+            loginIdentityRefreshToken
+        ))
+        cacheService.storeUserIdByLoginIdentityId(loginIdentityId, loginIdentityToken, userId, institutionId, refreshAllowed)
+    }
+
+    suspend fun refreshLoginIdentityToken(loginIdentityId: String) {
+        val loginIdentity = loginIdentityRepository.getLoginIdentity(loginIdentityId)
+
+        if (loginIdentity == null) {
+            logger.error("Cannot refresh Login Identity Token, as login identity ID provided was not found: $loginIdentityId")
+            return
+        }
+
+        finverseWebclient.post()
+            .uri("/auth/token/refresh")
+            .headers { it -> it.setBearerAuth(loginIdentity.loginIdentityRefreshToken) }
+            .retrieve()
+            .bodyToMono(FinverseAuthTokenResponse::class.java)
+            .awaitSingle()
     }
 
     suspend fun getLoginIdentityCredential(userId: Int, institutionId: String): FinverseLoginIdentityCredential? {
