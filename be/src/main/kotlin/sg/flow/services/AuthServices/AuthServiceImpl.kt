@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import sg.flow.models.auth.AccessTokenRefreshRequest
 import sg.flow.models.auth.AuthRequest
 import sg.flow.models.auth.TokenSet
-import sg.flow.services.UtilServices.CacheService
+import sg.flow.services.UtilServices.CacheService.CacheService
 import sg.flow.services.UtilServices.VaultService
 
 @Service

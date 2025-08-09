@@ -1,68 +1,99 @@
-spring.application.name=flow
-server.port=8081
+spring:
+  application:
+    name: flow
+  config:
+    import: "optional:vault://"
+  cloud:
+    vault:
+      uri: http://localhost:8200
+      scheme: http
+      authentication: token
+      token: dev-root-token
+      kv:
+        enabled: true
+        backend: secret
+        backend-version: 2
+        default-context: application
+        application-name: ${spring.application.name}
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/flow_dev
+    username: flow_developer
+    password: flowdev123
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      connect-timeout: 2000ms
+  webflux:
+    base-path: /api
+  security:
+    filter:
+      dispatcher-types: error,request
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: flow-backend
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: sg.flow.events
 
-app.private-key.path=classpath:cert/private.pem
-app.public-key.path=classpath:cert/public.pem
+server:
+  port: 8081
+  servlet:
+    context-path: /api
 
-spring.r2dbc.url=r2dbc:postgresql://localhost:5432/flow_dev
-spring.r2dbc.username=flow_developer
-spring.r2dbc.password=flowdev123
+app:
+  private-key:
+    path: classpath:cert/private.pem
+  public-key:
+    path: classpath:cert/public.pem
 
-# Redis configuration
-spring.data.redis.host=localhost
-spring.data.redis.port=6379
-spring.data.redis.timeout=2000ms
-spring.data.redis.connect-timeout=2000ms
+logging:
+  level:
+    org.springframework.security: DEBUG
+    io.r2dbc.spi: DEBUG
+    org.springframework.r2dbc.connection: DEBUG
 
-logging.level.org.springframework.security=DEBUG
-logging.level.io.r2dbc.spi=DEBUG
-logging.level.org.springframework.r2dbc.connection=DEBUG
+finverse-webclient:
+  base-url: https://api.prod.finverse.net
 
+finverse:
+  webhook:
+    publicKey: '-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEuZId/6U0gKLodSihwC/EuMGtULx8\nG3r7X7nZ3KWO5uNVtRTC64MH/1faq9zRp/2iIjCT8erSxiyO6y8wnlqMqw==\n-----END PUBLIC KEY-----'
 
-server.servlet.context-path=/api
-spring.webflux.base-path=/api
-spring.security.filter.dispatcher-types=error,request
+flow:
+  kafka:
+    topics:
+      finverse-webhook: finverse-webhook-events
+      finverse-auth-callback: finverse-auth-callback-events
+      finverse-timeout: finverse-timeout-events
+      finverse-auth-complete: finverse-auth-complete-events
+      finverse-product-complete: finverse-product-complete-events
+      transaction-analysis-trigger: transaction-analysis-trigger
+  transaction-analysis:
+    batch-size: 25
+    max-retries: 3
+    retry-delay-ms: 1000
+    enabled: true
+    processing-timeout-ms: 300000
+    max-concurrent-batches: 3
 
-finverse-webclient.base-url=https://api.prod.finverse.net
-finverse.webhook.publicKey=-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEuZId/6U0gKLodSihwC/EuMGtULx8\nG3r7X7nZ3KWO5uNVtRTC64MH/1faq9zRp/2iIjCT8erSxiyO6y8wnlqMqw==\n-----END PUBLIC KEY-----
-
-# Kafka Configuration
-spring.kafka.bootstrap-servers=localhost:9092
-spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
-spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
-spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
-spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
-spring.kafka.consumer.group-id=flow-backend
-spring.kafka.consumer.auto-offset-reset=earliest
-spring.kafka.consumer.properties.spring.json.trusted.packages=sg.flow.events
-
-# Kafka Topics
-flow.kafka.topics.finverse-webhook=finverse-webhook-events
-flow.kafka.topics.finverse-auth-callback=finverse-auth-callback-events
-flow.kafka.topics.finverse-timeout=finverse-timeout-events
-flow.kafka.topics.finverse-auth-complete=finverse-auth-complete-events
-flow.kafka.topics.finverse-product-complete=finverse-product-complete-events
-flow.kafka.topics.transaction-analysis-trigger=transaction-analysis-trigger
-
-# Transaction Analysis Configuration
-flow.transaction-analysis.batch-size=25
-flow.transaction-analysis.max-retries=3
-flow.transaction-analysis.retry-delay-ms=1000
-flow.transaction-analysis.enabled=true
-flow.transaction-analysis.processing-timeout-ms=300000
-flow.transaction-analysis.max-concurrent-batches=3
-
-# AWS Configuration
-aws.region=us-east-1
-
-# AWS Bedrock Agent Configuration
-aws.bedrock.region=us-east-1
-aws.bedrock.agent-id=N8IR2MXV8S
-aws.bedrock.agent-alias-id=DBQCGNKB7K
-aws.bedrock.session-id=transaction-analysis-session
-aws.bedrock.max-tokens=8192
-aws.bedrock.temperature=0.1
-aws.bedrock.timeout-ms=30000
-aws.bedrock.max-retries=3
-aws.bedrock.base-retry-delay-ms=1000
-aws.bedrock.max-retry-delay-ms=30000
+aws:
+  region: us-east-1
+  bedrock:
+    region: us-east-1
+    agent-id: N8IR2MXV8S
+    agent-alias-id: DBQCGNKB7K
+    session-id: transaction-analysis-session
+    max-tokens: 8192
+    temperature: 0.1
+    timeout-ms: 30000
+    max-retries: 3
+    base-retry-delay-ms: 1000
+    max-retry-delay-ms: 30000

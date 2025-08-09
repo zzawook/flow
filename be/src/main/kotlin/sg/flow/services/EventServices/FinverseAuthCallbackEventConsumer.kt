@@ -5,13 +5,13 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Service
 import sg.flow.events.FinverseAuthCallbackEvent
-import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseAuthCache
+import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIdentityService
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseQueryService
 
 @Service
 class FinverseAuthCallbackEventConsumer(
     private val finverseService: FinverseQueryService,
-    private val finverseAuthCache: FinverseAuthCache
+    private val finverseLoginIdentityService: FinverseLoginIdentityService
 ) {
 
     private val logger = LoggerFactory.getLogger(FinverseAuthCallbackEventConsumer::class.java)
@@ -25,9 +25,9 @@ class FinverseAuthCallbackEventConsumer(
         try {
             logger.info("Processing auth callback event: {}", event.eventId)
 
-            val userIdAndInstitutionId = finverseAuthCache.getUserIdAndInstitutionIdFromState(event.state)
+            val userIdAndInstitutionId = finverseLoginIdentityService.getUserIdAndInstitutionIdFromState(event.state)
 
-            finverseAuthCache.clearPreAuthSession(event.state)
+            finverseLoginIdentityService.clearPreAuthSession(event.state)
             
             // Call the original service method
             finverseService.fetchLoginIdentityToken(

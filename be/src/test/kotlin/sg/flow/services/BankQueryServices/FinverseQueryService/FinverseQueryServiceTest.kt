@@ -16,7 +16,6 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import sg.flow.entities.Bank
 import sg.flow.models.finverse.FinverseAuthenticationStatus
@@ -24,7 +23,7 @@ import sg.flow.models.finverse.FinverseInstitution
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
 import sg.flow.models.finverse.responses.CustomerTokenResponse
 import sg.flow.models.finverse.responses.LinkTokenResponse
-import sg.flow.models.finverse.responses.LoginIdentityResponse
+import sg.flow.models.finverse.responses.FinverseAuthTokenResponse
 import sg.flow.repositories.bank.BankRepositoryImpl
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
 
@@ -33,7 +32,7 @@ class FinverseQueryServiceTest {
 
         private lateinit var finverseCredentials: FinverseCredentials
         private lateinit var finverseWebClient: WebClient
-        private lateinit var finverseAuthCache: FinverseAuthCache
+        private lateinit var finverseLoginIdentityService: FinverseLoginIdentityService
         private lateinit var finverseDataRetrievalRequestsManager:
                 FinverseDataRetrievalRequestsManager
         private lateinit var finverseTimeoutWatcher: FinverseTimeoutWatcher
@@ -52,7 +51,7 @@ class FinverseQueryServiceTest {
         fun setUp() {
                 finverseCredentials = mockk()
                 finverseWebClient = mockk()
-                finverseAuthCache = mockk()
+                finverseLoginIdentityService = mockk()
                 finverseDataRetrievalRequestsManager = mockk()
                 finverseTimeoutWatcher = mockk()
                 finverseResponseProcessor = mockk()
@@ -74,7 +73,7 @@ class FinverseQueryServiceTest {
                         FinverseQueryService(
                                 finverseCredentials,
                                 finverseWebClient,
-                                finverseAuthCache,
+                                finverseLoginIdentityService,
                                 finverseDataRetrievalRequestsManager,
                                 finverseTimeoutWatcher,
                                 finverseResponseProcessor,
@@ -127,7 +126,7 @@ class FinverseQueryServiceTest {
                                 FinverseQueryService(
                                         finverseCredentials,
                                         finverseWebClient,
-                                        finverseAuthCache,
+                                        finverseLoginIdentityService,
                                         finverseDataRetrievalRequestsManager,
                                         finverseTimeoutWatcher,
                                         finverseResponseProcessor,
@@ -147,7 +146,7 @@ class FinverseQueryServiceTest {
                                 FinverseQueryService(
                                         finverseCredentials,
                                         finverseWebClient,
-                                        finverseAuthCache,
+                                        finverseLoginIdentityService,
                                         finverseDataRetrievalRequestsManager,
                                         finverseTimeoutWatcher,
                                         finverseResponseProcessor,
@@ -330,8 +329,8 @@ class FinverseQueryServiceTest {
                 }
 
                 private fun setupLoginIdentityMocks() {
-                        val loginIdentityResponse =
-                                LoginIdentityResponse(
+                        val finverseAuthTokenResponse =
+                                FinverseAuthTokenResponse(
                                         loginIdentityToken = "test-login-token",
                                         expiresIn = 3600 as Integer,
                                         issuedAt = "2024-01-01T00:00:00Z",
@@ -359,11 +358,11 @@ class FinverseQueryServiceTest {
                         every { webClientRequestHeadersSpec.retrieve() } returns
                                 webClientResponseSpec
                         every {
-                                webClientResponseSpec.bodyToMono(LoginIdentityResponse::class.java)
-                        } returns Mono.just(loginIdentityResponse)
+                                webClientResponseSpec.bodyToMono(FinverseAuthTokenResponse::class.java)
+                        } returns Mono.just(finverseAuthTokenResponse)
 
                         coEvery {
-                                finverseAuthCache.saveLoginIdentityToken(any(), any(), any(), any())
+                                finverseLoginIdentityService.saveLoginIdentityToken(any(), any(), any(), any())
                         } just Runs
                         every {
                                 finverseDataRetrievalRequestsManager
@@ -383,7 +382,7 @@ class FinverseQueryServiceTest {
 
                         assertEquals("RETRIEVING", result)
                         coVerify {
-                                finverseAuthCache.saveLoginIdentityToken(
+                                finverseLoginIdentityService.saveLoginIdentityToken(
                                         123,
                                         "test-institution",
                                         "test-login-id",
@@ -408,7 +407,7 @@ class FinverseQueryServiceTest {
 
                         assertEquals("RETRIEVING", result)
                         coVerify {
-                                finverseAuthCache.saveLoginIdentityToken(
+                                finverseLoginIdentityService.saveLoginIdentityToken(
                                         456,
                                         "different-institution",
                                         "test-login-id",
@@ -447,7 +446,7 @@ class FinverseQueryServiceTest {
                 @DisplayName("Should return AUTHENTICATION_FAILED when no credentials found")
                 fun shouldReturnAuthFailedWhenNoCredentials() = runTest {
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(any(), any())
+                                finverseLoginIdentityService.getLoginIdentityCredential(any(), any())
                         } returns null
 
                         val result =
@@ -468,7 +467,7 @@ class FinverseQueryServiceTest {
                                         loginIdentityToken = "test-token"
                                 )
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(any(), any())
+                                finverseLoginIdentityService.getLoginIdentityCredential(any(), any())
                         } returns credential
 
                         val result =
@@ -491,7 +490,7 @@ class FinverseQueryServiceTest {
                                         loginIdentityToken = ""
                                 )
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(any(), any())
+                                finverseLoginIdentityService.getLoginIdentityCredential(any(), any())
                         } returns credential
 
                         val result =
@@ -512,7 +511,7 @@ class FinverseQueryServiceTest {
                                         loginIdentityToken = "test-token"
                                 )
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(
+                                finverseLoginIdentityService.getLoginIdentityCredential(
                                         123,
                                         "test-institution"
                                 )
@@ -548,7 +547,7 @@ class FinverseQueryServiceTest {
                                         loginIdentityToken = "test-token"
                                 )
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(any(), any())
+                                finverseLoginIdentityService.getLoginIdentityCredential(any(), any())
                         } returns credential
 
                         val authStatuses =
@@ -585,7 +584,7 @@ class FinverseQueryServiceTest {
                 @DisplayName("Should return failure status when no credentials found")
                 fun shouldReturnFailureWhenNoCredentials() = runTest {
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(any(), any())
+                                finverseLoginIdentityService.getLoginIdentityCredential(any(), any())
                         } returns null
 
                         val result =
@@ -608,7 +607,7 @@ class FinverseQueryServiceTest {
                                         loginIdentityToken = "test-token"
                                 )
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(any(), any())
+                                finverseLoginIdentityService.getLoginIdentityCredential(any(), any())
                         } returns credential
 
                         val result =
@@ -637,7 +636,7 @@ class FinverseQueryServiceTest {
                                 )
 
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(
+                                finverseLoginIdentityService.getLoginIdentityCredential(
                                         123,
                                         "test-institution"
                                 )
@@ -680,7 +679,7 @@ class FinverseQueryServiceTest {
                                 )
 
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(any(), any())
+                                finverseLoginIdentityService.getLoginIdentityCredential(any(), any())
                         } returns credential
                         coEvery {
                                 finverseTimeoutWatcher.watchDataRetrievalCompletion(any(), any())
@@ -863,7 +862,7 @@ class FinverseQueryServiceTest {
                                         loginIdentityToken = "test-token"
                                 )
                         coEvery {
-                                finverseAuthCache.getLoginIdentityCredential(any(), any())
+                                finverseLoginIdentityService.getLoginIdentityCredential(any(), any())
                         } returns credential
                         coEvery { finverseTimeoutWatcher.watchAuthentication(any(), any()) } returns
                                 FinverseAuthenticationStatus.AUTHENTICATED

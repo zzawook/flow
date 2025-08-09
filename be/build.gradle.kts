@@ -33,6 +33,12 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
+	}
+}
+
 dependencies {
 	// Spring core
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
@@ -44,6 +50,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-configuration-processor")
+	implementation("org.springframework.cloud:spring-cloud-starter-vault-config")
 	
 	// Kafka
 	implementation("org.springframework.kafka:spring-kafka")
@@ -176,4 +183,8 @@ allOpen {
 	annotation("javax.persistence.Entity")
 	annotation("javax.persistence.MappedSuperclass")
 	annotation("javax.persistence.Embeddable")
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.compilerOptions {
+	freeCompilerArgs.set(listOf("-Xannotation-default-target=param-property"))
 }

@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono
 import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
-import sg.flow.services.UtilServices.RedisCacheServiceImpl
+import sg.flow.services.UtilServices.CacheService.RedisCacheServiceImpl
 import kotlin.time.Duration
 import kotlin.time.toJavaDuration
 

@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
 import sg.flow.models.finverse.responses.*
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseResponseProcessor
+import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseWebclientService
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
 
 sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint: String) {
@@ -14,7 +15,7 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
             loginIdentityId: String,
             loginIdentityToken: String,
             finverseResponseProcessor: FinverseResponseProcessor,
-            finverseWebclient: WebClient
+            finverseWebclientService: FinverseWebclientService
     )
 
     object ACCOUNTS : FinverseProduct("ACCOUNTS", "accounts") {
@@ -22,23 +23,16 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 loginIdentityId: String,
                 loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
-                finverseWebclient: WebClient
+                finverseWebclientService: FinverseWebclientService
         ) {
-            val response: FinverseAccountResponse =
-                    finverseWebclient
-                            .get()
-                            .uri("/$apiEndpoint")
-                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
-                            .retrieve()
-                            .awaitBody()
+            val response: FinverseAccountResponse = finverseWebclientService.fetchAccount(loginIdentityToken)
 
             val accountList = response.let { finverseResponseProcessor.processAccountsResponseIntoAccountList(response) }
 
             for (account in accountList) {
                 val accountNumber = ACCOUNT_NUMBERS.fetchAccountNumberForAccountId(
-                    finverseWebclient,
+                    finverseWebclientService,
                     account.finverseId ?: "", // WILL ALWAYS HAVE FINVERSE ID
-                    loginIdentityId,
                     loginIdentityToken
                 )
 
@@ -54,29 +48,22 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 loginIdentityId: String,
                 loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
-                finverseWebclient: WebClient
+                finverseWebclientService: FinverseWebclientService
         ) {
             ACCOUNTS.fetch(
                 loginIdentityId,
                 loginIdentityToken,
                 finverseResponseProcessor,
-                finverseWebclient
+                finverseWebclientService
             )
         }
 
         suspend fun fetchAccountNumberForAccountId(
-                finverseWebClient: WebClient,
+                finverseWebclientService: FinverseWebclientService,
                 accountId: String,
-                loginIdentityId: String,
                 loginIdentityToken: String
         ): String {
-            val response: FinverseAccountNumberResponse =
-                    finverseWebClient
-                            .get()
-                            .uri("/$apiEndpoint/$accountId")
-                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
-                            .retrieve()
-                            .awaitBody()
+            val response: FinverseAccountNumberResponse = finverseWebclientService.fetchAccountNumberForAccountId(loginIdentityToken, accountId)
 
             return response.accountNumber.accountNumberRaw
         }
@@ -87,20 +74,10 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 loginIdentityId: String,
                 loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
-                finverseWebclient: WebClient
+                finverseWebclientService: FinverseWebclientService
         ) {
             // perhaps use a query param or header specific to online vs. historical
-            val response: FinverseTransactionResponse =
-                    finverseWebclient
-                            .get()
-                            .uri { builder ->
-                                builder.path("/$apiEndpoint")
-                                        .queryParam("type", "online")
-                                        .build()
-                            }
-                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
-                            .retrieve()
-                            .awaitBody()
+            val response: FinverseTransactionResponse = finverseWebclientService.fetchOnlineTransaction(loginIdentityToken)
 
             response.let { finverseResponseProcessor.processTransactionsResponse(response) }
         }
@@ -111,19 +88,9 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 loginIdentityId: String,
                 loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
-                finverseWebclient: WebClient
+                finverseWebclientService: FinverseWebclientService
         ) {
-            val response: FinverseTransactionResponse =
-                    finverseWebclient
-                            .get()
-                            .uri { builder ->
-                                builder.path("/$apiEndpoint")
-                                        .queryParam("type", "history")
-                                        .build()
-                            }
-                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
-                            .retrieve()
-                            .awaitBody()
+            val response: FinverseTransactionResponse = finverseWebclientService.fetchHistoricalTransaction(loginIdentityToken)
 
             response.let { finverseResponseProcessor.processTransactionsResponse(response) }
         }
@@ -134,15 +101,9 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 loginIdentityId: String,
                 loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
-                finverseWebclient: WebClient
+                finverseWebclientService: FinverseWebclientService
         ) {
-            val response: FinverseIdentityResponse =
-                    finverseWebclient
-                            .get()
-                            .uri("/$apiEndpoint")
-                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
-                            .retrieve()
-                            .awaitBody()
+            val response: FinverseIdentityResponse = finverseWebclientService.fetchIdentity(loginIdentityToken)
 
             response.let { finverseResponseProcessor.processIdentityResponse(response) }
         }
@@ -153,15 +114,9 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 loginIdentityId: String,
                 loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
-                finverseWebclient: WebClient
+                finverseWebclientService: FinverseWebclientService
         ) {
-            val response: FinverseBalanceHistoryResponse =
-                    finverseWebclient
-                            .get()
-                            .uri("/$apiEndpoint")
-                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
-                            .retrieve()
-                            .awaitBody()
+            val response: FinverseBalanceHistoryResponse = finverseWebclientService.fetchBalanceHistory(loginIdentityToken)
 
             response.let { finverseResponseProcessor.processBalanceHistoryResponse(response) }
         }
@@ -172,15 +127,9 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 loginIdentityId: String,
                 loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
-                finverseWebclient: WebClient
+                finverseWebclientService: FinverseWebclientService
         ) {
-            val response: FinverseIncomeEstimationResponse =
-                    finverseWebclient
-                            .get()
-                            .uri("/$apiEndpoint")
-                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
-                            .retrieve()
-                            .awaitBody()
+            val response: FinverseIncomeEstimationResponse = finverseWebclientService.fetchIncomeStatement(loginIdentityToken)
 
             response.let { finverseResponseProcessor.processIncomeEstimationResponse(response) }
         }
@@ -191,15 +140,9 @@ sealed class FinverseProduct(@JsonValue val productName: String, val apiEndpoint
                 loginIdentityId: String,
                 loginIdentityToken: String,
                 finverseResponseProcessor: FinverseResponseProcessor,
-                finverseWebclient: WebClient
+                finverseWebclientService: FinverseWebclientService
         ) {
-            val response: FinverseStatementsResponse =
-                    finverseWebclient
-                            .get()
-                            .uri("/$apiEndpoint")
-                            .headers { it -> it.setBearerAuth(loginIdentityToken) }
-                            .retrieve()
-                            .awaitBody()
+            val response: FinverseStatementsResponse = finverseWebclientService.fetchStatement(loginIdentityToken)
 
             response.let { finverseResponseProcessor.processStatementsResponse(response) }
         }

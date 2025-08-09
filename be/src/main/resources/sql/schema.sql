@@ -1,17 +1,18 @@
 DROP TABLE IF EXISTS transaction_histories;
 DROP TABLE IF EXISTS cards;
+DROP TABLE IF EXISTS login_identities;
 DROP TABLE IF EXISTS accounts;
 DROP TABLE IF EXISTS banks;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY, 
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    identification_number VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(255) NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    identification_number TEXT NOT NULL,
+    phone_number TEXT NOT NULL,
     date_of_birth DATE NOT NULL,
-    address VARCHAR(255) NOT NULL,
+    address TEXT NOT NULL,
     setting_json JSONB DEFAULT '{}'
 );
 
@@ -19,24 +20,60 @@ CREATE INDEX IF NOT EXISTS user_by_id_index ON users (id);
 
 CREATE TABLE IF NOT EXISTS banks (
     id SERIAL PRIMARY KEY, 
-    bank_name VARCHAR(255) NOT NULL,
-    bank_code VARCHAR(255) NOT NULL,
-    finverse_id VARCHAR(255)
+    bank_name TEXT NOT NULL,
+    bank_code TEXT NOT NULL,
+    finverse_id TEXT UNIQUE
 );
 
 CREATE INDEX IF NOT EXISTS bank_index_by_id ON banks (id);
 
+CREATE TABLE IF NOT EXISTS login_identities (
+    user_id INT REFERENCES users(id) NOT NULL,
+    finverse_institution_id TEXT REFERENCES banks(finverse_id) NOT NULL,
+    login_identity_id TEXT DEFAULT '',
+    login_identity_refresh_token TEXT DEFAULT '',
+    refresh_allowed BOOLEAN DEFAULT false,
+    PRIMARY KEY (user_id, finverse_institution_id)
+);
+
+CREATE OR REPLACE FUNCTION upsert_login_identity(
+  p_user_id    INTEGER,
+  p_finverse_institution_id TEXT,
+  p_login_identity_id TEXT,
+  p_login_identity_refresh_token TEXT,
+  p_refresh_allowed BOOLEAN
+)
+RETURNS VOID LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO login_identities(
+    user_id, finverse_institution_id,
+    login_identity_id, login_identity_refresh_token, refresh_allowed
+  ) VALUES (
+    p_user_id, p_finverse_institution_id,
+    p_login_identity_id, p_login_identity_refresh_token, p_refresh_allowed
+  )
+  ON CONFLICT (user_id, finverse_institution_id)
+  DO UPDATE SET
+    login_identity_id = EXCLUDED.login_identity_id,
+    login_identity_refresh_token = EXCLUDED.login_identity_refresh_token,
+    refresh_allowed = EXCLUDED.refresh_allowed;
+END;
+$$;
+
+
+
 CREATE TABLE IF NOT EXISTS accounts (
     id BIGSERIAL PRIMARY KEY, 
-    account_number VARCHAR(255) NOT NULL,
+    account_number TEXT NOT NULL,
     bank_id INT REFERENCES banks(id) NOT NULL,
     user_id INT REFERENCES users(id) NOT NULL,
     balance DECIMAL(10,2) NOT NULL DEFAULT 0,
-    account_name VARCHAR(255) NOT NULL,
-    account_type VARCHAR(255) NOT NULL,
+    account_name TEXT NOT NULL,
+    account_type TEXT NOT NULL,
     interest_rate_per_annum DECIMAL(10,5) NOT NULL DEFAULT 0,
     last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    finverse_id VARCHAR(255) UNIQUE
+    finverse_id TEXT UNIQUE
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS finverse_id ON accounts (finverse_id);
@@ -48,45 +85,45 @@ CREATE TABLE IF NOT EXISTS cards (
     owner_id INT REFERENCES users(id) NOT NULL,
     linked_account_id BIGINT REFERENCES accounts(id) NOT NULL, 
     issuing_bank_id INT REFERENCES banks(id) NOT NULL,
-    card_number VARCHAR(255) NOT NULL, 
-    card_type VARCHAR(255) NOT NULL,
+    card_number TEXT NOT NULL, 
+    card_type TEXT NOT NULL,
     expiry_date DATE NOT NULL,
-    cvv VARCHAR(255) NOT NULL,
-    pin VARCHAR(255) NOT NULL,
-    card_status VARCHAR(255) NOT NULL,
+    cvv TEXT NOT NULL,
+    pin TEXT NOT NULL,
+    card_status TEXT NOT NULL,
     daily_limit DECIMAL(10,2) NOT NULL,
     monthly_limit DECIMAL(10,2) NOT NULL,
-    card_holder_name VARCHAR(255) NOT NULL,
-    address_line_1 VARCHAR(255) NOT NULL,
-    address_line_2 VARCHAR(255) DEFAULT '',
-    city VARCHAR(255) NOT NULL,
-    state VARCHAR(255) NOT NULL,
-    zip_code VARCHAR(255) NOT NULL,
-    country VARCHAR(255) NOT NULL,
-    phone VARCHAR(255) NOT NULL
+    card_holder_name TEXT NOT NULL,
+    address_line_1 TEXT NOT NULL,
+    address_line_2 TEXT DEFAULT '',
+    city TEXT NOT NULL,
+    state TEXT NOT NULL,
+    zip_code TEXT NOT NULL,
+    country TEXT NOT NULL,
+    phone TEXT NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS card_index_by_user_id ON cards (owner_id);
 
 CREATE TABLE IF NOT EXISTS transaction_histories (
     id BIGSERIAL PRIMARY KEY, 
-    transaction_reference VARCHAR(255) NOT NULL,
+    transaction_reference TEXT NOT NULL,
     account_id BIGINT REFERENCES accounts(id) DEFAULT NULL,
     user_id INT REFERENCES users(id) DEFAULT NULL,
     card_id INT REFERENCES cards(id) DEFAULT NULL,
     transaction_date DATE NOT NULL,
     transaction_time TIME DEFAULT NULL,
     amount DECIMAL(10,2) NOT NULL,
-    transaction_type VARCHAR(255) NOT NULL,
-    description VARCHAR(255) DEFAULT '',
-    transaction_status VARCHAR(255) NOT NULL,
-    friendly_description VARCHAR(255) DEFAULT '',
-    transaction_category VARCHAR(255) DEFAULT NULL,
-    extracted_card_number VARCHAR(255) DEFAULT NULL,
-    brand_name VARCHAR(255) DEFAULT NULL,
+    transaction_type TEXT NOT NULL,
+    description TEXT DEFAULT '',
+    transaction_status TEXT NOT NULL,
+    friendly_description TEXT DEFAULT '',
+    transaction_category TEXT DEFAULT NULL,
+    extracted_card_number TEXT DEFAULT NULL,
+    brand_name TEXT DEFAULT NULL,
     revised_transaction_date DATE DEFAULT NULL,
     is_processed BOOLEAN DEFAULT false,
-    finverse_id VARCHAR(255) UNIQUE
+    finverse_id TEXT UNIQUE
 );
 
 CREATE INDEX IF NOT EXISTS transaction_histories_index_by ON transaction_histories (user_id, transaction_date);

@@ -2,25 +2,46 @@ package sg.flow.services.BankQueryServices.FinverseQueryService
 
 import kotlinx.coroutines.reactor.awaitSingle
 import org.slf4j.LoggerFactory
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.LoginIdentity
 import sg.flow.models.finverse.responses.FinverseAuthTokenResponse
+import sg.flow.models.finverse.responses.FinverseLoginIdentityResponse
 import sg.flow.repositories.loginIdentity.LoginIdentityRepository
-import sg.flow.services.UtilServices.CacheService
+import sg.flow.services.UtilServices.CacheService.CacheService
 import sg.flow.services.UtilServices.UserIdAndInstitutionId
 
 @Component
-class FinverseAuthCache(
+class FinverseLoginIdentityService(
     private val cacheService: CacheService,
     private val loginIdentityRepository: LoginIdentityRepository,
-    private val finverseWebclient: WebClient
+    private val finverseWebclientService: FinverseWebclientService,
 ) {
-    private val logger = LoggerFactory.getLogger(FinverseAuthCache::class.java)
+    private val logger = LoggerFactory.getLogger(FinverseLoginIdentityService::class.java)
 
-    suspend fun saveLoginIdentityToken(
+    suspend fun fetchLoginIdentityToken(userId: Int, code: String, institutionId: String): String {
+        val finverseAuthTokenResponse: FinverseAuthTokenResponse = finverseWebclientService.fetchLoginIdentity(code)
+
+        val loginIdentityDetailResponse: FinverseLoginIdentityResponse = finverseWebclientService.fetchLoginIdentityInfo(finverseAuthTokenResponse.loginIdentityToken)
+
+        saveAndCacheLoginIdentityToken(
+            userId,
+            institutionId,
+            finverseAuthTokenResponse.loginIdentityId,
+            finverseAuthTokenResponse.loginIdentityToken,
+            finverseAuthTokenResponse.refreshToken,
+            loginIdentityDetailResponse.loginIdentity.refresh.refreshAllowed
+        )
+
+        return finverseAuthTokenResponse.loginIdentityId
+    }
+
+    suspend fun saveAndCacheLoginIdentityToken(
         userId: Int,
         institutionId: String,
         loginIdentityId: String,
@@ -32,54 +53,99 @@ class FinverseAuthCache(
             userId,
             institutionId,
             loginIdentityId,
-            loginIdentityRefreshToken
+            loginIdentityRefreshToken,
+            refreshAllowed
         ))
         cacheService.storeUserIdByLoginIdentityId(loginIdentityId, loginIdentityToken, userId, institutionId, refreshAllowed)
     }
 
-    suspend fun refreshLoginIdentityToken(loginIdentityId: String) {
+    suspend fun refreshLoginIdentityToken(loginIdentityId: String): Mono<String> {
         val loginIdentity = loginIdentityRepository.getLoginIdentity(loginIdentityId)
 
         if (loginIdentity == null) {
             logger.error("Cannot refresh Login Identity Token, as login identity ID provided was not found: $loginIdentityId")
-            return
+            return Mono.empty()
         }
 
-        finverseWebclient.post()
-            .uri("/auth/token/refresh")
-            .headers { it -> it.setBearerAuth(loginIdentity.loginIdentityRefreshToken) }
-            .retrieve()
-            .bodyToMono(FinverseAuthTokenResponse::class.java)
-            .awaitSingle()
-    }
+        val finverseAuthTokenResponse: FinverseAuthTokenResponse = finverseWebclientService.refreshLoginIdentityToken(loginIdentity.loginIdentityRefreshToken)
 
-    suspend fun getLoginIdentityCredential(userId: Int, institutionId: String): FinverseLoginIdentityCredential? {
-        return cacheService.getLoginIdentityCredential(userId, institutionId)
-    }
+        val newLoginIdentity = LoginIdentity(
+            loginIdentity.userId,
+            loginIdentity.finverseInstitutionId,
+            finverseAuthTokenResponse.loginIdentityId,
+            finverseAuthTokenResponse.refreshToken,
+            loginIdentity.refreshAllowed
+        )
 
-    suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean {
-        return cacheService.userHasLoginIdentity(userId, institutionId)
-    }
+        loginIdentityRepository.saveOrUpdateLoginIdentity(newLoginIdentity)
+        cacheService.storeUserIdByLoginIdentityId(
+            newLoginIdentity.loginIdentityId,
+            finverseAuthTokenResponse.loginIdentityToken,
+            newLoginIdentity.userId,
+            newLoginIdentity.finverseInstitutionId,
+            newLoginIdentity.refreshAllowed
+        )
 
-    suspend fun getUserId(loginIdentityId: String): Int {
-        val userIdAndInstitutionIdOptional = cacheService.getUserIdAndInstitutionIdByLoginIdentityId(loginIdentityId)
-        if (userIdAndInstitutionIdOptional.isEmpty) {
-            return -1
-        }
-        return userIdAndInstitutionIdOptional.get().userId
+        return Mono.just(finverseAuthTokenResponse.loginIdentityToken)
     }
 
     suspend fun getUserIdAndInstitutionId(loginIdentityId: String): UserIdAndInstitutionId {
         val userIdAndInstitutionIdOptional = cacheService.getUserIdAndInstitutionIdByLoginIdentityId(loginIdentityId)
         if (userIdAndInstitutionIdOptional.isEmpty) {
-            logger.error("FAILED TO GET USER ID AND INSTITUTION ID FROM GIVEN LOGIN IDENTITY ID: $loginIdentityId")
-            return UserIdAndInstitutionId(-1, "")
+            // Login Identity not in cache = Timed out
+            // Asynchronously refresh the token
+            refreshLoginIdentityToken(loginIdentityId)
+                .doOnError { e ->
+                logger.error("Failed to refresh login token for $loginIdentityId", e)
+            }.subscribe()
+
+            val loginIdentity = loginIdentityRepository.getLoginIdentity(loginIdentityId)
+
+            if (loginIdentity == null) {
+                logger.error("FAILED TO GET USER ID AND INSTITUTION ID FROM GIVEN LOGIN IDENTITY ID: $loginIdentityId")
+                return UserIdAndInstitutionId(-1, "")
+            }
+            return UserIdAndInstitutionId(
+                loginIdentity.userId,
+                loginIdentity.finverseInstitutionId
+            )
         }
         return userIdAndInstitutionIdOptional.get()
     }
 
     suspend fun getLoginIdentityTokenWithLoginIdentityID(loginIdentityId: String): String {
-        return cacheService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
+        var token = cacheService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
+
+        if (token.isEmpty()) {
+            token = refreshLoginIdentityToken(loginIdentityId).awaitSingle()
+        }
+
+        return token
+    }
+
+    suspend fun getLoginIdentityTokenWithUserIdAndInstitutionId(userId: Int, institutionId: String): String {
+        var token = cacheService.getLoginIdentityCredential(userId, institutionId)?.loginIdentityToken
+
+        if (token == null || token.isEmpty()) {
+            val loginIdentity = loginIdentityRepository.getLoginIdentity(userId, institutionId)
+            if (loginIdentity == null) {
+                return "NO LOGIN IDENTITY FOUND"
+            }
+            token = refreshLoginIdentityToken(loginIdentity.loginIdentityId).awaitSingle()
+        }
+
+        return token
+    }
+
+    suspend fun getIsRefreshAllowed(userId: Int, institutionId: String): Boolean {
+        val loginIdentity = loginIdentityRepository.getLoginIdentity(userId, institutionId)
+
+        if (loginIdentity == null) {
+            logger.error("Failed to fetch login identity for userID: $userId, institution ID: $institutionId")
+            return false
+        }
+
+        return loginIdentity.refreshAllowed
     }
 
     suspend fun startRefreshSession(userId: Int, institutionId: String, request: FinverseDataRetrievalRequest) {

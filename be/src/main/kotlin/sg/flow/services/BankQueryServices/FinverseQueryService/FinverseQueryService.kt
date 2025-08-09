@@ -8,151 +8,72 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.bodyToMono
 import sg.flow.models.finverse.FinverseAuthenticationStatus
-import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.models.finverse.FinverseInstitution
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
-import sg.flow.models.finverse.FinverseProduct
-import sg.flow.models.finverse.FinverseProductRetrieval
 import sg.flow.models.finverse.responses.CustomerTokenResponse
 import sg.flow.models.finverse.responses.LinkTokenResponse
-import sg.flow.models.finverse.responses.LoginIdentityResponse
-import sg.flow.repositories.bank.BankRepositoryImpl
+import sg.flow.models.finverse.responses.FinverseAuthTokenResponse
+import sg.flow.models.finverse.responses.FinverseLoginIdentityResponse
+import sg.flow.repositories.bank.BankRepository
+import sg.flow.repositories.user.UserRepository
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
-import java.lang.Thread.sleep
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 @Service
 class FinverseQueryService(
-    private val finverseCredentials: FinverseCredentials,
-    private val finverseWebClient: WebClient,
-    private val finverseAuthCache: FinverseAuthCache,
+    private val finverseLoginIdentityService: FinverseLoginIdentityService,
     private val finverseDataRetrievalRequestsManager: FinverseDataRetrievalRequestsManager,
     private val finverseTimeoutWatcher: FinverseTimeoutWatcher,
+    private val bankRepositoryImpl: BankRepository,
+    private val finverseWebclientService: FinverseWebclientService,
     private val finverseResponseProcessor: FinverseResponseProcessor,
-    private val bankRepositoryImpl: BankRepositoryImpl
 ) {
-    private val customerTokenRef = AtomicReference<String>()
-    private var tokenExpiry: Instant = Instant.EPOCH
     private val logger = LoggerFactory.getLogger(FinverseQueryService::class.java)
-
-    init {
-        this.fetchCustomerToken()
-    }
-
-    private fun fetchCustomerToken() {
-        val requestBody = mapOf(
-            "grant_type"    to "client_credentials",
-            "client_id"     to finverseCredentials.clientId,
-            "client_secret" to finverseCredentials.clientSecret
-        )
-        val response = finverseWebClient.post()
-            .uri("/auth/customer/token")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(requestBody)
-            .retrieve()
-            .bodyToMono(CustomerTokenResponse::class.java)
-            .block() ?: throw IllegalStateException("Failed to fetch customer_token")
-
-        // Store token and calculate expiry time
-        customerTokenRef.set(response.accessToken)
-        tokenExpiry = Instant.now().plusSeconds(response.expiresIn)
-    }
 
     fun fetchInstitutionData() {
         val countries = "SGP"
-        finverseWebClient.get()
-            .uri("/institutions?countries=$countries")
-            .headers { it -> it.setBearerAuth(getCustomerToken()) }
-            .retrieve()
-            .bodyToMono(Array<FinverseInstitution>::class.java)
-            .map { institutions ->
-                institutions.map { institution ->
-                    runBlocking {
-                        val bank = finverseResponseProcessor.processInstitutionResponse(institution)
-                        bankRepositoryImpl.save(bank)
-                        bank
-                    }
-                }
-            }.block()
-    }
-
-    private fun getCustomerToken(): String {
-        if (Instant.now().isAfter(tokenExpiry.minusSeconds(60))) {
-            fetchCustomerToken()
+        val institutions = finverseWebclientService.fetchInstitutionData(countries)
+        institutions.map { institution ->
+            runBlocking {
+                val bank = finverseResponseProcessor.processInstitutionResponse(institution)
+                bankRepositoryImpl.save(bank)
+                bank
+            }
         }
-        return customerTokenRef.get()
     }
 
     suspend fun hasRunningRefreshSession(userId: Int, institutionId: String): Boolean {
-        return finverseAuthCache.hasRunningRefreshSession(userId, institutionId);
+        return finverseLoginIdentityService.hasRunningRefreshSession(userId, institutionId);
     }
 
     /**
      * Generates a Link Token for the given institution,
      * returning the URL the front-end can open for user authentication.
      */
-    suspend fun generateLinkUrl(userId: Int, institutionId: String, country: String = "SGP", automaticRefresh: Boolean = true): String {
-        var token = getCustomerToken()
+    suspend fun relink(userId: Int, institutionId: String, country: String = "SGP"): String {
         val productsRequested =
             listOf("ACCOUNTS", "TRANSACTIONS", "ACCOUNT_NUMBERS")
         val productSupported = productsRequested;
 
-        val automaticRefreshVal: String = if (automaticRefresh) {
-            "ON"
-        } else {
-            "OFF"
-        }
-
-        val userIdString = userId.toString().padEnd(4)
+        val automaticRefreshVal = "ON"
 
         val state = fnv1a32("$userId$institutionId${System.currentTimeMillis()}")
 
-        var requestBody = mapOf(
-            "client_id" to finverseCredentials.clientId,
-            "institution_id" to institutionId,
-            "institution_status" to "",
-            "state" to state,
-            "user_id" to userIdString,
-            "redirect_uri" to "http://localhost:8081/api/finverse/callback",
-            "automatic_data_refresh" to automaticRefreshVal,
-            "product_supported" to productSupported,
-            "products_requested" to productsRequested,
-            "countries" to listOf(country),
-            "link_mode" to "real test",
-            "ui_mode" to "",
-            "response_mode" to "form_post", // DO NOT CHANGE
-            "response_type" to "code", // DO NOT CHANGE
-            "grant_type" to "client_credentials" // DO NOT CHANGE
-        )
-
-        if (userHasLoginIdentity(userId, institutionId)) {
-            val credential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
-
-            if (credential == null) {
-                logger.error("Login Identity was reported existing, but could not be fetched")
-            } else {
-                requestBody = requestBody + mapOf(
-                    "login_identity_id" to credential.loginIdentityId
-                )
-            }
-        }
-
-        finverseAuthCache.startPreAuthSession(userId, institutionId, state)
+        finverseLoginIdentityService.startPreAuthSession(userId, institutionId, state)
 
         return try {
-            val resp = finverseWebClient.post()
-                .uri("/link/token")
-                .headers { it.setBearerAuth(token) }
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(LinkTokenResponse::class.java)
-                .awaitSingle()
+            val resp = finverseWebclientService.fetchLinkUrlInit(
+                userId,
+                institutionId,
+                state,
+                automaticRefreshVal,
+                productSupported,
+                productsRequested,
+                listOf(country)
+            )
 
             resp.linkUrl
         }
@@ -183,35 +104,43 @@ class FinverseQueryService(
         return hash.toString(16).padStart(8, '0')
     }
 
-    private suspend fun userHasLoginIdentity(userId: Int, institutionId: String): Boolean {
-        return finverseAuthCache.userHasLoginIdentity(userId, institutionId)
+    suspend fun refresh(userId: Int, institutionId: String): String {
+
+        val loginIdentityToken = finverseLoginIdentityService.getLoginIdentityTokenWithUserIdAndInstitutionId(userId, institutionId)
+        val state = fnv1a32("$userId$institutionId${System.currentTimeMillis()}")
+
+        finverseLoginIdentityService.startPreAuthSession(userId, institutionId, state)
+
+        if (finverseLoginIdentityService.getIsRefreshAllowed(userId, institutionId)) {
+            return try {
+                val linkTokenResponse = finverseWebclientService.fetchLinkUrlRefresh(loginIdentityToken, state)
+                linkTokenResponse.linkUrl
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ""
+            }
+        }
+        else {
+            val automaticRefreshVal = "ON"
+            val productsRequested =
+                listOf("ACCOUNTS", "TRANSACTIONS", "ACCOUNT_NUMBERS")
+            val productSupported = productsRequested;
+            val linkTokenResponse = finverseWebclientService.fetchLinkUrlRelink(
+                userId,
+                institutionId,
+                loginIdentityToken,
+                state,
+                automaticRefreshVal,
+                productSupported,
+                productsRequested,
+                listOf("SGP"))
+            return linkTokenResponse.linkUrl
+        }
     }
 
     suspend fun fetchLoginIdentityToken(userId: Int, code: String, institutionId: String): String {
-        val token = getCustomerToken()
-        val loginIdentityResponse: LoginIdentityResponse = finverseWebClient.post()
-            .uri("/auth/token")
-            .headers { it.setBearerAuth(token) }
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(
-                BodyInserters.fromFormData("grant_type", "authorization_code")
-                    .with("client_id", finverseCredentials.clientId)
-                    .with("code", code)
-                    .with("redirect_uri", "http://localhost:8081/api/finverse/callback")
-                    .with("grant_type", "authorization_code")
-            )
-            .retrieve()
-            .bodyToMono(LoginIdentityResponse::class.java)
-            .awaitSingle()
-
-        finverseAuthCache.saveLoginIdentityToken(
-            userId,
-            institutionId,
-            loginIdentityResponse.loginIdentityId,
-            loginIdentityResponse.loginIdentityToken
-        )
-
-        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(loginIdentityResponse.loginIdentityId)
+        val loginIdentityId = finverseLoginIdentityService.fetchLoginIdentityToken(userId, code, institutionId)
+        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(loginIdentityId)
 
         return "RETRIEVING"
     }

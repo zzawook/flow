@@ -21,24 +21,38 @@ class Bootstrap(private val databaseClient: DatabaseClient, private val finverse
 
         // 1. Load the entire SQL file as text
         val resource = ClassPathResource("sql/schema.sql")
-        val ddl = resource.inputStream.bufferedReader().use { it.readText() }
+        // 1) Load your schema.sql as before
+        val ddl = ClassPathResource("sql/schema.sql")
+            .inputStream
+            .bufferedReader()
+            .use { it.readText() }
 
-        // 2. Split on semicolons, trim out blank statements
-        val statements = ddl
-            .split(";")
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
+// 2) Split respecting $$ blocks
+        val statements = mutableListOf<String>()
+        var buffer = StringBuilder()
+        var inDollar = false
 
-        // 3. Run each statement in a coroutine
+        ddl.lineSequence().forEach { line ->
+            // Toggle whenever you see the $$ delimiter
+            if (line.contains("$$")) inDollar = !inDollar
+
+            buffer.append(line).append('\n')
+
+            // If we're not inside $$ and this line ends with ';', that's a statement boundary
+            if (!inDollar && line.trimEnd().endsWith(";")) {
+                statements += buffer.toString().trim()
+                buffer = StringBuilder()
+            }
+        }
+
+// 3) statements now contains whole CREATE TABLE, whole FUNCTION, etc.
         runBlocking {
             statements.forEach { sql ->
                 databaseClient
                     .sql(sql)
                     .fetch()
-                    .awaitRowsUpdated()   // suspend until the update completes
+                    .awaitRowsUpdated()
             }
-
-            // RUNNING THIS FUNCTION HERE TO AVOID DB QUERY FOR THIS FUNCTION TO RUN BEFORE DB TABLE INITIALIZATION
             finverseQueryService.fetchInstitutionData()
         }
 

@@ -8,14 +8,13 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import sg.flow.services.EventServices.KafkaEventProducerService
 import sg.flow.events.FinverseAuthCallbackEvent
-import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseAuthCache
-import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseQueryService
+import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIdentityService
 
 @RestController
 @RequestMapping("/finverse")
 class FinverseAuthCallbackController(
     private val kafkaEventProducerService: KafkaEventProducerService,
-    private val finverseAuthCache: FinverseAuthCache
+    private val finverseLoginIdentityService: FinverseLoginIdentityService
 ) {
     @GetMapping("/callback")
     suspend fun onSuccessfulCallback(

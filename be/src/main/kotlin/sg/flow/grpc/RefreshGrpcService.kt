@@ -11,6 +11,8 @@ import sg.flow.refresh.v1.GetInstitutionAuthenticationResultRequest
 import sg.flow.refresh.v1.GetInstitutionAuthenticationResultResponse
 import sg.flow.refresh.v1.GetRefreshUrlRequest
 import sg.flow.refresh.v1.GetRefreshUrlResponse
+import sg.flow.refresh.v1.GetRelinkUrlRequest
+import sg.flow.refresh.v1.GetRelinkUrlResponse
 import sg.flow.refresh.v1.RefreshServiceGrpcKt
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseQueryService
 
@@ -39,24 +41,31 @@ class RefreshGrpcService(
         return CanStartRefreshSessionResponse.newBuilder().setCanStart(! isRunning).setDescription(reason).build()
     }
 
-    override suspend fun getRefreshUrl(request: GetRefreshUrlRequest): GetRefreshUrlResponse {
+
+        override suspend fun getRefreshUrl(request: GetRefreshUrlRequest): GetRefreshUrlResponse {
         val userId = currentUserId()
         val institutionId = request.institutionId
-
-        var link = "";
 
         if (finverseQueryService.hasRunningRefreshSession(userId, request.institutionId)) {
             return GetRefreshUrlResponse.newBuilder().setRefreshUrl(ALREADY_HAS_RUNNING_SESSION_MESSAGE).build()
         }
 
-        if (request.hasAutomaticRefresh()) {
-            link = finverseQueryService.generateLinkUrl(userId, institutionId, automaticRefresh=request.automaticRefresh)
-        }
-        else {
-            link = finverseQueryService.generateLinkUrl(userId, institutionId)
-        }
+        val link = finverseQueryService.refresh(userId, institutionId)
 
         return GetRefreshUrlResponse.newBuilder().setRefreshUrl(link).build()
+    }
+
+    override suspend fun getRelinkUrl(request: GetRelinkUrlRequest): GetRelinkUrlResponse {
+        val userId = currentUserId()
+        val institutionId = request.institutionId
+
+
+        if (finverseQueryService.hasRunningRefreshSession(userId, request.institutionId)) {
+            return GetRelinkUrlResponse.newBuilder().setRelinkUrl(ALREADY_HAS_RUNNING_SESSION_MESSAGE).build()
+        }
+        val link = finverseQueryService.relink(userId, institutionId)
+
+        return GetRelinkUrlResponse.newBuilder().setRelinkUrl(link).build()
     }
 
     override suspend fun getInstitutionAuthenticationResult(request: GetInstitutionAuthenticationResultRequest): GetInstitutionAuthenticationResultResponse {

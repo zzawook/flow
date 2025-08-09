@@ -9,13 +9,13 @@ import sg.flow.models.finverse.FinverseAuthenticationEventTypeParser
 import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseEventTypeParser
 import sg.flow.models.finverse.FinverseProduct
-import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseAuthCache
+import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIdentityService
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseDataRetrievalRequestsManager
 
 @Service
 class FinverseWebhookEventConsumer(
         private val finverseDataRetrievalRequestsManager: FinverseDataRetrievalRequestsManager,
-        private val finverseAuthCache: FinverseAuthCache
+        private val finverseLoginIdentityService: FinverseLoginIdentityService
 ) {
 
     private val logger = LoggerFactory.getLogger(FinverseWebhookEventConsumer::class.java)
@@ -31,11 +31,15 @@ class FinverseWebhookEventConsumer(
             
             if (isAuthenticationEvent(event.eventType)) {
                 FinverseAuthenticationEventTypeParser.parse(event.eventType)?.let { authStatus ->
-                    val userIdAndInstitutionId = finverseAuthCache.getUserIdAndInstitutionId(event.loginIdentityId)
-                    finverseAuthCache.storePostAuthResult(userIdAndInstitutionId.userId, userIdAndInstitutionId.institutionId, authStatus)
+                    val userIdAndInstitutionId = finverseLoginIdentityService.getUserIdAndInstitutionId(event.loginIdentityId)
+                    finverseLoginIdentityService.storePostAuthResult(userIdAndInstitutionId.userId, userIdAndInstitutionId.institutionId, authStatus)
 
                     if (authStatus == FinverseAuthenticationStatus.AUTHENTICATED) {
-//                        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(event.loginIdentityId)
+                        // WHEN IT IS RELINK, AND REFRESH WAS ALLOWED, SO NO CALL BACK WAS CALLED
+                        // -> FINVERSE DATA RETRIEVAL EVENT WAS NOT CREATED, THUS NEED TO REGISTER ONE
+//                        if (finverseDataRetrievalRequestsManager.isRelinkAndNotHaveRefreshSession(event.loginIdentityId)) {
+//                            finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(event.loginIdentityId)
+//                        }
                     }
                 }
             } else {

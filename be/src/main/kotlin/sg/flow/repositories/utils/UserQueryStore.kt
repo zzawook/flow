@@ -24,7 +24,7 @@ object UserQueryStore {
         u.phone_number, 
         u.date_of_birth, 
         u.address, 
-        u.setting_json 
+        u.setting_json
         FROM users u 
         WHERE u.id = $1
     """
@@ -38,7 +38,7 @@ object UserQueryStore {
         u.phone_number, 
         u.date_of_birth, 
         u.identification_number, 
-        u.address 
+        u.address
         FROM users u 
         WHERE u.id = $1
     """

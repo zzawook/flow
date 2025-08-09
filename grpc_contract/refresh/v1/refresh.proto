@@ -8,6 +8,7 @@ option java_outer_classname = "RefreshServiceProto";
 service RefreshService {
     rpc CanStartRefreshSession (CanStartRefreshSessionRequest) returns (CanStartRefreshSessionResponse);
     rpc GetRefreshUrl (GetRefreshUrlRequest) returns (GetRefreshUrlResponse);
+    rpc GetRelinkUrl (GetRelinkUrlRequest) returns (GetRelinkUrlResponse);
     rpc GetInstitutionAuthenticationResult (GetInstitutionAuthenticationResultRequest) returns (GetInstitutionAuthenticationResultResponse);
     rpc GetDataRetrievalResult (GetDataRetrievalResultRequest) returns (GetDataRetrievalResultResponse);
 }
@@ -15,8 +16,12 @@ service RefreshService {
 /* ── Requests ── */
 message GetRefreshUrlRequest {
     string institution_id = 1; // Institution ID for which the refresh link is requested
-    optional bool automatic_refresh = 2;
-    optional string country_code = 3;
+    optional string country_code = 2;
+}
+
+message GetRelinkUrlRequest {
+    string institution_id = 1;
+    optional string country_code = 2;
 }
 
 message CanStartRefreshSessionRequest {
@@ -30,6 +35,10 @@ message CanStartRefreshSessionResponse {
 
 message GetRefreshUrlResponse {
     string refresh_url = 1; // The generated refresh URL for the user
+}
+
+message GetRelinkUrlResponse {
+    string relink_url = 1;
 }
 
 message GetInstitutionAuthenticationResultRequest {

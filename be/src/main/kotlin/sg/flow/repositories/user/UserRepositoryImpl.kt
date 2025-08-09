@@ -3,6 +3,7 @@ package sg.flow.repositories.user
 import java.time.LocalDate
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
+import org.slf4j.LoggerFactory
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
@@ -13,6 +14,8 @@ import sg.flow.repositories.utils.UserQueryStore
 
 @Repository
 class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepository {
+
+    val logger = LoggerFactory.getLogger(UserRepositoryImpl::class.java)
 
     override suspend fun save(entity: User): User {
         val hasId = entity.id != null
@@ -80,24 +83,35 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
     }
 
     override suspend fun getUserProfile(id: Int): UserProfile {
-        return databaseClient
+        try {
+            val profile = databaseClient
                 .sql(UserQueryStore.FIND_USER_PROFILE)
                 .bind(0, id)
                 .map { row ->
                     UserProfile(
-                            id = id,
-                            name = row.get("name", String::class.java)!!,
-                            email = row.get("email", String::class.java)!!,
-                            phoneNumber = row.get("phone_number", String::class.java)!!,
-                            dateOfBirth = row.get("date_of_birth", LocalDate::class.java)!!,
-                            identificationNumber =
-                                    row.get("identification_number", String::class.java)!!,
-                            settingJson = null
+                        id = id,
+                        name = row.get("name", String::class.java)!!,
+                        email = row.get("email", String::class.java)!!,
+                        phoneNumber = row.get("phone_number", String::class.java)!!,
+                        dateOfBirth = row.get("date_of_birth", LocalDate::class.java)!!,
+                        identificationNumber =
+                            row.get("identification_number", String::class.java)!!,
+                        settingJson = null
                     )
                 }
                 .one()
                 .awaitFirstOrNull()
-                ?: throw RuntimeException("User with id $id not found")
+
+            if (profile == null) {
+                logger.error("Couldn't find profile with id: $id")
+                throw RuntimeException()
+            }
+            return profile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Failed to get user profile of id: $id")
+            throw RuntimeException("User with id $id not found")
+        }
     }
 
     override suspend fun getUserPreferenceJson(userId: Int): String {

@@ -3,14 +3,12 @@ package sg.flow.services.BankQueryServices.FinverseQueryService
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClient
 import sg.flow.entities.Account
 import sg.flow.entities.Bank
 import sg.flow.entities.TransactionHistory
 import sg.flow.entities.User
 import sg.flow.models.card.BriefCard
 import sg.flow.models.finverse.FinverseInstitution
-import sg.flow.models.finverse.FinverseProduct
 import sg.flow.models.finverse.mappers.*
 import sg.flow.models.finverse.responses.*
 import sg.flow.repositories.account.AccountRepository
@@ -25,7 +23,7 @@ class FinverseResponseProcessor(
     private val bankRepository: BankRepository,
     private val accountRepository: AccountRepository,
     private val transactionRepository: TransactionHistoryRepository,
-    private val finverseAuthCache: FinverseAuthCache
+    private val finverseLoginIdentityService: FinverseLoginIdentityService
 ) {
 
     private val logger = LoggerFactory.getLogger(FinverseResponseProcessor::class.java)
@@ -126,7 +124,7 @@ class FinverseResponseProcessor(
         var user: User? = null;
 
         runBlocking {
-            val userId = finverseAuthCache.getUserIdAndInstitutionId(loginIdentityId).userId.toLong()
+            val userId = finverseLoginIdentityService.getUserIdAndInstitutionId(loginIdentityId).userId.toLong()
             user = userRepository.findById(userId)
         }
 

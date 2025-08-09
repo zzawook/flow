@@ -19,7 +19,7 @@ import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.Finver
 @DisplayName("FinverseDataRetrievalRequestsManager Tests")
 class FinverseDataRetrievalRequestsManagerTest {
 
-        private lateinit var finverseAuthCache: FinverseAuthCache
+        private lateinit var finverseLoginIdentityService: FinverseLoginIdentityService
         private lateinit var finverseProductCompleteEventPublisher:
                 FinverseProductCompleteEventPublisher
         private lateinit var finverseShouldFetchDecider: FinverseShouldFetchDecider
@@ -31,7 +31,7 @@ class FinverseDataRetrievalRequestsManagerTest {
 
         @BeforeEach
         fun setUp() {
-                finverseAuthCache = mockk()
+                finverseLoginIdentityService = mockk()
                 finverseProductCompleteEventPublisher = mockk()
                 finverseShouldFetchDecider = mockk()
                 finverseResponseProcessor = mockk()
@@ -39,7 +39,7 @@ class FinverseDataRetrievalRequestsManagerTest {
 
                 finverseDataRetrievalRequestsManager =
                         FinverseDataRetrievalRequestsManager(
-                                finverseAuthCache,
+                                finverseLoginIdentityService,
                                 finverseProductCompleteEventPublisher,
                                 finverseShouldFetchDecider,
                                 finverseResponseProcessor,
@@ -383,9 +383,9 @@ class FinverseDataRetrievalRequestsManagerTest {
 
                 @BeforeEach
                 fun setupMocks() {
-                        coEvery { finverseAuthCache.getUserId(any()) } returns 123
+                        coEvery { finverseLoginIdentityService.getUserId(any()) } returns 123
                         coEvery {
-                                finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(any())
+                                finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(any())
                         } returns "test-token"
                         every {
                                 finverseShouldFetchDecider.shouldFetch(any(), any(), any())
@@ -396,7 +396,7 @@ class FinverseDataRetrievalRequestsManagerTest {
                 @Test
                 @DisplayName("Should return early when user ID is negative")
                 fun shouldReturnEarlyWhenUserIdIsNegative() = runTest {
-                        coEvery { finverseAuthCache.getUserId(any()) } returns -1
+                        coEvery { finverseLoginIdentityService.getUserId(any()) } returns -1
 
                         finverseDataRetrievalRequestsManager.updateAndFetchIfSuccess(
                                 "login-id",
@@ -404,7 +404,7 @@ class FinverseDataRetrievalRequestsManagerTest {
                                 FinverseRetrievalStatus.RETRIEVED
                         )
 
-                        coVerify(exactly = 1) { finverseAuthCache.getUserId("login-id") }
+                        coVerify(exactly = 1) { finverseLoginIdentityService.getUserId("login-id") }
                         verify(exactly = 0) {
                                 finverseShouldFetchDecider.shouldFetch(any(), any(), any())
                         }
@@ -620,9 +620,9 @@ class FinverseDataRetrievalRequestsManagerTest {
 
                 @BeforeEach
                 fun setupMocks() {
-                        coEvery { finverseAuthCache.getUserId(any()) } returns 123
+                        coEvery { finverseLoginIdentityService.getUserId(any()) } returns 123
                         coEvery {
-                                finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(any())
+                                finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(any())
                         } returns "test-token"
                         every {
                                 finverseShouldFetchDecider.shouldFetch(any(), any(), any())

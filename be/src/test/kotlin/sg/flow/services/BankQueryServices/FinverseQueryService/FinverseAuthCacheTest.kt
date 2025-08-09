@@ -9,14 +9,14 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@DisplayName("FinverseAuthCache Tests")
+@DisplayName("FinverseLoginIdentityService Tests")
 class FinverseAuthCacheTest {
 
-    private lateinit var finverseAuthCache: FinverseAuthCache
+    private lateinit var finverseLoginIdentityService: FinverseLoginIdentityService
 
     @BeforeEach
     fun setUp() {
-        finverseAuthCache = FinverseAuthCache()
+        finverseLoginIdentityService = FinverseLoginIdentityService()
     }
 
     @Nested
@@ -31,14 +31,14 @@ class FinverseAuthCacheTest {
             val loginIdentityId = "login-id-123"
             val loginIdentityToken = "token-abc-123"
 
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId,
                     institutionId,
                     loginIdentityId,
                     loginIdentityToken
             )
 
-            val credential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
+            val credential = finverseLoginIdentityService.getLoginIdentityCredential(userId, institutionId)
 
             assertNotNull(credential)
             assertEquals(loginIdentityId, credential!!.loginIdentityId)
@@ -48,16 +48,16 @@ class FinverseAuthCacheTest {
         @Test
         @DisplayName("Should return null for non-existent user")
         fun shouldReturnNullForNonExistentUser() = runTest {
-            val credential = finverseAuthCache.getLoginIdentityCredential(999, "non-existent-bank")
+            val credential = finverseLoginIdentityService.getLoginIdentityCredential(999, "non-existent-bank")
             assertNull(credential)
         }
 
         @Test
         @DisplayName("Should return null for non-existent institution")
         fun shouldReturnNullForNonExistentInstitution() = runTest {
-            finverseAuthCache.saveLoginIdentityToken(123, "dbs-bank", "login-id", "token")
+            finverseLoginIdentityService.saveLoginIdentityToken(123, "dbs-bank", "login-id", "token")
 
-            val credential = finverseAuthCache.getLoginIdentityCredential(123, "non-existent-bank")
+            val credential = finverseLoginIdentityService.getLoginIdentityCredential(123, "non-existent-bank")
             assertNull(credential)
         }
 
@@ -66,28 +66,28 @@ class FinverseAuthCacheTest {
         fun shouldHandleMultipleInstitutionsForSameUser() = runTest {
             val userId = 123
 
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId,
                     "dbs-bank",
                     "dbs-login-id",
                     "dbs-token"
             )
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId,
                     "ocbc-bank",
                     "ocbc-login-id",
                     "ocbc-token"
             )
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId,
                     "uob-bank",
                     "uob-login-id",
                     "uob-token"
             )
 
-            val dbsCredential = finverseAuthCache.getLoginIdentityCredential(userId, "dbs-bank")
-            val ocbcCredential = finverseAuthCache.getLoginIdentityCredential(userId, "ocbc-bank")
-            val uobCredential = finverseAuthCache.getLoginIdentityCredential(userId, "uob-bank")
+            val dbsCredential = finverseLoginIdentityService.getLoginIdentityCredential(userId, "dbs-bank")
+            val ocbcCredential = finverseLoginIdentityService.getLoginIdentityCredential(userId, "ocbc-bank")
+            val uobCredential = finverseLoginIdentityService.getLoginIdentityCredential(userId, "uob-bank")
 
             assertNotNull(dbsCredential)
             assertEquals("dbs-login-id", dbsCredential!!.loginIdentityId)
@@ -107,28 +107,28 @@ class FinverseAuthCacheTest {
         fun shouldHandleMultipleUsersForSameInstitution() = runTest {
             val institutionId = "dbs-bank"
 
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     123,
                     institutionId,
                     "login-id-123",
                     "token-123"
             )
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     456,
                     institutionId,
                     "login-id-456",
                     "token-456"
             )
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     789,
                     institutionId,
                     "login-id-789",
                     "token-789"
             )
 
-            val credential123 = finverseAuthCache.getLoginIdentityCredential(123, institutionId)
-            val credential456 = finverseAuthCache.getLoginIdentityCredential(456, institutionId)
-            val credential789 = finverseAuthCache.getLoginIdentityCredential(789, institutionId)
+            val credential123 = finverseLoginIdentityService.getLoginIdentityCredential(123, institutionId)
+            val credential456 = finverseLoginIdentityService.getLoginIdentityCredential(456, institutionId)
+            val credential789 = finverseLoginIdentityService.getLoginIdentityCredential(789, institutionId)
 
             assertNotNull(credential123)
             assertEquals("login-id-123", credential123!!.loginIdentityId)
@@ -149,20 +149,20 @@ class FinverseAuthCacheTest {
             val userId = 123
             val institutionId = "dbs-bank"
 
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId,
                     institutionId,
                     "old-login-id",
                     "old-token"
             )
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId,
                     institutionId,
                     "new-login-id",
                     "new-token"
             )
 
-            val credential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
+            val credential = finverseLoginIdentityService.getLoginIdentityCredential(userId, institutionId)
 
             assertNotNull(credential)
             assertEquals("new-login-id", credential!!.loginIdentityId)
@@ -180,16 +180,16 @@ class FinverseAuthCacheTest {
             val userId = 123
             val loginIdentityId = "login-id-123"
 
-            finverseAuthCache.saveLoginIdentityToken(userId, "dbs-bank", loginIdentityId, "token")
+            finverseLoginIdentityService.saveLoginIdentityToken(userId, "dbs-bank", loginIdentityId, "token")
 
-            val foundUserId = finverseAuthCache.getUserId(loginIdentityId)
+            val foundUserId = finverseLoginIdentityService.getUserId(loginIdentityId)
             assertEquals(userId, foundUserId)
         }
 
         @Test
         @DisplayName("Should return -1 for non-existent login identity ID")
         fun shouldReturnMinusOneForNonExistentLoginId() = runTest {
-            val foundUserId = finverseAuthCache.getUserId("non-existent-login-id")
+            val foundUserId = finverseLoginIdentityService.getUserId("non-existent-login-id")
             assertEquals(-1, foundUserId)
         }
 
@@ -201,27 +201,27 @@ class FinverseAuthCacheTest {
             val loginIdentityId1 = "login-id-123"
             val loginIdentityId2 = "login-id-456"
 
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId1,
                     "dbs-bank",
                     loginIdentityId1,
                     "token1"
             )
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId1,
                     "ocbc-bank",
                     "other-login-id",
                     "token2"
             )
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     userId2,
                     "uob-bank",
                     loginIdentityId2,
                     "token3"
             )
 
-            val foundUserId1 = finverseAuthCache.getUserId(loginIdentityId1)
-            val foundUserId2 = finverseAuthCache.getUserId(loginIdentityId2)
+            val foundUserId1 = finverseLoginIdentityService.getUserId(loginIdentityId1)
+            val foundUserId2 = finverseLoginIdentityService.getUserId(loginIdentityId2)
 
             assertEquals(userId1, foundUserId1)
             assertEquals(userId2, foundUserId2)
@@ -232,10 +232,10 @@ class FinverseAuthCacheTest {
         fun shouldHandleDuplicateLoginIdentityIds() = runTest {
             val duplicateLoginId = "duplicate-login-id"
 
-            finverseAuthCache.saveLoginIdentityToken(123, "dbs-bank", duplicateLoginId, "token1")
-            finverseAuthCache.saveLoginIdentityToken(456, "ocbc-bank", duplicateLoginId, "token2")
+            finverseLoginIdentityService.saveLoginIdentityToken(123, "dbs-bank", duplicateLoginId, "token1")
+            finverseLoginIdentityService.saveLoginIdentityToken(456, "ocbc-bank", duplicateLoginId, "token2")
 
-            val foundUserId = finverseAuthCache.getUserId(duplicateLoginId)
+            val foundUserId = finverseLoginIdentityService.getUserId(duplicateLoginId)
 
             // Should return the first one found (order may vary due to HashMap iteration)
             assert(foundUserId == 123 || foundUserId == 456)
@@ -252,7 +252,7 @@ class FinverseAuthCacheTest {
             val loginIdentityId = "login-id-123"
             val loginIdentityToken = "token-abc-123"
 
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     123,
                     "dbs-bank",
                     loginIdentityId,
@@ -260,7 +260,7 @@ class FinverseAuthCacheTest {
             )
 
             val foundToken =
-                    finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
+                    finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
             assertEquals(loginIdentityToken, foundToken)
         }
 
@@ -268,7 +268,7 @@ class FinverseAuthCacheTest {
         @DisplayName("Should return empty string for non-existent login identity ID")
         fun shouldReturnEmptyStringForNonExistentLoginId() = runTest {
             val foundToken =
-                    finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(
+                    finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(
                             "non-existent-login-id"
                     )
             assertEquals("", foundToken)
@@ -277,13 +277,13 @@ class FinverseAuthCacheTest {
         @Test
         @DisplayName("Should find token across multiple users and institutions")
         fun shouldFindTokenAcrossMultipleUsersAndInstitutions() = runTest {
-            finverseAuthCache.saveLoginIdentityToken(123, "dbs-bank", "login-id-1", "token-1")
-            finverseAuthCache.saveLoginIdentityToken(123, "ocbc-bank", "login-id-2", "token-2")
-            finverseAuthCache.saveLoginIdentityToken(456, "uob-bank", "login-id-3", "token-3")
+            finverseLoginIdentityService.saveLoginIdentityToken(123, "dbs-bank", "login-id-1", "token-1")
+            finverseLoginIdentityService.saveLoginIdentityToken(123, "ocbc-bank", "login-id-2", "token-2")
+            finverseLoginIdentityService.saveLoginIdentityToken(456, "uob-bank", "login-id-3", "token-3")
 
-            val token1 = finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID("login-id-1")
-            val token2 = finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID("login-id-2")
-            val token3 = finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID("login-id-3")
+            val token1 = finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID("login-id-1")
+            val token2 = finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID("login-id-2")
+            val token3 = finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID("login-id-3")
 
             assertEquals("token-1", token1)
             assertEquals("token-2", token2)
@@ -295,11 +295,11 @@ class FinverseAuthCacheTest {
         fun shouldHandleUpdatedTokensCorrectly() = runTest {
             val loginIdentityId = "login-id-123"
 
-            finverseAuthCache.saveLoginIdentityToken(123, "dbs-bank", loginIdentityId, "old-token")
-            finverseAuthCache.saveLoginIdentityToken(123, "dbs-bank", loginIdentityId, "new-token")
+            finverseLoginIdentityService.saveLoginIdentityToken(123, "dbs-bank", loginIdentityId, "old-token")
+            finverseLoginIdentityService.saveLoginIdentityToken(123, "dbs-bank", loginIdentityId, "new-token")
 
             val foundToken =
-                    finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
+                    finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
             assertEquals("new-token", foundToken)
         }
     }
@@ -311,17 +311,17 @@ class FinverseAuthCacheTest {
         @Test
         @DisplayName("Should handle empty strings")
         fun shouldHandleEmptyStrings() = runTest {
-            finverseAuthCache.saveLoginIdentityToken(123, "", "", "")
+            finverseLoginIdentityService.saveLoginIdentityToken(123, "", "", "")
 
-            val credential = finverseAuthCache.getLoginIdentityCredential(123, "")
+            val credential = finverseLoginIdentityService.getLoginIdentityCredential(123, "")
             assertNotNull(credential)
             assertEquals("", credential!!.loginIdentityId)
             assertEquals("", credential.loginIdentityToken)
 
-            val userId = finverseAuthCache.getUserId("")
+            val userId = finverseLoginIdentityService.getUserId("")
             assertEquals(123, userId)
 
-            val token = finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID("")
+            val token = finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID("")
             assertEquals("", token)
         }
 
@@ -330,9 +330,9 @@ class FinverseAuthCacheTest {
         fun shouldHandleVeryLargeUserIds() = runTest {
             val largeUserId = Int.MAX_VALUE
 
-            finverseAuthCache.saveLoginIdentityToken(largeUserId, "test-bank", "login-id", "token")
+            finverseLoginIdentityService.saveLoginIdentityToken(largeUserId, "test-bank", "login-id", "token")
 
-            val credential = finverseAuthCache.getLoginIdentityCredential(largeUserId, "test-bank")
+            val credential = finverseLoginIdentityService.getLoginIdentityCredential(largeUserId, "test-bank")
             assertNotNull(credential)
             assertEquals("login-id", credential!!.loginIdentityId)
         }
@@ -344,39 +344,39 @@ class FinverseAuthCacheTest {
             val specialLoginId = "login-id-éñ@#$%^&*()"
             val specialToken = "token-éñ@#$%^&*()"
 
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     123,
                     specialInstitutionId,
                     specialLoginId,
                     specialToken
             )
 
-            val credential = finverseAuthCache.getLoginIdentityCredential(123, specialInstitutionId)
+            val credential = finverseLoginIdentityService.getLoginIdentityCredential(123, specialInstitutionId)
             assertNotNull(credential)
             assertEquals(specialLoginId, credential!!.loginIdentityId)
             assertEquals(specialToken, credential.loginIdentityToken)
 
-            val userId = finverseAuthCache.getUserId(specialLoginId)
+            val userId = finverseLoginIdentityService.getUserId(specialLoginId)
             assertEquals(123, userId)
 
-            val token = finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(specialLoginId)
+            val token = finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(specialLoginId)
             assertEquals(specialToken, token)
         }
 
         @Test
         @DisplayName("Should handle zero and negative user IDs")
         fun shouldHandleZeroAndNegativeUserIds() = runTest {
-            finverseAuthCache.saveLoginIdentityToken(0, "zero-bank", "zero-login", "zero-token")
-            finverseAuthCache.saveLoginIdentityToken(
+            finverseLoginIdentityService.saveLoginIdentityToken(0, "zero-bank", "zero-login", "zero-token")
+            finverseLoginIdentityService.saveLoginIdentityToken(
                     -1,
                     "negative-bank",
                     "negative-login",
                     "negative-token"
             )
 
-            val zeroCredential = finverseAuthCache.getLoginIdentityCredential(0, "zero-bank")
+            val zeroCredential = finverseLoginIdentityService.getLoginIdentityCredential(0, "zero-bank")
             val negativeCredential =
-                    finverseAuthCache.getLoginIdentityCredential(-1, "negative-bank")
+                    finverseLoginIdentityService.getLoginIdentityCredential(-1, "negative-bank")
 
             assertNotNull(zeroCredential)
             assertEquals("zero-login", zeroCredential!!.loginIdentityId)
@@ -396,7 +396,7 @@ class FinverseAuthCacheTest {
             val jobs =
                     (1..100).map { i ->
                         async {
-                            finverseAuthCache.saveLoginIdentityToken(
+                            finverseLoginIdentityService.saveLoginIdentityToken(
                                     i,
                                     "bank-$i",
                                     "login-$i",
@@ -410,7 +410,7 @@ class FinverseAuthCacheTest {
             // Verify all credentials were saved correctly
             repeat(100) { i ->
                 val credential =
-                        finverseAuthCache.getLoginIdentityCredential(i + 1, "bank-${i + 1}")
+                        finverseLoginIdentityService.getLoginIdentityCredential(i + 1, "bank-${i + 1}")
                 assertNotNull(credential)
                 assertEquals("login-${i + 1}", credential!!.loginIdentityId)
                 assertEquals("token-${i + 1}", credential!!.loginIdentityToken)
@@ -422,7 +422,7 @@ class FinverseAuthCacheTest {
         fun shouldHandleConcurrentReadsSafely() = runTest {
             // Setup data
             repeat(10) { i ->
-                finverseAuthCache.saveLoginIdentityToken(i, "bank-$i", "login-$i", "token-$i")
+                finverseLoginIdentityService.saveLoginIdentityToken(i, "bank-$i", "login-$i", "token-$i")
             }
 
             // Concurrent reads
@@ -430,10 +430,10 @@ class FinverseAuthCacheTest {
                     (0 until 10).map { i ->
                         async {
                             val credential =
-                                    finverseAuthCache.getLoginIdentityCredential(i, "bank-$i")
-                            val userId = finverseAuthCache.getUserId("login-$i")
+                                    finverseLoginIdentityService.getLoginIdentityCredential(i, "bank-$i")
+                            val userId = finverseLoginIdentityService.getUserId("login-$i")
                             val token =
-                                    finverseAuthCache.getLoginIdentityTokenWithLoginIdentityID(
+                                    finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(
                                             "login-$i"
                                     )
 
@@ -461,7 +461,7 @@ class FinverseAuthCacheTest {
             val jobs =
                     (1..50).map { i ->
                         async {
-                            finverseAuthCache.saveLoginIdentityToken(
+                            finverseLoginIdentityService.saveLoginIdentityToken(
                                     userId,
                                     institutionId,
                                     "login-$i",
@@ -473,7 +473,7 @@ class FinverseAuthCacheTest {
             jobs.awaitAll()
 
             // The final credential should be one of the saved ones
-            val credential = finverseAuthCache.getLoginIdentityCredential(userId, institutionId)
+            val credential = finverseLoginIdentityService.getLoginIdentityCredential(userId, institutionId)
             assertNotNull(credential)
 
             // Verify the credential is consistent
@@ -486,26 +486,26 @@ class FinverseAuthCacheTest {
         fun shouldHandleMixedConcurrentOperationsSafely() = runTest {
             // Setup initial data
             repeat(20) { i ->
-                finverseAuthCache.saveLoginIdentityToken(i, "bank-$i", "login-$i", "token-$i")
+                finverseLoginIdentityService.saveLoginIdentityToken(i, "bank-$i", "login-$i", "token-$i")
             }
 
             val jobs =
                     (1..30).map { i ->
                         async {
                             if (i % 3 == 0) {
-                                finverseAuthCache.saveLoginIdentityToken(
+                                finverseLoginIdentityService.saveLoginIdentityToken(
                                         i + 100,
                                         "new-bank-$i",
                                         "new-login-$i",
                                         "new-token-$i"
                                 )
                             } else if (i % 3 == 1) {
-                                finverseAuthCache.getLoginIdentityCredential(
+                                finverseLoginIdentityService.getLoginIdentityCredential(
                                         i % 20,
                                         "bank-${i % 20}"
                                 )
                             } else {
-                                finverseAuthCache.getUserId("login-${i % 20}")
+                                finverseLoginIdentityService.getUserId("login-${i % 20}")
                             }
                         }
                     }
@@ -514,7 +514,7 @@ class FinverseAuthCacheTest {
 
             // Verify original data is still intact
             repeat(10) { i ->
-                val credential = finverseAuthCache.getLoginIdentityCredential(i, "bank-$i")
+                val credential = finverseLoginIdentityService.getLoginIdentityCredential(i, "bank-$i")
                 assertNotNull(credential)
                 assertEquals("login-$i", credential!!.loginIdentityId)
             }
