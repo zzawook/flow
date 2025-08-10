@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	java
-	id("org.springframework.boot") version "3.4.0"
+	id("org.springframework.boot") version "3.5.4"
 	id("io.spring.dependency-management") version "1.1.6"
 	kotlin("jvm") version "2.2.0"
 	kotlin("plugin.spring") version "2.2.0"
@@ -51,6 +51,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-configuration-processor")
 	implementation("org.springframework.cloud:spring-cloud-starter-vault-config")
+	implementation("org.springframework.vault:spring-vault-core")
 	
 	// Kafka
 	implementation("org.springframework.kafka:spring-kafka")
@@ -81,6 +82,7 @@ dependencies {
 
 	// Utils
 	implementation("com.googlecode.libphonenumber:libphonenumber:9.0.7")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 	// AWS SDK for Bedrock
 	implementation("aws.sdk.kotlin:bedrockagentruntime:1.5.7")

@@ -23,9 +23,7 @@ class FlowTokenServiceImpl(
             withContext(Dispatchers.IO) {
                 val userId =
                         cacheService
-                                .getUserIdByAccessToken(accessToken)
-                                .or { vaultService.getUserIdByAccessToken(accessToken) }
-                                .orElse(null)
+                                .getUserIdByAccessToken(accessToken).orElse(null)
                                 ?: return@withContext null
 
                 val profile = userService.getUserProfile(userId)
@@ -58,7 +56,6 @@ class FlowTokenServiceImpl(
                 val accessToken = jwtTokenProvider.generateAccessToken(refreshToken)
 
                 cacheService.storeAccessToken(userId, accessToken)
-                vaultService.storeAccessToken(userId, accessToken)
                 vaultService.storeRefreshToken(userId, refreshToken)
 
                 TokenSet(accessToken = accessToken, refreshToken = refreshToken)

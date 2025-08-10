@@ -21,7 +21,6 @@ class AuthServiceImpl(
                 // TODO replace with real authentication logic (e.g., Singpass)
                 val tokenSet = TokenSet("accessToken", "refreshToken")
                 cacheService.storeAccessToken(1, tokenSet.accessToken)
-                vaultService.storeAccessToken(1, tokenSet.accessToken)
                 vaultService.storeRefreshToken(1, tokenSet.refreshToken)
                 tokenSet
             }

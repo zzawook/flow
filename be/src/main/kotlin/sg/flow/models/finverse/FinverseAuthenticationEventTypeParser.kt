@@ -10,7 +10,6 @@ object FinverseAuthenticationEventTypeParser {
             val status   = FinverseAuthenticationStatus.valueOf(m.groupValues[2])
             return status
         }
-        println("FINVERSE AUTHENTICATION WEBHOOK PARSE FAILED")
         return FinverseAuthenticationStatus.FAILED
     }
 

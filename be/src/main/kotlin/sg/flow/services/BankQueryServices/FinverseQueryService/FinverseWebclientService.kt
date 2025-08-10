@@ -234,12 +234,22 @@ class FinverseWebclientService(
     }
 
     suspend fun refreshLoginIdentityToken(loginIdentityRefreshToken: String): FinverseAuthTokenResponse {
-        return finverseWebClient.post()
-            .uri("/auth/token/refresh")
-            .headers { it -> it.setBearerAuth(loginIdentityRefreshToken) }
-            .retrieve()
-            .bodyToMono(FinverseAuthTokenResponse::class.java)
-            .awaitSingle()
+        return try {
+            finverseWebClient.post()
+                .uri("/auth/token/refresh")
+                .headers { it -> it.setBearerAuth(getCustomerToken()) }
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(mapOf("refresh_token" to loginIdentityRefreshToken))
+                .retrieve()
+                .bodyToMono(FinverseAuthTokenResponse::class.java)
+                .awaitSingle()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Failed to Refresh Login Identity")
+            return FinverseAuthTokenResponse(
+                "", 1,"","","",""
+            )
+        }
     }
 
     suspend fun fetchAccount(loginIdentityToken: String): FinverseAccountResponse {

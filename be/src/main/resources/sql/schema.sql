@@ -27,42 +27,6 @@ CREATE TABLE IF NOT EXISTS banks (
 
 CREATE INDEX IF NOT EXISTS bank_index_by_id ON banks (id);
 
-CREATE TABLE IF NOT EXISTS login_identities (
-    user_id INT REFERENCES users(id) NOT NULL,
-    finverse_institution_id TEXT REFERENCES banks(finverse_id) NOT NULL,
-    login_identity_id TEXT DEFAULT '',
-    login_identity_refresh_token TEXT DEFAULT '',
-    refresh_allowed BOOLEAN DEFAULT false,
-    PRIMARY KEY (user_id, finverse_institution_id)
-);
-
-CREATE OR REPLACE FUNCTION upsert_login_identity(
-  p_user_id    INTEGER,
-  p_finverse_institution_id TEXT,
-  p_login_identity_id TEXT,
-  p_login_identity_refresh_token TEXT,
-  p_refresh_allowed BOOLEAN
-)
-RETURNS VOID LANGUAGE plpgsql
-AS $$
-BEGIN
-  INSERT INTO login_identities(
-    user_id, finverse_institution_id,
-    login_identity_id, login_identity_refresh_token, refresh_allowed
-  ) VALUES (
-    p_user_id, p_finverse_institution_id,
-    p_login_identity_id, p_login_identity_refresh_token, p_refresh_allowed
-  )
-  ON CONFLICT (user_id, finverse_institution_id)
-  DO UPDATE SET
-    login_identity_id = EXCLUDED.login_identity_id,
-    login_identity_refresh_token = EXCLUDED.login_identity_refresh_token,
-    refresh_allowed = EXCLUDED.refresh_allowed;
-END;
-$$;
-
-
-
 CREATE TABLE IF NOT EXISTS accounts (
     id BIGSERIAL PRIMARY KEY, 
     account_number TEXT NOT NULL,
