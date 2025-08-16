@@ -1,27 +1,26 @@
-import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TransferAmountScreen extends StatefulWidget {
+class TransferAmountScreen extends ConsumerStatefulWidget {
   const TransferAmountScreen({super.key});
 
   @override
-  State<TransferAmountScreen> createState() => TransferAmountScreenState();
+  ConsumerState<TransferAmountScreen> createState() => TransferAmountScreenState();
 }
 
-class TransferAmountScreenState extends State<TransferAmountScreen> {
+class TransferAmountScreenState extends ConsumerState<TransferAmountScreen> {
   /// Holds the user-entered amount in cents. (e.g., 123 => $1.23)
   int _amount = 0;
 
   void onTransferButtonPressed() {
-    StoreProvider.of<FlowState>(context).dispatch(EnterAmountAction(_amount));
+    ref.read(transferNotifierProvider.notifier).setAmount(_amount);
     Navigator.pushNamed(
       context,
       '/transfer/confirm',

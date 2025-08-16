@@ -1,46 +1,37 @@
-import 'package:flow_mobile/domain/entity/transaction.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BalanceDetail extends StatelessWidget {
+class BalanceDetail extends ConsumerWidget {
   final bool isOnHomeScreen;
 
   const BalanceDetail({super.key, required this.isOnHomeScreen});
 
-  TransactionState storeToTransactionStateConverter(Store<FlowState> store) {
-    return store.state.transactionState;
-  }
-
   @override
-  Widget build(BuildContext context) {
-    Widget separator = FlowSeparatorBox(height: isOnHomeScreen ? 0 : 16);
-    return StoreConnector<FlowState, TransactionState>(
-      converter: (store) => storeToTransactionStateConverter(store),
-      builder: (context, txState) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _IncomeContainer(txState: txState),
-            separator,
-            _SpendingContainer(
-              txState: txState,
-              isOnHomeScreen: isOnHomeScreen,
-            ),
-            separator,
-            _TotalBalanceContainer(txState: txState),
-          ],
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final txState = ref.watch(transactionStateProvider);
+    final Widget separator = FlowSeparatorBox(height: isOnHomeScreen ? 0 : 16);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _IncomeContainer(txState: txState),
+        separator,
+        _SpendingContainer(
+          txState: txState,
+          isOnHomeScreen: isOnHomeScreen,
+        ),
+        separator,
+        _TotalBalanceContainer(txState: txState),
+      ],
     );
   }
 }
 
 class _IncomeContainer extends StatelessWidget {
-  final TransactionState txState;
+  final TransactionStateModel txState;
 
   const _IncomeContainer({required this.txState});
 
@@ -77,7 +68,7 @@ class _IncomeContainer extends StatelessWidget {
 }
 
 class _SpendingContainer extends StatelessWidget {
-  final TransactionState txState;
+  final TransactionStateModel txState;
   final bool isOnHomeScreen;
 
   const _SpendingContainer({
@@ -125,7 +116,7 @@ class _SpendingContainer extends StatelessWidget {
 }
 
 class _TotalBalanceContainer extends StatelessWidget {
-  final TransactionState txState;
+  final TransactionStateModel txState;
 
   const _TotalBalanceContainer({required this.txState});
 
@@ -156,7 +147,7 @@ class _TotalBalanceContainer extends StatelessWidget {
 }
 
 class _SpendingDetails extends StatelessWidget {
-  final TransactionState txState;
+  final TransactionStateModel txState;
   final bool isOnHomeScreen;
 
   const _SpendingDetails({required this.txState, required this.isOnHomeScreen});
@@ -175,7 +166,7 @@ class _SpendingDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     // Categorize all negative‐amount transactions
     final categorized = <String, List<Transaction>>{};
-    for (var t in txState.transactions) {
+    for (final t in txState.transactions) {
       if (t.amount >= 0) continue;
       final key = _processMethod(t.method);
       categorized.putIfAbsent(key, () => []).add(t);
@@ -191,8 +182,8 @@ class _SpendingDetails extends StatelessWidget {
               width: 2,
               color:
                   Theme.of(context).brightness == Brightness.light
-                      ? Color(0xFFE5E5E5)
-                      : Color(0xFF444444),
+                      ? const Color(0xFFE5E5E5)
+                      : const Color(0xFF444444),
               margin: const EdgeInsets.only(right: 12),
             ),
             Expanded(
@@ -225,7 +216,7 @@ class CardSpending extends StatelessWidget {
     double total = 0;
     final now = DateTime.now();
 
-    for (var t in transactions) {
+    for (final t in transactions) {
       if (t.date.year != now.year || t.date.month != now.month) continue;
       total += t.amount;
     }
@@ -263,7 +254,7 @@ class TransferSpending extends StatelessWidget {
     double total = 0;
     final now = DateTime.now();
 
-    for (var t in transactions) {
+    for (final t in transactions) {
       if (t.date.year != now.year || t.date.month != now.month) continue;
       total += t.amount;
     }
@@ -299,7 +290,7 @@ class OtherSpending extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double total = 0;
-    for (var t in transactions) {
+    for (final t in transactions) {
       total += t.amount;
     }
 

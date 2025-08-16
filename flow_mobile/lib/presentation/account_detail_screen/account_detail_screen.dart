@@ -1,7 +1,4 @@
-import 'package:flow_mobile/domain/entity/bank_account.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
@@ -10,16 +7,24 @@ import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_snackbar.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BankAccountDetailScreen extends StatelessWidget {
+class BankAccountDetailScreen extends ConsumerWidget {
   final BankAccount bankAccount;
   const BankAccountDetailScreen({super.key, required this.bankAccount});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bankAccounts = ref.watch(bankAccountsProvider);
+    final transactionState = ref.watch(transactionStateProvider);
+    
+    final currentAccount = bankAccounts.firstWhere(
+      (account) => account.accountNumber == bankAccount.accountNumber,
+      orElse: () => bankAccount,
+    );
     return Scaffold(
       body: FlowSafeArea(
         backgroundColor: Theme.of(context).cardColor,
@@ -28,26 +33,12 @@ class BankAccountDetailScreen extends StatelessWidget {
           children: [
             // ── custom top bar ───────────────────────────────────────────────
             FlowTopBar(
-              title: StoreConnector<FlowState, String>(
-                converter: (store) {
-                  BankAccountState bankAccountState =
-                      store.state.bankAccountState;
-                  for (var bankAccount in bankAccountState.bankAccounts) {
-                    if (bankAccount.isEqualTo(this.bankAccount)) {
-                      return bankAccount.accountName;
-                    }
-                  }
-                  return bankAccount.accountName;
-                },
-                builder: (_, accountName) {
-                  return Text(
-                    accountName,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    textAlign: TextAlign.center,
-                  );
-                },
+              title: Text(
+                currentAccount.accountName,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+                textAlign: TextAlign.center,
               ),
               leftWidget: FlowButton(
                 onPressed: () {
@@ -56,7 +47,7 @@ class BankAccountDetailScreen extends StatelessWidget {
                     "/bank_account/setting",
                     arguments: CustomPageRouteArguments(
                       transitionType: TransitionType.slideRight,
-                      extraData: bankAccount,
+                      extraData: currentAccount,
                     ),
                   );
                 },
@@ -71,7 +62,7 @@ class BankAccountDetailScreen extends StatelessWidget {
             ),
 
             // ── balance & copy-to-clipboard section ─────────────────────────
-            BalanceSection(bankAccount: bankAccount),
+            BalanceSection(bankAccount: currentAccount),
 
             // thin grey divider
             Container(
@@ -84,10 +75,9 @@ class BankAccountDetailScreen extends StatelessWidget {
 
             // ── transactions list (scrollable) ──────────────────────────────
             Expanded(
-              child: StoreConnector<FlowState, TransactionState>(
-                converter: (store) => store.state.transactionState,
-                builder: (_, txnState) {
-                  final txns = txnState.getTransactionsByAccount(bankAccount);
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final txns = transactionState.getTransactionsByAccount(currentAccount);
                   return TransactionList(transactions: txns);
                 },
               ),

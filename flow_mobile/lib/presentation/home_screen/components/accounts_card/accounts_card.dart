@@ -1,25 +1,22 @@
-import 'package:flow_mobile/domain/entity/bank_account.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
+
 import 'package:flow_mobile/presentation/home_screen/components/accounts_card/account_row.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// A card listing the user’s bank accounts, with a “See more” footer.
-class AccountsCard extends StatelessWidget {
+/// A card listing the user's bank accounts, with a "See more" footer.
+class AccountsCard extends ConsumerWidget {
   final VoidCallback onToggleBalance;
 
   const AccountsCard({super.key, required this.onToggleBalance});
 
-  List<BankAccount> storeTobankAccountListConverter(Store<FlowState> store) {
-    return store.state.bankAccountState.bankAccounts;
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final accounts = ref.watch(bankAccountsProvider);
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -27,24 +24,19 @@ class AccountsCard extends StatelessWidget {
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
-      child: StoreConnector<FlowState, List<BankAccount>>(
-        converter: (store) => storeTobankAccountListConverter(store),
-        builder: (context, accounts) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // One row per account
-              for (final account in accounts)
-                if (!account.isHidden)
-                  AccountRow(
-                    bankAccount: account,
-                    onViewBalance: onToggleBalance,
-                  ),
-              // “See more” button
-              _SeeMoreButton(),
-            ],
-          );
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // One row per account
+          for (final account in accounts)
+            if (!account.isHidden)
+              AccountRow(
+                bankAccount: account,
+                onViewBalance: onToggleBalance,
+              ),
+          // "See more" button
+          _SeeMoreButton(),
+        ],
       ),
     );
   }
@@ -72,8 +64,8 @@ class _SeeMoreButton extends StatelessWidget {
         alignment: Alignment.center,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
+          children: [
+            const Text(
               'See more about my accounts',
               style: TextStyle(
                 fontFamily: 'Inter',
@@ -81,8 +73,8 @@ class _SeeMoreButton extends StatelessWidget {
                 color: Color(0xFFA6A6A6),
               ),
             ),
-            SizedBox(width: 4),
-            Icon(Icons.chevron_right, size: 12, color: Color(0xFFA19F9F)),
+            const SizedBox(width: 4),
+            const Icon(Icons.chevron_right, size: 12, color: Color(0xFFA19F9F)),
           ],
         ),
       ),

@@ -1,36 +1,33 @@
-import 'package:flow_mobile/domain/entity/transaction.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/spending/spending_monthly_trend_line_graph.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SpendingTrendCard extends StatelessWidget {
+class SpendingTrendCard extends ConsumerWidget {
   const SpendingTrendCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return StoreConnector<FlowState, SpendingTrendCardState>(
-      converter: (store) {
-        return SpendingTrendCardState(
-          transactionState: store.state.transactionState,
-          currentMonth:
-              store.state.screenState.spendingScreenState.displayedMonth,
-        );
-      },
-      builder: (context, spendingTrendCardState) {
-        DateTime currentMonth = spendingTrendCardState.currentMonth;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transactionState = ref.watch(transactionStateProvider);
+    final currentMonth = ref.watch(spendingScreenStateProvider).displayedMonth;
 
-        List<Transaction> currentMonthTransactions = spendingTrendCardState
-            .transactionState
-            .getTransactionsForMonth(currentMonth);
-        List<Transaction> lastMonthTransactions = spendingTrendCardState
-            .transactionState
-            .getTransactionsForMonth(
-              DateTime(currentMonth.year, currentMonth.month - 1),
-            );
+    List<Transaction> currentMonthTransactions = transactionState.transactions
+        .where((transaction) {
+          return transaction.date.year == currentMonth.year &&
+                 transaction.date.month == currentMonth.month;
+        })
+        .toList();
+    
+    List<Transaction> lastMonthTransactions = transactionState.transactions
+        .where((transaction) {
+          final lastMonth = DateTime(currentMonth.year, currentMonth.month - 1);
+          return transaction.date.year == lastMonth.year &&
+                 transaction.date.month == lastMonth.month;
+        })
+        .toList();
 
         List<double> currentMonthSpendingByDays = [];
         List<double> lastMonthSpendingByDays = [];
@@ -190,17 +187,7 @@ class SpendingTrendCard extends StatelessWidget {
             ],
           ),
         );
-      },
-    );
   }
 }
 
-class SpendingTrendCardState {
-  final TransactionState transactionState;
-  final DateTime currentMonth;
 
-  SpendingTrendCardState({
-    required this.transactionState,
-    required this.currentMonth,
-  });
-}

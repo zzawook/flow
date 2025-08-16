@@ -16,10 +16,6 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    bool isHidden = false;
-    if (fields.length > 6) {
-      isHidden = fields[6] as bool;
-    }
     return BankAccount(
       accountNumber: fields[0] as String,
       accountHolder: fields[1] as String,
@@ -27,7 +23,7 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
       accountName: fields[3] as String,
       bank: fields[4] as Bank,
       transferCount: fields[5] as int,
-      isHidden: isHidden,
+      isHidden: fields[6] as bool,
     );
   }
 

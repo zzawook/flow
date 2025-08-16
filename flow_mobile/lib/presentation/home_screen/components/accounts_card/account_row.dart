@@ -1,14 +1,13 @@
-import 'package:flow_mobile/domain/entity/bank_account.dart';
-import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// A single row displaying account info, a “View Balance” action, and a quick-transfer button.
-class AccountRow extends StatelessWidget {
+/// A single row displaying account info, a "View Balance" action, and a quick-transfer button.
+class AccountRow extends ConsumerWidget {
   final BankAccount bankAccount;
   final VoidCallback onViewBalance;
 
@@ -32,10 +31,9 @@ class AccountRow extends StatelessWidget {
     );
   }
 
-  void onQuickTransferPressed(BuildContext context) {
-    StoreProvider.of<FlowState>(
-      context,
-    ).dispatch(SelectFromBankAccountAction(bankAccount));
+  void onQuickTransferPressed(BuildContext context, WidgetRef ref) {
+    // Use Riverpod to set the selected bank account for transfer
+    ref.read(transferNotifierProvider.notifier).selectFromBankAccount(bankAccount);
     Navigator.pushNamed(
       context,
       '/transfer/to',
@@ -46,7 +44,7 @@ class AccountRow extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: _spacing,
@@ -64,7 +62,7 @@ class AccountRow extends StatelessWidget {
                 children: [
                   _buildAvatar(),
                   const SizedBox(width: 20),
-                  _buildLabels(context, bankAccount),
+                  _buildLabels(context, ref, bankAccount),
                 ],
               ),
             ),
@@ -75,7 +73,7 @@ class AccountRow extends StatelessWidget {
           // Quick-transfer button
           FlowButton(
             onPressed: () {
-              onQuickTransferPressed(context);
+              onQuickTransferPressed(context, ref);
             },
             child: Container(
               width: 65,
@@ -84,7 +82,7 @@ class AccountRow extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     Theme.of(context).brightness == Brightness.light
-                        ? Color(0xFFF0F0F0)
+                        ? const Color(0xFFF0F0F0)
                         : Theme.of(context).colorScheme.surfaceBright,
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -93,8 +91,8 @@ class AccountRow extends StatelessWidget {
                 size: 24,
                 color:
                     Theme.of(context).brightness == Brightness.light
-                        ? Color(0xFF565656)
-                        : Color(0xFFAAAAAA),
+                        ? const Color(0xFF565656)
+                        : const Color(0xFFAAAAAA),
               ),
             ),
           ),
@@ -114,7 +112,9 @@ class AccountRow extends StatelessWidget {
     );
   }
 
-  Widget _buildLabels(BuildContext context, BankAccount bankAccount) {
+  Widget _buildLabels(BuildContext context, WidgetRef ref, BankAccount bankAccount) {
+    final showBalance = ref.watch(displayBalanceProvider);
+    
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,21 +126,14 @@ class AccountRow extends StatelessWidget {
               fontSize: 16,
               color:
                   Theme.of(context).brightness == Brightness.light
-                      ? Color(0xFF565656)
-                      : Color(0xFFCCCCCC),
+                      ? const Color(0xFF565656)
+                      : const Color(0xFFCCCCCC),
             ),
           ),
           const SizedBox(height: 4),
-          StoreConnector<FlowState, bool>(
-            converter:
-                (store) =>
-                    store.state.settingsState.settings.displayBalanceOnHome,
-            builder: (context, showBalance) {
-              return Text(
-                showBalance ? "\$ ${bankAccount.balance}" : 'View Balance',
-                style: Theme.of(context).textTheme.titleSmall,
-              );
-            },
+          Text(
+            showBalance ? '\$ ${bankAccount.balance}' : 'View Balance',
+            style: Theme.of(context).textTheme.titleSmall,
           ),
         ],
       ),

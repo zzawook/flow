@@ -1,23 +1,20 @@
-import 'package:flow_mobile/domain/entity/bank_account.dart';
-import 'package:flow_mobile/domain/entity/paynow_recipient.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
-import 'package:flow_mobile/domain/redux/states/transfer_receivable_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/account_layout.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_to_screen/paynow_layout.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TransferToScreen extends StatefulWidget {
+class TransferToScreen extends ConsumerStatefulWidget {
   const TransferToScreen({super.key});
 
   @override
-  State<TransferToScreen> createState() => _TransferToScreenState();
+  ConsumerState<TransferToScreen> createState() => _TransferToScreenState();
 }
 
-class _TransferToScreenState extends State<TransferToScreen> {
+class _TransferToScreenState extends ConsumerState<TransferToScreen> {
   // Track which tab is selected: 0 => PayNow, 1 => Account
   int _selectedTabIndex = 0;
 
@@ -81,30 +78,19 @@ class _TransferToScreenState extends State<TransferToScreen> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: StoreConnector<
-                FlowState,
-                TransferReceivableAndBankAccountState
-              >(
-                converter:
-                    (store) => TransferReceivableAndBankAccountState(
-                      transferReceivableState:
-                          store.state.transferReceivableState,
-                      bankAccountState: store.state.bankAccountState,
-                    ),
-                builder: (context, transferReceivableAndBankAccountState) {
-                  TransferReceivableState transferReceivableState =
-                      transferReceivableAndBankAccountState
-                          .transferReceivableState;
-                  BankAccountState bankAccountState =
-                      transferReceivableAndBankAccountState.bankAccountState;
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final transferReceivableState = ref.watch(transferReceivableStateProvider);
+                  final bankAccounts = ref.watch(bankAccountsProvider);
+                  
                   final List<PayNowRecipient> recommended =
                       transferReceivableState.getRecommendedPayNow();
                   final List<PayNowRecipient> fromContacts =
                       transferReceivableState.getPayNowFromContactExcluding([]);
                   final List<BankAccount> recommendedBankAccount =
                       transferReceivableState.getRecommendedBankAccount();
-                  final List<BankAccount> myBankAccounts =
-                      bankAccountState.bankAccounts;
+                  final List<BankAccount> myBankAccounts = bankAccounts;
+                  
                   return Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).canvasColor,
@@ -136,15 +122,7 @@ class _TransferToScreenState extends State<TransferToScreen> {
   }
 }
 
-class TransferReceivableAndBankAccountState {
-  final TransferReceivableState transferReceivableState;
-  final BankAccountState bankAccountState;
 
-  TransferReceivableAndBankAccountState({
-    required this.transferReceivableState,
-    required this.bankAccountState,
-  });
-}
 
 class TabRowWidget extends StatelessWidget {
   final int selectedTabIndex;

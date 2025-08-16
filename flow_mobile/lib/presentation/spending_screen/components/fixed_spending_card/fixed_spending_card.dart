@@ -1,24 +1,24 @@
-import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/utils/recurring_spending.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class FixedSpendingCard extends StatefulWidget {
+class FixedSpendingCard extends ConsumerStatefulWidget {
   /// The month to show initially
   final DateTime initialMonth;
 
   const FixedSpendingCard({super.key, required this.initialMonth});
 
   @override
-  FixedSpendingCardState createState() => FixedSpendingCardState();
+  ConsumerState<FixedSpendingCard> createState() => FixedSpendingCardState();
 }
 
-class FixedSpendingCardState extends State<FixedSpendingCard> {
+class FixedSpendingCardState extends ConsumerState<FixedSpendingCard> {
   late DateTime displayMonth;
 
   @override
@@ -100,16 +100,8 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
               if (entry.value == 0) {
                 return const SizedBox.shrink();
               }
-              return StoreConnector<FlowState, DateTime>(
-                converter:
-                    (store) =>
-                        store
-                            .state
-                            .screenState
-                            .spendingScreenState
-                            .displayedMonth,
-                builder:
-                    (context, displayMonth) => FlowButton(
+              final displayMonth = ref.watch(spendingScreenStateProvider).displayedMonth;
+              return FlowButton(
                       onPressed: () {
                         // Handle button press
                         Navigator.pushNamed(
@@ -185,8 +177,7 @@ class FixedSpendingCardState extends State<FixedSpendingCard> {
                           ],
                         ),
                       ),
-                    ),
-              );
+                    );
             }),
           ],
         ),

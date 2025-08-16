@@ -1,21 +1,22 @@
-import 'package:flow_mobile/domain/redux/actions/setting_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
-import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/presentation/navigation/app_navigation.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
 import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/presentation/shared/flow_horizontal_divider.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider);
+    final theme = ref.watch(themeProvider);
+    
     return FlowSafeArea(
       backgroundColor: Theme.of(context).canvasColor,
       child: Column(
@@ -39,13 +40,9 @@ class SettingScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // greeting + balance
-                StoreConnector<FlowState, String>(
-                  converter: (store) => store.state.userState.user.nickname,
-                  builder:
-                      (_, name) => Text(
-                        'Hi $name,',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
+                Text(
+                  'Hi ${user.nickname},',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
 
                 const SizedBox(height: 24),
@@ -67,13 +64,7 @@ class SettingScreen extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/account/setting',
-                      arguments: CustomPageRouteArguments(
-                        transitionType: TransitionType.slideLeft,
-                      ),
-                    );
+                    AppNavigation.goToAccountSettings(context);
                   },
                 ),
                 SettingTabWithIcon(
@@ -87,13 +78,7 @@ class SettingScreen extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/bank_accounts/setting',
-                      arguments: CustomPageRouteArguments(
-                        transitionType: TransitionType.slideLeft,
-                      ),
-                    );
+                    AppNavigation.goToBankAccountsSettings(context);
                   },
                 ),
 
@@ -108,13 +93,7 @@ class SettingScreen extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/notification/setting',
-                      arguments: CustomPageRouteArguments(
-                        transitionType: TransitionType.slideLeft,
-                      ),
-                    );
+                    AppNavigation.goToNotificationSettings(context);
                   },
                 ),
 
@@ -124,20 +103,13 @@ class SettingScreen extends StatelessWidget {
                     Icons.color_lens,
                     color: Theme.of(context).primaryColor,
                   ),
-                  trailing: StoreConnector<FlowState, String>(
-                    converter:
-                        (store) => store.state.settingsState.settings.theme,
-                    builder:
-                        (context, theme) => ThemeToggleSwitch(
-                          currentIndex: theme == 'light' ? 0 : 1,
-                          onToggle: (index) {
-                            if (index != null) {
-                              StoreProvider.of<FlowState>(
-                                context,
-                              ).dispatch(ToggleThemeAction());
-                            }
-                          },
-                        ),
+                  trailing: ThemeToggleSwitch(
+                    currentIndex: theme == 'light' ? 0 : 1,
+                    onToggle: (index) {
+                      if (index != null) {
+                        ref.read(settingsNotifierProvider.notifier).toggleTheme();
+                      }
+                    },
                   ),
                   onTap: () {},
                 ),

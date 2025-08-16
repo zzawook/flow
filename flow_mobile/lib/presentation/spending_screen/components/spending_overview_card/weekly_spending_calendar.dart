@@ -1,18 +1,17 @@
 import 'package:flow_mobile/domain/model/weekly_spending_data.dart';
-import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class WeeklySpendingCalendar extends StatefulWidget {
+class WeeklySpendingCalendar extends ConsumerStatefulWidget {
   const WeeklySpendingCalendar({super.key});
 
   @override
-  State<WeeklySpendingCalendar> createState() => _WeeklySpendingCalendarState();
+  ConsumerState<WeeklySpendingCalendar> createState() => _WeeklySpendingCalendarState();
 }
 
-class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
+class _WeeklySpendingCalendarState extends ConsumerState<WeeklySpendingCalendar> {
   static const int _initialPage = 1000;
   late final PageController _pageController;
   final DateTime _initialMonday = DateTime(
@@ -40,16 +39,14 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<FlowState, _ViewModel>(
-      distinct: true,
-      converter: (store) {
-        final s = store.state.screenState.spendingScreenState;
-        return _ViewModel(
-          selectedDate: s.selectedDate,
-          displayWeek: s.weeklySpendingCalendarDisplayWeek,
-        );
-      },
-      builder: (context, vm) {
+    final spendingScreenState = ref.watch(spendingScreenStateProvider);
+    final vm = _ViewModel(
+      selectedDate: spendingScreenState.selectedDate,
+      displayWeek: spendingScreenState.weeklySpendingCalendarDisplayWeek,
+    );
+    
+    return Consumer(
+      builder: (context, ref, child) {
         final today = DateTime.now();
 
         // compute desired page for current displayWeek
@@ -75,9 +72,8 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
               final updatedMonday = _initialMonday.add(
                 Duration(days: delta * 7),
               );
-              StoreProvider.of<FlowState>(context, listen: false).dispatch(
-                SetWeeklySpendingCalendarDisplayWeekAction(updatedMonday),
-              );
+              ref.read(spendingScreenNotifierProvider.notifier)
+                  .updateWeeklySpendingCalendarDisplayWeek(updatedMonday);
               setState(() {
                 _currentPage = page;
               });
@@ -100,12 +96,13 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
     DateTime selectedDate,
   ) {
     final sunday = monday.add(const Duration(days: 6));
-    final txState =
-        StoreProvider.of<FlowState>(
-          context,
-          listen: false,
-        ).state.transactionState;
-    final txns = txState.getTransactionsFromTo(monday, sunday);
+    final transactionState = ref.read(transactionStateProvider);
+    final txns = transactionState.transactions
+        .where((transaction) {
+          return transaction.date.isAfter(monday.subtract(Duration(days: 1))) &&
+                 transaction.date.isBefore(sunday.add(Duration(days: 1)));
+        })
+        .toList();
 
     final data = WeeklySpendingData(monday);
     for (final tx in txns) {
@@ -117,12 +114,9 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
 
     final expenseColor = Theme.of(context).colorScheme.onSurface.withAlpha(140);
 
-    return StoreConnector<FlowState, DateTime>(
-      distinct: true,
-      converter:
-          (store) => store.state.screenState.spendingScreenState.displayedMonth,
-      builder:
-          (context, displayMonth) => Container(
+    final displayMonth = ref.watch(spendingScreenStateProvider).displayedMonth;
+    
+    return Container(
             padding: const EdgeInsets.only(top: 20, bottom: 18),
             width: double.infinity,
             child: Row(
@@ -168,10 +162,8 @@ class _WeeklySpendingCalendarState extends State<WeeklySpendingCalendar> {
                             behavior: HitTestBehavior.opaque,
                             onTap: () {
                               if (dateTime.isAfter(today)) return;
-                              StoreProvider.of<FlowState>(
-                                context,
-                                listen: false,
-                              ).dispatch(SetSelectedDateAction(dateTime));
+                              ref.read(spendingScreenNotifierProvider.notifier)
+                                  .updateSelectedDate(dateTime);
                             },
                             child: Container(
                               margin: const EdgeInsets.only(top: 8),

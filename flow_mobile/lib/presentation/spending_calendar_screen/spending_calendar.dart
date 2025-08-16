@@ -1,10 +1,9 @@
-import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 
-class SpendingCalendar extends StatefulWidget {
+class SpendingCalendar extends ConsumerStatefulWidget {
   final DateTime displayedMonth;
   final void Function(DateTime date) onDateSelected;
 
@@ -15,10 +14,10 @@ class SpendingCalendar extends StatefulWidget {
   });
 
   @override
-  State<SpendingCalendar> createState() => _SpendingCalendarState();
+  ConsumerState<SpendingCalendar> createState() => _SpendingCalendarState();
 }
 
-class _SpendingCalendarState extends State<SpendingCalendar> {
+class _SpendingCalendarState extends ConsumerState<SpendingCalendar> {
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -69,106 +68,118 @@ class _SpendingCalendarState extends State<SpendingCalendar> {
         day,
       );
       dayCells.add(
-        StoreConnector<FlowState, CalendarCellState>(
-          distinct: true,
-          converter: (store) {
-            final s = store.state.transactionState;
-            final stats = s.getTransactionStatisticForDate(date);
-            return CalendarCellState(
-              income: stats.income,
-              expense: stats.expense,
-              isToday: DateTimeUtil.isSameDate(date, DateTime.now()),
-              isSelected: DateTimeUtil.isSameDate(date, selectedDate),
-            );
-          },
-          builder: (ctx, cell) {
-            return Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  if (date.isAfter(DateTime.now())) return;
-                  widget.onDateSelected(date);
-                  StoreProvider.of<FlowState>(
-                    ctx,
-                    listen: false,
-                  ).dispatch(SetCalendarSelectedDateAction(date));
-                  setState(() {
-                    selectedDate = date;
-                  });
-                },
+        Consumer(
+          builder: (context, ref, child) {
+            final transactionsAsync = ref.watch(transactionsProvider);
+            
+            return transactionsAsync.when(
+              data: (transactions) {
+                // Calculate stats for this date
+                final dayTransactions = transactions.where((t) => 
+                  DateTimeUtil.isSameDate(t.date, date)).toList();
+                
+                final income = dayTransactions
+                    .where((t) => t.amount > 0)
+                    .fold(0.0, (sum, t) => sum + t.amount);
+                final expense = dayTransactions
+                    .where((t) => t.amount < 0)
+                    .fold(0.0, (sum, t) => sum + t.amount.abs());
+                
+                final isToday = DateTimeUtil.isSameDate(date, DateTime.now());
+                final isSelected = DateTimeUtil.isSameDate(date, selectedDate);
+                
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      if (date.isAfter(DateTime.now())) return;
+                      widget.onDateSelected(date);
+                      setState(() {
+                        selectedDate = date;
+                      });
+                    },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: EdgeInsets.only(
-                        top: 4,
-                        bottom: 4,
-                        left: 9,
-                        right: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            cell.isToday
-                                ? Theme.of(context).colorScheme.surfaceBright
-                                : cell.isSelected
-                                ? Theme.of(ctx).primaryColorLight
-                                : null,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        "$day",
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color:
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white.withValues(
-                                    alpha:
-                                        date.isAfter(DateTime.now())
-                                            ? 0.3
-                                            : 0.8,
-                                  )
-                                  : Colors.black.withValues(
-                                    alpha:
-                                        date.isAfter(DateTime.now())
-                                            ? 0.3
-                                            : 1.0,
-                                  ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(
+                            top: 4,
+                            bottom: 4,
+                            left: 9,
+                            right: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isToday
+                                    ? Theme.of(context).colorScheme.surfaceBright
+                                    : isSelected
+                                    ? Theme.of(context).primaryColorLight
+                                    : null,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            "$day",
+                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              color:
+                                  Theme.of(context).brightness == Brightness.dark
+                                      ? Colors.white.withValues(
+                                        alpha:
+                                            date.isAfter(DateTime.now())
+                                                ? 0.3
+                                                : 0.8,
+                                      )
+                                      : Colors.black.withValues(
+                                        alpha:
+                                            date.isAfter(DateTime.now())
+                                                ? 0.3
+                                                : 1.0,
+                                      ),
+                            ),
+                          ),
                         ),
-                      ),
+                        Text(
+                          date.isAfter(DateTime.now())
+                              ? ""
+                              : income > 0
+                              ? "+${income.toStringAsFixed(2)}"
+                              : expense > 0
+                              ? "-${expense.toStringAsFixed(2)}"
+                              : "",
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                                color:
+                                    income > 0
+                                    ? Theme.of(context).primaryColor
+                                    : expense > 0
+                                    ? expenseColor
+                                    : Theme.of(context).primaryColor,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Text(
+                          date.isAfter(DateTime.now()) || (income == 0)
+                              ? ""
+                              : expense.toStringAsFixed(2),
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: expenseColor,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      date.isAfter(DateTime.now())
-                          ? ""
-                          : cell.income > 0
-                          ? "+${cell.income.toStringAsFixed(2)}"
-                          : cell.expense < 0
-                          ? cell.expense.toStringAsFixed(2)
-                          : "",
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        color:
-                            cell.income > 0
-                                ? Theme.of(ctx).primaryColor
-                                : cell.expense < 0
-                                ? expenseColor
-                                : Theme.of(ctx).primaryColor,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    Text(
-                      date.isAfter(DateTime.now()) || (cell.income == 0)
-                          ? ""
-                          : cell.expense.toStringAsFixed(2),
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        color: expenseColor,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
+              loading: () => Expanded(child: Container()),
+              error: (error, stack) => Expanded(child: Container()),
             );
+          },
+        ),
           },
         ),
       );

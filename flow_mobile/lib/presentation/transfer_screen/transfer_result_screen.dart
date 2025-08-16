@@ -2,17 +2,17 @@ import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/presentation/transfer_screen/transfer_top_bar.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TransferResultScreen extends StatelessWidget {
+class TransferResultScreen extends ConsumerWidget {
   const TransferResultScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transferState = ref.watch(transferStateProvider);
     return Container(
       color: const Color(0xFFFFFFFF),
       child: Padding(
@@ -68,10 +68,7 @@ class TransferResultScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            StoreConnector<FlowState, TransferState>(
-                              converter: (store) => store.state.transferState,
-                              builder:
-                                  (context, transferState) => Text(
+                            Text(
                                     '\$${(transferState.amount / 100).toStringAsFixed(2)} to ${transferState.receiving.name}',
                                     style: TextStyle(
                                       fontFamily: 'Inter',
@@ -79,7 +76,6 @@ class TransferResultScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFF000000),
                                     ),
-                                  ),
                             ),
                           ],
                         ),

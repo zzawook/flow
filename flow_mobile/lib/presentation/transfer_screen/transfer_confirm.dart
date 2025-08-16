@@ -1,6 +1,3 @@
-import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
@@ -8,25 +5,26 @@ import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flow_mobile/presentation/shared/flow_text_edit_bottom_sheet.dart';
 
 /// The Transfer Confirmation screen using only WidgetsApp-compatible widgets.
-class TransferConfirmationScreen extends StatelessWidget {
+class TransferConfirmationScreen extends ConsumerWidget {
   const TransferConfirmationScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transferState = ref.watch(transferStateProvider);
+    final user = ref.watch(currentUserProvider);
+
     return FlowSafeArea(
       backgroundColor: Theme.of(context).canvasColor,
       child: Container(
         color: Theme.of(context).canvasColor,
-        child: StoreConnector<FlowState, TransferState>(
-          converter: (store) => store.state.transferState,
-          builder:
-              (context, transferState) => Column(
+        child: Column(
                 children: [
                   // Top bar row
                   FlowTopBar(
@@ -143,22 +141,17 @@ class TransferConfirmationScreen extends StatelessWidget {
                                 ).colorScheme.onSurface.withAlpha(160),
                               ),
                             ),
-                            StoreConnector<FlowState, String>(
-                              converter:
-                                  (store) => store.state.userState.user.name,
-                              builder: (context, userName) {
+                            Consumer(
+                              builder: (context, ref, child) {
                                 final remarks =
                                     transferState.remarks == ''
-                                        ? userName
+                                        ? user.name
                                         : transferState.remarks;
                                 return FlowButton(
                                   onPressed: () {
                                     _editRemark(context, remarks, (newRemark) {
-                                      StoreProvider.of<FlowState>(
-                                        context,
-                                      ).dispatch(
-                                        CustomizeRemarksAction(newRemark),
-                                      );
+                                      ref.read(transferNotifierProvider.notifier)
+                                          .setRemarks(newRemark);
                                     });
                                   },
                                   child: Row(

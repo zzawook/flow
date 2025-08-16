@@ -1,5 +1,4 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar.dart';
@@ -10,17 +9,18 @@ import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/shared/month_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 
-class SpendingCalendarScreen extends StatefulWidget {
+class SpendingCalendarScreen extends ConsumerStatefulWidget {
   final DateTime displayedMonth;
   const SpendingCalendarScreen({super.key, required this.displayedMonth});
 
   @override
-  State<SpendingCalendarScreen> createState() => _SpendingDetailScreenState();
+  ConsumerState<SpendingCalendarScreen> createState() => _SpendingDetailScreenState();
 }
 
-class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
+class _SpendingDetailScreenState extends ConsumerState<SpendingCalendarScreen> {
   late DateTime displayedMonth;
   final Map<DateTime, GlobalKey> _detailKeys = {};
 
@@ -99,17 +99,33 @@ class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
                       displayedMonth: displayedMonth,
                       onDateSelected: _handleDateTap,
                     ),
-                    StoreConnector<FlowState, List<Transaction>>(
-                      converter:
-                          (store) => store.state.transactionState
-                              .getTransactionsForMonth(displayedMonth),
-                      builder:
-                          (context, transactions) => Expanded(
-                            child: TransactionList(
-                              transactions: transactions,
-                              detailKeys: _detailKeys,
-                            ),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final transactionsAsync = ref.watch(transactionsProvider);
+                        
+                        return transactionsAsync.when(
+                          data: (allTransactions) {
+                            // Filter transactions for the displayed month
+                            final monthTransactions = allTransactions.where((t) =>
+                              t.date.year == displayedMonth.year &&
+                              t.date.month == displayedMonth.month
+                            ).toList();
+                            
+                            return Expanded(
+                              child: TransactionList(
+                                transactions: monthTransactions,
+                                detailKeys: _detailKeys,
+                              ),
+                            );
+                          },
+                          loading: () => const Expanded(
+                            child: Center(child: CircularProgressIndicator()),
                           ),
+                          error: (error, stack) => Expanded(
+                            child: Center(child: Text('Error: $error')),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

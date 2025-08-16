@@ -1,15 +1,12 @@
-import 'package:flow_mobile/domain/entity/transaction.dart';
-import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flow_mobile/presentation/shared/month_selector.dart';
 import 'package:flow_mobile/presentation/shared/spending/spending_monthly_trend_line_graph.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// ignore: must_be_immutable
-class SpendingHeader extends StatelessWidget {
+class SpendingHeader extends ConsumerWidget {
   const SpendingHeader({
     super.key,
     required this.displayMonthYear,
@@ -20,7 +17,10 @@ class SpendingHeader extends StatelessWidget {
   final DateTime weeklySpendingCalendarDisplayWeek;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transactionState = ref.watch(transactionStateProvider);
+    final spendingScreenNotifier = ref.read(spendingScreenNotifierProvider.notifier);
+    
     return Row(
       children: [
         Expanded(
@@ -30,21 +30,14 @@ class SpendingHeader extends StatelessWidget {
               MonthSelector(
                 displayMonthYear: displayMonthYear,
                 displayMonthYearSetter: (date) {
-                  StoreProvider.of<FlowState>(
-                    context,
-                  ).dispatch(SetDisplayedMonthAction(date));
+                  spendingScreenNotifier.updateDisplayedMonth(date);
                 },
               ),
               Container(
                 padding: EdgeInsets.only(top: 15),
                 child: Text(
                   () {
-                    var balance =
-                        StoreProvider.of<FlowState>(context)
-                            .state
-                            .transactionState
-                            .getExpenseForMonth(displayMonthYear)
-                            .abs();
+                    var balance = transactionState.getExpenseForMonth(displayMonthYear).abs();
                     return '\$ ${balance.toStringAsFixed(2)}';
                   }(),
                   style: TextStyle(
@@ -58,11 +51,10 @@ class SpendingHeader extends StatelessWidget {
             ],
           ),
         ),
-        StoreConnector<FlowState, TransactionState>(
-          converter: (store) {
-            return store.state.transactionState;
-          },
-          builder: (context, transactionState) {
+        Consumer(
+          builder: (context, ref, child) {
+            final transactionState = ref.watch(transactionStateProvider);
+            
             DateTime currentMonth = DateTime(
               DateTime.now().year,
               DateTime.now().month,

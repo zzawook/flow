@@ -1,4 +1,4 @@
-import 'package:flow_mobile/domain/entity/transaction.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 
 class WeeklySpendingData {
   late Map<DateTime, Map<String, double>> weeklySpendingData;

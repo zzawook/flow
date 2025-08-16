@@ -1,5 +1,3 @@
-import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
@@ -15,19 +13,20 @@ import 'package:flow_mobile/presentation/shared/flow_main_top_bar.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/month_selector.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../shared/flow_top_bar.dart';
 
-class SpendingScreen extends StatefulWidget {
+class SpendingScreen extends ConsumerStatefulWidget {
   const SpendingScreen({super.key});
 
   @override
-  State<SpendingScreen> createState() => _SpendingScreenState();
+  ConsumerState<SpendingScreen> createState() => _SpendingScreenState();
 }
 
-class _SpendingScreenState extends State<SpendingScreen> {
+class _SpendingScreenState extends ConsumerState<SpendingScreen> {
   static const _fadeStart = 75.0; // begin to appear
   static const _fadeEnd = 100.0; // fully visible
 
@@ -162,24 +161,15 @@ class _SpendingScreenState extends State<SpendingScreen> {
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        StoreConnector<FlowState, DateTime>(
-                          converter:
-                              (store) =>
-                                  store
-                                      .state
-                                      .screenState
-                                      .spendingScreenState
-                                      .displayedMonth,
-                          builder: (
-                            BuildContext context,
-                            DateTime displayedMonth,
-                          ) {
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final displayedMonth = ref.watch(spendingScreenStateProvider).displayedMonth;
                             return MonthSelector(
                               displayMonthYear: displayedMonth,
-                              displayMonthYearSetter:
-                                  (newMonth) => StoreProvider.of<FlowState>(
-                                    context,
-                                  ).dispatch(SetDisplayedMonthAction(newMonth)),
+                              displayMonthYearSetter: (newMonth) {
+                                ref.read(spendingScreenNotifierProvider.notifier)
+                                    .updateDisplayedMonth(newMonth);
+                              },
                             );
                           },
                         ),

@@ -10,22 +10,26 @@ import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/presentation/shared/flow_main_top_bar.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_snackbar.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FlowHomeScreen extends StatefulWidget {
+class FlowHomeScreen extends ConsumerStatefulWidget {
   const FlowHomeScreen({super.key});
 
   @override
-  State<FlowHomeScreen> createState() => _FlowHomeScreenState();
+  ConsumerState<FlowHomeScreen> createState() => _FlowHomeScreenState();
 }
 
-class _FlowHomeScreenState extends State<FlowHomeScreen> {
+class _FlowHomeScreenState extends ConsumerState<FlowHomeScreen> {
   bool _backPressed = false;
   static const _backPressDuration = Duration(seconds: 2);
 
   void _onToggleBalance() {
-    // forward to BalanceCard via Redux or callback, if needed
+    // Toggle display balance setting using Riverpod provider
+    final currentDisplayBalance = ref.read(displayBalanceProvider);
+    ref.read(settingsNotifierProvider.notifier).setDisplayBalance(!currentDisplayBalance);
   }
 
   void _handleBack() {
@@ -34,8 +38,8 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
     } else {
       _backPressed = true;
       ScaffoldMessenger.of(context).showSnackBar(
-        FlowSnackbar(
-          content: const Text(
+        const FlowSnackbar(
+          content: Text(
             'Press again to exit',
             style: HomeScreenTextStyles.snackBar,
           ),
@@ -54,7 +58,7 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
         transitionType: TransitionType.slideTop,
       ),
     );
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future<void>.delayed(const Duration(milliseconds: 100));
   }
 
   @override

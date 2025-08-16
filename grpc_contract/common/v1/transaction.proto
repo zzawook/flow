@@ -13,7 +13,7 @@ message TransactionHistoryDetail {
   int64                         id                    = 1;
   string                        transaction_reference = 2;
   BriefAccount                  account               = 3;
-  BriefCard     card                  = 4;
+  BriefCard                     card                  = 4;
   google.protobuf.Timestamp     transaction_timestamp = 5; // date+time
   double                        amount                = 6;
   string                        transaction_type      = 7;

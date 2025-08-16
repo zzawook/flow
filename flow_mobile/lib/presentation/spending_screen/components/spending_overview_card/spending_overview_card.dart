@@ -1,5 +1,4 @@
-import 'package:flow_mobile/domain/entity/transaction.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/insight_sentences/spending_compareto_last_month_insight.dart';
@@ -7,19 +6,20 @@ import 'package:flow_mobile/presentation/spending_screen/components/spending_ove
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/weekly_spending_calendar.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/spending/spending_header.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Monthly Spending Overview Section
-class MonthlySpendingOverview extends StatefulWidget {
+class MonthlySpendingOverview extends ConsumerStatefulWidget {
   const MonthlySpendingOverview({super.key});
 
   @override
-  State<MonthlySpendingOverview> createState() =>
+  ConsumerState<MonthlySpendingOverview> createState() =>
       _MonthlySpendingOverviewState();
 }
 
-class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
+class _MonthlySpendingOverviewState extends ConsumerState<MonthlySpendingOverview> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,12 +27,12 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
-      child: StoreConnector<FlowState, SpendingOverviewState>(
-        // distinct: true,
-        converter: (store) {
-          DateTime displayedMonth =
-              store.state.screenState.spendingScreenState.displayedMonth;
-
+      child: Consumer(
+        builder: (context, ref, child) {
+          final spendingScreenState = ref.watch(spendingScreenStateProvider);
+          final transactionState = ref.watch(transactionStateProvider);
+          
+          DateTime displayedMonth = spendingScreenState.displayedMonth;
           DateTime today = DateTime(
             DateTime.now().year,
             DateTime.now().month,
@@ -41,21 +41,22 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
           DateTime lastSunday = today.subtract(
             Duration(days: today.weekday % 7),
           );
-          List<Transaction> transactions = store.state.transactionState
-              .getTransactionsFromTo(lastSunday, today);
-          return SpendingOverviewState(
+          
+          // Filter transactions for the current week
+          List<Transaction> transactions = transactionState.transactions
+              .where((transaction) {
+                return transaction.date.isAfter(lastSunday.subtract(Duration(days: 1))) &&
+                       transaction.date.isBefore(today.add(Duration(days: 1)));
+              })
+              .toList();
+          
+          final spendingOverviewState = SpendingOverviewState(
             displayedMonth: displayedMonth,
-            weeklySpendingCalendarDisplayWeek:
-                store
-                    .state
-                    .screenState
-                    .spendingScreenState
-                    .weeklySpendingCalendarDisplayWeek,
+            weeklySpendingCalendarDisplayWeek: spendingScreenState.weeklySpendingCalendarDisplayWeek,
             transactions: transactions,
           );
-        },
-        builder:
-            (context, spendingOverviewState) => Column(
+          
+          return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
@@ -124,7 +125,8 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
                   ),
                 ),
               ],
-            ),
+            );
+        },
       ),
     );
   }

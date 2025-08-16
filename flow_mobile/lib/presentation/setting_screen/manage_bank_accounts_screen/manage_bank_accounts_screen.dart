@@ -1,22 +1,19 @@
-import 'package:flow_mobile/domain/entity/setting_v1.dart';
-import 'package:flow_mobile/domain/redux/actions/setting_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ManageBankAccountsScreen extends StatefulWidget {
+class ManageBankAccountsScreen extends ConsumerStatefulWidget {
   const ManageBankAccountsScreen({super.key});
 
   @override
-  State<ManageBankAccountsScreen> createState() =>
+  ConsumerState<ManageBankAccountsScreen> createState() =>
       _ManageBankAccountsScreenState();
 }
 
-class _ManageBankAccountsScreenState extends State<ManageBankAccountsScreen> {
-  bool showBalanceOnHome = true;
+class _ManageBankAccountsScreenState extends ConsumerState<ManageBankAccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -39,22 +36,19 @@ class _ManageBankAccountsScreenState extends State<ManageBankAccountsScreen> {
 
             // ── content area ───────────────────────────────────────────
             Expanded(
-              child: StoreConnector<FlowState, bool>(
-                converter: (store) {
-                  SettingsV1 settings = store.state.settingsState.settings;
-                  return settings.displayBalanceOnHome;
-                },
-                builder: (_, showBalanceOnHome) {
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final settingsState = ref.watch(settingsStateProvider);
+                  final showBalanceOnHome = settingsState.settings.displayBalanceOnHome;
+                  
                   return Column(
                     children: [
                       SettingTab(
                         title: 'Show balance in Home Screen',
                         trailing: Switch.adaptive(
                           value: showBalanceOnHome,
-                          onChanged:
-                              (v) => StoreProvider.of<FlowState>(
-                                context,
-                              ).dispatch(ToggleDisplayBalanceOnHomeAction()),
+                          onChanged: (v) => ref.read(settingsNotifierProvider.notifier)
+                              .toggleDisplayBalanceOnHome(),
                           activeColor: theme.primaryColor,
                         ),
                       ),

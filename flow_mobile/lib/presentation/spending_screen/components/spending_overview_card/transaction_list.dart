@@ -1,57 +1,46 @@
-import 'package:flow_mobile/domain/entity/transaction.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_item.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TransactionsList extends StatelessWidget {
+class TransactionsList extends ConsumerWidget {
   final List<Transaction> transactions;
 
   const TransactionsList({super.key, required this.transactions});
 
-  TransactionListState storeToTransactionListStateConverter(
-    Store<FlowState> store,
-  ) {
-    DateTime selectedDate =
-        store.state.screenState.spendingScreenState.selectedDate;
-    TransactionState transactionState = store.state.transactionState;
-
-    return TransactionListState(
-      selectedDate: selectedDate,
-      transactionState: transactionState,
-    );
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: StoreConnector<FlowState, TransactionListState>(
-        distinct: true,
-        converter: (storeToTransactionListStateConverter),
-        builder: (context, transactionListState) {
-          List<Transaction> transactions = transactionListState.transactionState
-              .getTransactionsFromTo(
-                transactionListState.selectedDate,
-                transactionListState.selectedDate,
-              );
+      child: Consumer(
+        builder: (context, ref, child) {
+          final selectedDate = ref.watch(spendingScreenStateProvider).selectedDate;
+          final transactionState = ref.watch(transactionStateProvider);
+          
+          // Filter transactions for the selected date
+          List<Transaction> filteredTransactions = transactionState.transactions
+              .where((transaction) {
+                return transaction.date.year == selectedDate.year &&
+                       transaction.date.month == selectedDate.month &&
+                       transaction.date.day == selectedDate.day;
+              })
+              .toList();
+          
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:
-                transactions.map((tx) {
-                  return TransactionItem(
-                    name: tx.name,
-                    amount: tx.amount,
-                    category: tx.category,
-                    color: Color(0xFFEB5757),
-                    incomeColor: Theme.of(context).primaryColor,
-                  );
-                }).toList(),
+            children: filteredTransactions.map((tx) {
+              return TransactionItem(
+                name: tx.name,
+                amount: tx.amount,
+                category: tx.category,
+                color: Color(0xFFEB5757),
+                incomeColor: Theme.of(context).primaryColor,
+              );
+            }).toList(),
           );
         },
       ),
@@ -59,12 +48,4 @@ class TransactionsList extends StatelessWidget {
   }
 }
 
-class TransactionListState {
-  final DateTime selectedDate;
-  final TransactionState transactionState;
 
-  TransactionListState({
-    required this.selectedDate,
-    required this.transactionState,
-  });
-}

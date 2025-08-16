@@ -1,17 +1,16 @@
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/analysis/demographic_analysis_card.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AnalysisCarousel extends StatefulWidget {
+class AnalysisCarousel extends ConsumerStatefulWidget {
   const AnalysisCarousel({super.key});
 
   @override
-  State<AnalysisCarousel> createState() => _AnalysisCarouselState();
+  ConsumerState<AnalysisCarousel> createState() => _AnalysisCarouselState();
 }
 
-class _AnalysisCarouselState extends State<AnalysisCarousel>
+class _AnalysisCarouselState extends ConsumerState<AnalysisCarousel>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
@@ -24,20 +23,24 @@ class _AnalysisCarouselState extends State<AnalysisCarousel>
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<FlowState, TransactionState>(
-      distinct: true,
-      converter: (store) => store.state.transactionState,
-      builder: (context, transactionState) {
-        List<Widget> cards = [
-          DemographicAnalysisCard(
-            myAmount:
-                transactionState
-                    .getExpenseForMonth(
-                      DateTime(DateTime.now().year, DateTime.now().month),
-                    )
-                    .abs(),
-          ),
-        ];
+    final transactionState = ref.watch(transactionStateProvider);
+    final currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
+    
+    // Calculate expense for current month
+    final monthExpense = transactionState.transactions
+        .where((transaction) {
+          return transaction.date.year == currentMonth.year &&
+                 transaction.date.month == currentMonth.month &&
+                 transaction.amount < 0;
+        })
+        .fold(0.0, (sum, transaction) => sum + transaction.amount)
+        .abs();
+    
+    List<Widget> cards = [
+      DemographicAnalysisCard(
+        myAmount: monthExpense,
+      ),
+    ];
 
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -67,8 +70,6 @@ class _AnalysisCarouselState extends State<AnalysisCarousel>
             ),
           ],
         );
-      },
-    );
   }
 
   Widget buildDot(int index) {

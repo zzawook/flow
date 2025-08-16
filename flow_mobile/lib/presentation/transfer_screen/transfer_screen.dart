@@ -1,6 +1,4 @@
-import 'package:flow_mobile/domain/entity/bank_account.dart';
-import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/entities/entities.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
@@ -9,14 +7,18 @@ import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/shared/transfer/account_tile.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TransferScreen extends StatelessWidget {
+class TransferScreen extends ConsumerWidget {
   const TransferScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider);
+    final bankAccounts = ref.watch(bankAccountsProvider);
+
     return FlowSafeArea(
       backgroundColor: Theme.of(context).canvasColor,
       child: Column(
@@ -40,13 +42,9 @@ class TransferScreen extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // greeting + balance
-                StoreConnector<FlowState, String>(
-                  converter: (store) => store.state.userState.user.nickname,
-                  builder:
-                      (_, name) => Text(
-                        'Hi $name,',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
+                Text(
+                  'Hi ${user.nickname},',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -106,26 +104,21 @@ class TransferScreen extends StatelessWidget {
                 );
                 return Future.delayed(const Duration(microseconds: 1));
               },
-              child: StoreConnector<FlowState, List<BankAccount>>(
-                converter: (store) => store.state.bankAccountState.bankAccounts,
-                builder:
-                    (_, bankAccounts) => ListView.builder(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      itemCount: bankAccounts.length,
-                      itemBuilder: (_, index) {
-                        final bankAccount = bankAccounts[index];
-                        return AccountTile(
-                          bankAccount: bankAccount,
-                          onTransferPressed: () {
-                            StoreProvider.of<FlowState>(context).dispatch(
-                              SelectFromBankAccountAction(bankAccount),
-                            );
-                            Navigator.pushNamed(context, '/transfer/to');
-                          },
-                        );
-                      },
-                    ),
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                itemCount: bankAccounts.length,
+                itemBuilder: (_, index) {
+                  final bankAccount = bankAccounts[index];
+                  return AccountTile(
+                    bankAccount: bankAccount,
+                    onTransferPressed: () {
+                      ref.read(transferNotifierProvider.notifier)
+                          .selectFromBankAccount(bankAccount);
+                      Navigator.pushNamed(context, '/transfer/to');
+                    },
+                  );
+                },
               ),
             ),
           ),

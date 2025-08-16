@@ -2,6 +2,11 @@ import 'package:flow_mobile/domain/entity/setting_v1.dart';
 import 'package:flutter/material.dart';
 
 class ThemeStore {
+  static ThemeData buildDefaultTheme() {
+    // Default to light theme
+    return buildTheme(SettingsV1.initial());
+  }
+
   static ThemeData buildTheme(SettingsV1 settings) {
     if (settings.theme == "light") {
       return ThemeData(

@@ -35,25 +35,35 @@ dependencies:
   hive_flutter: ^1.1.0
   flutter_secure_storage: ^9.2.4
   intl: ^0.20.2
-  flutter_redux: ^0.10.0
-  redux: ^5.0.0
+
   flutter_native_splash: ^2.4.5
-  redux_thunk: ^0.4.0
+
   fl_chart: ^1.0.0
   flutter_contacts: ^1.1.9+2
   permission_handler: ^12.0.0+1
   local_auth: ^2.3.0
   toggle_switch: ^2.3.0 
-  get_it: ^7.4.0
+
   http: ^1.4.0
   connectivity_plus: ^6.1.4
   flutter_local_notifications: ^19.2.1
+  # New dependencies for modern architecture
+  flutter_riverpod: ^2.6.1
+  go_router: ^14.6.2
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  hive_generator: ^1.1.2
-  build_runner: ^2.1.8
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.13
+  # Code generation dependencies
+  freezed: ^2.5.7
+  json_serializable: ^6.8.0
+  # Testing dependencies
+  mockito: ^5.4.4
+  mocktail: ^1.0.4
   
 
   # The "flutter_lints" package below contains a set of recommended lints to

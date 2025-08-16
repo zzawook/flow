@@ -1,6 +1,3 @@
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 // Import your chart widgets
@@ -8,24 +5,26 @@ import 'package:flow_mobile/presentation/spending_screen/components/spending_by_
 import 'package:flow_mobile/utils/spending_category_util.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A card that displays statistics and allows toggling
 /// between a horizontal bar chart and a pie chart.
-class SpendingByCategoryCard extends StatefulWidget {
+class SpendingByCategoryCard extends ConsumerStatefulWidget {
   const SpendingByCategoryCard({super.key});
 
   @override
-  State<SpendingByCategoryCard> createState() => _SpendingByCategoryCardState();
+  ConsumerState<SpendingByCategoryCard> createState() => _SpendingByCategoryCardState();
 }
 
-class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
+class _SpendingByCategoryCardState extends ConsumerState<SpendingByCategoryCard> {
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<FlowState, SpendingScreenState>(
-      converter: (store) => store.state.screenState.spendingScreenState,
-      builder: (context, spendingScreenState) {
+    final spendingScreenState = ref.watch(spendingScreenStateProvider);
+    
+    return Consumer(
+      builder: (context, ref, child) {
         return FlowButton(
           onPressed: () {
             Navigator.pushNamed(
@@ -44,9 +43,9 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: StoreConnector<FlowState, TransactionState>(
-              converter: (store) => store.state.transactionState,
-              builder: (context, transactionState) {
+            child: Consumer(
+              builder: (context, ref, child) {
+                final transactionState = ref.watch(transactionStateProvider);
                 List<String> categories =
                     SpendingCategoryUtil.getAllCategories();
 
@@ -56,8 +55,14 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
                 };
 
                 final monthOfInterest = spendingScreenState.displayedMonth;
-                for (var transaction in transactionState
-                    .getTransactionsForMonth(monthOfInterest)) {
+                final monthTransactions = transactionState.transactions
+                    .where((transaction) {
+                      return transaction.date.year == monthOfInterest.year &&
+                             transaction.date.month == monthOfInterest.month;
+                    })
+                    .toList();
+                
+                for (var transaction in monthTransactions) {
                   if (transaction.amount < 0) {
                     categoryAmount[transaction.category] =
                         categoryAmount[transaction.category]! +
@@ -92,7 +97,7 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            '\$ ${transactionState.getExpenseForMonth(spendingScreenState.displayedMonth).abs().toStringAsFixed(2)}',
+                            '\$ ${monthTransactions.where((t) => t.amount < 0).fold(0.0, (sum, t) => sum + t.amount).abs().toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 32,

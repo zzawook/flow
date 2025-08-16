@@ -1,5 +1,3 @@
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/home_screen/home_screen_constants.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
@@ -10,9 +8,10 @@ import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/shared/month_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flow_mobile/presentation/providers/providers.dart';
 
-class SpendingCategoryDetailScreen extends StatefulWidget {
+class SpendingCategoryDetailScreen extends ConsumerStatefulWidget {
   final String category;
   final DateTime displayMonthYear;
 
@@ -23,12 +22,12 @@ class SpendingCategoryDetailScreen extends StatefulWidget {
   });
 
   @override
-  State<SpendingCategoryDetailScreen> createState() =>
+  ConsumerState<SpendingCategoryDetailScreen> createState() =>
       _SpendingCategoryDetailScreenState();
 }
 
 class _SpendingCategoryDetailScreenState
-    extends State<SpendingCategoryDetailScreen> {
+    extends ConsumerState<SpendingCategoryDetailScreen> {
   late DateTime displayMonthYear;
 
   @override
@@ -65,29 +64,35 @@ class _SpendingCategoryDetailScreenState
           slivers: [
             SliverFillRemaining(
               hasScrollBody: true, // important!
-              child: StoreConnector<FlowState, TransactionState>(
-                converter: (store) => store.state.transactionState,
-                builder: (context, transactionState) {
-                  final transactions = transactionState
-                      .getTransactionByCategoryFromTo(
-                        widget.category,
-                        DateTime(
-                          displayMonthYear.year,
-                          displayMonthYear.month,
-                          1,
-                        ),
-                        (DateTime(
-                              displayMonthYear.year,
-                              displayMonthYear.month + 1,
-                              0,
-                            ).isBefore(DateTime.now()))
-                            ? DateTime(
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final transactionsAsync = ref.watch(transactionsProvider);
+                  
+                  return transactionsAsync.when(
+                    data: (allTransactions) {
+                      // Filter transactions by category and date range
+                      final startDate = DateTime(
+                        displayMonthYear.year,
+                        displayMonthYear.month,
+                        1,
+                      );
+                      final endDate = DateTime(
+                        displayMonthYear.year,
+                        displayMonthYear.month + 1,
+                        0,
+                      ).isBefore(DateTime.now())
+                          ? DateTime(
                               displayMonthYear.year,
                               displayMonthYear.month + 1,
                               0,
                             )
-                            : DateTime.now(),
-                      );
+                          : DateTime.now();
+                      
+                      final transactions = allTransactions.where((t) =>
+                        t.category == widget.category &&
+                        t.date.isAfter(startDate.subtract(Duration(days: 1))) &&
+                        t.date.isBefore(endDate.add(Duration(days: 1)))
+                      ).toList();
                   final totalTransactionAmount = transactions.fold(
                     0.0,
                     (previousValue, element) => previousValue + element.amount,
@@ -127,7 +132,11 @@ class _SpendingCategoryDetailScreenState
                     ],
                   );
                 },
-              ),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(child: Text('Error: $error')),
+              );
+            },
+          ),
             ),
           ],
         ),

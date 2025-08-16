@@ -16,18 +16,12 @@ class UserAdapter extends TypeAdapter<User> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    String nickname;
-    if (fields.length > 4) {
-      nickname = fields[4] as String;
-    } else {
-      nickname = '';
-    }
     return User(
       name: fields[0] as String,
       email: fields[1] as String,
       dateOfBirth: fields[2] as DateTime,
       phoneNumber: fields[3] as String,
-      nickname: nickname,
+      nickname: fields[4] as String,
     );
   }
 

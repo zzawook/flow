@@ -8,7 +8,7 @@ import 'package:flow_mobile/presentation/setting_screen/setting_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/entity/bank_account.dart';
-import '../../domain/redux/actions/screen_actions.dart';
+
 import '../account_detail_screen/account_detail_screen.dart';
 import '../fixed_spending_screen/fixed_spending_screen.dart';
 import '../home_screen/home_screen.dart';
@@ -53,10 +53,8 @@ class AppRoutes {
 
   static Route<dynamic> generate(
     RouteSettings settings,
-    void Function(dynamic) dispatch,
   ) {
-    // track screen name
-    dispatch(NavigateToScreenAction(settings.name ?? home));
+    // Note: Screen tracking can be implemented through GoRouter or other navigation observers
 
     late Widget page;
     final args = settings.arguments as CustomPageRouteArguments?;
