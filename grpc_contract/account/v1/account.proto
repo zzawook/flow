@@ -9,7 +9,7 @@ option java_outer_classname = "AccountServiceProto";
 
 import "common/v1/bank.proto";
 import "common/v1/brief_card.proto";
-import "common/v1/brief_account.proto";
+import "common/v1/account.proto";
 import "common/v1/transaction.proto";
 import "google/protobuf/wrappers.proto";          // for optional DoubleValue
 import "google/protobuf/timestamp.proto";
@@ -18,7 +18,7 @@ import "google/protobuf/timestamp.proto";
 service AccountService {
   rpc GetAccounts                       (GetAccountsRequest)                       returns (GetAccountsResponse);
   rpc GetAccountsWithTransactionHistory (GetAccountsWithTransactionHistoryRequest) returns (GetAccountsWithTransactionHistoryResponse);
-  rpc GetAccount                        (GetAccountRequest)                        returns (sg.flow.common.v1.BriefAccount);
+  rpc GetAccount                        (GetAccountRequest)                        returns (sg.flow.common.v1.Account);
   rpc GetAccountWithTransactionHistory  (GetAccountWithTransactionHistoryRequest)  returns (AccountWithTransactionHistory);
 }
 
@@ -28,7 +28,7 @@ message GetAccountsRequest {
 }
 
 message GetAccountsResponse {
-  repeated sg.flow.common.v1.BriefAccount accounts = 1;
+  repeated sg.flow.common.v1.Account accounts = 1;
 }
 
 message GetAccountsWithTransactionHistoryRequest {

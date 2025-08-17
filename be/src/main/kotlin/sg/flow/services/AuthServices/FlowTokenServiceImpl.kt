@@ -39,7 +39,7 @@ class FlowTokenServiceImpl(
                 val userId =
                         vaultService.getUserIdByRefreshToken(refreshToken).orElse(null)
                                 ?: return@withContext null
-                generateAndStoreRefreshToken(userId)
+                generateAndStoreRefreshTokenAndAccessToken(userId)
             }
 
     override suspend fun generateAndStoreAccessToken(refreshToken: String): TokenSet? =
@@ -47,10 +47,10 @@ class FlowTokenServiceImpl(
                 val userId =
                         vaultService.getUserIdByRefreshToken(refreshToken).orElse(null)
                                 ?: return@withContext null
-                generateAndStoreRefreshToken(userId)
+                generateAndStoreRefreshTokenAndAccessToken(userId)
             }
 
-    override suspend fun generateAndStoreRefreshToken(userId: Int): TokenSet =
+    override suspend fun generateAndStoreRefreshTokenAndAccessToken(userId: Int): TokenSet? =
             withContext(Dispatchers.IO) {
                 val refreshToken = jwtTokenProvider.generateRefreshToken(userId)
                 val accessToken = jwtTokenProvider.generateAccessToken(refreshToken)

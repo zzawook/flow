@@ -7,4 +7,5 @@ abstract class BankAccountManager {
   Future<BankAccount> updateBankAccount(BankAccount bankAccount);
   Future<void> deleteBankAccount(int id);
   Future<void> clearBankAccounts();
+  Future<void> fetchBankAccountsFromRemote();
 }

@@ -38,7 +38,7 @@ class FinverseResponseProcessor(
 
     private val transactionMapper =
             FinverseTransactionToTransactionHistoryMapper(
-                    accountMapper = { accountId -> findAccountByFinverseId(accountId) },
+                    accountMapper = { accountId -> findAccountIdByFinverseId(accountId) },
                     cardMapper = { cardNumber -> findCardByNumber(cardNumber) }
             )
 
@@ -140,11 +140,11 @@ class FinverseResponseProcessor(
         return bank ?: throw FinverseException("Bank not found")
     }
 
-    private fun findAccountByFinverseId(externalId: String): Account? {
-        var account: Account? = null;
+    private fun findAccountIdByFinverseId(externalId: String): Account? {
+        var account: Account?;
 
         runBlocking {
-            account = accountRepository.findByFinverseAccountId(externalId)
+            account = accountRepository.findAccountByFinverseAccountId(externalId)
         }
         if (account == null) {
             logger.error("Could not find account, returning null")

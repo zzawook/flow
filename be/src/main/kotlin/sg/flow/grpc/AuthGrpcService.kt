@@ -4,8 +4,11 @@ import io.grpc.Status
 import org.springframework.grpc.server.service.GrpcService
 
 import sg.flow.auth.v1.AuthServiceGrpcKt              // generated from auth_service.proto
-import sg.flow.auth.v1.AuthRequest
 import sg.flow.auth.v1.AccessTokenRefreshRequest
+import sg.flow.auth.v1.CheckUserExistsRequest
+import sg.flow.auth.v1.CheckUserExistsResponse
+import sg.flow.auth.v1.SignInRequest
+import sg.flow.auth.v1.SignUpRequest
 import sg.flow.auth.v1.TokenSet
 import sg.flow.grpc.exception.InvalidRefreshTokenException
 import sg.flow.grpc.exception.InvalidSignupCredentialException
@@ -20,9 +23,33 @@ class AuthGrpcService(
         private val authMapper: AuthMapper,
 ) : AuthServiceGrpcKt.AuthServiceCoroutineImplBase() {
 
-        override suspend fun signUp(request: AuthRequest): TokenSet {
+        override suspend fun signIn(request: SignInRequest): TokenSet {
                 try {
-                        Validator.validateUsername(request.username)
+                        Validator.validateUsername(request.email)
+                        Validator.validatePassword(request.password)
+                } catch (e: ValidationException) {
+                        throw InvalidSignupCredentialException(e.message ?: "")
+                }
+                val tokenSet = authService.getTokenSetForUser(request.email, request.password)
+                return TokenSet.newBuilder().
+                                setAccessToken(tokenSet.accessToken)
+                                .setRefreshToken(tokenSet.refreshToken)
+                                .build()
+        }
+
+        override suspend fun checkUserExists(request: CheckUserExistsRequest): CheckUserExistsResponse {
+                try {
+                        Validator.validateUsername(request.email)
+                } catch (e: ValidationException) {
+                        throw InvalidSignupCredentialException(e.message ?: "")
+                }
+                val result = authService.checkUserExists(request.email)
+                return CheckUserExistsResponse.newBuilder().setExists(result).build()
+        }
+
+        override suspend fun signUp(request: SignUpRequest): TokenSet {
+                try {
+                        Validator.validateUsername(request.email)
                         Validator.validatePassword(request.password)
                 } catch (e: ValidationException) {
                         throw InvalidSignupCredentialException(e.message ?: "")
@@ -30,7 +57,7 @@ class AuthGrpcService(
 
 
                 val token = authService.registerUser(
-                        sg.flow.models.auth.AuthRequest(request.username, request.password)
+                        request.email, request.name, request.password
                 )
                 return authMapper.toProto(token)
         }

@@ -1,3 +1,5 @@
 class ConnectionService {
   ConnectionService();
+
+  initialize() {}
 }

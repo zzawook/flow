@@ -16,9 +16,9 @@
         <compositeConfiguration>
           <compositeBuild compositeDefinitionSource="SCRIPT">
             <builds>
-              <build path="$USER_HOME$/flutter/packages/flutter_tools/gradle" name="gradle">
+              <build path="$USER_HOME$/snap/flutter/common/flutter/packages/flutter_tools/gradle" name="gradle">
                 <projects>
-                  <project path="$USER_HOME$/flutter/packages/flutter_tools/gradle" />
+                  <project path="$USER_HOME$/snap/flutter/common/flutter/packages/flutter_tools/gradle" />
                 </projects>
               </build>
             </builds>
@@ -28,18 +28,18 @@
         <option name="gradleJvm" value="21" />
         <option name="modules">
           <set>
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/connectivity_plus-6.1.4/android" />
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_contacts-1.1.9+2/android" />
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_local_notifications-19.2.1/android" />
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_native_splash-2.4.5/android" />
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.27/android" />
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_secure_storage-9.2.4/android" />
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_android-1.0.48/android" />
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.16/android" />
-            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_android-13.0.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.4/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_contacts-1.1.9+2/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_local_notifications-19.2.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_native_splash-2.4.6/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.28/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_secure_storage-9.2.4/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/local_auth_android-1.0.49/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_android-2.2.17/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/permission_handler_android-13.0.1/android" />
             <option value="$PROJECT_DIR$/flow_mobile/android" />
             <option value="$PROJECT_DIR$/flow_mobile/android/app" />
-            <option value="$USER_HOME$/flutter/packages/flutter_tools/gradle" />
+            <option value="$USER_HOME$/snap/flutter/common/flutter/packages/flutter_tools/gradle" />
           </set>
         </option>
       </GradleProjectSettings>

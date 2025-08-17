@@ -14,6 +14,8 @@ import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import sg.flow.auth.AccessTokenValidationInterceptor
 import sg.flow.services.AuthServices.FlowTokenService
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @EnableWebFluxSecurity
 @Configuration
@@ -62,4 +64,14 @@ class FlowSecurityConfig {
     fun corsWebFilter(source: UrlBasedCorsConfigurationSource): CorsWebFilter {
         return CorsWebFilter(source)
     }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder =
+        Argon2PasswordEncoder(
+            16,     // salt length (bytes)
+            32,     // hash length (bytes)
+            1,      // parallelism
+            64_000, // memory (KB) → 64 MB
+            3       // iterations
+        )
 }

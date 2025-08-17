@@ -17,6 +17,7 @@ import 'package:flow_mobile/domain/manager/transfer_receiveble_manager_impl.dart
 import 'package:flow_mobile/domain/manager/user_manager.dart';
 import 'package:flow_mobile/domain/manager/user_manager_impl.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/states/auth_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 import 'package:flow_mobile/domain/redux/states/notification_state.dart';
 import 'package:flow_mobile/domain/redux/states/screen_state.dart';
@@ -38,6 +39,7 @@ class FlowStateInitializer {
       transactionState: await _getTransactionState(),
       transferReceivableState: await _getTransferReceivableState(bankState),
       notificationState: await _getNotificationState(),
+      authState: AuthState.initial()
     );
   }
 

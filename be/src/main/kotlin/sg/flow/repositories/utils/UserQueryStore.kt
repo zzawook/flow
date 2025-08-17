@@ -4,15 +4,15 @@ object UserQueryStore {
     const val SAVE_USER =
             """
         INSERT INTO users 
-        (name, email, identification_number, phone_number, date_of_birth, address, setting_json) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+        (name, email, identification_number, phone_number, date_of_birth, address, password_hash, setting_json) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
     """
 
     const val SAVE_USER_WITH_ID =
             """
         INSERT INTO users 
-        (id, name, email, identification_number, phone_number, date_of_birth, address, setting_json) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
+        (id, name, email, identification_number, phone_number, date_of_birth, address, password_hash, setting_json) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
     """
 
     const val FIND_USER_BY_ID =
@@ -56,4 +56,26 @@ object UserQueryStore {
         SET email = $1, phone_number = $2, address = $3 
         WHERE id = $4
     """
+
+    const val CHECK_USER_EXISTS_BY_EMAIL =
+        """
+            SELECT COUNT(*) as count 
+            FROM users u
+            WHERE u.email = $1
+        """
+
+    const val FIND_USER_ID_BY_EMAIL =
+        """
+            SELECT u.id
+            FROM users u
+            WHERE u.email = $1
+        """
+
+    const val FIND_USER_ID_AND_PASSWORD_HASH_BY_EMAIL =
+        """
+            SELECT u.id, 
+            u.password_hash
+            FROM users u
+            WHERE u.email = $1
+        """
 }

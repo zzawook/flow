@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
+import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 
 BankAccountState bankAccountReducer(BankAccountState state, dynamic action) {
@@ -32,6 +33,9 @@ BankAccountState bankAccountReducer(BankAccountState state, dynamic action) {
     newList.insert(action.newIndex, toMove);
 
     return state.copyWith(bankAccounts: newList);
+  }
+  if (action is DeleteUserAction) {
+    return BankAccountState.initial();
   }
   return state;
 }

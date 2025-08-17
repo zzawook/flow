@@ -1,7 +1,7 @@
 import 'package:flow_mobile/domain/entity/user.dart';
 
 class UserState {
-  final User user;
+  final User? user;
 
   UserState({required this.user});
 

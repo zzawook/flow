@@ -7,7 +7,10 @@ abstract class TransactionManager {
     DateTime toDate,
   );
   Future<void> addTransaction(Transaction transaction);
+  Future<void> putTransaction(String id, Transaction transaction);
   Future<void> clearTransactions();
 
   getAllTransactions() {}
+
+  void fetchLast30DaysTransactionsFromRemote() {}
 }

@@ -1,0 +1,17 @@
+syntax = "proto3";
+package sg.flow.common.v1;
+
+option java_multiple_files = true;
+option java_package        = "sg.flow.common.v1";
+option java_outer_classname = "CommonAccountProto";
+
+import "common/v1/bank.proto";
+
+message Account {
+  int64  id             = 1;
+  double balance        = 2;
+  string account_name   = 3;
+  string account_number = 4;
+  string account_type   = 5; // e.g., "SAVINGS", "CURRENT"
+  Bank   bank           = 6;
+}

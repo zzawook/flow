@@ -25,7 +25,8 @@ class AccessTokenValidationInterceptor(
     private val publicMethods = setOf(
         "sg.flow.auth.v1.AuthService/SignUp",
         "sg.flow.auth.v1.AuthService/SignIn",
-        "sg.flow.auth.v1.AuthService/GetAccessTokenByRefreshToken"
+        "sg.flow.auth.v1.AuthService/GetAccessTokenByRefreshToken",
+        "sg.flow.auth.v1.AuthService/CheckUserExists"
     )
 
     override fun <ReqT, RespT> interceptCall(

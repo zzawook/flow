@@ -37,12 +37,12 @@ class User {
     );
   }
 
-  User copyWith({String? nickname}) {
+  User copyWith({String? nickname, String? name, String? email, DateTime? dateOfBirth, String? phoneNumber}) {
     return User(
-      name: name,
-      email: email,
-      dateOfBirth: dateOfBirth,
-      phoneNumber: phoneNumber,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       nickname: nickname ?? this.nickname,
     );
   }

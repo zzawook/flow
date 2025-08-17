@@ -8,10 +8,12 @@ import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
 import sg.flow.entities.User
+import sg.flow.grpc.UserIdAndPasswordHash
 import sg.flow.models.user.UpdateUserProfile
 import sg.flow.models.user.UserProfile
 import sg.flow.repositories.utils.UserQueryStore
 
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepository {
 
@@ -24,14 +26,15 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
         if (hasId) {
             databaseClient
                     .sql(queryString)
-                    .bind(0, entity.id!!)
+                    .bind(0, entity.id)
                     .bind(1, entity.name)
                     .bind(2, entity.email)
                     .bind(3, entity.identificationNumber)
                     .bind(4, entity.phoneNumber)
                     .bind(5, entity.dateOfBirth)
                     .bind(6, entity.address)
-                    .bind(7, entity.settingJson)
+                    .bind(7, entity.passwordHash)
+                    .bind(8, entity.settingJson)
                     .fetch()
                     .awaitRowsUpdated()
         } else {
@@ -43,7 +46,8 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
                     .bind(3, entity.phoneNumber)
                     .bind(4, entity.dateOfBirth)
                     .bind(5, entity.address)
-                    .bind(6, entity.settingJson)
+                    .bind(6, entity.passwordHash)
+                    .bind(7, entity.settingJson)
                     .fetch()
                     .awaitRowsUpdated()
         }
@@ -152,4 +156,51 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
         }
         return getUserProfile(userId)
     }
+
+    override suspend fun checkUserExists(email: String): Boolean {
+        val sql = UserQueryStore.CHECK_USER_EXISTS_BY_EMAIL
+
+        val result = databaseClient.sql(sql)
+            .bind(0, email)
+            .map { row ->
+                row.get("count", Int::class.java) == 1
+            }
+            .one()
+            .awaitFirstOrNull()
+
+        return result ?: false
+    }
+
+    override suspend fun getUserIdByEmail(email: String): Int {
+        val sql = UserQueryStore.FIND_USER_ID_BY_EMAIL
+
+        val result = databaseClient.sql(sql)
+            .bind(0, email)
+            .map {row ->
+                row.get("id", Int::class.java)
+            }
+            .one()
+            .awaitFirstOrNull()
+
+        return result ?: -1
+    }
+
+    override suspend fun getUserIdAndPasswordHashWithEmail(email: String): UserIdAndPasswordHash {
+        val sql = UserQueryStore.FIND_USER_ID_AND_PASSWORD_HASH_BY_EMAIL
+
+        val userIdAndPasswordHash = databaseClient.sql(sql)
+            .bind(0, email)
+            .map { row ->
+                UserIdAndPasswordHash(
+                    row.get("id", Int::class.java) ?: -1,
+                    row.get("password_hash", String::class.java) ?: ""
+                )
+
+            }
+            .one()
+            .awaitFirstOrNull()
+
+        return userIdAndPasswordHash ?: UserIdAndPasswordHash(-1, "")
+    }
+
 }

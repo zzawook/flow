@@ -7,13 +7,39 @@ option java_package = "sg.flow.auth.v1";
 option java_outer_classname = "AuthServiceProto";
 
 service AuthService {
-  rpc SignUp (AuthRequest) returns (TokenSet);
+  rpc CheckUserExists (CheckUserExistsRequest) returns (CheckUserExistsResponse);
+  rpc SignUp (SignUpRequest) returns (TokenSet);
+  rpc SignIn (SignInRequest) returns (TokenSet);
+  rpc SignOut (SignOutRequest) returns (SignOutResponse);
   rpc GetAccessTokenByRefreshToken (AccessTokenRefreshRequest) returns (TokenSet);
 }
 
-message AuthRequest {
-  string username = 1;  // validated: not blank, size 1-100
+message CheckUserExistsRequest {
+  string email = 1; // validated: not blank, size 1-100
+}
+
+message CheckUserExistsResponse {
+  bool exists = 1; // true if user exists
+}
+
+message SignUpRequest {
+  string email = 1;  // validated: not blank, size 1-100
   string password = 2;  // validated: not blank, size 6-100
+  string phone_number = 3;
+  string name = 4;
+}
+
+message SignInRequest {
+  string email = 1;     // validated: not blank, size 1-100
+  string password = 2;  // validated: not blank, size 6-100
+}
+
+message SignOutRequest {
+  string access_token = 1; // validated: size exactly 64
+}
+
+message SignOutResponse {
+  bool success = 1; // true if sign out was successful
 }
 
 message AccessTokenRefreshRequest {

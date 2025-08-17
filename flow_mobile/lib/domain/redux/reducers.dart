@@ -1,4 +1,5 @@
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/reducers/auth_reducer.dart';
 import 'package:flow_mobile/domain/redux/reducers/bank_account_reducer.dart';
 import 'package:flow_mobile/domain/redux/reducers/notification_reducer.dart';
 import 'package:flow_mobile/domain/redux/reducers/screen_reducer.dart';
@@ -18,5 +19,6 @@ FlowState flowReducer(FlowState state, dynamic action) {
     transactionState: transactionReducer(state.transactionState, action),
     transferReceivableState: transferReceivableReducer(state.transferReceivableState, action),
     notificationState: notificationReducer(state.notificationState, action),
+    authState: authReducer(state.authState, action),
   );
 }

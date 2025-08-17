@@ -13,9 +13,9 @@ import sg.flow.auth.GrpcSecurityContext
 import sg.flow.grpc.exception.InvalidAccountIdException
 import sg.flow.grpc.mapper.AccountMapper
 import sg.flow.grpc.mapper.TransactionHistoryMapper
-import sg.flow.common.v1.BriefAccount as ProtoBriefAccount
+import sg.flow.common.v1.Account as ProtoAccount
 import sg.flow.account.v1.AccountWithTransactionHistory as ProtoAccountWithTransactionHistory
-import sg.flow.models.account.BriefAccount as DomainBriefAccount
+import sg.flow.models.account.BriefAccount as DomainAccount
 import sg.flow.models.account.AccountWithTransactionHistory as DomainAccountWithTransactionHistory
 import sg.flow.services.AccountServices.AccountService
 import sg.flow.validation.ValidationException
@@ -36,8 +36,8 @@ class AccountGrpcService(
 
     override suspend fun getAccounts(request: GetAccountsRequest): GetAccountsResponse {
         val userId = currentUserId()
-        val domainList: List<DomainBriefAccount> =
-            accountService.getBriefAccounts(userId)
+        val domainList: List<DomainAccount> =
+            accountService.getAccounts(userId)
 
         val respBuilder = GetAccountsResponse.newBuilder()
         domainList.forEach { domainAcct ->
@@ -61,7 +61,7 @@ class AccountGrpcService(
         return resp.build()
     }
 
-    override suspend fun getAccount(request: GetAccountRequest): ProtoBriefAccount {
+    override suspend fun getAccount(request: GetAccountRequest): ProtoAccount {
         try {
             Validator.validateAccountId(request.accountId)
         } catch (e : ValidationException) {
@@ -72,7 +72,7 @@ class AccountGrpcService(
         val accountId = request.accountId
 
         val domain = try {
-            accountService.getBriefAccount(userId, accountId)
+            accountService.getAccount(userId, accountId)
         } catch (e: IllegalArgumentException) {
             when (e.message) {
                 "Account does not belong to user" ->

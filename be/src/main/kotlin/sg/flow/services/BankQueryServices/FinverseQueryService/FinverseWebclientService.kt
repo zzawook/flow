@@ -268,7 +268,7 @@ class FinverseWebclientService(
             .headers { it -> it.setBearerAuth(loginIdentityToken) }
             .retrieve()
             .awaitBody()
-    }재혁김
+    }
 
     suspend fun fetchOnlineTransaction(loginIdentityToken: String): FinverseTransactionResponse {
         return finverseWebClient

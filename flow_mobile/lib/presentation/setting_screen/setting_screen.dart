@@ -4,6 +4,7 @@ import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
 import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_horizontal_divider.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
@@ -28,6 +29,7 @@ class SettingScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
+            showBackButton: false,
           ),
 
           // ── static header section ────────────────────────────────
@@ -40,12 +42,30 @@ class SettingScreen extends StatelessWidget {
 
                 // greeting + balance
                 StoreConnector<FlowState, String>(
-                  converter: (store) => store.state.userState.user.nickname,
-                  builder:
-                      (_, name) => Text(
-                        'Hi $name,',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
+                  converter:
+                      (store) =>
+                          store.state.userState.user?.nickname ??
+                          'NOT_LOGGED_IN',
+                  builder: (_, name) {
+                    if (name == 'NOT_LOGGED_IN') {
+                      return FlowCTAButton(
+                        text: "Log in / Sign up",
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/login',
+                            arguments: CustomPageRouteArguments(
+                              transitionType: TransitionType.slideLeft,
+                            ),
+                          );
+                        },
+                      );
+                    }
+                    return Text(
+                      'Hi $name',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 24),

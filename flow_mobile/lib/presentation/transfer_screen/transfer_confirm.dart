@@ -145,7 +145,7 @@ class TransferConfirmationScreen extends StatelessWidget {
                             ),
                             StoreConnector<FlowState, String>(
                               converter:
-                                  (store) => store.state.userState.user.name,
+                                  (store) => store.state.userState.user?.name ?? '',
                               builder: (context, userName) {
                                 final remarks =
                                     transferState.remarks == ''

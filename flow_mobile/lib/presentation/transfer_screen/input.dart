@@ -5,12 +5,16 @@ class EditableTextWidget extends StatefulWidget {
   final FocusNode focusNode;
   final String hintText;
   final String labelText;
+  final bool obscureText;
+  final TextInputType keyboardType;
   const EditableTextWidget({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.hintText,
     required this.labelText,
+    this.obscureText = false,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -38,7 +42,12 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
         key: _formKey,
         child: Material(
           child: TextFormField(
+            controller: widget.controller,
+            keyboardType: widget.keyboardType,
             autofocus: true,
+            autocorrect: false,
+            enableSuggestions: false,
+            obscureText: widget.obscureText,
             style: TextStyle(
               color: primary,
               fontSize: 20,
@@ -78,7 +87,6 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
               fillColor: const Color(0x00000000),
               contentPadding: EdgeInsets.zero,
             ),
-            keyboardType: TextInputType.text,
           ),
         ),
       ),

@@ -4,4 +4,6 @@ abstract class UserManager {
   Future<User> getUser();
   Future<void> updateUser(User user);
   Future<void> deleteUser();
+
+  void fetchUserFromRemote() {}
 }

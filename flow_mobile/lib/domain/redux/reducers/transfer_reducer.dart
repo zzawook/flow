@@ -1,4 +1,5 @@
 import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
+import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 
 TransferState transferReducer(TransferState state, dynamic action) {
@@ -48,6 +49,9 @@ TransferState transferReducer(TransferState state, dynamic action) {
     );
   }
   if (action is CancelTransferAction) {
+    return TransferState.initial();
+  }
+  if (action is DeleteUserAction) {
     return TransferState.initial();
   }
   return state;

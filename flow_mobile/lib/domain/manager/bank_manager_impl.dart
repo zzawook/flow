@@ -32,4 +32,9 @@ class BankManagerImpl implements BankManager {
   Future<List<Bank>> getBanks() {
     return Future.value(banks);
   }
+
+  @override
+  void fetchBanksFromRemote() {
+    //TODO: Implement fetching banks from remote API
+  }
 }

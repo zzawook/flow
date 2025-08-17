@@ -50,10 +50,12 @@ object AccountQueryStore {
             """
         SELECT a.id, 
         a.balance, 
-        a.account_name, 
+        a.account_name,
+        a.account_number,
+        a.account_type,
         b.id AS bank_id, 
         b.bank_name, 
-        b.bank_code 
+        b.bank_code
         FROM accounts a 
         JOIN banks b ON a.bank_id = b.id 
         WHERE a.user_id = $1

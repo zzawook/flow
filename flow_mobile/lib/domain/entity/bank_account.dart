@@ -29,6 +29,9 @@ class BankAccount extends TransferReceivable {
   @HiveField(6)
   bool isHidden;
 
+  @HiveField(7)
+  final String accountType; // e.g., "SAVINGS", "CURRENT"
+
   BankAccount({
     required this.accountNumber,
     required this.accountHolder,
@@ -37,6 +40,7 @@ class BankAccount extends TransferReceivable {
     required this.bank,
     required this.transferCount,
     this.isHidden = false,
+    required this.accountType,
   });
 
   factory BankAccount.initial() => BankAccount(
@@ -47,6 +51,7 @@ class BankAccount extends TransferReceivable {
     bank: Bank.initial(),
     transferCount: 0,
     isHidden: false,
+    accountType: 'SAVINGS',
   );
 
   BankAccount copyWith({
@@ -57,6 +62,7 @@ class BankAccount extends TransferReceivable {
     Bank? bank,
     int? transferCount,
     bool? isHidden,
+    String? accountType,
   }) => BankAccount(
     accountNumber: accountNumber ?? this.accountNumber,
     accountHolder: accountHolder ?? this.accountHolder,
@@ -65,6 +71,7 @@ class BankAccount extends TransferReceivable {
     bank: bank ?? this.bank,
     transferCount: transferCount ?? this.transferCount,
     isHidden: isHidden ?? this.isHidden,
+    accountType: accountType ?? this.accountType,
   );
 
   @override

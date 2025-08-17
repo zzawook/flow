@@ -1,0 +1,291 @@
+// This is a generated file - do not edit.
+//
+// Generated from common/v1/transaction.proto.
+
+// @dart = 3.3
+
+// ignore_for_file: annotate_overrides, camel_case_types, comment_references
+// ignore_for_file: constant_identifier_names
+// ignore_for_file: curly_braces_in_flow_control_structures
+// ignore_for_file: deprecated_member_use_from_same_package, library_prefixes
+// ignore_for_file: non_constant_identifier_names
+
+import 'dart:core' as $core;
+
+import 'package:fixnum/fixnum.dart' as $fixnum;
+import 'package:protobuf/protobuf.dart' as $pb;
+
+import '../../google/protobuf/timestamp.pb.dart' as $2;
+import 'account.pb.dart' as $0;
+import 'brief_card.pb.dart' as $1;
+
+export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
+
+class TransactionHistoryDetail extends $pb.GeneratedMessage {
+  factory TransactionHistoryDetail({
+    $fixnum.Int64? id,
+    $core.String? transactionReference,
+    $0.Account? account,
+    $1.BriefCard? card,
+    $2.Timestamp? transactionTimestamp,
+    $core.double? amount,
+    $core.String? transactionType,
+    $core.String? description,
+    $core.String? transactionStatus,
+    $core.String? friendlyDescription,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    if (transactionReference != null)
+      result.transactionReference = transactionReference;
+    if (account != null) result.account = account;
+    if (card != null) result.card = card;
+    if (transactionTimestamp != null)
+      result.transactionTimestamp = transactionTimestamp;
+    if (amount != null) result.amount = amount;
+    if (transactionType != null) result.transactionType = transactionType;
+    if (description != null) result.description = description;
+    if (transactionStatus != null) result.transactionStatus = transactionStatus;
+    if (friendlyDescription != null)
+      result.friendlyDescription = friendlyDescription;
+    return result;
+  }
+
+  TransactionHistoryDetail._();
+
+  factory TransactionHistoryDetail.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory TransactionHistoryDetail.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'TransactionHistoryDetail',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.common.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'transactionReference')
+    ..aOM<$0.Account>(3, _omitFieldNames ? '' : 'account',
+        subBuilder: $0.Account.create)
+    ..aOM<$1.BriefCard>(4, _omitFieldNames ? '' : 'card',
+        subBuilder: $1.BriefCard.create)
+    ..aOM<$2.Timestamp>(5, _omitFieldNames ? '' : 'transactionTimestamp',
+        subBuilder: $2.Timestamp.create)
+    ..a<$core.double>(6, _omitFieldNames ? '' : 'amount', $pb.PbFieldType.OD)
+    ..aOS(7, _omitFieldNames ? '' : 'transactionType')
+    ..aOS(8, _omitFieldNames ? '' : 'description')
+    ..aOS(9, _omitFieldNames ? '' : 'transactionStatus')
+    ..aOS(10, _omitFieldNames ? '' : 'friendlyDescription')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  TransactionHistoryDetail clone() =>
+      TransactionHistoryDetail()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  TransactionHistoryDetail copyWith(
+          void Function(TransactionHistoryDetail) updates) =>
+      super.copyWith((message) => updates(message as TransactionHistoryDetail))
+          as TransactionHistoryDetail;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static TransactionHistoryDetail create() => TransactionHistoryDetail._();
+  @$core.override
+  TransactionHistoryDetail createEmptyInstance() => create();
+  static $pb.PbList<TransactionHistoryDetail> createRepeated() =>
+      $pb.PbList<TransactionHistoryDetail>();
+  @$core.pragma('dart2js:noInline')
+  static TransactionHistoryDetail getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<TransactionHistoryDetail>(create);
+  static TransactionHistoryDetail? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get transactionReference => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set transactionReference($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasTransactionReference() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTransactionReference() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $0.Account get account => $_getN(2);
+  @$pb.TagNumber(3)
+  set account($0.Account value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasAccount() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearAccount() => $_clearField(3);
+  @$pb.TagNumber(3)
+  $0.Account ensureAccount() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $1.BriefCard get card => $_getN(3);
+  @$pb.TagNumber(4)
+  set card($1.BriefCard value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasCard() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearCard() => $_clearField(4);
+  @$pb.TagNumber(4)
+  $1.BriefCard ensureCard() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  $2.Timestamp get transactionTimestamp => $_getN(4);
+  @$pb.TagNumber(5)
+  set transactionTimestamp($2.Timestamp value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasTransactionTimestamp() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearTransactionTimestamp() => $_clearField(5);
+  @$pb.TagNumber(5)
+  $2.Timestamp ensureTransactionTimestamp() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  $core.double get amount => $_getN(5);
+  @$pb.TagNumber(6)
+  set amount($core.double value) => $_setDouble(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasAmount() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearAmount() => $_clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get transactionType => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set transactionType($core.String value) => $_setString(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasTransactionType() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearTransactionType() => $_clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.String get description => $_getSZ(7);
+  @$pb.TagNumber(8)
+  set description($core.String value) => $_setString(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasDescription() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearDescription() => $_clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.String get transactionStatus => $_getSZ(8);
+  @$pb.TagNumber(9)
+  set transactionStatus($core.String value) => $_setString(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasTransactionStatus() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearTransactionStatus() => $_clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.String get friendlyDescription => $_getSZ(9);
+  @$pb.TagNumber(10)
+  set friendlyDescription($core.String value) => $_setString(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasFriendlyDescription() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearFriendlyDescription() => $_clearField(10);
+}
+
+class TransactionHistoryList extends $pb.GeneratedMessage {
+  factory TransactionHistoryList({
+    $2.Timestamp? startTimestamp,
+    $2.Timestamp? endTimestamp,
+    $core.Iterable<TransactionHistoryDetail>? transactions,
+  }) {
+    final result = create();
+    if (startTimestamp != null) result.startTimestamp = startTimestamp;
+    if (endTimestamp != null) result.endTimestamp = endTimestamp;
+    if (transactions != null) result.transactions.addAll(transactions);
+    return result;
+  }
+
+  TransactionHistoryList._();
+
+  factory TransactionHistoryList.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory TransactionHistoryList.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'TransactionHistoryList',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.common.v1'),
+      createEmptyInstance: create)
+    ..aOM<$2.Timestamp>(1, _omitFieldNames ? '' : 'startTimestamp',
+        subBuilder: $2.Timestamp.create)
+    ..aOM<$2.Timestamp>(2, _omitFieldNames ? '' : 'endTimestamp',
+        subBuilder: $2.Timestamp.create)
+    ..pc<TransactionHistoryDetail>(
+        3, _omitFieldNames ? '' : 'transactions', $pb.PbFieldType.PM,
+        subBuilder: TransactionHistoryDetail.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  TransactionHistoryList clone() =>
+      TransactionHistoryList()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  TransactionHistoryList copyWith(
+          void Function(TransactionHistoryList) updates) =>
+      super.copyWith((message) => updates(message as TransactionHistoryList))
+          as TransactionHistoryList;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static TransactionHistoryList create() => TransactionHistoryList._();
+  @$core.override
+  TransactionHistoryList createEmptyInstance() => create();
+  static $pb.PbList<TransactionHistoryList> createRepeated() =>
+      $pb.PbList<TransactionHistoryList>();
+  @$core.pragma('dart2js:noInline')
+  static TransactionHistoryList getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<TransactionHistoryList>(create);
+  static TransactionHistoryList? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $2.Timestamp get startTimestamp => $_getN(0);
+  @$pb.TagNumber(1)
+  set startTimestamp($2.Timestamp value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasStartTimestamp() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearStartTimestamp() => $_clearField(1);
+  @$pb.TagNumber(1)
+  $2.Timestamp ensureStartTimestamp() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $2.Timestamp get endTimestamp => $_getN(1);
+  @$pb.TagNumber(2)
+  set endTimestamp($2.Timestamp value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasEndTimestamp() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearEndTimestamp() => $_clearField(2);
+  @$pb.TagNumber(2)
+  $2.Timestamp ensureEndTimestamp() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $pb.PbList<TransactionHistoryDetail> get transactions => $_getList(2);
+}
+
+const $core.bool _omitFieldNames =
+    $core.bool.fromEnvironment('protobuf.omit_field_names');
+const $core.bool _omitMessageNames =
+    $core.bool.fromEnvironment('protobuf.omit_message_names');

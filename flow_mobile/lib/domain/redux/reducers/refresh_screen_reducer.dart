@@ -18,5 +18,6 @@ RefreshScreenState refreshScreenReducer(
     }
     return state.copyWith(banksToRefresh: banks);
   }
+  
   return state;
 }

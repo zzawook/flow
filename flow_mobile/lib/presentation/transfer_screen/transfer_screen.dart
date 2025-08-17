@@ -29,6 +29,7 @@ class TransferScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
+            showBackButton: false,
           ),
 
           // ── static header section ────────────────────────────────
@@ -41,7 +42,10 @@ class TransferScreen extends StatelessWidget {
 
                 // greeting + balance
                 StoreConnector<FlowState, String>(
-                  converter: (store) => store.state.userState.user.nickname,
+                  converter:
+                      (store) =>
+                          store.state.userState.user?.nickname ??
+                          ': Please log in',
                   builder:
                       (_, name) => Text(
                         'Hi $name,',

@@ -17,8 +17,13 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     bool isHidden = false;
+    String accountType = "default";
     if (fields.length > 6) {
       isHidden = fields[6] as bool;
+      
+    }
+    if (fields.length > 7) {
+      accountType = fields[7] as String;
     }
     return BankAccount(
       accountNumber: fields[0] as String,
@@ -28,6 +33,7 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
       bank: fields[4] as Bank,
       transferCount: fields[5] as int,
       isHidden: isHidden,
+      accountType: accountType,
     );
   }
 

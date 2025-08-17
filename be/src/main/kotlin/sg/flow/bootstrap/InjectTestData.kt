@@ -50,7 +50,7 @@ class InjectTestData(
 //        clearTestData()
 //        logger.info("Cleared existing test data.")
 
-        injectUserData()
+//        injectUserData()
         logger.info("Injected user data.")
 
 //        injectBankData()

@@ -5,6 +5,8 @@ import sg.flow.models.auth.AuthRequest
 import sg.flow.models.auth.TokenSet
 
 interface AuthService {
-    suspend fun registerUser(request: AuthRequest): TokenSet
+    suspend fun registerUser(email: String, name: String, password: String): TokenSet
+    suspend fun getTokenSetForUser(email: String, password: String): TokenSet
     suspend fun getAccessTokenByRefreshToken(request: AccessTokenRefreshRequest): TokenSet?
+    suspend fun checkUserExists(email: String): Boolean
 }

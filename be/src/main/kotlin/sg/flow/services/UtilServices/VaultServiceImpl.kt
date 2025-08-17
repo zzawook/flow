@@ -23,10 +23,15 @@ class VaultServiceImpl(
     private val LOGIN_IDENTITY_BY_LOGIN_IDENTITY_ID = "login_identity/by_login_identity_id/"
     private val LOGIN_IDENTITY_BY_USERID_AND_INSTITUTION_ID = "login_identity/by_user_id_and_institution_id/"
 
-    private val USER_ID_BY_REFRESH_TOKEN = "refresh_token/"
+    private val USER_ID_BY_REFRESH_TOKEN = "refresh_token/by_token/"
+    private val REFRESH_TOKEN_BY_USER_ID = "refresh_token/by_user_id/"
 
     private fun generateUserIdByRefreshTokenKey(refreshToken: String) : String {
         return USER_ID_BY_REFRESH_TOKEN + keyFor(refreshToken)
+    }
+
+    private fun generateRefreshTokenByUserIdKey(userId: Int): String {
+        return REFRESH_TOKEN_BY_USER_ID + userId
     }
 
     private fun generateLoginIdentityByLoginIdentityIdKey(loginIdentityId: String): String {
@@ -48,33 +53,48 @@ class VaultServiceImpl(
 
         val versioned = kv.get(key).awaitFirstOrNull()?.data
         if (versioned == null) {
-            logger.error("User ID with given refresh token does not exist")
+            logger.error("User ID with given refresh token does not exist - Refresh token was not found")
             return Optional.empty()
         }
-        val userId = (versioned["userId"] as? Number)?.toInt()
+        val userId = (versioned["UserID"] as? Number)?.toInt()
 
         if (userId == null) {
-            logger.error("User ID with given refresh token does not exist")
+            logger.error("User ID with given refresh token does not exist - User ID fetched was null")
             return Optional.empty()
         }
 
         return Optional.of(userId)
     }
 
-    override suspend fun storeRefreshToken(userId: Int?, refreshToken: String) {
-        val key = generateUserIdByRefreshTokenKey(refreshToken)
+    override suspend fun storeRefreshToken(userId: Int, refreshToken: String) {
+        val keyByRefreshToken = generateUserIdByRefreshTokenKey(refreshToken)
+        val keyByUserId = generateRefreshTokenByUserIdKey(userId)
 
-        if (userId == null) {
-            logger.error("Provided user ID is null")
-            return
-        }
         try {
-            kv.put(key, mapOf("UserID" to userId)).awaitFirstOrNull()
+            kv.put(keyByRefreshToken, mapOf("UserID" to userId)).awaitFirstOrNull()
+            kv.put(keyByUserId, mapOf("RefreshToken" to refreshToken)).awaitFirstOrNull()
         } catch (e: Exception) {
             e.printStackTrace()
             logger.error("Error while storing refresh token")
             return
         }
+    }
+
+    override suspend fun getRefreshTokenForUserId(userId: Int): Optional<String> {
+        val key = generateRefreshTokenByUserIdKey(userId)
+
+        val versioned = kv.get(key).awaitFirstOrNull()?.data
+        if (versioned == null) {
+            logger.error("Refresh Token for give user ID does not exist")
+            return Optional.empty()
+        }
+        val userId = (versioned["RefreshToken"] as? String)
+
+        if (userId == null) {
+            logger.error("Refresh Token for give user ID does not exist")
+            return Optional.empty()
+        }
+        return Optional.of(userId)
     }
 
     override suspend fun saveOrUpdateLoginIdentity(loginIdentity: LoginIdentity) {
@@ -152,4 +172,6 @@ class VaultServiceImpl(
         // objectMapper is the one Spring injects into your beans
         return objectMapper.convertValue(data, LoginIdentity::class.java)
     }
+
+
 }

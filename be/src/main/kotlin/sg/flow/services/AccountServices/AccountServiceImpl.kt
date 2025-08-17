@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import sg.flow.grpc.exception.AccountDoesNotExistException
 import sg.flow.grpc.exception.RequestedAccountNotBelongException
 import sg.flow.models.account.AccountWithTransactionHistory
-import sg.flow.models.account.BriefAccount
+import sg.flow.models.account.BriefAccount as Account
 import sg.flow.repositories.account.AccountRepository
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
 
@@ -14,15 +14,15 @@ class AccountServiceImpl(
         private val transactionHistoryRepository: TransactionHistoryRepository,
 ) : AccountService {
 
-        override suspend fun getBriefAccounts(userId: Int): List<BriefAccount> =
-                accountRepository.findBriefAccountsOfUser(userId)
+        override suspend fun getAccounts(userId: Int): List<Account> =
+                accountRepository.findAccountsOfUser(userId)
 
         override suspend fun getAccountWithTransactionHistory(
                 userId: Int
         ): List<AccountWithTransactionHistory> =
                 accountRepository.findAccountWithTransactionHistorysOfUser(userId)
 
-        override suspend fun getBriefAccount(userId: Int, accountId: Long): BriefAccount {
+        override suspend fun getAccount(userId: Int, accountId: Long): Account {
                 val account =
                         accountRepository.findById(accountId)
                                 ?: throw AccountDoesNotExistException(accountId)
@@ -31,11 +31,14 @@ class AccountServiceImpl(
                         throw RequestedAccountNotBelongException(userId, accountId)
                 }
 
-                return BriefAccount(
+                return Account(
                         id = account.id ?: -1,
                         bank = account.bank,
                         balance = account.balance,
-                        accountName = account.accountName
+                        accountName = account.accountName,
+                        accountType = account.accountType.toString(),
+                        accountNumber = account.accountNumber
+
                 )
         }
 

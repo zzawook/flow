@@ -1,4 +1,4 @@
-import 'package:flow_mobile/service/api_service.dart';
+import 'package:flow_mobile/service/api_service/api_service.dart';
 
 class SyncService {
   final ApiService apiService;

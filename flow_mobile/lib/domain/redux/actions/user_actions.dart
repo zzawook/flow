@@ -11,3 +11,8 @@ class UpdateUserNicknameAction {
 
   UpdateUserNicknameAction(this.nickname);
 }
+
+class DeleteUserAction {
+  DeleteUserAction();
+}
+

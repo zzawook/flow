@@ -2,7 +2,9 @@ import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flow_mobile/presentation/shared/flow_text_edit_bottom_sheet.dart';
@@ -10,6 +12,13 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 class ManageAccountScreen extends StatelessWidget {
   const ManageAccountScreen({super.key});
+
+  void _onDeleteAccount(BuildContext context) {
+    StoreProvider.of<FlowState>(
+      context,
+      listen: false,
+    ).dispatch(DeleteUserAction());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,8 @@ class ManageAccountScreen extends StatelessWidget {
             child: Column(
               children: [
                 StoreConnector<FlowState, String>(
-                  converter: (store) => store.state.userState.user.nickname,
+                  converter:
+                      (store) => store.state.userState.user?.nickname ?? '',
                   builder:
                       (context, nickname) => SettingTab(
                         title: 'Nickname',
@@ -97,18 +107,26 @@ class ManageAccountScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Colors.red.withAlpha(160),
+                        color: Colors.red.withAlpha(0),
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red.withAlpha(160)),
                       ),
                       child: Text(
-                        'Delete Account',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                        'Log out',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.red.withAlpha(160),
                         ),
                       ),
                     ),
+                  ),
+                ),
+                const FlowSeparatorBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24),
+                  child: FlowCTAButton(
+                    text: "Delete account",
+                    onPressed: () => _onDeleteAccount(context),
+                    color: Colors.red,
                   ),
                 ),
                 const SizedBox(height: 48),
@@ -120,3 +138,4 @@ class ManageAccountScreen extends StatelessWidget {
     );
   }
 }
+

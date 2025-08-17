@@ -59,4 +59,9 @@ class NotificationManagerImpl implements NotificationManager {
     }
     return Future.value();
   }
+  
+  @override
+  void fetchNotificationsFromRemote() {
+    // TODO: implement fetchNotificationsFromRemote
+  }
 }

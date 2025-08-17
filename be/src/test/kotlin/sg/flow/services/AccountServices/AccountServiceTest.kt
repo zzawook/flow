@@ -17,7 +17,7 @@ import sg.flow.entities.utils.AccountType
 import sg.flow.grpc.exception.AccountDoesNotExistException
 import sg.flow.grpc.exception.RequestedAccountNotBelongException
 import sg.flow.models.account.AccountWithTransactionHistory
-import sg.flow.models.account.BriefAccount
+import sg.flow.models.account.Account
 import sg.flow.models.transaction.TransactionHistoryDetail
 import sg.flow.repositories.account.AccountRepository
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
@@ -32,7 +32,7 @@ class AccountServiceTest {
     private lateinit var mockUser: User
     private lateinit var mockBank: Bank
     private lateinit var mockAccount: Account
-    private lateinit var mockBriefAccount: BriefAccount
+    private lateinit var mockAccount: Account
     private lateinit var mockTransactionDetail: TransactionHistoryDetail
 
     @BeforeEach
@@ -70,8 +70,8 @@ class AccountServiceTest {
                         lastUpdated = LocalDateTime.now()
                 )
 
-        mockBriefAccount =
-                BriefAccount(
+        mockAccount =
+                Account(
                         id = 1L,
                         balance = 1000.0,
                         accountName = "Test Savings Account",
@@ -95,19 +95,19 @@ class AccountServiceTest {
     }
 
     @Nested
-    @DisplayName("getBriefAccounts Tests")
-    inner class GetBriefAccountsTests {
+    @DisplayName("getAccounts Tests")
+    inner class GetAccountsTests {
 
         @Test
         @DisplayName("Should return list of brief accounts for valid user")
         fun `should return list of brief accounts for valid user`() = runTest {
             // Given
             val userId = 1
-            val expectedAccounts = listOf(mockBriefAccount)
-            coEvery { accountRepository.findBriefAccountsOfUser(userId) } returns expectedAccounts
+            val expectedAccounts = listOf(mockAccount)
+            coEvery { accountRepository.findAccountsOfUser(userId) } returns expectedAccounts
 
             // When
-            val result = accountService.getBriefAccounts(userId)
+            val result = accountService.getAccounts(userId)
 
             // Then
             assertEquals(expectedAccounts, result)
@@ -116,7 +116,7 @@ class AccountServiceTest {
             assertEquals(1000.0, result[0].balance)
             assertEquals("Test Savings Account", result[0].accountName)
             assertEquals(mockBank, result[0].bank)
-            coVerify(exactly = 1) { accountRepository.findBriefAccountsOfUser(userId) }
+            coVerify(exactly = 1) { accountRepository.findAccountsOfUser(userId) }
         }
 
         @Test
@@ -124,14 +124,14 @@ class AccountServiceTest {
         fun `should return empty list when user has no accounts`() = runTest {
             // Given
             val userId = 999
-            coEvery { accountRepository.findBriefAccountsOfUser(userId) } returns emptyList()
+            coEvery { accountRepository.findAccountsOfUser(userId) } returns emptyList()
 
             // When
-            val result = accountService.getBriefAccounts(userId)
+            val result = accountService.getAccounts(userId)
 
             // Then
             assertTrue(result.isEmpty())
-            coVerify(exactly = 1) { accountRepository.findBriefAccountsOfUser(userId) }
+            coVerify(exactly = 1) { accountRepository.findAccountsOfUser(userId) }
         }
 
         @Test
@@ -140,22 +140,22 @@ class AccountServiceTest {
             // Given
             val userId = 1
             val account2 =
-                    BriefAccount(
+                    Account(
                             id = 2L,
                             balance = 2000.0,
                             accountName = "Test Current Account",
                             bank = mockBank
                     )
-            val expectedAccounts = listOf(mockBriefAccount, account2)
-            coEvery { accountRepository.findBriefAccountsOfUser(userId) } returns expectedAccounts
+            val expectedAccounts = listOf(mockAccount, account2)
+            coEvery { accountRepository.findAccountsOfUser(userId) } returns expectedAccounts
 
             // When
-            val result = accountService.getBriefAccounts(userId)
+            val result = accountService.getAccounts(userId)
 
             // Then
             assertEquals(2, result.size)
             assertEquals(expectedAccounts, result)
-            coVerify(exactly = 1) { accountRepository.findBriefAccountsOfUser(userId) }
+            coVerify(exactly = 1) { accountRepository.findAccountsOfUser(userId) }
         }
 
         @Test
@@ -163,14 +163,14 @@ class AccountServiceTest {
         fun `should handle negative user ID`() = runTest {
             // Given
             val userId = -1
-            coEvery { accountRepository.findBriefAccountsOfUser(userId) } returns emptyList()
+            coEvery { accountRepository.findAccountsOfUser(userId) } returns emptyList()
 
             // When
-            val result = accountService.getBriefAccounts(userId)
+            val result = accountService.getAccounts(userId)
 
             // Then
             assertTrue(result.isEmpty())
-            coVerify(exactly = 1) { accountRepository.findBriefAccountsOfUser(userId) }
+            coVerify(exactly = 1) { accountRepository.findAccountsOfUser(userId) }
         }
 
         @Test
@@ -178,14 +178,14 @@ class AccountServiceTest {
         fun `should handle zero user ID`() = runTest {
             // Given
             val userId = 0
-            coEvery { accountRepository.findBriefAccountsOfUser(userId) } returns emptyList()
+            coEvery { accountRepository.findAccountsOfUser(userId) } returns emptyList()
 
             // When
-            val result = accountService.getBriefAccounts(userId)
+            val result = accountService.getAccounts(userId)
 
             // Then
             assertTrue(result.isEmpty())
-            coVerify(exactly = 1) { accountRepository.findBriefAccountsOfUser(userId) }
+            coVerify(exactly = 1) { accountRepository.findAccountsOfUser(userId) }
         }
 
         @Test
@@ -193,12 +193,12 @@ class AccountServiceTest {
         fun `should handle repository exception`() = runTest {
             // Given
             val userId = 1
-            coEvery { accountRepository.findBriefAccountsOfUser(userId) } throws
+            coEvery { accountRepository.findAccountsOfUser(userId) } throws
                     RuntimeException("Database error")
 
             // When & Then
-            assertThrows<RuntimeException> { accountService.getBriefAccounts(userId) }
-            coVerify(exactly = 1) { accountRepository.findBriefAccountsOfUser(userId) }
+            assertThrows<RuntimeException> { accountService.getAccounts(userId) }
+            coVerify(exactly = 1) { accountRepository.findAccountsOfUser(userId) }
         }
     }
 
@@ -296,8 +296,8 @@ class AccountServiceTest {
     }
 
     @Nested
-    @DisplayName("getBriefAccount (Single) Tests")
-    inner class GetBriefAccountSingleTests {
+    @DisplayName("getAccount (Single) Tests")
+    inner class GetAccountSingleTests {
 
         @Test
         @DisplayName("Should return brief account for valid user and account ID")
@@ -308,7 +308,7 @@ class AccountServiceTest {
             coEvery { accountRepository.findById(accountId) } returns mockAccount
 
             // When
-            val result = accountService.getBriefAccount(userId, accountId)
+            val result = accountService.getAccount(userId, accountId)
 
             // Then
             assertEquals(1L, result.id)
@@ -328,7 +328,7 @@ class AccountServiceTest {
 
             // When & Then
             assertThrows<AccountDoesNotExistException> {
-                accountService.getBriefAccount(userId, accountId)
+                accountService.getAccount(userId, accountId)
             }
             coVerify(exactly = 1) { accountRepository.findById(accountId) }
         }
@@ -346,7 +346,7 @@ class AccountServiceTest {
 
                     // When & Then
                     assertThrows<RequestedAccountNotBelongException> {
-                        accountService.getBriefAccount(userId, accountId)
+                        accountService.getAccount(userId, accountId)
                     }
                     coVerify(exactly = 1) { accountRepository.findById(accountId) }
                 }
@@ -361,7 +361,7 @@ class AccountServiceTest {
             coEvery { accountRepository.findById(accountId) } returns accountWithNullId
 
             // When
-            val result = accountService.getBriefAccount(userId, accountId)
+            val result = accountService.getAccount(userId, accountId)
 
             // Then
             assertEquals(-1L, result.id) // Should default to -1 when ID is null
@@ -381,7 +381,7 @@ class AccountServiceTest {
 
             // When & Then
             assertThrows<AccountDoesNotExistException> {
-                accountService.getBriefAccount(userId, accountId)
+                accountService.getAccount(userId, accountId)
             }
             coVerify(exactly = 1) { accountRepository.findById(accountId) }
         }
@@ -396,7 +396,7 @@ class AccountServiceTest {
 
             // When & Then
             assertThrows<AccountDoesNotExistException> {
-                accountService.getBriefAccount(userId, accountId)
+                accountService.getAccount(userId, accountId)
             }
             coVerify(exactly = 1) { accountRepository.findById(accountId) }
         }
@@ -644,7 +644,7 @@ class AccountServiceTest {
             } returns emptyList()
 
             // When - Simulate concurrent calls
-            val result1 = accountService.getBriefAccount(userId, accountId)
+            val result1 = accountService.getAccount(userId, accountId)
             val result2 = accountService.getAccountWithTransactionHistory(userId, accountId)
 
             // Then
@@ -664,7 +664,7 @@ class AccountServiceTest {
             coEvery { accountRepository.findById(accountId) } returns accountWithLargeBalance
 
             // When
-            val result = accountService.getBriefAccount(userId, accountId)
+            val result = accountService.getAccount(userId, accountId)
 
             // Then
             assertEquals(largeBalance, result.balance)
@@ -680,7 +680,7 @@ class AccountServiceTest {
             coEvery { accountRepository.findById(accountId) } returns zeroBalanceAccount
 
             // When
-            val result = accountService.getBriefAccount(userId, accountId)
+            val result = accountService.getAccount(userId, accountId)
 
             // Then
             assertEquals(0.0, result.balance)
@@ -696,7 +696,7 @@ class AccountServiceTest {
             coEvery { accountRepository.findById(accountId) } returns negativeBalanceAccount
 
             // When
-            val result = accountService.getBriefAccount(userId, accountId)
+            val result = accountService.getAccount(userId, accountId)
 
             // Then
             assertEquals(-500.0, result.balance)
@@ -713,7 +713,7 @@ class AccountServiceTest {
             coEvery { accountRepository.findById(accountId) } returns accountWithLongName
 
             // When
-            val result = accountService.getBriefAccount(userId, accountId)
+            val result = accountService.getAccount(userId, accountId)
 
             // Then
             assertEquals(longAccountName, result.accountName)
@@ -730,7 +730,7 @@ class AccountServiceTest {
             coEvery { accountRepository.findById(accountId) } returns accountWithSpecialName
 
             // When
-            val result = accountService.getBriefAccount(userId, accountId)
+            val result = accountService.getAccount(userId, accountId)
 
             // Then
             assertEquals(specialAccountName, result.accountName)

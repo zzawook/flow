@@ -1,4 +1,8 @@
 import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
+import 'package:flow_mobile/presentation/login_screen/login_password_screen.dart';
+import 'package:flow_mobile/presentation/login_screen/login_screen.dart';
+import 'package:flow_mobile/presentation/login_screen/signup_name_screen.dart';
+import 'package:flow_mobile/presentation/login_screen/signup_password_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_account_screen/manage_account_screen.dart';
 import 'package:flow_mobile/presentation/manage_bank_account_screen/manage_bank_account_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_bank_accounts_screen/manage_bank_accounts_screen.dart';
@@ -44,6 +48,10 @@ class AppRoutes {
   static const transferResult = '/transfer/result';
   static const notification = '/notification';
   static const refresh = '/refresh';
+  static const login = '/login';
+  static const loginPassword = '/login/password';
+  static const signupPassword = '/signup/password';
+  static const signupName = '/signup/name';
   static const setting = '/setting';
   static const notificationSetting = '/notification/setting';
   static const bankAccountSetting = '/bank_account/setting';
@@ -121,6 +129,19 @@ class AppRoutes {
         break;
       case refresh:
         page = const RefreshInitScreen();
+        break;
+
+      case login:
+        page = const LoginEmailScreen();
+        break;
+      case loginPassword:
+        page = const LoginPasswordScreen();
+        break;
+      case signupPassword:
+        page = const SignupPasswordScreen();
+        break;
+      case signupName:
+        page = const SignupNameScreen();
         break;
 
       case setting:

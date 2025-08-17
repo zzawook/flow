@@ -1,5 +1,7 @@
 import 'package:flow_mobile/initialization/app_initializer.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/initialization/theme_store.dart';
+import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -41,6 +43,7 @@ class FlowApplication extends StatelessWidget {
         return MaterialApp(
           title: 'Flow',
           theme: theme,
+          navigatorKey: getIt<NavigationService>().navigatorKey,
           navigatorObservers: [ReduxRouteObserver(store)],
           builder:
               (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(

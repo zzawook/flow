@@ -9,11 +9,12 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY, 
     name TEXT NOT NULL,
     email TEXT NOT NULL,
-    identification_number TEXT NOT NULL,
-    phone_number TEXT NOT NULL,
-    date_of_birth DATE NOT NULL,
-    address TEXT NOT NULL,
-    setting_json JSONB DEFAULT '{}'
+    identification_number TEXT DEFAULT '',
+    phone_number TEXT DEFAULT '',
+    date_of_birth DATE DEFAULT NULL,
+    address TEXT DEFAULT '',
+    setting_json JSONB DEFAULT '{}',
+    password_hash TEXT DEFAULT ''
 );
 
 CREATE INDEX IF NOT EXISTS user_by_id_index ON users (id);

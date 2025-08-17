@@ -1,4 +1,7 @@
+import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/manager/bank_account_manager.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
+import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:flow_mobile/service/local_source/local_secure_hive.dart';
 import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -55,5 +58,28 @@ class BankAccountManagerImpl implements BankAccountManager {
   @override
   Future<void> clearBankAccounts() async {
     await _bankAccountBox.clear();
+  }
+
+  @override
+  Future<void> fetchBankAccountsFromRemote() {
+    ApiService apiService = getIt<ApiService>();
+    // Implement the API call to fetch bank accounts
+    return apiService.getBankAccounts().then((bankAccounts) {
+      _bankAccountBox.clear();
+      for (var account in bankAccounts.accounts) {
+        final bankAccount = BankAccount.initial();
+        bankAccount.copyWith(
+          accountNumber: account.accountNumber,
+          accountHolder: account.accountName,
+          accountType: account.accountType,
+          balance: account.balance,
+          bank: Bank(
+            name: account.bank.name,
+            logoPath: 'assets/bank_logos/${account.bank.name}',
+          ),
+        );
+        _bankAccountBox.put(bankAccount.accountNumber, bankAccount);
+      }
+    });
   }
 }

@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flow_mobile/domain/manager/user_manager.dart';
 import 'package:flow_mobile/domain/entity/user.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
+import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class UserManagerImpl implements UserManager {
@@ -40,5 +44,25 @@ class UserManagerImpl implements UserManager {
   Future<void> updateUser(User user) async {
     // Update (or add) the user stored under the key 'user'
     await _userBox.put('user', user);
+  }
+
+  @override
+  void fetchUserFromRemote() {
+    ApiService apiService = getIt<ApiService>();
+    apiService
+        .getUserProfile()
+        .then((userProfile) {
+          User user = User(
+            name: userProfile.name,
+            email: userProfile.email,
+            dateOfBirth: userProfile.dateOfBirth.toDateTime(),
+            phoneNumber: userProfile.phoneNumber,
+            nickname: userProfile.name,
+          );
+          updateUser(user);
+        })
+        .catchError((error) {
+          log("Error fetching user: $error");
+        });
   }
 }
