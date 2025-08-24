@@ -180,11 +180,12 @@ class FinverseWebclientService(
             "products_requested" to productsRequested,
             "countries" to countries,
             "link_mode" to "real test",
-            "ui_mode" to "",
+            "ui_mode" to "iframe",
             "response_mode" to "form_post", // DO NOT CHANGE
             "response_type" to "code", // DO NOT CHANGE
             "grant_type" to "client_credentials" // DO NOT CHANGE
         )
+        println(requestBody)
 
         return try {
             finverseWebClient.post()

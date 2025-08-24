@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class WebviewWidget extends StatefulWidget {
   final String url;
@@ -15,9 +16,25 @@ class _WebviewWidgetState extends State<WebviewWidget> {
   @override
   void initState() {
     super.initState();
-    _ctrl = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(widget.url));
+    final params = const PlatformWebViewControllerCreationParams();
+    _ctrl =
+        WebViewController.fromPlatformCreationParams(params)
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onWebResourceError: (err) {
+                debugPrint('WEB ERR → ${err.errorCode} ${err.description}');
+              },
+            ),
+          )
+          ..loadRequest(Uri.parse(widget.url));
+      // Android-only tweaks
+      if (_ctrl.platform is AndroidWebViewController) {
+        AndroidWebViewController.enableDebugging(true);
+        (_ctrl.platform as AndroidWebViewController).setMixedContentMode(
+          MixedContentMode.alwaysAllow,
+        );
+      }
   }
 
   @override

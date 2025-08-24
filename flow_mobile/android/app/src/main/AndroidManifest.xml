@@ -2,7 +2,11 @@
     <application
         android:label="flow_mobile"
         android:name="${applicationName}"
+        android:usesCleartextTraffic="false"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher">
+        
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
