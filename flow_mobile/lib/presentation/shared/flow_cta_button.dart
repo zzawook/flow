@@ -6,18 +6,20 @@ class FlowCTAButton extends StatefulWidget {
   final String text;
   final Function() onPressed;
   Color? color;
-  final Color textColor;
+  Color? textColor;
   final double borderRadius;
   final FontWeight fontWeight;
+  Color? borderColor;
 
   FlowCTAButton({
     super.key,
     required this.text,
     required this.onPressed,
     this.color,
-    this.textColor = const Color(0xFFFFFFFF),
+    this.textColor,
     this.borderRadius = 16,
     this.fontWeight = FontWeight.bold,
+    this.borderColor = Colors.transparent,
   });
 
   @override
@@ -31,18 +33,22 @@ class _FlowCTAButtonState extends State<FlowCTAButton> {
     return FlowButton(
       onPressed: widget.onPressed,
       child: Container(
-        height: 60,
+        height: 64,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: widget.color ?? primary,
           borderRadius: BorderRadius.circular(widget.borderRadius),
+          border: Border.all(
+            color: widget.borderColor ?? Colors.transparent,
+            width: 1,
+          ),
         ),
         child: Text(
           widget.text,
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 20,
-            color: widget.textColor,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color:
+                widget.textColor ??
+                Theme.of(context).textTheme.titleSmall?.color,
             fontWeight: widget.fontWeight,
           ),
         ),

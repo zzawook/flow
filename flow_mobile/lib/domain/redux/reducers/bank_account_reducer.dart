@@ -34,7 +34,10 @@ BankAccountState bankAccountReducer(BankAccountState state, dynamic action) {
 
     return state.copyWith(bankAccounts: newList);
   }
-  if (action is DeleteUserAction) {
+  if (action is SetBankAccountStateAction) {
+    return action.bankAccountState;
+  }
+  if (action is DeleteUserAction || action is ClearBankAccountStateAction) {
     return BankAccountState.initial();
   }
   return state;

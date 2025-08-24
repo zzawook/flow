@@ -65,7 +65,8 @@ class ToAccountRow extends StatelessWidget {
               child: Image.asset(
                 transferReceivable.isPayNow
                     ? "assets/bank_logos/paynow.png"
-                    : transferReceivable.bank.logoPath,
+                    // : "assets/bank_logos/${transferReceivable.bank.name}.png",
+                    : "assets/bank_logos/DBS.png",
               ),
             ),
             const SizedBox(width: 16),

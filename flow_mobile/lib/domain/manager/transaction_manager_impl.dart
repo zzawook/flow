@@ -85,19 +85,19 @@ class TransactionManagerImpl implements TransactionManager {
   }
 
   @override
-  void fetchLast30DaysTransactionsFromRemote() {
+  Future<void> fetchLast30DaysTransactionsFromRemote() async {
     ApiService apiService = getIt<ApiService>();
     DateTime now = DateTime.now();
     DateTime startDate = DateTime(now.year, now.month, now.day - 30);
     apiService
         .getTransactionWithinRange(startDate, now)
-        .then((transactions) {
+        .then((transactions) async {
           for (var transactionHistoryDetail in transactions.transactions) {
             Transaction transaction = fromTransactionHistoryDetail(
               transactionHistoryDetail,
             );
             String id = transactionHistoryDetail.id.toString();
-            putTransaction(id, transaction);
+            await putTransaction(id, transaction);
           }
         })
         .then((_) {
@@ -123,7 +123,7 @@ class TransactionManagerImpl implements TransactionManager {
         accountType: detail.account.accountType,
         bank: Bank(
           name: detail.account.bank.name,
-          logoPath: "assets/bank_logos/${detail.account.bank.name}.png",
+          bankId: detail.account.bank.id,
         ),
         transferCount: 0,
       ),
@@ -132,6 +132,6 @@ class TransactionManagerImpl implements TransactionManager {
 
   @override
   Future<void> putTransaction(String id, Transaction transaction) {
-    return _transactionBox.put(id, transaction);
+    return  _transactionBox.put(id, transaction);
   }
 }

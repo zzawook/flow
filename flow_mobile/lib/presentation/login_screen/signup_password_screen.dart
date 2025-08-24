@@ -6,6 +6,7 @@ import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_string_checker.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/transfer_screen/input.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
@@ -39,6 +40,15 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
     if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
         message = 'Passwords do not match';
+      });
+      return;
+    }
+    var passwordMessage = FlowStringChecker.isValidPassword(
+      _passwordController.text,
+    );
+    if (passwordMessage.isNotEmpty) {
+      setState(() {
+        message = passwordMessage;
       });
       return;
     }

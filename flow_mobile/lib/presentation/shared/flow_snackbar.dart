@@ -20,7 +20,7 @@ class FlowSnackbar extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 16, top: 16, left: 24, right: 24),
       backgroundColor: Theme.of(context).primaryColor,
       elevation: 10,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     );
   }
 }

@@ -8,5 +8,5 @@ abstract class NotificationManager {
   Future<void> markAllNotificationsAsRead();
   Future<void> deleteNotification(int id);
 
-  void fetchNotificationsFromRemote() {}
+  Future<void> fetchNotificationsFromRemote() async {}
 }

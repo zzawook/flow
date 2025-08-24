@@ -18,6 +18,24 @@ RefreshScreenState refreshScreenReducer(
     }
     return state.copyWith(banksToRefresh: banks);
   }
+  if (action is CancelLinkBankingScreenAction) {
+    return state.copyWith(isLinking: false, linkingBank: null, linkStartTimestamp: null);
+  }
+  if (action is StartBankLinkingAction) {
+    return state.copyWith(isLinking: true, linkingBank: action.bank, linkStartTimestamp: action.linkStartTimestamp);
+  }
+  if (action is BankLinkingSuccessAction) {
+    List<Bank> banks = state.banksToRefresh;
+    if (banks.contains(action.bank)) {
+      banks.remove(action.bank);
+    }
+    return state.copyWith(banksToRefresh: banks, isLinking: false, linkingBank: null, linkStartTimestamp: null);
+  }
+  if (action is RemoveCurrentLinkingBankAction) {
+    List<Bank> banks = state.banksToRefresh;
+    banks.removeAt(0);
+    return state.copyWith(banksToRefresh: banks, isLinking: false, linkingBank: null, linkStartTimestamp: null);
+  }
   
   return state;
 }

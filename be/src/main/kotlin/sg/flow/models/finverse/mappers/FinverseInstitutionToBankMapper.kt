@@ -8,11 +8,17 @@ import sg.flow.models.finverse.FinverseInstitution
 class FinverseInstitutionToBankMapper : Mapper<FinverseInstitution, Bank> {
 
     fun map(input: FinverseInstitution): Bank {
+        val countriesString = ""
+        input.countries.forEach { country -> countriesString.plus("$country,") }
+        if (! countriesString.isEmpty()) {
+            countriesString.substring(0, countriesString.length - 1)
+        }
         return Bank(
                 id = null, // Will be set by database
                 name = input.institutionName,
                 bankCode = generateBankCode(input),
-                finverseId = input.institutionId
+                finverseId = input.institutionId,
+                countries = countriesString
         )
     }
 

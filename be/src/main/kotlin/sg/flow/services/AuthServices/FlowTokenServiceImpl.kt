@@ -60,4 +60,9 @@ class FlowTokenServiceImpl(
 
                 TokenSet(accessToken = accessToken, refreshToken = refreshToken)
             }
+
+    override suspend fun revokeAccessToken(accessToken: String): Boolean {
+        cacheService.clearAccessToken(accessToken)
+        return true
+    }
 }

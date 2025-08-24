@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import sg.flow.common.v1.CommonBankProto
+import sg.flow.entities.Bank
 import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseInstitution
 import sg.flow.models.finverse.FinverseOverallRetrievalStatus
@@ -15,6 +17,7 @@ import sg.flow.models.finverse.responses.CustomerTokenResponse
 import sg.flow.models.finverse.responses.LinkTokenResponse
 import sg.flow.models.finverse.responses.FinverseAuthTokenResponse
 import sg.flow.models.finverse.responses.FinverseLoginIdentityResponse
+import sg.flow.repositories.account.AccountRepository
 import sg.flow.repositories.bank.BankRepository
 import sg.flow.repositories.user.UserRepository
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
@@ -27,7 +30,8 @@ class FinverseQueryService(
     private val finverseLoginIdentityService: FinverseLoginIdentityService,
     private val finverseDataRetrievalRequestsManager: FinverseDataRetrievalRequestsManager,
     private val finverseTimeoutWatcher: FinverseTimeoutWatcher,
-    private val bankRepositoryImpl: BankRepository,
+    private val bankRepository: BankRepository,
+    private val accountRepository: AccountRepository,
     private val finverseWebclientService: FinverseWebclientService,
     private val finverseResponseProcessor: FinverseResponseProcessor,
 ) {
@@ -39,7 +43,7 @@ class FinverseQueryService(
         institutions.map { institution ->
             runBlocking {
                 val bank = finverseResponseProcessor.processInstitutionResponse(institution)
-                bankRepositoryImpl.save(bank)
+                bankRepository.save(bank)
                 bank
             }
         }
@@ -47,6 +51,17 @@ class FinverseQueryService(
 
     suspend fun hasRunningRefreshSession(userId: Int, institutionId: String): Boolean {
         return finverseLoginIdentityService.hasRunningRefreshSession(userId, institutionId);
+    }
+
+    suspend fun getBanksForRefresh(userId: Int, country: String = "SGP"): List<Bank> {
+        val accounts = accountRepository.findAccountsOfUser(userId)
+        val banks = accounts.map { account -> account.bank }
+        return banks
+    }
+
+    suspend fun getBanksForLink(userId: Int, country: String = "SGP"): List<Bank> {
+        val banks = bankRepository.findAllBanksInCountry(country)
+        return banks
     }
 
     /**
@@ -165,6 +180,10 @@ class FinverseQueryService(
         )
 
         return status
+    }
+
+    suspend fun getFinverseInstitutionId(institutionId: Long): String {
+        return bankRepository.findFinverseIdWithId(institutionId)
     }
 
 }

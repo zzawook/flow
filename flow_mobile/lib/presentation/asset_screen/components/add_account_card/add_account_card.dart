@@ -1,20 +1,15 @@
-import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
-import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/link_thunks.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 /// A placeholder section for a "Quick Transfer" feature.
 class AddAccountCard extends StatelessWidget {
   const AddAccountCard({super.key});
 
   void onQuickTransferPressed(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      '/add_account',
-      arguments: CustomPageRouteArguments(
-        transitionType: TransitionType.slideLeft,
-      ),
-    );
+    StoreProvider.of<FlowState>(context).dispatch(openAddAccountScreenThunk());
   }
 
   static const double _horizontalPadding = 24.0;

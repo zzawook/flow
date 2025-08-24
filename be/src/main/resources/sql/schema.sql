@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS banks (
     id SERIAL PRIMARY KEY, 
     bank_name TEXT NOT NULL,
     bank_code TEXT NOT NULL,
-    finverse_id TEXT UNIQUE
+    finverse_id TEXT UNIQUE,
+    countries TEXT DEFAULT 'SGP'
 );
 
 CREATE INDEX IF NOT EXISTS bank_index_by_id ON banks (id);

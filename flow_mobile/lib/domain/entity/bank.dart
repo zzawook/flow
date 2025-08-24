@@ -8,14 +8,14 @@ class Bank {
   final String name;
 
   @HiveField(1)
-  final String logoPath;
+  final int bankId;
 
-  Bank({required this.name, required this.logoPath});
+  Bank({required this.name, required this.bankId});
 
   factory Bank.initial() =>
-      Bank(name: '', logoPath: 'assets/bank_logos/DBS.png');
+      Bank(name: '', bankId: 0);
 
   bool isEqualTo(Bank other) {
-    return name == other.name;
+    return name == other.name && bankId == other.bankId;
   }
 }

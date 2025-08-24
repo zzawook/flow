@@ -16,4 +16,6 @@ data class Bank(
     val bankCode: String,
 
     val finverseId: String? = null,
+
+    val countries: String = "SGP"
 ) 

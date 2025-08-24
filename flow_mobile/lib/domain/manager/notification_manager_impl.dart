@@ -61,7 +61,7 @@ class NotificationManagerImpl implements NotificationManager {
   }
   
   @override
-  void fetchNotificationsFromRemote() {
+  Future<void> fetchNotificationsFromRemote() async {
     // TODO: implement fetchNotificationsFromRemote
   }
 }

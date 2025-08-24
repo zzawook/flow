@@ -16,10 +16,8 @@ class BankAdapter extends TypeAdapter<Bank> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Bank(
-      name: fields[0] as String,
-      logoPath: fields[1] as String,
-    );
+    final bankId = fields[1] is! int ? -1 : fields[1] as int;
+    return Bank(name: fields[0] as String, bankId: bankId);
   }
 
   @override
@@ -29,7 +27,7 @@ class BankAdapter extends TypeAdapter<Bank> {
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.logoPath);
+      ..write(obj.bankId);
   }
 
   @override

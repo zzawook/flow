@@ -21,18 +21,19 @@ import 'package:flow_mobile/domain/manager/user_manager.dart';
 import 'package:flow_mobile/domain/manager/user_manager_impl.dart';
 
 class TestDataBootstrap {
-
   static Future<bool> bootstrapHiveWithTestData() async {
-    bootstrapUserData();
-    bool bankAccountDataSuccess = await bootstrapBankAccountData();
-    bootstrapSettingData();
-    bootstrapTransferReceivableData();
-    bool transactionTestBootstrapSuccess = await bootstrapTransactionData();
-    bool notificationTestBootstrapSuccess = await bootstrapNotificationData();
+    // bootstrapUserData();
+    // bool bankAccountDataSuccess = await bootstrapBankAccountData();
+    // bootstrapSettingData();
+    // bootstrapTransferReceivableData();
+    // bool transactionTestBootstrapSuccess = await bootstrapTransactionData();
+    // bool notificationTestBootstrapSuccess = await bootstrapNotificationData();
 
-    return bankAccountDataSuccess &&
-        transactionTestBootstrapSuccess &&
-        notificationTestBootstrapSuccess;
+    // return bankAccountDataSuccess &&
+    //     transactionTestBootstrapSuccess &&
+    //     notificationTestBootstrapSuccess;
+
+    return true;
   }
 
   static void bootstrapTransferReceivableData() async {
@@ -72,7 +73,8 @@ class TestDataBootstrap {
   }
 
   static Future<bool> bootstrapBankAccountData() async {
-    bool success = await TestDataBootstrap.populateBankAccountManagerWithTestData();
+    bool success =
+        await TestDataBootstrap.populateBankAccountManagerWithTestData();
     return success;
   }
 
@@ -86,7 +88,8 @@ class TestDataBootstrap {
   }
 
   static Future<bool> bootstrapTransactionData() async {
-    bool success = await TestDataBootstrap.populateTransactionManagerWithTestData();
+    bool success =
+        await TestDataBootstrap.populateTransactionManagerWithTestData();
     return success;
   }
 
@@ -247,7 +250,7 @@ class TestDataBootstrap {
         accountHolder: "Park Jongeun",
         accountName: "Park Jongeun",
         accountType: 'SAVINGS',
-        bank: Bank(name: "OCBC", logoPath: "assets/bank_logos/OCBC.png"),
+        bank: Bank(name: "OCBC", bankId: 2),
         transferCount: 2,
       ),
     );
@@ -258,7 +261,7 @@ class TestDataBootstrap {
         accountHolder: "Choi Minseok",
         accountName: "Choi Minseok",
         accountType: 'CURRENT',
-        bank: Bank(name: "DBS", logoPath: "assets/bank_logos/DBS.png"),
+        bank: Bank(name: "DBS", bankId: 1),
         transferCount: 2,
       ),
     );
@@ -269,7 +272,7 @@ class TestDataBootstrap {
         accountHolder: "Jeon Seungbin",
         accountName: "Jeon Seungbin",
         accountType: 'SAVINGS',
-        bank: Bank(name: "UOB", logoPath: "assets/bank_logos/UOB.png"),
+        bank: Bank(name: "UOB", bankId: 3),
         transferCount: 2,
       ),
     );

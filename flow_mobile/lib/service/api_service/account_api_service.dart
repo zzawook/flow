@@ -1,5 +1,7 @@
 import 'package:flow_mobile/generated/account/v1/account.pbgrpc.dart';
 import 'package:flow_mobile/generated/common/v1/account.pb.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
+import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:grpc/grpc_connection_interface.dart';
 import 'package:fixnum/fixnum.dart' as fx;
 
@@ -7,7 +9,7 @@ class AccountApiService {
   final AccountServiceClient _client;
 
   AccountApiService(ClientChannel channel)
-    : _client = AccountServiceClient(channel);
+    : _client = AccountServiceClient(channel, interceptors: [getIt<GrpcInterceptor>()]);
 
   Future<GetAccountsResponse> getBankAccounts() async {
     final request = GetAccountsRequest();

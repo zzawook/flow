@@ -57,7 +57,8 @@ class TransferConfirmationScreen extends StatelessWidget {
                             child: ClipOval(
                               child: Image.asset(
                                 // Replace with your own bank logo
-                                transferState.fromAccount.bank.logoPath,
+                                // "assets/bank_logos/${transferState.fromAccount.bank.name}.png",
+                                "assets/bank_logos/DBS.png",
                                 fit: BoxFit.cover,
                               ),
                             ),

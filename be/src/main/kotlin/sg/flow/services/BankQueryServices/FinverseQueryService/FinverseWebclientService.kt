@@ -69,8 +69,9 @@ class FinverseWebclientService(
     }
 
     fun fetchInstitutionData(countries: String): List<FinverseInstitution> {
+        val uri = "/institutions?countries=$countries&products_supported=ACCOUNTS&products_supported=ACCOUNT_NUMBERS&products_supported=TRANSACTIONS"
         val institutions = finverseWebClient.get()
-            .uri("/institutions?countries=$countries")
+            .uri(uri)
             .headers { it -> it.setBearerAuth(getCustomerToken()) }
             .retrieve()
             .bodyToMono(Array<FinverseInstitution>::class.java)
@@ -87,12 +88,13 @@ class FinverseWebclientService(
     suspend fun fetchLinkUrlRefresh(loginIdentityToken: String, state: String = "") : LinkTokenResponse {
         val requestBody = mapOf(
             "user_present" to true,
-            "link_customization" to mapOf(
+            "link_customizations" to mapOf(
                 "state" to state,
                 "ui_mode" to "iframe",
                 "redirect_uri" to FINVERSE_CALLBACK_ADDRESS
             )
         )
+        println(requestBody)
 
         return try {
             finverseWebClient.post()

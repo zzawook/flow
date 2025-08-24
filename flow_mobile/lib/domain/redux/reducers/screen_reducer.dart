@@ -67,5 +67,6 @@ ScreenState screenReducer(ScreenState state, dynamic action) {
       ),
     );
   }
+  
   return state;
 }

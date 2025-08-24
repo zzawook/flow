@@ -1,3 +1,4 @@
+import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/entity/user.dart';
 import 'package:flow_mobile/generated/account/v1/account.pb.dart';
 import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
@@ -51,8 +52,15 @@ class ApiService {
     _accountApiService = AccountApiService(_channel);
     _transactionHistoryApiService = TransactionHistoryApiService(_channel);
   }
+  Future<GetRelinkUrlResponse> getLinkUrl(Bank bank) async {
+    return await _refreshApiService.getLinkUrl(bank);
+  }
 
-  Future<CanStartRefreshSessionResponse> canStartRefreshSession(String bankId) async {
+  Future<GetInstitutionAuthenticationResultResponse> getInstitutionAuthenticationResult(Bank bank) async {
+    return await _refreshApiService.getInstitutionAuthenticationResult(bank);
+  }
+
+  Future<CanStartRefreshSessionResponse> canStartRefreshSession(int bankId) async {
     return await _refreshApiService.canStartRefreshSession(bankId);
   }
 
@@ -98,35 +106,9 @@ class ApiService {
     final response = await _userApiService.updateUserProfile(user);
     return response;
   }
-}
 
-class GrpcInterceptor extends ClientInterceptor {
-
-  static String _accessToken = "";
-
-  static void setAccessToken(String accessToken) {
-    _accessToken = accessToken;
-  }
-
-  CallOptions _withAuth(CallOptions options) {
-    return options.mergedWith(
-      CallOptions(metadata: {
-        'authorization': 'Bearer $_accessToken',
-      }),
-    );
-  }
-
-  @override
-  ResponseFuture<Response> interceptUnary<Request, Response>(
-      ClientMethod<Request, Response> method,
-      Request request,
-      CallOptions options,
-      invoker
-      ) {
-    return invoker(
-      method,
-      request,
-      _withAuth(options),
-    );
+  Future<GetBanksForLinkResponse> getBanksForLink() async {
+    final response = await _refreshApiService.getBanksForLink();
+    return response;
   }
 }

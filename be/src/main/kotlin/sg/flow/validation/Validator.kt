@@ -130,7 +130,7 @@ object Validator {
     fun validateStartTimestampIsNotAfterEndTimestamp(startTimestamp: Timestamp, endTimestamp: Timestamp) {
         val startCasted = Instant.ofEpochSecond(startTimestamp.seconds, startTimestamp  .nanos.toLong())
         val endCasted = Instant.ofEpochSecond(endTimestamp.seconds, endTimestamp.nanos.toLong())
-        require(!endCasted.isAfter(startCasted), "The start timestamp cannot be after end timestamp")
+        require(endCasted.isAfter(startCasted), "The start timestamp cannot be after end timestamp")
     }
 
     fun validateTransferRequest(transferRequest: TransferRequest) {

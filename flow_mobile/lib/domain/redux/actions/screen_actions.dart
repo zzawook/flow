@@ -7,3 +7,7 @@ class NavigateToScreenAction {
 class InitiateRefreshAction {
   InitiateRefreshAction();
 }
+
+class OpenAddAccountScreenAction {
+  OpenAddAccountScreenAction();
+}

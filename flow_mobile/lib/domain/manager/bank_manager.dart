@@ -4,5 +4,5 @@ abstract class BankManager {
   Future<List<Bank>> getBanks();
   Future<Bank> getBank(String name);
 
-  void fetchBanksFromRemote() {}
+  Future<void> fetchBanksFromRemote() async {}
 }

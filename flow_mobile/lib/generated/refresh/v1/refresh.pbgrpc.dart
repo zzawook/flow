@@ -73,6 +73,20 @@ class RefreshServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$0.GetBanksForRefreshResponse> getBanksForRefresh(
+    $0.GetBanksForRefreshRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getBanksForRefresh, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.GetBanksForLinkResponse> getBanksForLink(
+    $0.GetBanksForLinkRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getBanksForLink, request, options: options);
+  }
+
   // method descriptors
 
   static final _$canStartRefreshSession = $grpc.ClientMethod<
@@ -102,6 +116,16 @@ class RefreshServiceClient extends $grpc.Client {
       '/sg.flow.refresh.v1.RefreshService/GetDataRetrievalResult',
       ($0.GetDataRetrievalResultRequest value) => value.writeToBuffer(),
       $0.GetDataRetrievalResultResponse.fromBuffer);
+  static final _$getBanksForRefresh = $grpc.ClientMethod<
+          $0.GetBanksForRefreshRequest, $0.GetBanksForRefreshResponse>(
+      '/sg.flow.refresh.v1.RefreshService/GetBanksForRefresh',
+      ($0.GetBanksForRefreshRequest value) => value.writeToBuffer(),
+      $0.GetBanksForRefreshResponse.fromBuffer);
+  static final _$getBanksForLink =
+      $grpc.ClientMethod<$0.GetBanksForLinkRequest, $0.GetBanksForLinkResponse>(
+          '/sg.flow.refresh.v1.RefreshService/GetBanksForLink',
+          ($0.GetBanksForLinkRequest value) => value.writeToBuffer(),
+          $0.GetBanksForLinkResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.refresh.v1.RefreshService')
@@ -155,6 +179,24 @@ abstract class RefreshServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.GetDataRetrievalResultRequest.fromBuffer(value),
         ($0.GetDataRetrievalResultResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetBanksForRefreshRequest,
+            $0.GetBanksForRefreshResponse>(
+        'GetBanksForRefresh',
+        getBanksForRefresh_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetBanksForRefreshRequest.fromBuffer(value),
+        ($0.GetBanksForRefreshResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetBanksForLinkRequest,
+            $0.GetBanksForLinkResponse>(
+        'GetBanksForLink',
+        getBanksForLink_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetBanksForLinkRequest.fromBuffer(value),
+        ($0.GetBanksForLinkResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.CanStartRefreshSessionResponse> canStartRefreshSession_Pre(
@@ -204,4 +246,22 @@ abstract class RefreshServiceBase extends $grpc.Service {
 
   $async.Future<$0.GetDataRetrievalResultResponse> getDataRetrievalResult(
       $grpc.ServiceCall call, $0.GetDataRetrievalResultRequest request);
+
+  $async.Future<$0.GetBanksForRefreshResponse> getBanksForRefresh_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetBanksForRefreshRequest> $request) async {
+    return getBanksForRefresh($call, await $request);
+  }
+
+  $async.Future<$0.GetBanksForRefreshResponse> getBanksForRefresh(
+      $grpc.ServiceCall call, $0.GetBanksForRefreshRequest request);
+
+  $async.Future<$0.GetBanksForLinkResponse> getBanksForLink_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetBanksForLinkRequest> $request) async {
+    return getBanksForLink($call, await $request);
+  }
+
+  $async.Future<$0.GetBanksForLinkResponse> getBanksForLink(
+      $grpc.ServiceCall call, $0.GetBanksForLinkRequest request);
 }

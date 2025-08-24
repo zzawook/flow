@@ -64,21 +64,23 @@ class BankAccountManagerImpl implements BankAccountManager {
   Future<void> fetchBankAccountsFromRemote() {
     ApiService apiService = getIt<ApiService>();
     // Implement the API call to fetch bank accounts
-    return apiService.getBankAccounts().then((bankAccounts) {
-      _bankAccountBox.clear();
+    return apiService.getBankAccounts().then((bankAccounts) async {
+      await _bankAccountBox.clear();
       for (var account in bankAccounts.accounts) {
-        final bankAccount = BankAccount.initial();
-        bankAccount.copyWith(
+        var bankAccount = BankAccount.initial();
+        bankAccount = bankAccount.copyWith(
           accountNumber: account.accountNumber,
           accountHolder: account.accountName,
           accountType: account.accountType,
+          accountName: account.accountName,
           balance: account.balance,
           bank: Bank(
             name: account.bank.name,
-            logoPath: 'assets/bank_logos/${account.bank.name}',
+            bankId: account.bank.id,
+            // logoPath: 'assets/bank_logos/DBS.png',
           ),
         );
-        _bankAccountBox.put(bankAccount.accountNumber, bankAccount);
+        await _bankAccountBox.put(bankAccount.accountNumber, bankAccount);
       }
     });
   }

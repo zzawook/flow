@@ -1,4 +1,11 @@
 import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
+
+class SetBankAccountStateAction {
+  BankAccountState bankAccountState;
+
+  SetBankAccountStateAction({required this.bankAccountState});
+}
 
 class SetBankAccountNameAction {
   final BankAccount bankAccount;
@@ -12,6 +19,8 @@ class ToggleBankAccountHiddenAction {
 
   ToggleBankAccountHiddenAction({required this.bankAccount});
 }
+
+class ClearBankAccountStateAction {}
 
 class UpdateAccountOrderAction {
   final BankAccount bankAccount;

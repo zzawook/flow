@@ -33,5 +33,21 @@ object BankQueryStore {
         WHERE b.finverse_id = $1
     """
 
+    const val FIND_BANK_BY_COUNTRY =
+        """
+            SELECT b.id,
+            b.bank_name,
+            b.bank_code
+            FROM banks b
+            WHERE b.countries LIKE $1
+        """
+
     const val DELETE_ALL_BANKS = "DELETE FROM banks"
+
+    const val FIND_FINVERSE_ID_BY_ID =
+        """
+            SELECT b.finverse_id
+            FROM banks b
+            WHERE b.id = $1
+        """
 }

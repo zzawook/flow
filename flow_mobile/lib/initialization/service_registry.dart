@@ -1,3 +1,4 @@
+import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:flow_mobile/service/local_source/local_secure_hive.dart';
 import 'package:flow_mobile/service/local_source/local_secure_storage.dart';
 import 'package:flow_mobile/service/api_service/api_service.dart';
@@ -13,7 +14,7 @@ final GetIt getIt = GetIt.instance;
 
 Future<void> initServices() async {
   await SecureHive.initHive(SecureStorage());
-  
+
   getIt.registerSingleton<ConnectionService>(ConnectionService());
   getIt.registerSingleton<LocalSecureStorageService>(
     LocalSecureStorageService(localSecureStorage: SecureStorage()),
@@ -23,10 +24,9 @@ Future<void> initServices() async {
       localSecureStorageService: getIt<LocalSecureStorageService>(),
     ),
   );
+  getIt.registerSingleton<GrpcInterceptor>(GrpcInterceptor());
   getIt.registerSingleton<ApiService>(
-    ApiService(
-      connectionService: getIt<ConnectionService>(),
-    ),
+    ApiService(connectionService: getIt<ConnectionService>()),
   );
   getIt.registerSingleton<SyncService>(
     SyncService(apiService: getIt<ApiService>()),

@@ -5,6 +5,7 @@ class FlowTopBar extends StatelessWidget {
   final Widget title;
   final Widget leftWidget;
   final bool showBackButton;
+  final Function? onBackPressed;
 
   static const Widget emptyBox = SizedBox(width: 20, height: 20);
 
@@ -13,6 +14,7 @@ class FlowTopBar extends StatelessWidget {
     required this.title,
     this.leftWidget = emptyBox,
     this.showBackButton = true,
+    this.onBackPressed,
   });
 
   @override
@@ -27,7 +29,7 @@ class FlowTopBar extends StatelessWidget {
             showBackButton
                 ? FlowButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    onBackPressed?.call() ?? Navigator.of(context).pop();
                   },
                   child: Image.asset(
                     'assets/icons/previous.png',

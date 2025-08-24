@@ -7,11 +7,17 @@ import 'package:flow_mobile/domain/manager/notification_manager.dart';
 import 'package:flow_mobile/domain/manager/transaction_manager.dart';
 import 'package:flow_mobile/domain/manager/user_manager.dart';
 import 'package:flow_mobile/domain/redux/actions/auth_action.dart';
-import 'package:flow_mobile/domain/redux/actions/screen_actions.dart';
+import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
+import 'package:flow_mobile/domain/redux/actions/notification_action.dart';
+import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
+import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
+import 'package:flow_mobile/initialization/flow_state_initializer.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/service/api_service/api_service.dart';
+import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
@@ -34,40 +40,87 @@ ThunkAction<FlowState> setELoginEmailThunk(String email) {
   };
 }
 
-ThunkAction<FlowState> loginThunk(String email, String password) {
+ThunkAction<FlowState> loginThunk(
+  String email,
+  String password,
+  Function onFailure,
+) {
   ApiService apiService = getIt<ApiService>();
   AuthManager authManager = getIt<AuthManager>();
+  final nav = getIt<NavigationService>();
   return (Store<FlowState> store) async {
+    TokenSet tokenSet;
     try {
-      final tokenSet = await apiService.signin(email, password);
-      authManager.saveAccessTokenToLocal(tokenSet.accessToken);
-      authManager.saveRefreshTokenToLocal(tokenSet.refreshToken);
-      _initStateForLoggedInUser();
-      store.dispatch(
-        LoginSuccessAction(
-          accessToken: tokenSet.accessToken,
-          refreshToken: tokenSet.refreshToken,
-        ),
-      );
-      store.dispatch(NavigateToScreenAction(AppRoutes.home));
+      tokenSet = await apiService.signin(email, password);
     } catch (error) {
       store.dispatch(LoginErrorAction(error.toString()));
+      onFailure();
+      return;
     }
+    authManager.saveAccessTokenToLocal(tokenSet.accessToken);
+    authManager.saveRefreshTokenToLocal(tokenSet.refreshToken);
+    GrpcInterceptor.setAccessToken(tokenSet.accessToken);
+    await _initStateForLoggedInUser(store);
+    store.dispatch(
+      LoginSuccessAction(
+        accessToken: tokenSet.accessToken,
+        refreshToken: tokenSet.refreshToken,
+      ),
+    );
+    nav.pushNamed(AppRoutes.home);
   };
 }
 
-void _initStateForLoggedInUser() {
+Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   BankAccountManager bankAccountManager = getIt<BankAccountManager>();
   BankManager bankManager = getIt<BankManager>();
   NotificationManager notificationManager = getIt<NotificationManager>();
   TransactionManager transactionManager = getIt<TransactionManager>();
   UserManager userManager = getIt<UserManager>();
 
-  userManager.fetchUserFromRemote();
-  bankManager.fetchBanksFromRemote();
-  bankAccountManager.fetchBankAccountsFromRemote();
-  transactionManager.fetchLast30DaysTransactionsFromRemote();
-  notificationManager.fetchNotificationsFromRemote();
+  final userFuture = userManager.fetchUserFromRemote();
+  final bankFuture = bankManager.fetchBanksFromRemote();
+  final bankAccountFuture = bankAccountManager.fetchBankAccountsFromRemote();
+  final transactionFuture =
+      transactionManager.fetchLast30DaysTransactionsFromRemote();
+  final notificationFuture = notificationManager.fetchNotificationsFromRemote();
+
+  final fetchResults = Future.wait([
+    userFuture,
+    bankFuture,
+    bankAccountFuture,
+    transactionFuture,
+    notificationFuture,
+  ]);
+
+  fetchResults.then((_) async {
+    store.dispatch(
+      SetUserStateAction(userState: await FlowStateInitializer.getUserState()),
+    );
+    store.dispatch(
+      SetBankAccountStateAction(
+        bankAccountState: await FlowStateInitializer.getBankAccountState(),
+      ),
+    );
+    store.dispatch(
+      SetTransactionStateAction(
+        transactionHistoryState:
+            await FlowStateInitializer.getTransactionState(),
+      ),
+    );
+    store.dispatch(
+      SetNotificationStateAction(
+        notificationState: await FlowStateInitializer.getNotificationState(),
+      ),
+    );
+  });
+}
+
+Future<void> _clearStateOnLogout(Store<FlowState> store) async {
+  store.dispatch(ClearUserStateAction());
+  store.dispatch(ClearBankAccountStateAction());
+  store.dispatch(ClearTransactionStateAction());
+  store.dispatch(ClearNotificationStateAction());
 }
 
 ThunkAction<FlowState> signupThunk(String email, String password, String name) {
@@ -79,6 +132,7 @@ ThunkAction<FlowState> signupThunk(String email, String password, String name) {
       final tokenSet = await apiService.signup(email, password, name);
       authManager.saveAccessTokenToLocal(tokenSet.accessToken);
       authManager.saveRefreshTokenToLocal(tokenSet.refreshToken);
+      GrpcInterceptor.setAccessToken(tokenSet.accessToken);
       store.dispatch(
         SignupSuccessAction(
           accessToken: tokenSet.accessToken,
@@ -97,19 +151,21 @@ ThunkAction<FlowState> signupThunk(String email, String password, String name) {
 ThunkAction<FlowState> logoutThunk() {
   AuthManager authManager = getIt<AuthManager>();
   ApiService apiService = getIt<ApiService>();
+  final nav = getIt<NavigationService>();
+
   return (Store<FlowState> store) async {
     try {
+      // best effort basis
       final response = await apiService.signout();
-      if (!response.success) {
-        throw Exception('Logout failed');
-      }
     } catch (error) {
       log('Logout error: $error');
     }
+    await _clearStateOnLogout(store);
     // ALWAYS clear tokens after logout
+    GrpcInterceptor.setAccessToken("");
     authManager.deleteAccessTokenFromLocal();
     authManager.deleteRefreshTokenFromLocal();
     store.dispatch(LogoutAction());
-    store.dispatch(NavigateToScreenAction(AppRoutes.login));
+    nav.pushNamedAndRemoveUntil(AppRoutes.welcome);
   };
 }

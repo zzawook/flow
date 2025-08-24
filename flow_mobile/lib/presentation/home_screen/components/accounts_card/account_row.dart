@@ -108,7 +108,8 @@ class AccountRow extends StatelessWidget {
       width: 50,
       height: 50,
       child: Image.asset(
-        'assets/bank_logos/${bankAccount.bank.name}.png',
+        // 'assets/bank_logos/${bankAccount.bank.name}.png',
+        'assets/bank_logos/DBS.png',
         fit: BoxFit.contain,
       ),
     );

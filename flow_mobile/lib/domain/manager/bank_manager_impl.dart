@@ -3,9 +3,9 @@ import 'package:flow_mobile/domain/entity/bank.dart';
 
 class BankManagerImpl implements BankManager {
   List<Bank> banks = [
-    Bank(logoPath: 'assets/bank_logos/DBS.png', name: 'DBS'),
-    Bank(logoPath: 'assets/bank_logos/UOB.png', name: 'UOB'),
-    Bank(logoPath: 'assets/bank_logos/Maybank.png', name: 'Maybank'),
+    Bank(name: 'DBS', bankId: 1),
+    Bank(name: 'UOB', bankId: 2),
+    Bank(name: 'Maybank', bankId: 3),
   ];
 
   static BankManagerImpl? _instance;
@@ -34,7 +34,7 @@ class BankManagerImpl implements BankManager {
   }
 
   @override
-  void fetchBanksFromRemote() {
+  Future<void> fetchBanksFromRemote() async {
     //TODO: Implement fetching banks from remote API
   }
 }

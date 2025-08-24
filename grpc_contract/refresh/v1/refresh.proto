@@ -5,27 +5,31 @@ option java_multiple_files  = true;
 option java_package         = "sg.flow.refresh.v1";
 option java_outer_classname = "RefreshServiceProto";
 
+import "common/v1/bank.proto";
+
 service RefreshService {
     rpc CanStartRefreshSession (CanStartRefreshSessionRequest) returns (CanStartRefreshSessionResponse);
     rpc GetRefreshUrl (GetRefreshUrlRequest) returns (GetRefreshUrlResponse);
     rpc GetRelinkUrl (GetRelinkUrlRequest) returns (GetRelinkUrlResponse);
     rpc GetInstitutionAuthenticationResult (GetInstitutionAuthenticationResultRequest) returns (GetInstitutionAuthenticationResultResponse);
     rpc GetDataRetrievalResult (GetDataRetrievalResultRequest) returns (GetDataRetrievalResultResponse);
+    rpc GetBanksForRefresh (GetBanksForRefreshRequest) returns (GetBanksForRefreshResponse);
+    rpc GetBanksForLink (GetBanksForLinkRequest) returns (GetBanksForLinkResponse);
 }
 
 /* ── Requests ── */
 message GetRefreshUrlRequest {
-    string institution_id = 1; // Institution ID for which the refresh link is requested
+    int64 institution_id = 1; // Institution ID for which the refresh link is requested
     optional string country_code = 2;
 }
 
 message GetRelinkUrlRequest {
-    string institution_id = 1;
+    int64 institution_id = 1;
     optional string country_code = 2;
 }
 
 message CanStartRefreshSessionRequest {
-    string institution_id = 1;
+    int64 institution_id = 1;
 }
 
 message CanStartRefreshSessionResponse {
@@ -42,7 +46,7 @@ message GetRelinkUrlResponse {
 }
 
 message GetInstitutionAuthenticationResultRequest {
-    string institution_id = 1; // Institution ID for which the authentication result is requested
+    int64 institution_id = 1; // Institution ID for which the authentication result is requested
     string state = 2; // State parameter to maintain context
 }
 
@@ -52,10 +56,23 @@ message GetInstitutionAuthenticationResultResponse {
 }
 
 message GetDataRetrievalResultRequest {
-    string institution_id = 1; // Institution ID for which the data retrieval result is requested
+    int64 institution_id = 1; // Institution ID for which the data retrieval result is requested
 }
 
 message GetDataRetrievalResultResponse {
     bool success = 1; // Indicates whether the data retrieval was successful
     string message = 2; // Additional message or information regarding the data retrieval result
+}
+
+message GetBanksForRefreshRequest {
+    string country_code = 1; // Optional country code to filter banks
+}
+message GetBanksForLinkRequest {
+    string country_code = 1; // Optional country code to filter banks
+}
+message GetBanksForRefreshResponse {
+    repeated sg.flow.common.v1.Bank banks = 1; // List of banks available for refresh
+}
+message GetBanksForLinkResponse {
+    repeated sg.flow.common.v1.Bank banks = 1; // List of banks available for linking
 }

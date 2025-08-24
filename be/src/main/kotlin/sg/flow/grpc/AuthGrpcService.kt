@@ -2,12 +2,15 @@ package sg.flow.grpc
 
 import io.grpc.Status
 import org.springframework.grpc.server.service.GrpcService
+import sg.flow.auth.GrpcSecurityContext
 
 import sg.flow.auth.v1.AuthServiceGrpcKt              // generated from auth_service.proto
 import sg.flow.auth.v1.AccessTokenRefreshRequest
 import sg.flow.auth.v1.CheckUserExistsRequest
 import sg.flow.auth.v1.CheckUserExistsResponse
 import sg.flow.auth.v1.SignInRequest
+import sg.flow.auth.v1.SignOutRequest
+import sg.flow.auth.v1.SignOutResponse
 import sg.flow.auth.v1.SignUpRequest
 import sg.flow.auth.v1.TokenSet
 import sg.flow.grpc.exception.InvalidRefreshTokenException
@@ -22,6 +25,12 @@ class AuthGrpcService(
         private val authService: AuthService,
         private val authMapper: AuthMapper,
 ) : AuthServiceGrpcKt.AuthServiceCoroutineImplBase() {
+
+        private fun currentUserId(): Int {
+                val user = GrpcSecurityContext.USER_DETAILS.get()
+                        ?: throw Status.UNAUTHENTICATED.withDescription("No user in context").asRuntimeException()
+                return user.userId
+        }
 
         override suspend fun signIn(request: SignInRequest): TokenSet {
                 try {
@@ -60,6 +69,15 @@ class AuthGrpcService(
                         request.email, request.name, request.password
                 )
                 return authMapper.toProto(token)
+        }
+
+        override suspend fun signOut(request: SignOutRequest): SignOutResponse {
+                val userId = currentUserId()
+
+                val result = authService.signOutUser(
+                        request.accessToken
+                )
+                return SignOutResponse.newBuilder().setSuccess(result).build()
         }
 
         override suspend fun getAccessTokenByRefreshToken(

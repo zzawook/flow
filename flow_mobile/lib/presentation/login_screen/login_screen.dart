@@ -5,6 +5,7 @@ import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/flow_string_checker.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/transfer_screen/input.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,22 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final FocusNode _usernameFocus = FocusNode();
 
+  var message = '';
+
   void _onNext() {
+    if (_usernameController.text.isEmpty) {
+      setState(() {
+        message = 'Email cannot be empty';
+      });
+      return;
+    }
+    var emailMessage = FlowStringChecker.isValidEmail(_usernameController.text);
+    if (!emailMessage) {
+      setState(() {
+        message = "Sorry, that doesn't look like a valid email";
+      });
+      return;
+    }
     StoreProvider.of<FlowState>(
       context,
       listen: false,
@@ -44,13 +60,22 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FlowTopBar(title: Center(child: Text('')), showBackButton: true),
+              FlowTopBar(title: Center(child: Text(''))),
               FlowSeparatorBox(height: 50),
               Text(
                 "What's your Email?",
                 style: Theme.of(context).textTheme.displayLarge,
               ),
-              FlowSeparatorBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
               if (_isLoading)
                 const CircularProgressIndicator()
               else

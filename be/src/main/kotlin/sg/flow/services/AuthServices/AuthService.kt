@@ -9,4 +9,5 @@ interface AuthService {
     suspend fun getTokenSetForUser(email: String, password: String): TokenSet
     suspend fun getAccessTokenByRefreshToken(request: AccessTokenRefreshRequest): TokenSet?
     suspend fun checkUserExists(email: String): Boolean
+    suspend fun signOutUser(accessToken: String): Boolean
 }

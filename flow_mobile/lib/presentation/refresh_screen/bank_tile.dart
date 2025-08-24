@@ -2,19 +2,22 @@ import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class BankTile extends StatefulWidget {
-  const BankTile({
+  BankTile({
     super.key,
     required this.bank,
     required this.bankAccountNames,
     required this.isSelected,
     required this.onTap,
+    this.shouldDisplayAccountDetails = true,
   });
 
   final Bank bank;
   final List<String> bankAccountNames;
   final bool isSelected;
   final Function onTap;
+  bool shouldDisplayAccountDetails = true;
 
   @override
   State<BankTile> createState() => _BankTileState();
@@ -69,7 +72,11 @@ class _BankTileState extends State<BankTile> {
             SizedBox(
               width: 50,
               height: 50,
-              child: Image.asset(widget.bank.logoPath, fit: BoxFit.contain),
+              // child: Image.asset("assets/bank_logos/${widget.bank.name}.png", fit: BoxFit.contain),
+              child: Image.asset(
+                "assets/bank_logos/DBS.png",
+                fit: BoxFit.contain,
+              ),
             ),
             const SizedBox(width: 12),
             // Bank name + account type + balance
@@ -81,11 +88,14 @@ class _BankTileState extends State<BankTile> {
                     widget.bank.name,
                     style: isSelected ? selectedTextStyle : unselectedTextStyle,
                   ),
-                  Text(
-                    "${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''}",
-                    style: isSelected ? selectedTextStyle : unselectedTextStyle,
-                  ),
-                  const SizedBox(height: 4),
+                  if (widget.shouldDisplayAccountDetails) ...[
+                    Text(
+                      "${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''}",
+                      style:
+                          isSelected ? selectedTextStyle : unselectedTextStyle,
+                    ),
+                    const SizedBox(height: 4),
+                  ],
                   ...widget.bankAccountNames.map(
                     (accountName) => Text(
                       accountName,

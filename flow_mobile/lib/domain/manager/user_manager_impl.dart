@@ -47,11 +47,11 @@ class UserManagerImpl implements UserManager {
   }
 
   @override
-  void fetchUserFromRemote() {
+  Future<void> fetchUserFromRemote() async {
     ApiService apiService = getIt<ApiService>();
     apiService
         .getUserProfile()
-        .then((userProfile) {
+        .then((userProfile) async {
           User user = User(
             name: userProfile.name,
             email: userProfile.email,
@@ -59,7 +59,8 @@ class UserManagerImpl implements UserManager {
             phoneNumber: userProfile.phoneNumber,
             nickname: userProfile.name,
           );
-          updateUser(user);
+          print("Fetched user: ${user.name}, ${user.email}");
+          await updateUser(user);
         })
         .catchError((error) {
           log("Error fetching user: $error");

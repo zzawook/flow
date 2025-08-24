@@ -1,11 +1,15 @@
 import 'package:flow_mobile/generated/auth/v1/auth.pbgrpc.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
+import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:grpc/grpc.dart';
 import 'package:grpc/grpc_connection_interface.dart';
 
 class AuthApiService {
   final AuthServiceClient client;
 
-  AuthApiService(ClientChannel channel) : client = AuthServiceClient(channel);
+  AuthApiService(ClientChannel channel) : client = AuthServiceClient(
+    channel, interceptors: [getIt<GrpcInterceptor>()]
+    );
 
   Future<TokenSet> login(String email, String password) async {
     final request = SignInRequest(email: email, password: password);
@@ -14,7 +18,7 @@ class AuthApiService {
       final response = await client.signIn(request);
       return response;
     } catch (e) {
-      throw Exception('Login failed: $e');
+      throw Exception('Login failed: ${e}');
     }
   }
 
@@ -36,7 +40,8 @@ class AuthApiService {
       final response = await client.signOut(request);
       return response;
     } catch (e) {
-      throw Exception('Sign out failed: $e');
+      print("'Signout failed: $e'");
+      return Future.value(SignOutResponse());
     }
   }
 

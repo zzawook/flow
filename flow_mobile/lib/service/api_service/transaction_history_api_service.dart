@@ -1,6 +1,8 @@
 
 import 'package:flow_mobile/generated/common/v1/transaction.pb.dart';
 import 'package:flow_mobile/generated/transaction_history/transaction_history.pbgrpc.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
+import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:grpc/grpc_connection_interface.dart';
 import 'package:flow_mobile/generated/google/protobuf/timestamp.pb.dart' as gp;
 
@@ -9,7 +11,7 @@ class TransactionHistoryApiService {
   final TransactionHistoryServiceClient _channel;
 
   TransactionHistoryApiService(ClientChannel channel)
-      : _channel = TransactionHistoryServiceClient(channel);
+      : _channel = TransactionHistoryServiceClient(channel, interceptors: [getIt<GrpcInterceptor>()]);
 
   gp.Timestamp ts(DateTime dt) => gp.Timestamp.fromDateTime(dt.toUtc());
 

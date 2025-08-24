@@ -23,13 +23,15 @@ Future<void> main() async {
   runApp(
     StoreProvider<FlowState>(
       store: flowStateStore(initialState),
-      child: const FlowApplication(),
+      child: FlowApplication(initialState: initialState),
     ),
   );
 }
 
 class FlowApplication extends StatelessWidget {
-  const FlowApplication({super.key});
+  final FlowState initialState;
+
+  const FlowApplication({super.key, required this.initialState});
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +60,14 @@ class FlowApplication extends StatelessWidget {
                 child: child ?? SizedBox.shrink(),
               ),
 
-          initialRoute: AppRoutes.home,
+          initialRoute:
+              initialState.authState.isAuthenticated
+                  ? AppRoutes.home
+                  : AppRoutes.welcome,
           onGenerateRoute:
               (settings) => AppRoutes.generate(settings, store.dispatch),
         );
       },
     );
   }
-
-  
 }

@@ -94,7 +94,7 @@ object AccountQueryStore {
         a.finverse_id,
         b.id AS bank_id, 
         b.bank_name, 
-        b.bank_code, 
+        b.bank_code,
         u.id AS user_id, 
         u.name, 
         u.email, 

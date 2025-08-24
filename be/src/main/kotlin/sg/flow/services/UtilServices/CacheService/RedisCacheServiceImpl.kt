@@ -72,6 +72,13 @@ class RedisCacheServiceImpl(
             .block()
     }
 
+    override suspend fun clearAccessToken(token: String) {
+        val key = ACCESS_TOKEN_PREFIX + token
+        redisTemplate.opsForValue()
+            .delete(key)
+            .block()
+    }
+
     override suspend fun storeUserIdByLoginIdentityId(loginIdentityId: String, loginIdentityToken: String, userId: Int, institutionId: String, refreshAllowed: Boolean) {
         try {
             clearLoginIdentityCacheFor(userId, institutionId)

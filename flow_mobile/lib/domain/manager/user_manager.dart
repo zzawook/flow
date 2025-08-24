@@ -5,5 +5,5 @@ abstract class UserManager {
   Future<void> updateUser(User user);
   Future<void> deleteUser();
 
-  void fetchUserFromRemote() {}
+  Future<void> fetchUserFromRemote() async {}
 }

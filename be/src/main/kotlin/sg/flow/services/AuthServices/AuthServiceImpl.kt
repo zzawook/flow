@@ -131,4 +131,8 @@ class AuthServiceImpl(
 
         return result
     }
+
+    override suspend fun signOutUser(accessToken: String): Boolean {
+        return tokenService.revokeAccessToken(accessToken)
+    }
 }

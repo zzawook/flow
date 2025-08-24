@@ -2,6 +2,8 @@ import 'package:flow_mobile/domain/manager/auth_manager.dart';
 import 'package:flow_mobile/domain/manager/auth_manager_impl.dart';
 import 'package:flow_mobile/domain/manager/bank_account_manager.dart';
 import 'package:flow_mobile/domain/manager/bank_account_manager_impl.dart';
+import 'package:flow_mobile/domain/manager/bank_manager.dart';
+import 'package:flow_mobile/domain/manager/bank_manager_impl.dart';
 import 'package:flow_mobile/domain/manager/notification_manager.dart';
 import 'package:flow_mobile/domain/manager/notification_manager_impl.dart';
 import 'package:flow_mobile/domain/manager/setting_manager.dart';
@@ -34,4 +36,5 @@ Future<void> initManagers() async {
   getIt.registerSingleton<NotificationManager>(
     await NotificationManagerImpl.getInstance(),
   );
+  getIt.registerSingleton<BankManager>(await BankManagerImpl.getInstance());
 }

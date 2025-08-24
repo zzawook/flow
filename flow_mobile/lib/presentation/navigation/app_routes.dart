@@ -1,4 +1,11 @@
+import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/presentation/add_account_screen/add_account_screen.dart';
 import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
+import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen.dart';
+import 'package:flow_mobile/presentation/link_bank_screen/all_link_success_screen.dart';
+import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen_argument.dart';
+import 'package:flow_mobile/presentation/link_bank_screen/link_failed_screen.dart';
+import 'package:flow_mobile/presentation/link_bank_screen/link_success_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/login_password_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/login_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_name_screen.dart';
@@ -9,6 +16,7 @@ import 'package:flow_mobile/presentation/setting_screen/manage_bank_accounts_scr
 import 'package:flow_mobile/presentation/setting_screen/manage_notification_screen/manage_notification_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/setting_screen/setting_screen.dart';
+import 'package:flow_mobile/presentation/welcome_screen/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/entity/bank_account.dart';
@@ -35,12 +43,14 @@ typedef ScreenTracker = void Function(String screenName);
 
 class AppRoutes {
   static const home = '/home';
+  static const welcome = '/welcome';
   static const spending = '/spending';
   static const spendingDetail = '/spending/detail';
   static const category = '/spending/category';
   static const categoryDetail = '/spending/category/detail';
   static const fixedSpending = '/fixed_spending/details';
   static const accountDetail = '/account_detail';
+  static const addAccount = '/add_account';
   static const transfer = '/transfer';
   static const transferAmount = '/transfer/amount';
   static const transferTo = '/transfer/to';
@@ -48,6 +58,10 @@ class AppRoutes {
   static const transferResult = '/transfer/result';
   static const notification = '/notification';
   static const refresh = '/refresh';
+  static const linkBank = '/link_bank';
+  static const linkSuccess = '/link_success';
+  static const linkFailed = '/link_failed';
+  static const allLinkSuccess = '/all_link_success';
   static const login = '/login';
   static const loginPassword = '/login/password';
   static const signupPassword = '/signup/password';
@@ -72,6 +86,9 @@ class AppRoutes {
     switch (settings.name) {
       case home:
         page = const FlowHomeScreen();
+        break;
+      case welcome:
+        page = const WelcomeScreen();
         break;
 
       case spending:
@@ -157,9 +174,25 @@ class AppRoutes {
         page = const ManageAccountScreen();
         break;
 
-
       case asset:
         page = const AssetScreen();
+        break;
+      case addAccount:
+        final data = args!.extraData as List<Bank>;
+        page = AddAccountScreen(banks: data);
+        break;
+      case linkBank:
+        final argument = args!.extraData as LinkBankScreenArgument;
+        page = LinkBankScreen(url: argument.linkUrl, bank: argument.bank);
+        break;
+      case linkSuccess:
+        page = const LinkSuccessScreen();
+        break;
+      case linkFailed:
+        page = const LinkFailedScreen();
+        break;
+      case allLinkSuccess:
+        page = const AllLinkSuccessScreen();
         break;
       case bankAccountSetting:
         final data = args!.extraData as BankAccount;

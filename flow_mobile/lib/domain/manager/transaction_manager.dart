@@ -12,5 +12,5 @@ abstract class TransactionManager {
 
   getAllTransactions() {}
 
-  void fetchLast30DaysTransactionsFromRemote() {}
+  Future<void> fetchLast30DaysTransactionsFromRemote() async {}
 }

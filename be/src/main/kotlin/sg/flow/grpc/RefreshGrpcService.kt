@@ -3,8 +3,13 @@ package sg.flow.grpc
 import io.grpc.Status
 import org.springframework.grpc.server.service.GrpcService
 import sg.flow.auth.GrpcSecurityContext
+import sg.flow.common.v1.CommonBankProto
 import sg.flow.refresh.v1.CanStartRefreshSessionRequest
 import sg.flow.refresh.v1.CanStartRefreshSessionResponse
+import sg.flow.refresh.v1.GetBanksForLinkRequest
+import sg.flow.refresh.v1.GetBanksForLinkResponse
+import sg.flow.refresh.v1.GetBanksForRefreshRequest
+import sg.flow.refresh.v1.GetBanksForRefreshResponse
 import sg.flow.refresh.v1.GetDataRetrievalResultRequest
 import sg.flow.refresh.v1.GetDataRetrievalResultResponse
 import sg.flow.refresh.v1.GetInstitutionAuthenticationResultRequest
@@ -29,9 +34,14 @@ class RefreshGrpcService(
         return user.userId
     }
 
+    private suspend fun getFinverseInstitutionId(institutionId: Long): String {
+        return finverseQueryService.getFinverseInstitutionId(institutionId)
+    }
+
     override suspend fun canStartRefreshSession(request: CanStartRefreshSessionRequest): CanStartRefreshSessionResponse {
         val userId = currentUserId()
-        val isRunning = finverseQueryService.hasRunningRefreshSession(userId, request.institutionId)
+        val finverseInstitutionId = finverseQueryService.getFinverseInstitutionId(request.institutionId)
+        val isRunning = finverseQueryService.hasRunningRefreshSession(userId, finverseInstitutionId)
 
         var reason = ""
         if (isRunning) {
@@ -41,16 +51,54 @@ class RefreshGrpcService(
         return CanStartRefreshSessionResponse.newBuilder().setCanStart(! isRunning).setDescription(reason).build()
     }
 
+    override suspend fun getBanksForRefresh(request: GetBanksForRefreshRequest): GetBanksForRefreshResponse {
+        val userId = currentUserId()
+        val country = request.countryCode
+        val banks = finverseQueryService.getBanksForRefresh(userId, country)
 
-        override suspend fun getRefreshUrl(request: GetRefreshUrlRequest): GetRefreshUrlResponse {
+        val resp = GetBanksForRefreshResponse.newBuilder()
+        banks.forEach { bank ->
+            resp.addBanks(
+            CommonBankProto.Bank.newBuilder()
+                .setName(bank.name)
+                .setBankCode(bank.bankCode)
+                .setId(bank.id ?: -1)
+                .build()
+            )
+        }
+        return resp.build()
+    }
+
+    override suspend fun getBanksForLink(request: GetBanksForLinkRequest): GetBanksForLinkResponse {
+        val userId = currentUserId()
+        val country = request.countryCode
+        val banks = finverseQueryService.getBanksForLink(userId, country)
+
+        val resp = GetBanksForLinkResponse.newBuilder()
+        banks.forEach { bank ->
+            resp.addBanks(
+                CommonBankProto.Bank.newBuilder()
+                    .setName(bank.name)
+                    .setBankCode(bank.bankCode)
+                    .setId(bank.id ?: -1)
+                    .build()
+            )
+        }
+
+        return resp.build()
+    }
+
+
+    override suspend fun getRefreshUrl(request: GetRefreshUrlRequest): GetRefreshUrlResponse {
         val userId = currentUserId()
         val institutionId = request.institutionId
+        val finverseInstitutionId = finverseQueryService.getFinverseInstitutionId(institutionId)
 
-        if (finverseQueryService.hasRunningRefreshSession(userId, request.institutionId)) {
+        if (finverseQueryService.hasRunningRefreshSession(userId, finverseInstitutionId)) {
             return GetRefreshUrlResponse.newBuilder().setRefreshUrl(ALREADY_HAS_RUNNING_SESSION_MESSAGE).build()
         }
 
-        val link = finverseQueryService.refresh(userId, institutionId)
+        val link = finverseQueryService.refresh(userId, finverseInstitutionId)
 
         return GetRefreshUrlResponse.newBuilder().setRefreshUrl(link).build()
     }
@@ -58,28 +106,29 @@ class RefreshGrpcService(
     override suspend fun getRelinkUrl(request: GetRelinkUrlRequest): GetRelinkUrlResponse {
         val userId = currentUserId()
         val institutionId = request.institutionId
+        val finverseInstitutionId = finverseQueryService.getFinverseInstitutionId(institutionId)
 
-
-        if (finverseQueryService.hasRunningRefreshSession(userId, request.institutionId)) {
+        if (finverseQueryService.hasRunningRefreshSession(userId, finverseInstitutionId)) {
             return GetRelinkUrlResponse.newBuilder().setRelinkUrl(ALREADY_HAS_RUNNING_SESSION_MESSAGE).build()
         }
-        val link = finverseQueryService.relink(userId, institutionId)
+        val link = finverseQueryService.relink(userId, finverseInstitutionId)
 
         return GetRelinkUrlResponse.newBuilder().setRelinkUrl(link).build()
     }
 
     override suspend fun getInstitutionAuthenticationResult(request: GetInstitutionAuthenticationResultRequest): GetInstitutionAuthenticationResultResponse {
         val userId = currentUserId()
-        val result = finverseQueryService.getInstitutionAuthenticationResult(userId, request.institutionId)
-
+        val finverseInstitutionId = finverseQueryService.getFinverseInstitutionId(request.institutionId)
+        val result = finverseQueryService.getInstitutionAuthenticationResult(userId, finverseInstitutionId)
         return GetInstitutionAuthenticationResultResponse.newBuilder().setSuccess(result.success).setMessage(result.message).build()
     }
 
     override suspend fun getDataRetrievalResult(request: GetDataRetrievalResultRequest): GetDataRetrievalResultResponse {
         val userId = currentUserId()
         val institutionId = request.institutionId
+        val finverseInstitutionId = finverseQueryService.getFinverseInstitutionId(institutionId)
 
-        val result = finverseQueryService.getUserDataRetrievalResult(userId, institutionId)
+        val result = finverseQueryService.getUserDataRetrievalResult(userId, finverseInstitutionId)
 
         return GetDataRetrievalResultResponse.newBuilder().setSuccess(result.success).setMessage(result.message) .build()
     }

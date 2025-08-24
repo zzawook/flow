@@ -18,7 +18,7 @@ import 'dart:typed_data' as $typed_data;
 const GetRefreshUrlRequest$json = {
   '1': 'GetRefreshUrlRequest',
   '2': [
-    {'1': 'institution_id', '3': 1, '4': 1, '5': 9, '10': 'institutionId'},
+    {'1': 'institution_id', '3': 1, '4': 1, '5': 3, '10': 'institutionId'},
     {
       '1': 'country_code',
       '3': 2,
@@ -36,7 +36,7 @@ const GetRefreshUrlRequest$json = {
 
 /// Descriptor for `GetRefreshUrlRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getRefreshUrlRequestDescriptor = $convert.base64Decode(
-    'ChRHZXRSZWZyZXNoVXJsUmVxdWVzdBIlCg5pbnN0aXR1dGlvbl9pZBgBIAEoCVINaW5zdGl0dX'
+    'ChRHZXRSZWZyZXNoVXJsUmVxdWVzdBIlCg5pbnN0aXR1dGlvbl9pZBgBIAEoA1INaW5zdGl0dX'
     'Rpb25JZBImCgxjb3VudHJ5X2NvZGUYAiABKAlIAFILY291bnRyeUNvZGWIAQFCDwoNX2NvdW50'
     'cnlfY29kZQ==');
 
@@ -44,7 +44,7 @@ final $typed_data.Uint8List getRefreshUrlRequestDescriptor = $convert.base64Deco
 const GetRelinkUrlRequest$json = {
   '1': 'GetRelinkUrlRequest',
   '2': [
-    {'1': 'institution_id', '3': 1, '4': 1, '5': 9, '10': 'institutionId'},
+    {'1': 'institution_id', '3': 1, '4': 1, '5': 3, '10': 'institutionId'},
     {
       '1': 'country_code',
       '3': 2,
@@ -62,7 +62,7 @@ const GetRelinkUrlRequest$json = {
 
 /// Descriptor for `GetRelinkUrlRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getRelinkUrlRequestDescriptor = $convert.base64Decode(
-    'ChNHZXRSZWxpbmtVcmxSZXF1ZXN0EiUKDmluc3RpdHV0aW9uX2lkGAEgASgJUg1pbnN0aXR1dG'
+    'ChNHZXRSZWxpbmtVcmxSZXF1ZXN0EiUKDmluc3RpdHV0aW9uX2lkGAEgASgDUg1pbnN0aXR1dG'
     'lvbklkEiYKDGNvdW50cnlfY29kZRgCIAEoCUgAUgtjb3VudHJ5Q29kZYgBAUIPCg1fY291bnRy'
     'eV9jb2Rl');
 
@@ -70,14 +70,14 @@ final $typed_data.Uint8List getRelinkUrlRequestDescriptor = $convert.base64Decod
 const CanStartRefreshSessionRequest$json = {
   '1': 'CanStartRefreshSessionRequest',
   '2': [
-    {'1': 'institution_id', '3': 1, '4': 1, '5': 9, '10': 'institutionId'},
+    {'1': 'institution_id', '3': 1, '4': 1, '5': 3, '10': 'institutionId'},
   ],
 };
 
 /// Descriptor for `CanStartRefreshSessionRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List canStartRefreshSessionRequestDescriptor =
     $convert.base64Decode(
-        'Ch1DYW5TdGFydFJlZnJlc2hTZXNzaW9uUmVxdWVzdBIlCg5pbnN0aXR1dGlvbl9pZBgBIAEoCV'
+        'Ch1DYW5TdGFydFJlZnJlc2hTZXNzaW9uUmVxdWVzdBIlCg5pbnN0aXR1dGlvbl9pZBgBIAEoA1'
         'INaW5zdGl0dXRpb25JZA==');
 
 @$core.Deprecated('Use canStartRefreshSessionResponseDescriptor instead')
@@ -125,7 +125,7 @@ final $typed_data.Uint8List getRelinkUrlResponseDescriptor = $convert.base64Deco
 const GetInstitutionAuthenticationResultRequest$json = {
   '1': 'GetInstitutionAuthenticationResultRequest',
   '2': [
-    {'1': 'institution_id', '3': 1, '4': 1, '5': 9, '10': 'institutionId'},
+    {'1': 'institution_id', '3': 1, '4': 1, '5': 3, '10': 'institutionId'},
     {'1': 'state', '3': 2, '4': 1, '5': 9, '10': 'state'},
   ],
 };
@@ -134,7 +134,7 @@ const GetInstitutionAuthenticationResultRequest$json = {
 final $typed_data.Uint8List
     getInstitutionAuthenticationResultRequestDescriptor = $convert.base64Decode(
         'CilHZXRJbnN0aXR1dGlvbkF1dGhlbnRpY2F0aW9uUmVzdWx0UmVxdWVzdBIlCg5pbnN0aXR1dG'
-        'lvbl9pZBgBIAEoCVINaW5zdGl0dXRpb25JZBIUCgVzdGF0ZRgCIAEoCVIFc3RhdGU=');
+        'lvbl9pZBgBIAEoA1INaW5zdGl0dXRpb25JZBIUCgVzdGF0ZRgCIAEoCVIFc3RhdGU=');
 
 @$core.Deprecated(
     'Use getInstitutionAuthenticationResultResponseDescriptor instead')
@@ -157,14 +157,14 @@ final $typed_data.Uint8List
 const GetDataRetrievalResultRequest$json = {
   '1': 'GetDataRetrievalResultRequest',
   '2': [
-    {'1': 'institution_id', '3': 1, '4': 1, '5': 9, '10': 'institutionId'},
+    {'1': 'institution_id', '3': 1, '4': 1, '5': 3, '10': 'institutionId'},
   ],
 };
 
 /// Descriptor for `GetDataRetrievalResultRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getDataRetrievalResultRequestDescriptor =
     $convert.base64Decode(
-        'Ch1HZXREYXRhUmV0cmlldmFsUmVzdWx0UmVxdWVzdBIlCg5pbnN0aXR1dGlvbl9pZBgBIAEoCV'
+        'Ch1HZXREYXRhUmV0cmlldmFsUmVzdWx0UmVxdWVzdBIlCg5pbnN0aXR1dGlvbl9pZBgBIAEoA1'
         'INaW5zdGl0dXRpb25JZA==');
 
 @$core.Deprecated('Use getDataRetrievalResultResponseDescriptor instead')
@@ -181,3 +181,73 @@ final $typed_data.Uint8List getDataRetrievalResultResponseDescriptor =
     $convert.base64Decode(
         'Ch5HZXREYXRhUmV0cmlldmFsUmVzdWx0UmVzcG9uc2USGAoHc3VjY2VzcxgBIAEoCFIHc3VjY2'
         'VzcxIYCgdtZXNzYWdlGAIgASgJUgdtZXNzYWdl');
+
+@$core.Deprecated('Use getBanksForRefreshRequestDescriptor instead')
+const GetBanksForRefreshRequest$json = {
+  '1': 'GetBanksForRefreshRequest',
+  '2': [
+    {'1': 'country_code', '3': 1, '4': 1, '5': 9, '10': 'countryCode'},
+  ],
+};
+
+/// Descriptor for `GetBanksForRefreshRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getBanksForRefreshRequestDescriptor =
+    $convert.base64Decode(
+        'ChlHZXRCYW5rc0ZvclJlZnJlc2hSZXF1ZXN0EiEKDGNvdW50cnlfY29kZRgBIAEoCVILY291bn'
+        'RyeUNvZGU=');
+
+@$core.Deprecated('Use getBanksForLinkRequestDescriptor instead')
+const GetBanksForLinkRequest$json = {
+  '1': 'GetBanksForLinkRequest',
+  '2': [
+    {'1': 'country_code', '3': 1, '4': 1, '5': 9, '10': 'countryCode'},
+  ],
+};
+
+/// Descriptor for `GetBanksForLinkRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getBanksForLinkRequestDescriptor =
+    $convert.base64Decode(
+        'ChZHZXRCYW5rc0ZvckxpbmtSZXF1ZXN0EiEKDGNvdW50cnlfY29kZRgBIAEoCVILY291bnRyeU'
+        'NvZGU=');
+
+@$core.Deprecated('Use getBanksForRefreshResponseDescriptor instead')
+const GetBanksForRefreshResponse$json = {
+  '1': 'GetBanksForRefreshResponse',
+  '2': [
+    {
+      '1': 'banks',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.sg.flow.common.v1.Bank',
+      '10': 'banks'
+    },
+  ],
+};
+
+/// Descriptor for `GetBanksForRefreshResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getBanksForRefreshResponseDescriptor =
+    $convert.base64Decode(
+        'ChpHZXRCYW5rc0ZvclJlZnJlc2hSZXNwb25zZRItCgViYW5rcxgBIAMoCzIXLnNnLmZsb3cuY2'
+        '9tbW9uLnYxLkJhbmtSBWJhbmtz');
+
+@$core.Deprecated('Use getBanksForLinkResponseDescriptor instead')
+const GetBanksForLinkResponse$json = {
+  '1': 'GetBanksForLinkResponse',
+  '2': [
+    {
+      '1': 'banks',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.sg.flow.common.v1.Bank',
+      '10': 'banks'
+    },
+  ],
+};
+
+/// Descriptor for `GetBanksForLinkResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getBanksForLinkResponseDescriptor =
+    $convert.base64Decode(
+        'ChdHZXRCYW5rc0ZvckxpbmtSZXNwb25zZRItCgViYW5rcxgBIAMoCzIXLnNnLmZsb3cuY29tbW'
+        '9uLnYxLkJhbmtSBWJhbmtz');

@@ -1,6 +1,9 @@
 package sg.flow.repositories.bank
 
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrNull
+import kotlinx.coroutines.reactive.awaitLast
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitRowsUpdated
@@ -65,6 +68,46 @@ class BankRepositoryImpl(private val databaseClient: DatabaseClient) : BankRepos
                 }
                 .one()
                 .awaitFirstOrNull()
+    }
+
+    override suspend fun findAllBanksInCountry(country: String): List<Bank> {
+        var banks: List<Bank>;
+        try {
+            banks = databaseClient.sql(BankQueryStore.FIND_BANK_BY_COUNTRY)
+                .bind(0, country)
+                .map { row ->
+                    Bank(
+                        id = row.get("id", Int::class.java)!!,
+                        name = row.get("bank_name", String::class.java)!!,
+                        bankCode = row.get("bank_code", String::class.java)!!,
+                    )
+                }
+                .all()
+                .asFlow()
+                .toList()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return listOf()
+        }
+
+        return banks
+    }
+
+    override suspend fun findFinverseIdWithId(institutionId: Long): String {
+        var finverseId: String?;
+        try {
+            finverseId = databaseClient.sql(BankQueryStore.FIND_FINVERSE_ID_BY_ID)
+                .bind(0, institutionId)
+                .map { row ->
+                    row.get("finverse_id", String::class.java)
+                }
+                .one()
+                .awaitFirstOrNull()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ""
+        }
+        return finverseId ?: "INSTITUTION_NOT_FOUND"
     }
 
     override suspend fun deleteAll(): Boolean {

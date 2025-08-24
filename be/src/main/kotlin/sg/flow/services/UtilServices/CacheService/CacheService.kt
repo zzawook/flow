@@ -9,6 +9,7 @@ import java.util.Optional
 interface CacheService {
     fun getUserIdByAccessToken(token: String): Optional<Int>
     fun storeAccessToken(userId: Int, accessToken: String)
+    suspend fun clearAccessToken(token: String)
     suspend fun storeUserIdByLoginIdentityId(loginIdentityId: String, loginIdentityToken: String, userId: Int, institutionId: String, refreshAllowed: Boolean)
     suspend fun getUserIdAndInstitutionIdByLoginIdentityId(loginIdentityId: String): Optional<UserIdAndInstitutionId>
 

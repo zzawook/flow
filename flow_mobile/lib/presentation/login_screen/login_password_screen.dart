@@ -21,12 +21,26 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
   final FocusNode _passwordFocus = FocusNode();
 
   final bool _isPasswordShown = false;
+  var message = '';
 
-  void _onNext(String email) {
+  void _onNext(String email) async {
+    if (_passwordController.text.isEmpty) {
+      setState(() {
+        message = 'Please fill in your password';
+      });
+      return;
+    }
+
     StoreProvider.of<FlowState>(
       context,
       listen: false,
-    ).dispatch(loginThunk(email, _passwordController.text));
+    ).dispatch(loginThunk(email, _passwordController.text, onFailure));
+  }
+
+  void onFailure() {
+    setState(() {
+      message = "That didn't work. Please check your password";
+    });
   }
 
   @override
@@ -49,7 +63,16 @@ class _LoginPasswordScreenState extends State<LoginPasswordScreen> {
                       "Type in your password",
                       style: Theme.of(context).textTheme.displayLarge,
                     ),
-                    FlowSeparatorBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: EditableTextWidget(

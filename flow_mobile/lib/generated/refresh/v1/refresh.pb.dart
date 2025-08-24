@@ -12,14 +12,17 @@
 
 import 'dart:core' as $core;
 
+import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
+
+import '../../common/v1/bank.pb.dart' as $1;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
 /// ── Requests ──
 class GetRefreshUrlRequest extends $pb.GeneratedMessage {
   factory GetRefreshUrlRequest({
-    $core.String? institutionId,
+    $fixnum.Int64? institutionId,
     $core.String? countryCode,
   }) {
     final result = create();
@@ -42,7 +45,7 @@ class GetRefreshUrlRequest extends $pb.GeneratedMessage {
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'institutionId')
+    ..aInt64(1, _omitFieldNames ? '' : 'institutionId')
     ..aOS(2, _omitFieldNames ? '' : 'countryCode')
     ..hasRequiredFields = false;
 
@@ -69,9 +72,9 @@ class GetRefreshUrlRequest extends $pb.GeneratedMessage {
   static GetRefreshUrlRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get institutionId => $_getSZ(0);
+  $fixnum.Int64 get institutionId => $_getI64(0);
   @$pb.TagNumber(1)
-  set institutionId($core.String value) => $_setString(0, value);
+  set institutionId($fixnum.Int64 value) => $_setInt64(0, value);
   @$pb.TagNumber(1)
   $core.bool hasInstitutionId() => $_has(0);
   @$pb.TagNumber(1)
@@ -89,7 +92,7 @@ class GetRefreshUrlRequest extends $pb.GeneratedMessage {
 
 class GetRelinkUrlRequest extends $pb.GeneratedMessage {
   factory GetRelinkUrlRequest({
-    $core.String? institutionId,
+    $fixnum.Int64? institutionId,
     $core.String? countryCode,
   }) {
     final result = create();
@@ -112,7 +115,7 @@ class GetRelinkUrlRequest extends $pb.GeneratedMessage {
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'institutionId')
+    ..aInt64(1, _omitFieldNames ? '' : 'institutionId')
     ..aOS(2, _omitFieldNames ? '' : 'countryCode')
     ..hasRequiredFields = false;
 
@@ -138,9 +141,9 @@ class GetRelinkUrlRequest extends $pb.GeneratedMessage {
   static GetRelinkUrlRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get institutionId => $_getSZ(0);
+  $fixnum.Int64 get institutionId => $_getI64(0);
   @$pb.TagNumber(1)
-  set institutionId($core.String value) => $_setString(0, value);
+  set institutionId($fixnum.Int64 value) => $_setInt64(0, value);
   @$pb.TagNumber(1)
   $core.bool hasInstitutionId() => $_has(0);
   @$pb.TagNumber(1)
@@ -158,7 +161,7 @@ class GetRelinkUrlRequest extends $pb.GeneratedMessage {
 
 class CanStartRefreshSessionRequest extends $pb.GeneratedMessage {
   factory CanStartRefreshSessionRequest({
-    $core.String? institutionId,
+    $fixnum.Int64? institutionId,
   }) {
     final result = create();
     if (institutionId != null) result.institutionId = institutionId;
@@ -179,7 +182,7 @@ class CanStartRefreshSessionRequest extends $pb.GeneratedMessage {
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'institutionId')
+    ..aInt64(1, _omitFieldNames ? '' : 'institutionId')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -208,9 +211,9 @@ class CanStartRefreshSessionRequest extends $pb.GeneratedMessage {
   static CanStartRefreshSessionRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get institutionId => $_getSZ(0);
+  $fixnum.Int64 get institutionId => $_getI64(0);
   @$pb.TagNumber(1)
-  set institutionId($core.String value) => $_setString(0, value);
+  set institutionId($fixnum.Int64 value) => $_setInt64(0, value);
   @$pb.TagNumber(1)
   $core.bool hasInstitutionId() => $_has(0);
   @$pb.TagNumber(1)
@@ -409,7 +412,7 @@ class GetRelinkUrlResponse extends $pb.GeneratedMessage {
 
 class GetInstitutionAuthenticationResultRequest extends $pb.GeneratedMessage {
   factory GetInstitutionAuthenticationResultRequest({
-    $core.String? institutionId,
+    $fixnum.Int64? institutionId,
     $core.String? state,
   }) {
     final result = create();
@@ -433,7 +436,7 @@ class GetInstitutionAuthenticationResultRequest extends $pb.GeneratedMessage {
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'institutionId')
+    ..aInt64(1, _omitFieldNames ? '' : 'institutionId')
     ..aOS(2, _omitFieldNames ? '' : 'state')
     ..hasRequiredFields = false;
 
@@ -465,9 +468,9 @@ class GetInstitutionAuthenticationResultRequest extends $pb.GeneratedMessage {
   static GetInstitutionAuthenticationResultRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get institutionId => $_getSZ(0);
+  $fixnum.Int64 get institutionId => $_getI64(0);
   @$pb.TagNumber(1)
-  set institutionId($core.String value) => $_setString(0, value);
+  set institutionId($fixnum.Int64 value) => $_setInt64(0, value);
   @$pb.TagNumber(1)
   $core.bool hasInstitutionId() => $_has(0);
   @$pb.TagNumber(1)
@@ -561,7 +564,7 @@ class GetInstitutionAuthenticationResultResponse extends $pb.GeneratedMessage {
 
 class GetDataRetrievalResultRequest extends $pb.GeneratedMessage {
   factory GetDataRetrievalResultRequest({
-    $core.String? institutionId,
+    $fixnum.Int64? institutionId,
   }) {
     final result = create();
     if (institutionId != null) result.institutionId = institutionId;
@@ -582,7 +585,7 @@ class GetDataRetrievalResultRequest extends $pb.GeneratedMessage {
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'institutionId')
+    ..aInt64(1, _omitFieldNames ? '' : 'institutionId')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -611,9 +614,9 @@ class GetDataRetrievalResultRequest extends $pb.GeneratedMessage {
   static GetDataRetrievalResultRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get institutionId => $_getSZ(0);
+  $fixnum.Int64 get institutionId => $_getI64(0);
   @$pb.TagNumber(1)
-  set institutionId($core.String value) => $_setString(0, value);
+  set institutionId($fixnum.Int64 value) => $_setInt64(0, value);
   @$pb.TagNumber(1)
   $core.bool hasInstitutionId() => $_has(0);
   @$pb.TagNumber(1)
@@ -691,6 +694,233 @@ class GetDataRetrievalResultResponse extends $pb.GeneratedMessage {
   $core.bool hasMessage() => $_has(1);
   @$pb.TagNumber(2)
   void clearMessage() => $_clearField(2);
+}
+
+class GetBanksForRefreshRequest extends $pb.GeneratedMessage {
+  factory GetBanksForRefreshRequest({
+    $core.String? countryCode,
+  }) {
+    final result = create();
+    if (countryCode != null) result.countryCode = countryCode;
+    return result;
+  }
+
+  GetBanksForRefreshRequest._();
+
+  factory GetBanksForRefreshRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetBanksForRefreshRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetBanksForRefreshRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'countryCode')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetBanksForRefreshRequest clone() =>
+      GetBanksForRefreshRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetBanksForRefreshRequest copyWith(
+          void Function(GetBanksForRefreshRequest) updates) =>
+      super.copyWith((message) => updates(message as GetBanksForRefreshRequest))
+          as GetBanksForRefreshRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetBanksForRefreshRequest create() => GetBanksForRefreshRequest._();
+  @$core.override
+  GetBanksForRefreshRequest createEmptyInstance() => create();
+  static $pb.PbList<GetBanksForRefreshRequest> createRepeated() =>
+      $pb.PbList<GetBanksForRefreshRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetBanksForRefreshRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetBanksForRefreshRequest>(create);
+  static GetBanksForRefreshRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get countryCode => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set countryCode($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasCountryCode() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearCountryCode() => $_clearField(1);
+}
+
+class GetBanksForLinkRequest extends $pb.GeneratedMessage {
+  factory GetBanksForLinkRequest({
+    $core.String? countryCode,
+  }) {
+    final result = create();
+    if (countryCode != null) result.countryCode = countryCode;
+    return result;
+  }
+
+  GetBanksForLinkRequest._();
+
+  factory GetBanksForLinkRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetBanksForLinkRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetBanksForLinkRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'countryCode')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetBanksForLinkRequest clone() =>
+      GetBanksForLinkRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetBanksForLinkRequest copyWith(
+          void Function(GetBanksForLinkRequest) updates) =>
+      super.copyWith((message) => updates(message as GetBanksForLinkRequest))
+          as GetBanksForLinkRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetBanksForLinkRequest create() => GetBanksForLinkRequest._();
+  @$core.override
+  GetBanksForLinkRequest createEmptyInstance() => create();
+  static $pb.PbList<GetBanksForLinkRequest> createRepeated() =>
+      $pb.PbList<GetBanksForLinkRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetBanksForLinkRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetBanksForLinkRequest>(create);
+  static GetBanksForLinkRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get countryCode => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set countryCode($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasCountryCode() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearCountryCode() => $_clearField(1);
+}
+
+class GetBanksForRefreshResponse extends $pb.GeneratedMessage {
+  factory GetBanksForRefreshResponse({
+    $core.Iterable<$1.Bank>? banks,
+  }) {
+    final result = create();
+    if (banks != null) result.banks.addAll(banks);
+    return result;
+  }
+
+  GetBanksForRefreshResponse._();
+
+  factory GetBanksForRefreshResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetBanksForRefreshResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetBanksForRefreshResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..pc<$1.Bank>(1, _omitFieldNames ? '' : 'banks', $pb.PbFieldType.PM,
+        subBuilder: $1.Bank.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetBanksForRefreshResponse clone() =>
+      GetBanksForRefreshResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetBanksForRefreshResponse copyWith(
+          void Function(GetBanksForRefreshResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetBanksForRefreshResponse))
+          as GetBanksForRefreshResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetBanksForRefreshResponse create() => GetBanksForRefreshResponse._();
+  @$core.override
+  GetBanksForRefreshResponse createEmptyInstance() => create();
+  static $pb.PbList<GetBanksForRefreshResponse> createRepeated() =>
+      $pb.PbList<GetBanksForRefreshResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetBanksForRefreshResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetBanksForRefreshResponse>(create);
+  static GetBanksForRefreshResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<$1.Bank> get banks => $_getList(0);
+}
+
+class GetBanksForLinkResponse extends $pb.GeneratedMessage {
+  factory GetBanksForLinkResponse({
+    $core.Iterable<$1.Bank>? banks,
+  }) {
+    final result = create();
+    if (banks != null) result.banks.addAll(banks);
+    return result;
+  }
+
+  GetBanksForLinkResponse._();
+
+  factory GetBanksForLinkResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetBanksForLinkResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetBanksForLinkResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..pc<$1.Bank>(1, _omitFieldNames ? '' : 'banks', $pb.PbFieldType.PM,
+        subBuilder: $1.Bank.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetBanksForLinkResponse clone() =>
+      GetBanksForLinkResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetBanksForLinkResponse copyWith(
+          void Function(GetBanksForLinkResponse) updates) =>
+      super.copyWith((message) => updates(message as GetBanksForLinkResponse))
+          as GetBanksForLinkResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetBanksForLinkResponse create() => GetBanksForLinkResponse._();
+  @$core.override
+  GetBanksForLinkResponse createEmptyInstance() => create();
+  static $pb.PbList<GetBanksForLinkResponse> createRepeated() =>
+      $pb.PbList<GetBanksForLinkResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetBanksForLinkResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetBanksForLinkResponse>(create);
+  static GetBanksForLinkResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<$1.Bank> get banks => $_getList(0);
 }
 
 const $core.bool _omitFieldNames =
