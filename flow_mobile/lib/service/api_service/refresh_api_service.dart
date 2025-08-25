@@ -50,6 +50,7 @@ class RefreshApiService {
   Future<GetInstitutionAuthenticationResultResponse> getInstitutionAuthenticationResult(Bank bank) async {
     final request = GetInstitutionAuthenticationResultRequest(institutionId: fx.Int64(bank.bankId));
     try {
+      print("STARTING GET INSTITUTION AUTHENTICATION RESULT");
       final response = await _channel.getInstitutionAuthenticationResult(request);
       return response;
     } catch (e) {

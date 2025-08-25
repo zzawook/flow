@@ -16,7 +16,7 @@ class FlowCTAButton extends StatefulWidget {
     required this.text,
     required this.onPressed,
     this.color,
-    this.textColor,
+    this.textColor = Colors.white,
     this.borderRadius = 16,
     this.fontWeight = FontWeight.bold,
     this.borderColor = Colors.transparent,

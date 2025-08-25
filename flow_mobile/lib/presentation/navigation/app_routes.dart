@@ -186,7 +186,8 @@ class AppRoutes {
         page = LinkBankScreen(url: argument.linkUrl, bank: argument.bank);
         break;
       case linkSuccess:
-        page = const LinkSuccessScreen();
+        final data = args!.extraData as Bank;
+        page = LinkSuccessScreen(bank: data);
         break;
       case linkFailed:
         page = const LinkFailedScreen();

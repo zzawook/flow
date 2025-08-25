@@ -43,7 +43,12 @@ ScreenState screenReducer(ScreenState state, dynamic action) {
       spendingCategoryScreenState: state.spendingCategoryScreenState,
     );
   }
-  if (action is InitSelectedBankAction || action is SelectBankAction) {
+  if (action is InitSelectedBankAction ||
+      action is SelectBankAction ||
+      action is StartBankLinkingAction ||
+      action is CancelLinkBankingScreenAction ||
+      action is BankLinkingSuccessAction ||
+      action is RemoveCurrentLinkingBankAction) {
     return state.copyWith(
       screenName: state.screenName,
       spendingScreenState: state.spendingScreenState,

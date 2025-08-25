@@ -21,10 +21,10 @@ class WelcomeScreen extends StatelessWidget {
             children: [
               FlowTopBar(title: Text(""), showBackButton: false),
               Padding(
-                padding: EdgeInsetsGeometry.only(left: 16, right: 24, top: 50),
+                padding: EdgeInsetsGeometry.only(left: 16, right: 24, top: 0),
                 child: Text(
                   "Welcome to Flow",
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,

@@ -2,6 +2,7 @@ import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/redux/actions/refresh_screen_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/refresh_screen_state.dart';
+import 'package:flow_mobile/generated/refresh/v1/refresh.pbgrpc.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen_argument.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
@@ -73,6 +74,19 @@ ThunkAction<FlowState> linkBankThunk() {
       ),
     );
 
+    store.dispatch(
+      monitorBankLinkThunk(bankToLink, linkStartTimestamp),
+    ); // DISPATCHING THE MONITOR THUNK TO USE UPDATED STATE
+  };
+}
+
+ThunkAction<FlowState> monitorBankLinkThunk(
+  Bank bankToLink,
+  String linkStartTimestamp,
+) {
+  return (Store<FlowState> store) async {
+    final apiService = getIt<ApiService>();
+    final nav = getIt<NavigationService>();
     final authResultResponse = await apiService
         .getInstitutionAuthenticationResult(bankToLink);
     if (authResultResponse.success) {
@@ -81,8 +95,14 @@ ThunkAction<FlowState> linkBankThunk() {
         bankToLink,
         linkStartTimestamp,
       )) {
-        nav.pushNamed(AppRoutes.linkSuccess);
         store.dispatch(BankLinkingSuccessAction(bank: bankToLink));
+        nav.pushNamed(
+          AppRoutes.linkSuccess,
+          arguments: CustomPageRouteArguments(
+            transitionType: TransitionType.slideLeft,
+            extraData: bankToLink,
+          ),
+        );
       }
     } else {
       if (isLinkingThisBank(
