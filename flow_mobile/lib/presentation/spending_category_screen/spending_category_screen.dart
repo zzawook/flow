@@ -2,6 +2,7 @@ import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/home_screen/home_screen_constants.dart';
+import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
@@ -42,7 +43,7 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
   Future<void> _onRefresh() async {
     Navigator.pushNamed(
       context,
-      HomeScreenRoutes.refresh,
+      AppRoutes.refresh,
       arguments: CustomPageRouteArguments(
         transitionType: TransitionType.slideTop,
       ),

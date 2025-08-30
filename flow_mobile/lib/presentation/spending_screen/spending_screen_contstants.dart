@@ -8,8 +8,3 @@ class SpendingScreenStyles {
   static const sectionSpacing      = 16.0;
   static const refreshDelay        = Duration(microseconds: 1);
 }
-
-/// Named routes used within SpendingScreen.
-class SpendingScreenRoutes {
-  static const refresh = '/refresh';
-}

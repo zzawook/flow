@@ -23,6 +23,7 @@ class StartBankLinkingAction {
   StartBankLinkingAction({required this.bank, required this.linkStartTimestamp});
 }
 
+
 class BankLinkingSuccessAction {
   final Bank bank;
   BankLinkingSuccessAction({required this.bank});

@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
@@ -103,7 +104,7 @@ class TransferScreen extends StatelessWidget {
               onRefresh: () {
                 Navigator.pushNamed(
                   context,
-                  '/refresh',
+                  AppRoutes.refresh,
                   arguments: CustomPageRouteArguments(
                     transitionType: TransitionType.slideTop,
                   ),

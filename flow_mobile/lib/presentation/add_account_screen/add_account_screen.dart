@@ -18,6 +18,8 @@ class AddAccountScreen extends StatefulWidget {
 }
 
 class _AddAccountScreenState extends State<AddAccountScreen> {
+  List<Bank> selectedBanks = [];
+  
   @override
   Widget build(BuildContext context) {
     return FlowSafeArea(
@@ -55,6 +57,13 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                         bankAccountNames: [],
                         isSelected: false,
                         onTap: () {
+                          setState(() {
+                            if (selectedBanks.contains(bank)) {
+                              selectedBanks.remove(bank);
+                            } else {
+                              selectedBanks.add(bank);
+                            }
+                          });
                           StoreProvider.of<FlowState>(
                             context,
                             listen: false,
@@ -86,6 +95,12 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       banks.isEmpty
                           ? () {}
                           : () {
+                          StoreProvider.of<FlowState>(
+                            context,
+                            listen: false,
+                          ).dispatch(
+                            InitSelectedBankAction(selectedBanks),
+                          ); // UPDATE REFRESH STATE WITH FULL SELECTED BANKS
                             StoreProvider.of<FlowState>(
                               context,
                               listen: false,

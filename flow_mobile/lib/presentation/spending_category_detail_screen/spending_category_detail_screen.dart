@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/home_screen/home_screen_constants.dart';
+import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
@@ -46,7 +47,7 @@ class _SpendingCategoryDetailScreenState
   Future<void> _onRefresh() async {
     Navigator.pushNamed(
       context,
-      HomeScreenRoutes.refresh,
+      AppRoutes.refresh,
       arguments: CustomPageRouteArguments(
         transitionType: TransitionType.slideTop,
       ),

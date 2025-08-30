@@ -10,6 +10,11 @@ import 'package:flow_mobile/presentation/login_screen/login_password_screen.dart
 import 'package:flow_mobile/presentation/login_screen/login_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_name_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_password_screen.dart';
+import 'package:flow_mobile/presentation/refresh_screen/all_refresh_success_screen.dart';
+import 'package:flow_mobile/presentation/refresh_screen/refresh_bank_screen.dart';
+import 'package:flow_mobile/presentation/refresh_screen/refresh_bank_screen_argument.dart';
+import 'package:flow_mobile/presentation/refresh_screen/refresh_failed_screen.dart';
+import 'package:flow_mobile/presentation/refresh_screen/refresh_success_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_account_screen/manage_account_screen.dart';
 import 'package:flow_mobile/presentation/manage_bank_account_screen/manage_bank_account_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_bank_accounts_screen/manage_bank_accounts_screen.dart';
@@ -57,7 +62,11 @@ class AppRoutes {
   static const transferConfirm = '/transfer/confirm';
   static const transferResult = '/transfer/result';
   static const notification = '/notification';
-  static const refresh = '/refresh';
+  static const refresh = '/refresh_init';
+  static const refreshBank = '/refresh_bank';
+  static const refreshSuccess = '/refresh_success';
+  static const refreshFailed = '/refresh_failed';
+  static const allRefreshSuccess = '/all_refresh_success';
   static const linkBank = '/link_bank';
   static const linkSuccess = '/link_success';
   static const linkFailed = '/link_failed';
@@ -146,6 +155,20 @@ class AppRoutes {
         break;
       case refresh:
         page = const RefreshInitScreen();
+        break;
+      case refreshBank:
+        final arguments = args!.extraData as RefreshBankScreenArgument;
+        page = RefreshBankScreen(url: arguments.url, bank: arguments.bank);
+        break;
+      case refreshSuccess:
+        final data = args!.extraData as Bank;
+        page = RefreshSuccessScreen(bank: data);
+        break;
+      case refreshFailed:
+        page = const RefreshFailedScreen();
+        break;
+      case allRefreshSuccess:
+        page = const AllRefreshSuccessScreen();
         break;
 
       case login:

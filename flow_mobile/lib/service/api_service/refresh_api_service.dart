@@ -47,6 +47,16 @@ class RefreshApiService {
     }
   }
 
+  Future<GetRefreshUrlResponse> getRefreshUrl(Bank bank) async {
+    final request = GetRefreshUrlRequest(institutionId: fx.Int64(bank.bankId));
+    try {
+      final response = await _channel.getRefreshUrl(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to get refresh URL: $e');
+    }
+  }
+
   Future<GetInstitutionAuthenticationResultResponse> getInstitutionAuthenticationResult(Bank bank) async {
     final request = GetInstitutionAuthenticationResultRequest(institutionId: fx.Int64(bank.bankId));
     try {

@@ -14,8 +14,3 @@ class HomeScreenTextStyles {
     color: HomeScreenColors.snackbarText,
   );
 }
-
-/// Named route constants used on HomeScreen.
-class HomeScreenRoutes {
-  static const refresh = '/refresh';
-}

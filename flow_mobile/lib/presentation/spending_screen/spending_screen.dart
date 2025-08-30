@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
+import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/fixed_spending_card/fixed_spending_card.dart';
@@ -63,7 +64,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
   Future<void> _handleRefresh(BuildContext context) async {
     Navigator.pushNamed(
       context,
-      SpendingScreenRoutes.refresh,
+      AppRoutes.refresh,
       arguments: CustomPageRouteArguments(
         transitionType: TransitionType.slideTop,
       ),

@@ -56,6 +56,10 @@ class ApiService {
     return await _refreshApiService.getLinkUrl(bank);
   }
 
+  Future<GetRefreshUrlResponse> getRefreshUrl(Bank bank) async {
+    return await _refreshApiService.getRefreshUrl(bank);
+  }
+
   Future<GetInstitutionAuthenticationResultResponse> getInstitutionAuthenticationResult(Bank bank) async {
     return await _refreshApiService.getInstitutionAuthenticationResult(bank);
   }
