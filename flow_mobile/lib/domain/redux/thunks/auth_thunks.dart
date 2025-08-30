@@ -156,7 +156,7 @@ ThunkAction<FlowState> logoutThunk() {
   return (Store<FlowState> store) async {
     try {
       // best effort basis
-      final response = await apiService.signout();
+      await apiService.signout();
     } catch (error) {
       log('Logout error: $error');
     }
