@@ -41,10 +41,12 @@ class FinverseQueryService(
         val countries = "SGP"
         val institutions = finverseWebclientService.fetchInstitutionData(countries)
         institutions.map { institution ->
-            runBlocking {
-                val bank = finverseResponseProcessor.processInstitutionResponse(institution)
-                bankRepository.save(bank)
-                bank
+            if (institution.userType == "INDIVIDUAL") {
+                runBlocking {
+                    val bank = finverseResponseProcessor.processInstitutionResponse(institution)
+                    bankRepository.save(bank)
+                    bank
+                }
             }
         }
     }

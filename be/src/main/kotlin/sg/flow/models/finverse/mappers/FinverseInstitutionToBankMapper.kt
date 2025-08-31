@@ -15,37 +15,13 @@ class FinverseInstitutionToBankMapper : Mapper<FinverseInstitution, Bank> {
         }
         return Bank(
                 id = null, // Will be set by database
-                name = input.institutionName,
+                name = input.parentInstitutionName ?: input.institutionName,
                 bankCode = generateBankCode(input),
                 finverseId = input.institutionId,
                 countries = countriesString
         )
     }
-
-    /**
-     * Generate a bank code from the institution data. Priority order:
-     * 1. Use provided bank_code if available
-     * 2. Use SWIFT code if available
-     * 3. Use routing number if available
-     * 4. Generate from institution_id as fallback
-     */
     private fun generateBankCode(institution: FinverseInstitution): String {
-        return when {
-            !institution.bankCode.isNullOrBlank() -> institution.bankCode
-            !institution.swiftCode.isNullOrBlank() -> institution.swiftCode
-            !institution.routingNumber.isNullOrBlank() -> institution.routingNumber
-            else -> generateCodeFromId(institution.institutionId)
-        }
-    }
-
-    /**
-     * Generate a bank code from institution ID by taking the first 8 characters and converting to
-     * uppercase for consistency
-     */
-    private fun generateCodeFromId(institutionId: String): String {
-        return institutionId
-                .take(8)
-                .uppercase()
-                .padEnd(8, '0') // Pad with zeros if shorter than 8 characters
+        return institution.institutionId
     }
 }
