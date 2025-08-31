@@ -1,5 +1,6 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
+import aws.smithy.kotlin.runtime.util.length
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
@@ -41,7 +42,7 @@ class FinverseQueryService(
         val countries = "SGP"
         val institutions = finverseWebclientService.fetchInstitutionData(countries)
         institutions.map { institution ->
-            if (institution.userType == "INDIVIDUAL") {
+            if (institution.userType.size == 1 && institution.userType[0] == "INDIVIDUAL") {
                 runBlocking {
                     val bank = finverseResponseProcessor.processInstitutionResponse(institution)
                     bankRepository.save(bank)

@@ -16,7 +16,7 @@ data class FinverseInstitution(
 //        @JsonProperty("login_details") val loginDetails: Map<String, Any>? = null,
         @JsonProperty("products_supported") val productsSupported: List<String>? = null,
         @JsonProperty("status") val status: String? = null,
-        @JsonProperty("updated_at") val lastUpdated: String? = null,
-        @JsonProperty("user_type") val userType: String? = null,
+        @JsonProperty("updated_at") val lastUpdated: String,
+        @JsonProperty("user_type") val userType: List<String>,
         @JsonProperty("parent_institution_name") val parentInstitutionName: String? = null,
 )
