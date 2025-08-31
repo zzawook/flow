@@ -30,9 +30,8 @@ class RedisCacheServiceImpl(
     private val SESSION_TTL = Duration.ofSeconds(90) // 1.5 minutes for refresh sessions
     private val PRE_AUTH_SESSION_TTL = Duration.ofMinutes(5) // 5 minutes for pre-auth sessions
 
-
-    fun getRefreshSessionPrefix(userId: Int, institutionId: String): String {
-        return "$REFRESH_SESSION_PREFIX$userId:$institutionId:"
+    fun getRefreshSessionPrefix(loginIdentityId: String): String {
+        return "$REFRESH_SESSION_PREFIX{$loginIdentityId}"
     }
 
     fun getPreAuthSessionKey(state: String): String {
@@ -46,7 +45,6 @@ class RedisCacheServiceImpl(
     fun getPostAuthKey(userId: Int, institutionId: String): String {
         return "$POST_AUTH_RESULT_PREFIX$userId:$institutionId"
     }
-
 
     override fun getUserIdByAccessToken(token: String): Optional<Int> {
         val key = ACCESS_TOKEN_PREFIX + token
@@ -199,7 +197,11 @@ class RedisCacheServiceImpl(
 
     override suspend fun doesUserHasRunningRefreshSession(userId: Int, institutionId: String): Boolean {
         return try {
-            val sessionKey = getRefreshSessionPrefix(userId, institutionId)
+            val loginIdentity = getLoginIdentityCredential(userId, institutionId)
+            if (loginIdentity == null) {
+                return false
+            }
+            val sessionKey = getRefreshSessionPrefix(loginIdentity.loginIdentityId)
             val session = redisTemplate.opsForValue()
                 .get(sessionKey)
                 .awaitSingleOrNull()
@@ -211,50 +213,21 @@ class RedisCacheServiceImpl(
         }
     }
 
-    override suspend fun clearRefreshSessionCache(userId: Int, institutionId: String) {
+    override suspend fun clearRefreshSession(loginIdentityId: String) {
         try {
-            val keysToDelete = mutableListOf<String>()
-
-            keysToDelete.add(getRefreshSessionPrefix(userId, institutionId))
-
-            if (keysToDelete.isNotEmpty()) {
-                redisTemplate.delete(*keysToDelete.toTypedArray()).awaitSingleOrNull()
-            }
+            redisTemplate.delete(getRefreshSessionPrefix(loginIdentityId)).awaitSingleOrNull()
 
         } catch (e: Exception) {
             logger.error("Error clearing refresh session cache from Redis: ${e.message}")
         }
     }
 
-    // Helper method to mark a refresh session as started for a specific user-institution pair
-    override suspend fun startRefreshSession(userId: Int, institutionId: String, request: FinverseDataRetrievalRequest) {
-        try {
-            clearRefreshSessionCache(userId, institutionId)
 
-            val dataRequestKey = getRefreshSessionPrefix(userId, institutionId)
-            val jsonString = objectMapper.writeValueAsString(request)
-            redisTemplate.opsForValue()
-                .set(dataRequestKey, jsonString, SESSION_TTL)
-                .awaitSingleOrNull()
-        } catch (e: Exception) {
-            logger.error("Error starting refresh session in Redis: ${e.message}")
-        }
-    }
-
-    override suspend fun updateDataRetrievalRequest(
-        userId: Int,
-        institutionId: String,
-        request: FinverseDataRetrievalRequest
-    ) {
-        startRefreshSession(userId, institutionId, request)
-    }
-
-    override suspend fun getDataRetrievalRequest(
-        userId: Int,
-        institutionId: String
+    override suspend fun getRefreshSession(
+        loginIdentityId: String
     ): FinverseDataRetrievalRequest? {
         try {
-            val sessionKey = getRefreshSessionPrefix(userId, institutionId)
+            val sessionKey = getRefreshSessionPrefix(loginIdentityId)
             val sessionJson = redisTemplate.opsForValue()
                 .get(sessionKey)
                 .awaitSingleOrNull()
@@ -269,10 +242,6 @@ class RedisCacheServiceImpl(
             logger.error("Error retrieving data retrieval request: ${e.message}")
             return null
         }
-    }
-
-    override suspend fun removeDataRetrievalRequest(userId: Int) {
-        TODO("Not yet implemented")
     }
 
     override suspend fun storePreAuthSession(userId: Int, institutionId: String, state: String) {

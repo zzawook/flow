@@ -30,7 +30,7 @@ class FinverseResponseProcessor(
 
     private val accountMapper =
             FinverseAccountToAccountMapper(
-                    userMapper = { accountId -> findOrCreateUser(accountId) },
+                    userMapper = { loginIdentityId -> findUser(loginIdentityId) },
                     bankMapper = { finverseId ->
                         findOrCreateBank(finverseId)
                     }
@@ -69,10 +69,9 @@ class FinverseResponseProcessor(
     suspend fun processTransactionsResponse(
             response: FinverseTransactionResponse
     ): List<TransactionHistory> {
-        val transactionHistoryList = response.transactions?.map { transactionData ->
+        val transactionHistoryList = response.transactions.map { transactionData ->
             transactionMapper.map(transactionData)
         }
-                ?: emptyList()
 
         for (transactionHistory in transactionHistoryList) {
             transactionRepository.save(transactionHistory)
@@ -120,11 +119,15 @@ class FinverseResponseProcessor(
     }
 
     // Helper methods for entity lookup/creation
-    private fun findOrCreateUser(loginIdentityId: String): User {
+    private fun findUser(loginIdentityId: String): User {
         var user: User? = null;
 
         runBlocking {
-            val userId = finverseLoginIdentityService.getUserIdAndInstitutionId(loginIdentityId).userId.toLong()
+            val userId = finverseLoginIdentityService.getUserIdAndInstitutionId(loginIdentityId)?.userId?.toLong()
+            if (userId == null) {
+                logger.error("Cannot find user ID from findUser")
+                throw FinverseException("Cannot find user ID from findUser")
+            }
             user = userRepository.findById(userId)
         }
 

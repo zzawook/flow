@@ -67,14 +67,10 @@ class FinverseTimeoutWatcher(
     }
 
     suspend fun watchDataRetrievalCompletion(
-        userId: Int,
-        institutionId: String,
+        loginIdentityId: String,
         timeout: Duration
     ): FinverseOverallRetrievalStatus {
-        val key = cacheService.getRefreshSessionPrefix(userId, institutionId)
-        val loginIdentity = cacheService
-            .getLoginIdentityCredential(userId, institutionId)
-            ?: throw IllegalStateException("No loginIdentity")
+        val key = cacheService.getRefreshSessionPrefix(loginIdentityId)
 
         val topic = "__keyspace@0__:$key"
 
@@ -87,7 +83,7 @@ class FinverseTimeoutWatcher(
             .flatMap { ev ->
                 if (ev == "expire") {
                     Mono.just(FinverseOverallRetrievalStatus(
-                        loginIdentityId = loginIdentity.loginIdentityId,
+                        loginIdentityId = loginIdentityId,
                         success = false,
                         message = "expired"
                     ))
@@ -108,7 +104,7 @@ class FinverseTimeoutWatcher(
                             } catch (_: Exception) {
                                 // parse‑error → emit failure
                                 Mono.just(FinverseOverallRetrievalStatus(
-                                    loginIdentityId = loginIdentity.loginIdentityId,
+                                    loginIdentityId = loginIdentityId,
                                     success = false,
                                     message = "Failed to parse"
                                 ))
@@ -120,7 +116,7 @@ class FinverseTimeoutWatcher(
             .timeout(timeout.toJavaDuration())     // optional overall timeout
             .onErrorReturn(                       // fallback on timeout or error
                 FinverseOverallRetrievalStatus(
-                    loginIdentityId = loginIdentity.loginIdentityId,
+                    loginIdentityId = loginIdentityId,
                     success = false,
                     message = "timeout"
                 )

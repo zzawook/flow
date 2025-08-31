@@ -12,7 +12,7 @@ class FinverseShouldFetchDecider() {
             product: FinverseProduct,
             status: FinverseRetrievalStatus
     ): Boolean {
-        if (status != FinverseRetrievalStatus.RETRIEVED) return false
+        if (finverseDataRetrievalRequest.getStatus() == "PENDING_CALLBACK" || status != FinverseRetrievalStatus.RETRIEVED) return false
         return when (product) {
             FinverseProduct.ACCOUNTS ->
                 shouldFetchAccount(finverseDataRetrievalRequest)

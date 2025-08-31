@@ -1,12 +1,30 @@
 package sg.flow.models.finverse
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
+import org.slf4j.LoggerFactory
+
 class FinverseDataRetrievalRequest(
+        @JsonProperty("loginIdentityId")
         private val loginIdentityId: String,
-        private val userId: Int,
-        private val institutionId: String,
-        private val requestedProducts: List<FinverseProductRetrieval>
+        @JsonProperty("userId")
+        private var userId: Int,
+        @JsonProperty("institutionId")
+        private var institutionId: String,
+        @JsonProperty("requestedProducts")
+        private val requestedProducts: List<FinverseProductRetrieval>,
+        @JsonProperty("status")
+        private var status: String,
+        @JsonProperty("buffer")
+        private val buffer: MutableList<FinverseDataRetrievalBufferItem>
 ) {
+    @JsonIgnore
+    val logger = LoggerFactory.getLogger(FinverseDataRetrievalRequest::class.java)
+
     fun isComplete(): Boolean {
+        if (status == "PENDING_CALLBACK") {
+            return false
+        }
         for (finverseProductRetrieval in requestedProducts) {
             if (!finverseProductRetrieval.isComplete()) {
                 return false
@@ -16,16 +34,34 @@ class FinverseDataRetrievalRequest(
         return true
     }
 
+    @JsonIgnore
+    fun getBuffered(): List<FinverseDataRetrievalBufferItem> {
+        return this.buffer
+    }
+
+    fun setUserIdAndInstitutionId(userId: Int, institutionId: String) {
+        this.userId = userId
+        this.institutionId = institutionId
+    }
+
+    fun removeFromBuffer(item: FinverseDataRetrievalBufferItem) {
+        this.buffer.remove(item)
+    }
+
+    fun getStatus(): String {
+        return status
+    }
+
+    fun setStatus(status: String) {
+        this.status = status
+    }
+
     fun getLoginIdentityId(): String {
         return loginIdentityId
     }
 
     fun getInstitutionId(): String {
         return institutionId
-    }
-
-    fun getRequestedProducts(): List<FinverseProductRetrieval> {
-        return this.requestedProducts
     }
 
     fun getOverallRetrievalStatus(): FinverseOverallRetrievalStatus {
@@ -100,6 +136,11 @@ class FinverseDataRetrievalRequest(
     }
 
     fun putOrUpdate(product: FinverseProduct, status: FinverseRetrievalStatus) {
+        if (this.status == "PENDING_CALLBACK") {
+            logger.info("status was PENDING_CALLBACK, adding to buffer: ${product.productName}")
+            buffer.add(FinverseDataRetrievalBufferItem(product, status))
+            return
+        }
         when (product) {
             FinverseProduct.ACCOUNTS -> updateAccountStatus(status)
             FinverseProduct.ONLINE_TRANSACTIONS -> updateOnlineTransactionStatus(status)

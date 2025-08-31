@@ -31,23 +31,14 @@ class FinverseWebhookEventConsumer(
             
             if (isAuthenticationEvent(event.eventType)) {
                 FinverseAuthenticationEventTypeParser.parse(event.eventType)?.let { authStatus ->
-                    val userIdAndInstitutionId = finverseLoginIdentityService.getUserIdAndInstitutionId(event.loginIdentityId)
-                    finverseLoginIdentityService.storePostAuthResult(userIdAndInstitutionId.userId, userIdAndInstitutionId.institutionId, authStatus)
-
-                    if (authStatus == FinverseAuthenticationStatus.AUTHENTICATED) {
-                        // WHEN IT IS RELINK, AND REFRESH WAS ALLOWED, SO NO CALL BACK WAS CALLED
-                        // -> FINVERSE DATA RETRIEVAL EVENT WAS NOT CREATED, THUS NEED TO REGISTER ONE
-//                        if (finverseDataRetrievalRequestsManager.isRelinkAndNotHaveRefreshSession(event.loginIdentityId)) {
-//                            finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(event.loginIdentityId)
-//                        }
-                    }
+                    // DO NOTHING HERE; ALL AUTH RELATED STUFFS ARE DONE IN CALLBACK PROCESSING
                 }
             } else {
                 FinverseEventTypeParser.parse(event.eventType).let { ps ->
                     if (ps.product in FinverseProduct.supported) {
                         finverseDataRetrievalRequestsManager.updateAndFetchIfSuccess(
-                            event.loginIdentityId, 
-                            ps.product, 
+                            event.loginIdentityId,
+                            ps.product,
                             ps.status
                         )
                     }

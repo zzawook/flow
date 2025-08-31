@@ -94,7 +94,6 @@ class FinverseWebclientService(
                 "redirect_uri" to FINVERSE_CALLBACK_ADDRESS
             )
         )
-        println(requestBody)
 
         return try {
             finverseWebClient.post()
@@ -185,7 +184,6 @@ class FinverseWebclientService(
             "response_type" to "code", // DO NOT CHANGE
             "grant_type" to "client_credentials" // DO NOT CHANGE
         )
-        println(requestBody)
 
         return try {
             finverseWebClient.post()

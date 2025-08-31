@@ -1,6 +1,9 @@
 package sg.flow.services.BankQueryServices.FinverseQueryService
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.ObjectProvider
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import sg.flow.events.TransactionAnalysisTriggerEvent
@@ -9,6 +12,9 @@ import sg.flow.models.finverse.FinverseOverallRetrievalStatus
 import sg.flow.models.finverse.FinverseProduct
 import sg.flow.models.finverse.FinverseProductRetrieval
 import sg.flow.models.finverse.FinverseRetrievalStatus
+import sg.flow.services.UtilServices.CacheService.CacheService
+import sg.flow.services.UtilServices.CacheService.RedisCacheServiceImpl
+import sg.flow.services.UtilServices.CacheService.RedisCompareAndStoreOperation
 
 @Component
 class FinverseDataRetrievalRequestsManager(
@@ -18,41 +24,73 @@ class FinverseDataRetrievalRequestsManager(
     private val finverseResponseProcessor: FinverseResponseProcessor,
     private val finverseWebclientService: FinverseWebclientService,
     private val kafkaEventProducerService:
-                sg.flow.services.EventServices.KafkaEventProducerService
+                sg.flow.services.EventServices.KafkaEventProducerService,
+    private val casProvider: ObjectProvider<RedisCompareAndStoreOperation>,
+    private val cacheService: RedisCacheServiceImpl
 ) {
+    final val STATUS_PENDING_CALLBACK: String = "PENDING_CALLBACK"
+    final val STATUS_ACTIVE: String = "ACTIVE"
+    final val STATUS_COMPLETE: String = "COMPLETE"
+    final val STATUS_ERRORED: String = "ERRORED"
 
     private val logger = LoggerFactory.getLogger(FinverseDataRetrievalRequestsManager::class.java)
 
-    suspend fun registerFinverseDataRetrievalEvent(
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
+    suspend fun createFinverseDataRetrievalEventWithUserIdAndLoginIdentity(
             loginIdentityId: String,
-    ) {
-
-        val userIdAndInstitutionId = finverseLoginIdentityService.getUserIdAndInstitutionId(loginIdentityId)
-
-        val userId = userIdAndInstitutionId.userId
-        val institutionId = userIdAndInstitutionId.institutionId
-
+            userId: Int,
+            institutionId: String
+    ): FinverseDataRetrievalRequest {
         val requestedProduct: List<FinverseProductRetrieval> =
-                FinverseProduct.supported.map { it -> FinverseProductRetrieval(it) }
+            FinverseProduct.supported.map { it -> FinverseProductRetrieval(it) }
         val finverseDataRetrievalRequest =
-                FinverseDataRetrievalRequest(
-                        loginIdentityId,
-                        userId,
-                        institutionId,
-                        requestedProduct,
-                )
+            FinverseDataRetrievalRequest(
+                loginIdentityId,
+                userId,
+                institutionId, // UNKNOWN FOR NOW
+                requestedProduct,
+                STATUS_ACTIVE,
+                mutableListOf()
+            )
 
-        // Store the request in Redis cache
-        finverseLoginIdentityService.startRefreshSession(userId, institutionId, finverseDataRetrievalRequest)
+        return finverseDataRetrievalRequest
+    }
+
+    suspend fun setFinverseDataRetrievalEventStatusToActive(request: FinverseDataRetrievalRequest, loginIdentityId: String, userId: Int, institutionId: String) {
+        val refreshSession = finverseLoginIdentityService.getRefreshSession(loginIdentityId)
+
+        if (refreshSession == null) {
+            logger.error("Refresh session not found, but tried to set session to active: Login Identity ID: $loginIdentityId")
+            return
+        }
+
+        refreshSession.setStatus(STATUS_ACTIVE)
+        refreshSession.setUserIdAndInstitutionId(userId, institutionId)
+    }
+
+    suspend fun createBlankFinverseDataRetrievalEvent(loginIdentityId: String): FinverseDataRetrievalRequest {
+        val requestedProduct: List<FinverseProductRetrieval> =
+            FinverseProduct.supported.map { it -> FinverseProductRetrieval(it) }
+        val finverseDataRetrievalRequest =
+            FinverseDataRetrievalRequest(
+                loginIdentityId,
+                -1, // UNKNOWN FOR NOW
+                "", // UNKNOWN FOR NOW
+                requestedProduct,
+                STATUS_PENDING_CALLBACK,
+                mutableListOf()
+            )
+
+        return finverseDataRetrievalRequest
     }
 
     suspend fun getOverallRetrievalStatus(
-            userId: Int,
-            institutionId: String,
             loginIdentityId: String
     ): FinverseOverallRetrievalStatus {
         val userDataRetrievalEvent =
-                finverseLoginIdentityService.getRefreshSession(userId, institutionId)
+                finverseLoginIdentityService.getRefreshSession(loginIdentityId)
                         ?: return FinverseOverallRetrievalStatus(
                                 success = false,
                                 message = "CANNOT FIND REGISTERED DATA RETRIEVAL EVENT",
@@ -67,35 +105,24 @@ class FinverseDataRetrievalRequestsManager(
             product: FinverseProduct,
             status: FinverseRetrievalStatus
     ) {
-        val userIdAndInstitutionId = finverseLoginIdentityService.getUserIdAndInstitutionId(loginIdentityId)
-        val userId = userIdAndInstitutionId.userId
-        val institutionId = userIdAndInstitutionId.institutionId
-        val loginIdentityToken =
-                finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
+        val casResult = casProvider.getObject()
+            .configure(key=cacheService.getRefreshSessionPrefix(loginIdentityId), createTtlMs = 120 * 1000L, maxRetries = 5)
+            .storeWithRetryOnCasReturning(FinverseDataRetrievalRequest::class) { request ->
+                val finverseDataRetrievalRequest: FinverseDataRetrievalRequest = request ?: createBlankFinverseDataRetrievalEvent(loginIdentityId)
+                finverseDataRetrievalRequest.putOrUpdate(product, status)
+                finverseDataRetrievalRequest
+            }
 
-        if (userId < 0) {
-            // If user ID is missing, it means loginIdentityId is no longer valid, stop processing
-            // and discard the webhook
-            return
-        }
+        val finverseDataRetrievalRequest = casResult.value
 
-        val finverseDataRetrievalRequest =
-                finverseLoginIdentityService.getRefreshSession(userId, institutionId)
         if (finverseDataRetrievalRequest == null) {
-            // If Data Retrieval Request does not exist, it means Data Retrieval Session has
-            // expired. Stop processing and discard webhook
-            logger.warn(
-                    "Discarding webhook as Finverse Data Retrieval Request is not found. Possibly due to Refresh session has expired"
-            )
+            logger.error("FinverseDataRetrieval request from CAS Operation was null")
             return
         }
-
-        finverseDataRetrievalRequest.putOrUpdate(product, status)
-
-        // Update the request in cache
-        finverseLoginIdentityService.updateRefreshSession(userId, institutionId, finverseDataRetrievalRequest)
 
         if (finverseShouldFetchDecider.shouldFetch(finverseDataRetrievalRequest, product, status)) {
+            val loginIdentityToken =
+                finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
             product.fetch(
                     loginIdentityId,
                     loginIdentityToken,
@@ -105,14 +132,17 @@ class FinverseDataRetrievalRequestsManager(
         }
 
         if (finverseDataRetrievalRequest.isComplete()) {
-            finverseLoginIdentityService.finishRefreshSession(
-                    userId,
-                    finverseDataRetrievalRequest.getInstitutionId()
-            )
+            finverseLoginIdentityService.finishRefreshSession(loginIdentityId)
 
-            val overallRetrievalStatus =
-                    getOverallRetrievalStatus(userId, institutionId, loginIdentityId)
+            val overallRetrievalStatus = finverseDataRetrievalRequest.getOverallRetrievalStatus()
             finverseProductCompleteEventPublisher.publish(overallRetrievalStatus)
+            val userIdAndInstitutionId = finverseLoginIdentityService.getUserIdAndInstitutionId(loginIdentityId)
+            if (userIdAndInstitutionId == null) {
+                logger.error("Finverse Data Retrieval Request marked complete without Login Identity Fetched. Cannot find user ID and institution ID for login identity")
+                return
+            }
+            val userId = userIdAndInstitutionId.userId
+            val institutionId = userIdAndInstitutionId.institutionId
 
             // Publish transaction analysis trigger event
             try {
@@ -139,9 +169,6 @@ class FinverseDataRetrievalRequestsManager(
                 )
                 // Continue normal operation even if publishing fails
             }
-
-            // Remove completed request from cache
-            finverseLoginIdentityService.finishRefreshSession(userId, institutionId)
         }
     }
 }

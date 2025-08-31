@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.minutes
 @Service
 class FinverseQueryService(
     private val finverseLoginIdentityService: FinverseLoginIdentityService,
-    private val finverseDataRetrievalRequestsManager: FinverseDataRetrievalRequestsManager,
+
     private val finverseTimeoutWatcher: FinverseTimeoutWatcher,
     private val bankRepository: BankRepository,
     private val accountRepository: AccountRepository,
@@ -155,9 +155,7 @@ class FinverseQueryService(
 
     suspend fun fetchLoginIdentityToken(userId: Int, code: String, institutionId: String): String {
         val loginIdentityId = finverseLoginIdentityService.fetchLoginIdentityToken(userId, code, institutionId)
-        finverseDataRetrievalRequestsManager.registerFinverseDataRetrievalEvent(loginIdentityId)
-
-        return "RETRIEVING"
+        return loginIdentityId
     }
 
     suspend fun getInstitutionAuthenticationResult(userId: Int, institutionId: String): FinverseAuthenticationStatus {
@@ -173,9 +171,9 @@ class FinverseQueryService(
 
     suspend fun getUserDataRetrievalResult(userId: Int, institutionId: String): FinverseOverallRetrievalStatus {
         val timeout = 2.minutes
+        val loginIdentityId = finverseLoginIdentityService.getLoginIdentityIdWithUserIdAndInstitutionId(userId, institutionId)
         val status = finverseTimeoutWatcher.watchDataRetrievalCompletion(
-            userId,
-            institutionId,
+            loginIdentityId,
             timeout
         )
 

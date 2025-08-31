@@ -35,8 +35,8 @@ class AuthServiceImpl(
                 // POSSIBLY IMPLEMENT SINGPASS INTEGRATION
                 var passwordEncoded: String
                 try {
-                    passwordEncoded = passwordEncoder.encode(password)
-                    println(passwordEncoded)
+passwordEncoded = passwordEncoder.encode(password)
+
                 } catch (e: Exception) {
                     throw TokenGenerationException("Failed to encode given password")
                 }

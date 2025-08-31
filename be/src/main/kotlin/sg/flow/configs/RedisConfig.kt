@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
+import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.listener.ReactiveRedisMessageListenerContainer
 import org.springframework.data.redis.serializer.RedisSerializationContext
 import org.springframework.data.redis.serializer.StringRedisSerializer
@@ -28,6 +30,14 @@ class RedisConfig {
                         .build()
 
         return ReactiveRedisTemplate(factory, serializationContext)
+    }
+
+    @Bean
+    fun stringRedisTemplate(factory: RedisConnectionFactory): StringRedisTemplate {
+        return StringRedisTemplate(factory).apply {
+            // makes RedisTemplate keep a single connection during SessionCallback
+            setEnableTransactionSupport(true)
+        }
     }
 
     @Bean

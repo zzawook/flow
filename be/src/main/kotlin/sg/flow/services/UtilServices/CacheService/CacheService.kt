@@ -21,15 +21,9 @@ interface CacheService {
 
     suspend fun doesUserHasRunningRefreshSession(userId: Int, institutionId: String): Boolean
 
-    suspend fun clearRefreshSessionCache(userId: Int, institutionId: String)
+    suspend fun clearRefreshSession(loginIdentityId: String)
 
-    suspend fun startRefreshSession(userId: Int, institutionId: String, request: FinverseDataRetrievalRequest)
-
-    suspend fun updateDataRetrievalRequest(userId: Int, institutionId: String, request: FinverseDataRetrievalRequest)
-
-    suspend fun getDataRetrievalRequest(userId: Int, institutionId: String): FinverseDataRetrievalRequest?
-
-    suspend fun removeDataRetrievalRequest(userId: Int)
+    suspend fun getRefreshSession(loginIdentityId: String): FinverseDataRetrievalRequest?
 
     suspend fun storePreAuthSession(userId: Int, institutionId: String, state: String)
 

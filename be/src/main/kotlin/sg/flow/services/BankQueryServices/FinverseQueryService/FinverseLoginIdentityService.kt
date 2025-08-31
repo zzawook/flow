@@ -2,10 +2,7 @@ package sg.flow.services.BankQueryServices.FinverseQueryService
 
 import kotlinx.coroutines.reactor.awaitSingle
 import org.slf4j.LoggerFactory
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
@@ -89,28 +86,27 @@ class FinverseLoginIdentityService(
         return Mono.just(finverseAuthTokenResponse.loginIdentityToken)
     }
 
-    suspend fun getUserIdAndInstitutionId(loginIdentityId: String): UserIdAndInstitutionId {
+    suspend fun getUserIdAndInstitutionId(loginIdentityId: String): UserIdAndInstitutionId? {
         val userIdAndInstitutionIdOptional = cacheService.getUserIdAndInstitutionIdByLoginIdentityId(loginIdentityId)
-        if (userIdAndInstitutionIdOptional.isEmpty) {
-            // Login Identity not in cache = Timed out
-            // Asynchronously refresh the token
+        if (! userIdAndInstitutionIdOptional.isEmpty) {
+            return userIdAndInstitutionIdOptional.get()
+        }
+
+        val loginIdentity = loginIdentityRepository.getLoginIdentity(loginIdentityId)
+
+        if (loginIdentity != null) {
             refreshLoginIdentityToken(loginIdentityId)
                 .doOnError { e ->
-                logger.error("Failed to refresh login token for $loginIdentityId", e)
-            }.subscribe()
-
-            val loginIdentity = loginIdentityRepository.getLoginIdentity(loginIdentityId)
-
-            if (loginIdentity == null) {
-                logger.error("FAILED TO GET USER ID AND INSTITUTION ID FROM GIVEN LOGIN IDENTITY ID: $loginIdentityId")
-                return UserIdAndInstitutionId(-1, "")
-            }
+                    logger.error("Failed to refresh login token for $loginIdentityId", e)
+                }.subscribe()
             return UserIdAndInstitutionId(
                 loginIdentity.userId,
                 loginIdentity.finverseInstitutionId
             )
         }
-        return userIdAndInstitutionIdOptional.get()
+
+        logger.error("FAILED TO GET USER ID AND INSTITUTION ID FROM GIVEN LOGIN IDENTITY ID: $loginIdentityId")
+        return UserIdAndInstitutionId(-1, "")
     }
 
     suspend fun getLoginIdentityTokenWithLoginIdentityID(loginIdentityId: String): String {
@@ -137,6 +133,20 @@ class FinverseLoginIdentityService(
         return token
     }
 
+    suspend fun getLoginIdentityIdWithUserIdAndInstitutionId(userId: Int, institutionId: String): String {
+        var loginIdentityId = cacheService.getLoginIdentityCredential(userId, institutionId)?.loginIdentityId
+
+        if (loginIdentityId == null || loginIdentityId.isEmpty()) {
+            val loginIdentity = loginIdentityRepository.getLoginIdentity(userId, institutionId)
+            if (loginIdentity == null) {
+                return "NO LOGIN IDENTITY FOUND"
+            }
+            loginIdentityId = refreshLoginIdentityToken(loginIdentity.loginIdentityId).awaitSingle()
+        }
+
+        return loginIdentityId
+    }
+
     suspend fun getIsRefreshAllowed(userId: Int, institutionId: String): Boolean {
         val loginIdentity = loginIdentityRepository.getLoginIdentity(userId, institutionId)
 
@@ -148,24 +158,16 @@ class FinverseLoginIdentityService(
         return loginIdentity.refreshAllowed
     }
 
-    suspend fun startRefreshSession(userId: Int, institutionId: String, request: FinverseDataRetrievalRequest) {
-        cacheService.startRefreshSession(userId, institutionId, request)
-    }
-
-    suspend fun getRefreshSession(userId: Int, institutionId: String): FinverseDataRetrievalRequest? {
-        return cacheService.getDataRetrievalRequest(userId, institutionId)
+    suspend fun getRefreshSession(loginIdentityId: String): FinverseDataRetrievalRequest? {
+        return cacheService.getRefreshSession(loginIdentityId)
     }
 
     suspend fun hasRunningRefreshSession(userId: Int, institutionId: String): Boolean {
         return cacheService.doesUserHasRunningRefreshSession(userId, institutionId)
     }
 
-    suspend fun finishRefreshSession(userId: Int, institutionId: String) {
-        cacheService.clearRefreshSessionCache(userId, institutionId)
-    }
-
-    suspend fun updateRefreshSession(userId: Int, institutionId: String, newRequest: FinverseDataRetrievalRequest) {
-        cacheService.updateDataRetrievalRequest(userId, institutionId, newRequest)
+    suspend fun finishRefreshSession(loginIdentityId: String) {
+        cacheService.clearRefreshSession(loginIdentityId)
     }
 
     suspend fun startPreAuthSession(userId: Int, institutionId: String, state: String) {
