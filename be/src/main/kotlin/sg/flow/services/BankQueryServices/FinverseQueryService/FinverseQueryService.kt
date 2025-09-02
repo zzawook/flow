@@ -39,10 +39,20 @@ class FinverseQueryService(
     private val logger = LoggerFactory.getLogger(FinverseQueryService::class.java)
 
     fun fetchInstitutionData() {
+        fun isIndividualBank(userTypes: List<String>): Boolean {
+            return userTypes.size == 1 && userTypes[0] == "INDIVIDUAL"
+        }
+        fun isInAllowedList(institution: FinverseInstitution): Boolean {
+            if (institution.institutionId == "testbank") {
+                return true
+            }
+            return false
+        }
+
         val countries = "SGP"
         val institutions = finverseWebclientService.fetchInstitutionData(countries)
         institutions.map { institution ->
-            if (institution.userType.size == 1 && institution.userType[0] == "INDIVIDUAL") {
+            if (isIndividualBank(institution.userType) || isInAllowedList(institution)) {
                 runBlocking {
                     val bank = finverseResponseProcessor.processInstitutionResponse(institution)
                     bankRepository.save(bank)

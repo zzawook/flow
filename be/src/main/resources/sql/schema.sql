@@ -49,24 +49,9 @@ CREATE INDEX IF NOT EXISTS accounts_index_on_user_id ON accounts (user_id, id);
 CREATE TABLE IF NOT EXISTS cards (
     id SERIAL PRIMARY KEY, 
     owner_id INT REFERENCES users(id) NOT NULL,
-    linked_account_id BIGINT REFERENCES accounts(id) NOT NULL, 
     issuing_bank_id INT REFERENCES banks(id) NOT NULL,
     card_number TEXT NOT NULL, 
-    card_type TEXT NOT NULL,
-    expiry_date DATE NOT NULL,
-    cvv TEXT NOT NULL,
-    pin TEXT NOT NULL,
-    card_status TEXT NOT NULL,
-    daily_limit DECIMAL(10,2) NOT NULL,
-    monthly_limit DECIMAL(10,2) NOT NULL,
-    card_holder_name TEXT NOT NULL,
-    address_line_1 TEXT NOT NULL,
-    address_line_2 TEXT DEFAULT '',
-    city TEXT NOT NULL,
-    state TEXT NOT NULL,
-    zip_code TEXT NOT NULL,
-    country TEXT NOT NULL,
-    phone TEXT NOT NULL
+    card_type TEXT NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS card_index_by_user_id ON cards (owner_id);

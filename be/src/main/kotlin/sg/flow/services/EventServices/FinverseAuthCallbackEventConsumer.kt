@@ -72,21 +72,20 @@ class FinverseAuthCallbackEventConsumer(
                 var finverseDataRetrievalRequest: FinverseDataRetrievalRequest
                 if (jsonStr == null) {
                     finverseDataRetrievalRequest = finverseDataRetrievalRequestsManager.createFinverseDataRetrievalEventWithUserIdAndLoginIdentity(loginIdentityId, userIdAndInstitutionId.userId, userIdAndInstitutionId.institutionId)
-                    logger.info("ADDING CALLBACK RESULTS")
+                    logger.info("ADDING CALLBACK RESULTS - 1")
                     finverseDataRetrievalRequest
                 } else {
                     try {
                         finverseDataRetrievalRequest = jsonStr
                         finverseDataRetrievalRequestsManager.setFinverseDataRetrievalEventStatusToActive(finverseDataRetrievalRequest, loginIdentityId, userIdAndInstitutionId.userId, userIdAndInstitutionId.institutionId)
-                        logger.info("ADDING CALLBACK RESULTS")
+                        logger.info("ADDING CALLBACK RESULTS - 2")
                         finverseDataRetrievalRequest
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        logger.info("ADDING CALLBACK RESULTS")
+                        logger.info("ADDING CALLBACK RESULTS - 3")
                         finverseDataRetrievalRequestsManager.createFinverseDataRetrievalEventWithUserIdAndLoginIdentity(loginIdentityId, userIdAndInstitutionId.userId, userIdAndInstitutionId.institutionId)
                     }
                 }
-
             }
 
         // We can assure the session has been created and set to ACTIVE in redis at this point
@@ -99,18 +98,20 @@ class FinverseAuthCallbackEventConsumer(
 
                     if (finverseDataRetrievalRequest != null) {
                         if (finverseDataRetrievalRequest.getStatus() == "PENDING_CALLBACK") {
+                            println("TRIED TO RECONCILE BUFFER BUT WAS PENDING CALLBACK")
+                            finverseDataRetrievalRequest
+                        } else {
+                            if (! finverseDataRetrievalRequest.getBuffered().isEmpty()) {
+                                val firstBuffered = finverseDataRetrievalRequest.getBuffered().first()
+                                finverseDataRetrievalRequest.putOrUpdate(firstBuffered.product, firstBuffered.status)
+                                finverseDataRetrievalRequest.removeFromBuffer(firstBuffered)
+                            }
+
+                            if (finverseDataRetrievalRequest.getBuffered().isEmpty()) {
+                                hasMoreBuffered = false
+                            }
                             finverseDataRetrievalRequest
                         }
-                        if (! finverseDataRetrievalRequest.getBuffered().isEmpty()) {
-                            val firstBuffered = finverseDataRetrievalRequest.getBuffered().first()
-                            finverseDataRetrievalRequest.putOrUpdate(firstBuffered.product, firstBuffered.status)
-                            finverseDataRetrievalRequest.removeFromBuffer(firstBuffered)
-                        }
-
-                        if (finverseDataRetrievalRequest.getBuffered().isEmpty()) {
-                            hasMoreBuffered = false
-                        }
-                        finverseDataRetrievalRequest
                     } else {
                         logger.error("FinverseDataRetrievalRequest in CAS Operation was null")
                         finverseDataRetrievalRequestsManager.createFinverseDataRetrievalEventWithUserIdAndLoginIdentity(loginIdentityId, userIdAndInstitutionId.userId, userIdAndInstitutionId.institutionId)

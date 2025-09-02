@@ -5,14 +5,18 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import sg.flow.entities.Account
 import sg.flow.entities.Bank
+import sg.flow.entities.Card
 import sg.flow.entities.TransactionHistory
 import sg.flow.entities.User
+import sg.flow.entities.utils.AccountType
+import sg.flow.entities.utils.CardType
 import sg.flow.models.card.BriefCard
 import sg.flow.models.finverse.FinverseInstitution
 import sg.flow.models.finverse.mappers.*
 import sg.flow.models.finverse.responses.*
 import sg.flow.repositories.account.AccountRepository
 import sg.flow.repositories.bank.BankRepository
+import sg.flow.repositories.card.CardRepository
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
 import sg.flow.repositories.user.UserRepository
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
@@ -23,6 +27,7 @@ class FinverseResponseProcessor(
     private val bankRepository: BankRepository,
     private val accountRepository: AccountRepository,
     private val transactionRepository: TransactionHistoryRepository,
+    private val cardRepository: CardRepository,
     private val finverseLoginIdentityService: FinverseLoginIdentityService
 ) {
 
@@ -46,9 +51,30 @@ class FinverseResponseProcessor(
 
     private val institutionMapper = FinverseInstitutionToBankMapper()
 
-    /** Process accounts response and convert to domain entities */
+    /** Process accounts response and convert to domain entities
+     * Because Cards are also considered as Bank Account by Finverse, we process Card here as well
+     * */
     suspend fun processAccountList(accountList: List<Account>) {
         for (account in accountList) {
+            fun getCardTypeFromAccountType(accountType: AccountType): CardType {
+                if (accountType == AccountType.CREDIT_CARD) {
+                    return CardType.CREDIT
+                } else if (accountType == AccountType.DEBIT_CARD) {
+                    return CardType.DEBIT
+                }
+                // FALL BACK TO CREDIT.
+                return CardType.CREDIT
+            }
+            if (account.accountType == AccountType.DEBIT_CARD || account.accountType == AccountType.CREDIT_CARD) {
+                val card = Card(
+                    id = null,
+                    cardNumber = account.accountNumber,
+                    cardType = getCardTypeFromAccountType(account.accountType),
+                    owner = account.owner,
+                    issuingBank = account.bank
+                )
+                cardRepository.save(card)
+            }
             accountRepository.save(account)
         }
     }

@@ -1,6 +1,7 @@
 package sg.flow.services.AccountServices
 
 import org.springframework.stereotype.Service
+import sg.flow.entities.utils.AccountType
 import sg.flow.grpc.exception.AccountDoesNotExistException
 import sg.flow.grpc.exception.RequestedAccountNotBelongException
 import sg.flow.models.account.AccountWithTransactionHistory
@@ -14,8 +15,18 @@ class AccountServiceImpl(
         private val transactionHistoryRepository: TransactionHistoryRepository,
 ) : AccountService {
 
-        override suspend fun getAccounts(userId: Int): List<Account> =
-                accountRepository.findAccountsOfUser(userId)
+        override suspend fun getAccounts(userId: Int): List<Account> {
+                val accounts = accountRepository.findAccountsOfUser(userId)
+
+                fun isNotCard(accountTypeStr: String): Boolean {
+                        val accountType = AccountType.fromValue(accountTypeStr)
+                        return accountType != AccountType.DEBIT_CARD && accountType != AccountType.CREDIT_CARD
+                }
+
+                val accountsWithOutCards = accounts.filter { account -> isNotCard(account.accountType) }
+                return accountsWithOutCards
+        }
+
 
         override suspend fun getAccountWithTransactionHistory(
                 userId: Int

@@ -175,22 +175,7 @@ class InjectTestData(
                                 owner = userRepository.findById(data[1].toLong())!!,
                                 cardNumber = data[2],
                                 issuingBank = bankRepository.findById(data[3].toLong())!!,
-                                linkedAccount = accountRepository.findById(data[4].toLong())!!,
                                 cardType = CardType.valueOf(data[5]),
-                                expiryDate = LocalDate.parse(data[6]),
-                                cvv = data[7],
-                                pin = data[8],
-                                cardStatus = data[9],
-                                addressLine1 = data[10],
-                                addressLine2 = data[11],
-                                city = data[12],
-                                state = data[13],
-                                country = data[14],
-                                zipCode = data[15],
-                                phone = data[16],
-                                dailyLimit = data[17].toDouble(),
-                                monthlyLimit = data[18].toDouble(),
-                                cardHolderName = data[19]
                         )
 
                 cardRepository.save(currentCard)
