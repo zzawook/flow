@@ -10,7 +10,7 @@ services:
 
   redis:
     image: 'redis:latest'
-    command: ["redis-server", "--notify-keyspace-events", "KEx$"]
+    command: ["redis-server", "--notify-keyspace-events", "KExg$$h"]
     ports:
       - '6379:6379'
 

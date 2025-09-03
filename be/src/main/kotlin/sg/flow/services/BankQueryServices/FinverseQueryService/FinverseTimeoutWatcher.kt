@@ -74,42 +74,47 @@ class FinverseTimeoutWatcher(
 
         val topic = "__keyspace@0__:$key"
 
+        println(topic)
+
         val statusMono: Mono<FinverseOverallRetrievalStatus> = container
             .receive(PatternTopic(topic))
             .map { msg ->
                 msg.message
             }
-            .filter { it == "set" || it == "expire" }
+            .filter { it == "hset" || it == "del"}
             .flatMap { ev ->
-                if (ev == "expire") {
-                    Mono.just(FinverseOverallRetrievalStatus(
-                        loginIdentityId = loginIdentityId,
-                        success = false,
-                        message = "expired"
-                    ))
-                } else {
-                    // On SET: fetch the JSON, parse, and only emit if complete
-                    redis.opsForValue().get(key)
-                        .flatMap { rawJson ->
-                            try {
-                                val dto = objectMapper.readValue(
-                                    rawJson,
-                                    FinverseDataRetrievalRequest::class.java
-                                )
-                                if (dto.isComplete()) {
-                                    Mono.just(dto.getOverallRetrievalStatus())
-                                } else {
-                                    Mono.empty()
+                when (ev) {
+                    "del" -> {
+                        Mono.just(FinverseOverallRetrievalStatus(
+                            loginIdentityId = loginIdentityId,
+                            success = true,
+                            message = "Success"
+                        ))
+                    }
+                    else -> {
+                        // On SET: fetch the JSON, parse, and only emit if complete
+                        redis.opsForHash<String, String>().get(key, "value")
+                            .flatMap { rawJson: String ->
+                                try {
+                                    val dto = objectMapper.readValue(
+                                        rawJson,
+                                        FinverseDataRetrievalRequest::class.java
+                                    )
+                                    if (dto.isComplete()) {
+                                        Mono.just(dto.getOverallRetrievalStatus())
+                                    } else {
+                                        Mono.empty()
+                                    }
+                                } catch (_: Exception) {
+                                    // parse‑error → emit failure
+                                    Mono.just(FinverseOverallRetrievalStatus(
+                                        loginIdentityId = loginIdentityId,
+                                        success = false,
+                                        message = "Failed to parse"
+                                    ))
                                 }
-                            } catch (_: Exception) {
-                                // parse‑error → emit failure
-                                Mono.just(FinverseOverallRetrievalStatus(
-                                    loginIdentityId = loginIdentityId,
-                                    success = false,
-                                    message = "Failed to parse"
-                                ))
                             }
-                        }
+                    }
                 }
             }
             .next() // take the first status we actually emitted

@@ -1,7 +1,13 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/domain/manager/bank_account_manager.dart';
+import 'package:flow_mobile/domain/manager/bank_manager.dart';
+import 'package:flow_mobile/domain/manager/transaction_manager.dart';
+import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flow_mobile/domain/redux/actions/refresh_screen_action.dart';
+import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/refresh_screen_state.dart';
+import 'package:flow_mobile/initialization/flow_state_initializer.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen_argument.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
@@ -142,6 +148,7 @@ ThunkAction<FlowState> monitorBankRefreshThunk(
             extraData: bankToRefresh,
           ),
         );
+        store.dispatch(monitorBankDataFetchThunk(bankToRefresh));
       }
     } else {
       if (isLinkingThisBank(
@@ -180,6 +187,7 @@ ThunkAction<FlowState> monitorBankLinkThunk(
           ),
         );
       }
+      store.dispatch(monitorBankDataFetchThunk(bankToLink));
     } else {
       if (isLinkingThisBank(
         store.state.screenState.refreshScreenState,
@@ -191,6 +199,53 @@ ThunkAction<FlowState> monitorBankLinkThunk(
       }
     }
   };
+}
+
+ThunkAction<FlowState> monitorBankDataFetchThunk(Bank bank) {
+  return (Store<FlowState> store) async {
+    store.dispatch(StartBankDataFetchMonitoringAction(bank: bank));
+    final apiService = getIt<ApiService>();
+    final dataFetchResultResponse = await apiService.getDataRetrievalResult(
+      bank,
+    );
+    _updateStateForBankDataCompletion(store);
+    if (dataFetchResultResponse.success) {
+      store.dispatch(FinishBankDataFetchMonitoringAction(bank: bank));
+    } else {
+      store.dispatch(FinishBankDataFetchMonitoringAction(bank: bank));
+    }
+  };
+}
+
+Future<void> _updateStateForBankDataCompletion(Store<FlowState> store) async {
+  BankAccountManager bankAccountManager = getIt<BankAccountManager>();
+  BankManager bankManager = getIt<BankManager>();
+  TransactionManager transactionManager = getIt<TransactionManager>();
+
+  final bankFuture = bankManager.fetchBanksFromRemote();
+  final bankAccountFuture = bankAccountManager.fetchBankAccountsFromRemote();
+  final transactionFuture = transactionManager
+      .fetchLast30DaysTransactionsFromRemote();
+
+  final fetchResults = Future.wait([
+    bankFuture,
+    bankAccountFuture,
+    transactionFuture,
+  ]);
+
+  fetchResults.then((_) async {
+    store.dispatch(
+      SetBankAccountStateAction(
+        bankAccountState: await FlowStateInitializer.getBankAccountState(),
+      ),
+    );
+    store.dispatch(
+      SetTransactionStateAction(
+        transactionHistoryState:
+            await FlowStateInitializer.getTransactionState(),
+      ),
+    );
+  });
 }
 
 bool isLinkingThisBank(

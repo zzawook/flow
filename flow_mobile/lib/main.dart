@@ -1,6 +1,7 @@
 import 'package:flow_mobile/initialization/app_initializer.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/initialization/theme_store.dart';
+import 'package:flow_mobile/presentation/global_hud.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter/services.dart';
@@ -57,7 +58,12 @@ class FlowApplication extends StatelessWidget {
                           : Brightness.light,
                   systemNavigationBarContrastEnforced: true,
                 ),
-                child: child ?? SizedBox.shrink(),
+                child: Stack(
+                  children: [
+                    child ?? SizedBox.shrink(),
+                    GlobalHud(),
+                  ],
+                ),
               ),
 
           initialRoute:

@@ -48,7 +48,10 @@ ScreenState screenReducer(ScreenState state, dynamic action) {
       action is StartBankLinkingAction ||
       action is CancelLinkBankingScreenAction ||
       action is BankLinkingSuccessAction ||
-      action is RemoveCurrentLinkingBankAction) {
+      action is RemoveCurrentLinkingBankAction ||
+      action is StartBankDataFetchMonitoringAction ||
+      action is FinishBankDataFetchMonitoringAction
+      ) {
     return state.copyWith(
       screenName: state.screenName,
       spendingScreenState: state.spendingScreenState,

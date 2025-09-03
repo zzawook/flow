@@ -59,12 +59,7 @@ class FinverseDataRetrievalRequestsManager(
     }
 
     suspend fun setFinverseDataRetrievalEventStatusToActive(request: FinverseDataRetrievalRequest, loginIdentityId: String, userId: Int, institutionId: String) {
-        val refreshSession = finverseLoginIdentityService.getRefreshSession(loginIdentityId)
-
-        if (refreshSession == null) {
-            logger.error("Refresh session not found, but tried to set session to active: Login Identity ID: $loginIdentityId")
-            return
-        }
+        val refreshSession = request
 
         refreshSession.setStatus(STATUS_ACTIVE)
         refreshSession.setUserIdAndInstitutionId(userId, institutionId)

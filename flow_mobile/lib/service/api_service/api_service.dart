@@ -64,6 +64,10 @@ class ApiService {
     return await _refreshApiService.getInstitutionAuthenticationResult(bank);
   }
 
+  Future<GetDataRetrievalResultResponse> getDataRetrievalResult(Bank bank) async {
+    return await _refreshApiService.getDataRetrievalResult(bank);
+  }
+
   Future<CanStartRefreshSessionResponse> canStartRefreshSession(int bankId) async {
     return await _refreshApiService.canStartRefreshSession(bankId);
   }

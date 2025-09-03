@@ -36,6 +36,12 @@ RefreshScreenState refreshScreenReducer(
     banks.removeAt(0);
     return state.copyWith(banksToRefresh: banks, isLinking: false, linkingBank: null, linkStartTimestamp: null);
   }
-  
+  if (action is StartBankDataFetchMonitoringAction) {
+    return state.copyWith(banksOnLink: [...state.banksOnLink, action.bank]);
+  }
+  if (action is FinishBankDataFetchMonitoringAction) {
+    return state.copyWith(banksOnLink: state.banksOnLink.where((bank) => bank != action.bank).toList());
+  }
+
   return state;
 }

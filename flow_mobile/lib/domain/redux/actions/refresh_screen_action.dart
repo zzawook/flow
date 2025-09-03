@@ -29,4 +29,14 @@ class BankLinkingSuccessAction {
   BankLinkingSuccessAction({required this.bank});
 }
 
+class StartBankDataFetchMonitoringAction {
+  final Bank bank;
+  StartBankDataFetchMonitoringAction({required this.bank});
+}
+
+class FinishBankDataFetchMonitoringAction {
+  final Bank bank;
+  FinishBankDataFetchMonitoringAction({required this.bank});
+}
+
 class RemoveCurrentLinkingBankAction {}

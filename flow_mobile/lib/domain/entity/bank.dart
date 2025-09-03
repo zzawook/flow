@@ -18,4 +18,6 @@ class Bank {
   bool isEqualTo(Bank other) {
     return name == other.name && bankId == other.bankId;
   }
+
+  String get assetPath => 'assets/bank_logos/${name.toUpperCase()}.png';
 }
