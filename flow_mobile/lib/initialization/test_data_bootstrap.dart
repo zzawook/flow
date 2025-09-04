@@ -342,6 +342,7 @@ class TestDataBootstrap {
 
     await transactionManager.addTransaction(
       Transaction(
+        id: 1,
         date: DateTime(2025, 4, 1),
         amount: -12.30,
         name: 'Hawker Breakfast',
@@ -353,6 +354,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 2,
         date: DateTime(2025, 4, 1),
         amount: -2.50,
         name: 'MRT Fare',
@@ -364,6 +366,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 3,
         date: DateTime(2025, 4, 1),
         amount: -25.90,
         name: 'NTUC Groceries',
@@ -375,6 +378,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 4,
         date: DateTime(2025, 4, 1),
         amount: -8.00,
         name: 'Lazada Purchase',
@@ -388,6 +392,7 @@ class TestDataBootstrap {
     // DAY 2
     await transactionManager.addTransaction(
       Transaction(
+        id: 5,
         date: DateTime(2025, 4, 2),
         amount: -7.60,
         name: 'Toast Box Lunch',
@@ -399,6 +404,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 6,
         date: DateTime(2025, 4, 2),
         amount: -3.20,
         name: 'Bus Fare',
@@ -410,6 +416,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 7,
         date: DateTime(2025, 4, 2),
         amount: -35.50,
         name: 'FairPrice Groceries',
@@ -421,6 +428,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 8,
         date: DateTime(2025, 4, 2),
         amount: -52.90,
         name: 'Electric Bill',
@@ -434,6 +442,7 @@ class TestDataBootstrap {
     // DAY 3 (Cyclic assignment: IDs 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
+        id: 9,
         date: DateTime(2025, 4, 3),
         amount: -4.00,
         name: 'Coffee Bean',
@@ -445,6 +454,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 10,
         date: DateTime(2025, 4, 3),
         amount: -11.20,
         name: 'Taxi Ride',
@@ -456,6 +466,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 11,
         date: DateTime(2025, 4, 3),
         amount: -16.00,
         name: 'Movie Ticket',
@@ -467,6 +478,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 12,
         date: DateTime(2025, 4, 3),
         amount: -5.50,
         name: 'Bakeries Purchase',
@@ -480,6 +492,7 @@ class TestDataBootstrap {
     // DAY 4 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
+        id: 13,
         date: DateTime(2025, 4, 4),
         amount: -9.90,
         name: 'Subway Meal',
@@ -491,6 +504,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 14,
         date: DateTime(2025, 4, 4),
         amount: -10.00,
         name: 'MRT Top-Up',
@@ -502,6 +516,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 15,
         date: DateTime(2025, 4, 4),
         amount: -40.00,
         name: 'Giant Groceries',
@@ -513,6 +528,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 16,
         date: DateTime(2025, 4, 4),
         amount: -18.90,
         name: 'Grab Ride',
@@ -526,6 +542,7 @@ class TestDataBootstrap {
     // DAY 5 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
+        id: 17,
         date: DateTime(2025, 4, 5),
         amount: -5.20,
         name: 'Roasted Chicken Rice',
@@ -537,6 +554,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 18,
         date: DateTime(2025, 4, 5),
         amount: -3.00,
         name: 'EZ-Link Top-Up',
@@ -548,6 +566,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 19,
         date: DateTime(2025, 4, 5),
         amount: -12.00,
         name: 'Spotify Subscription',
@@ -559,6 +578,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 20,
         date: DateTime(2025, 4, 5),
         amount: -33.00,
         name: 'Watsons Shopping',
@@ -572,6 +592,7 @@ class TestDataBootstrap {
     // DAY 6 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
+        id: 21,
         date: DateTime(2025, 4, 6),
         amount: -8.10,
         name: 'Mixed Rice Lunch',
@@ -583,6 +604,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 22,
         date: DateTime(2025, 4, 6),
         amount: -20.00,
         name: 'Grab Ride',
@@ -594,6 +616,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 23,
         date: DateTime(2025, 4, 6),
         amount: -6.50,
         name: 'BreadTalk',
@@ -605,6 +628,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 24,
         date: DateTime(2025, 4, 6),
         amount: -19.90,
         name: 'Cinema Ticket',
@@ -618,6 +642,7 @@ class TestDataBootstrap {
     // DAY 7 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
+        id: 25,
         date: DateTime(2025, 4, 7),
         amount: -5.90,
         name: 'Old Chang Kee Snack',
@@ -629,6 +654,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 26,
         date: DateTime(2025, 4, 7),
         amount: -2.50,
         name: 'Bus Fare',
@@ -640,6 +666,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 27,
         date: DateTime(2025, 4, 7),
         amount: -50.00,
         name: 'Uniqlo Shopping',
@@ -651,6 +678,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 28,
         date: DateTime(2025, 4, 7),
         amount: 3000.00,
         name: 'Monthly Salary',
@@ -664,6 +692,7 @@ class TestDataBootstrap {
     // DAY 8 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
+        id: 29,
         date: DateTime(2025, 4, 8),
         amount: -11.30,
         name: 'Pasta Lunch',
@@ -675,6 +704,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 30,
         date: DateTime(2025, 4, 8),
         amount: -18.00,
         name: 'ComfortDelGro Taxi',
@@ -686,6 +716,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 31,
         date: DateTime(2025, 4, 8),
         amount: -8.50,
         name: '7-Eleven Snacks',
@@ -697,6 +728,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 32,
         date: DateTime(2025, 4, 8),
         amount: -35.00,
         name: 'Zalora Order',
@@ -710,6 +742,7 @@ class TestDataBootstrap {
     // DAY 9 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
+        id: 33,
         date: DateTime(2025, 4, 9),
         amount: -3.80,
         name: 'Toast Box Breakfast',
@@ -721,6 +754,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 34,
         date: DateTime(2025, 4, 9),
         amount: -2.00,
         name: 'Bus Fare',
@@ -732,6 +766,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 35,
         date: DateTime(2025, 4, 9),
         amount: -15.00,
         name: 'Mobile Game Top-up',
@@ -743,6 +778,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 36,
         date: DateTime(2025, 4, 9),
         amount: -22.00,
         name: 'EZBuy Purchase',
@@ -756,6 +792,7 @@ class TestDataBootstrap {
     // DAY 10 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
+        id: 37,
         date: DateTime(2025, 4, 10),
         amount: -8.50,
         name: 'Hawker Dinner',
@@ -767,6 +804,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 38,
         date: DateTime(2025, 4, 10),
         amount: -1.50,
         name: 'MRT Fare',
@@ -778,6 +816,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 39,
         date: DateTime(2025, 4, 10),
         amount: -65.00,
         name: 'Movie, Dinner Out',
@@ -789,6 +828,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 40,
         date: DateTime(2025, 4, 10),
         amount: -45.00,
         name: 'Watsons',
@@ -802,6 +842,7 @@ class TestDataBootstrap {
     // DAY 11 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
+        id: 41,
         date: DateTime(2025, 4, 11),
         amount: -6.20,
         name: 'Bubble Tea',
@@ -813,6 +854,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 42,
         date: DateTime(2025, 4, 11),
         amount: -15.00,
         name: 'Grocery Delivery',
@@ -824,6 +866,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 43,
         date: DateTime(2025, 4, 11),
         amount: -20.00,
         name: 'Grab Ride',
@@ -835,6 +878,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 44,
         date: DateTime(2025, 4, 11),
         amount: -11.50,
         name: 'Movie Snacks',
@@ -848,6 +892,7 @@ class TestDataBootstrap {
     // DAY 12 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
+        id: 45,
         date: DateTime(2025, 4, 12),
         amount: -5.50,
         name: 'Cai Fan Lunch',
@@ -859,6 +904,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 46,
         date: DateTime(2025, 4, 12),
         amount: -2.20,
         name: 'Bus Fare',
@@ -870,6 +916,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 47,
         date: DateTime(2025, 4, 12),
         amount: -9.90,
         name: 'iTunes Subscription',
@@ -881,6 +928,7 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
+        id: 48,
         date: DateTime(2025, 4, 12),
         amount: -15.30,
         name: 'Daiso Items',
@@ -894,6 +942,7 @@ class TestDataBootstrap {
     // DAY 13 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
+        id: 49,
         date: DateTime(2025, 4, 13),
         amount: -12.00,
         name: 'Coffeeshop Lunch',
@@ -905,587 +954,638 @@ class TestDataBootstrap {
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 13),
-        amount: -3.50,
-        name: 'Train Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 50,
+      date: DateTime(2025, 4, 13),
+      amount: -3.50,
+      name: 'Train Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 13),
-        amount: -25.00,
-        name: 'Singtel Bill',
-        category: 'Bills',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 51,
+      date: DateTime(2025, 4, 13),
+      amount: -25.00,
+      name: 'Singtel Bill',
+      category: 'Bills',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 13),
-        amount: -12.00,
-        name: 'H&M Sale Item',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 52,
+      date: DateTime(2025, 4, 13),
+      amount: -12.00,
+      name: 'H&M Sale Item',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 14 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 14),
-        amount: -7.50,
-        name: 'Fast Food Lunch',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 53,
+      date: DateTime(2025, 4, 14),
+      amount: -7.50,
+      name: 'Fast Food Lunch',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 14),
-        amount: -2.30,
-        name: 'MRT Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 54,
+      date: DateTime(2025, 4, 14),
+      amount: -2.30,
+      name: 'MRT Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 14),
-        amount: -15.00,
-        name: 'Golden Village Ticket',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 55,
+      date: DateTime(2025, 4, 14),
+      amount: -15.00,
+      name: 'Golden Village Ticket',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 14),
-        amount: 250.00,
-        name: 'Performance Bonus',
-        category: 'Salary',
-        method: 'Transfer',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 56,
+      date: DateTime(2025, 4, 14),
+      amount: 250.00,
+      name: 'Performance Bonus',
+      category: 'Salary',
+      method: 'Transfer',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 15 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 15),
-        amount: -8.80,
-        name: 'Bakery & Coffee',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 57,
+      date: DateTime(2025, 4, 15),
+      amount: -8.80,
+      name: 'Bakery & Coffee',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 15),
-        amount: -3.00,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 58,
+      date: DateTime(2025, 4, 15),
+      amount: -3.00,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 15),
-        amount: -45.50,
-        name: 'FairPrice Xtra',
-        category: 'Groceries',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 59,
+      date: DateTime(2025, 4, 15),
+      amount: -45.50,
+      name: 'FairPrice Xtra',
+      category: 'Groceries',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 15),
-        amount: -60.00,
-        name: 'PUB Utilities Bill',
-        category: 'Bills',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 60,
+      date: DateTime(2025, 4, 15),
+      amount: -60.00,
+      name: 'PUB Utilities Bill',
+      category: 'Bills',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 16 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 16),
-        amount: -10.90,
-        name: 'Economic Bee Hoon',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 61,
+      date: DateTime(2025, 4, 16),
+      amount: -10.90,
+      name: 'Economic Bee Hoon',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 16),
-        amount: -2.00,
-        name: 'MRT Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 62,
+      date: DateTime(2025, 4, 16),
+      amount: -2.00,
+      name: 'MRT Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 16),
-        amount: -13.00,
-        name: 'Netflix',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 63,
+      date: DateTime(2025, 4, 16),
+      amount: -13.00,
+      name: 'Netflix',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 16),
-        amount: -30.00,
-        name: 'TopShop T-Shirt',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 64,
+      date: DateTime(2025, 4, 16),
+      amount: -30.00,
+      name: 'TopShop T-Shirt',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 17 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 17),
-        amount: -9.50,
-        name: 'Roti Prata Breakfast',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 65,
+      date: DateTime(2025, 4, 17),
+      amount: -9.50,
+      name: 'Roti Prata Breakfast',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 17),
-        amount: -2.50,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 66,
+      date: DateTime(2025, 4, 17),
+      amount: -2.50,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 17),
-        amount: -40.00,
-        name: 'Zara Purchase',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 67,
+      date: DateTime(2025, 4, 17),
+      amount: -40.00,
+      name: 'Zara Purchase',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 17),
-        amount: -12.80,
-        name: 'Doc Consultation',
-        category: 'Medical',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 68,
+      date: DateTime(2025, 4, 17),
+      amount: -12.80,
+      name: 'Doc Consultation',
+      category: 'Medical',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 18 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 18),
-        amount: -18.20,
-        name: 'Dine-in Meal',
-        category: 'Food',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 69,
+      date: DateTime(2025, 4, 18),
+      amount: -18.20,
+      name: 'Dine-in Meal',
+      category: 'Food',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 18),
-        amount: -3.00,
-        name: 'Train Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 70,
+      date: DateTime(2025, 4, 18),
+      amount: -3.00,
+      name: 'Train Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 18),
-        amount: -15.00,
-        name: 'Snack & Drinks',
-        category: 'Groceries',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 71,
+      date: DateTime(2025, 4, 18),
+      amount: -15.00,
+      name: 'Snack & Drinks',
+      category: 'Groceries',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 18),
-        amount: -65.90,
-        name: 'Internet Bill',
-        category: 'Bills',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 72,
+      date: DateTime(2025, 4, 18),
+      amount: -65.90,
+      name: 'Internet Bill',
+      category: 'Bills',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 19 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 19),
-        amount: -6.50,
-        name: 'Kopi & Toast',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 73,
+      date: DateTime(2025, 4, 19),
+      amount: -6.50,
+      name: 'Kopi & Toast',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 19),
-        amount: -25.00,
-        name: 'Grab Ride',
-        category: 'Transport',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 74,
+      date: DateTime(2025, 4, 19),
+      amount: -25.00,
+      name: 'Grab Ride',
+      category: 'Transport',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 19),
-        amount: -9.90,
-        name: 'Mobile Game IAP',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 75,
+      date: DateTime(2025, 4, 19),
+      amount: -9.90,
+      name: 'Mobile Game IAP',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 19),
-        amount: -50.00,
-        name: 'Online Shopping',
-        category: 'Shopping',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 76,
+      date: DateTime(2025, 4, 19),
+      amount: -50.00,
+      name: 'Online Shopping',
+      category: 'Shopping',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 20 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 20),
-        amount: -4.20,
-        name: 'Bubble Tea',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 77,
+      date: DateTime(2025, 4, 20),
+      amount: -4.20,
+      name: 'Bubble Tea',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 20),
-        amount: -2.10,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 78,
+      date: DateTime(2025, 4, 20),
+      amount: -2.10,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 20),
-        amount: -70.00,
-        name: 'Uniqlo Clothing',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 79,
+      date: DateTime(2025, 4, 20),
+      amount: -70.00,
+      name: 'Uniqlo Clothing',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 20),
-        amount: -40.00,
-        name: 'Doctor Visit',
-        category: 'Medical',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 80,
+      date: DateTime(2025, 4, 20),
+      amount: -40.00,
+      name: 'Doctor Visit',
+      category: 'Medical',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 21 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 21),
-        amount: -5.00,
-        name: 'Local Kopitiam',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 81,
+      date: DateTime(2025, 4, 21),
+      amount: -5.00,
+      name: 'Local Kopitiam',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 21),
-        amount: -1.90,
-        name: 'Train Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 82,
+      date: DateTime(2025, 4, 21),
+      amount: -1.90,
+      name: 'Train Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 21),
-        amount: -10.00,
-        name: 'Golden Village',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 83,
+      date: DateTime(2025, 4, 21),
+      amount: -10.00,
+      name: 'Golden Village',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 21),
-        amount: 50.00,
-        name: 'Gift from Cousin',
-        category: 'Transfer',
-        method: 'Transfer',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 84,
+      date: DateTime(2025, 4, 21),
+      amount: 50.00,
+      name: 'Gift from Cousin',
+      category: 'Transfer',
+      method: 'Transfer',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 22 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 22),
-        amount: -12.00,
-        name: 'Bibimbap Lunch',
-        category: 'Food',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 85,
+      date: DateTime(2025, 4, 22),
+      amount: -12.00,
+      name: 'Bibimbap Lunch',
+      category: 'Food',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 22),
-        amount: -3.30,
-        name: 'MRT & Bus',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 86,
+      date: DateTime(2025, 4, 22),
+      amount: -3.30,
+      name: 'MRT & Bus',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 22),
-        amount: -35.90,
-        name: 'Cold Storage Groceries',
-        category: 'Groceries',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 87,
+      date: DateTime(2025, 4, 22),
+      amount: -35.90,
+      name: 'Cold Storage Groceries',
+      category: 'Groceries',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 22),
-        amount: -75.00,
-        name: 'Sports Equipment',
-        category: 'Shopping',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 88,
+      date: DateTime(2025, 4, 22),
+      amount: -75.00,
+      name: 'Sports Equipment',
+      category: 'Shopping',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 23 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 23),
-        amount: -10.00,
-        name: 'Fried Rice Dinner',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 89,
+      date: DateTime(2025, 4, 23),
+      amount: -10.00,
+      name: 'Fried Rice Dinner',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 23),
-        amount: -25.00,
-        name: 'Grab Ride',
-        category: 'Transport',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 90,
+      date: DateTime(2025, 4, 23),
+      amount: -25.00,
+      name: 'Grab Ride',
+      category: 'Transport',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 23),
-        amount: -9.90,
-        name: 'Nintendo eShop',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 91,
+      date: DateTime(2025, 4, 23),
+      amount: -9.90,
+      name: 'Nintendo eShop',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 23),
-        amount: -18.00,
-        name: 'Popular Bookstore',
-        category: 'Education',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 92,
+      date: DateTime(2025, 4, 23),
+      amount: -18.00,
+      name: 'Popular Bookstore',
+      category: 'Education',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 24 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 24),
-        amount: -7.50,
-        name: 'Prata & Teh Tarik',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 93,
+      date: DateTime(2025, 4, 24),
+      amount: -7.50,
+      name: 'Prata & Teh Tarik',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 24),
-        amount: -3.00,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 94,
+      date: DateTime(2025, 4, 24),
+      amount: -3.00,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 24),
-        amount: -99.00,
-        name: 'Shopee Electronics',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 95,
+      date: DateTime(2025, 4, 24),
+      amount: -99.00,
+      name: 'Shopee Electronics',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 24),
-        amount: -45.60,
-        name: 'Dinner & Drinks',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 96,
+      date: DateTime(2025, 4, 24),
+      amount: -45.60,
+      name: 'Dinner & Drinks',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 25 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 25),
-        amount: -14.00,
-        name: 'Mixed Vegetable Rice',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 97,
+      date: DateTime(2025, 4, 25),
+      amount: -14.00,
+      name: 'Mixed Vegetable Rice',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 25),
-        amount: -30.00,
-        name: 'Taxi to Airport',
-        category: 'Transport',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 98,
+      date: DateTime(2025, 4, 25),
+      amount: -30.00,
+      name: 'Taxi to Airport',
+      category: 'Transport',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 25),
-        amount: -5.50,
-        name: '7-Eleven Snacks',
-        category: 'Groceries',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 99,
+      date: DateTime(2025, 4, 25),
+      amount: -5.50,
+      name: '7-Eleven Snacks',
+      category: 'Groceries',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 4, 25),
-        amount: -30.00,
-        name: 'Mobile Phone Bill',
-        category: 'Bills',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 100,
+      date: DateTime(2025, 4, 25),
+      amount: -30.00,
+      name: 'Mobile Phone Bill',
+      category: 'Bills',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
@@ -1496,1084 +1596,1178 @@ class TestDataBootstrap {
     // DAY 1 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 1),
-        amount: -10.50,
-        name: 'Economy Rice Lunch',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 101,
+      date: DateTime(2025, 5, 1),
+      amount: -10.50,
+      name: 'Economy Rice Lunch',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 1),
-        amount: -2.50,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 102,
+      date: DateTime(2025, 5, 1),
+      amount: -2.50,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 1),
-        amount: -28.90,
-        name: 'FairPrice Groceries',
-        category: 'Groceries',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 103,
+      date: DateTime(2025, 5, 1),
+      amount: -28.90,
+      name: 'FairPrice Groceries',
+      category: 'Groceries',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 1),
-        amount: -35.00,
-        name: 'SingPost Bill Payment',
-        category: 'Bills',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 104,
+      date: DateTime(2025, 5, 1),
+      amount: -35.00,
+      name: 'SingPost Bill Payment',
+      category: 'Bills',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 2 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 2),
-        amount: -5.60,
-        name: 'Bak Chor Mee',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 105,
+      date: DateTime(2025, 5, 2),
+      amount: -5.60,
+      name: 'Bak Chor Mee',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 2),
-        amount: -12.00,
-        name: 'CityCab Ride',
-        category: 'Transport',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 106,
+      date: DateTime(2025, 5, 2),
+      amount: -12.00,
+      name: 'CityCab Ride',
+      category: 'Transport',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 2),
-        amount: -19.00,
-        name: 'Netflix Subscription',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 107,
+      date: DateTime(2025, 5, 2),
+      amount: -19.00,
+      name: 'Netflix Subscription',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 2),
-        amount: -100.00,
-        name: 'Credit Card Bill Payment',
-        category: 'Bills',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 108,
+      date: DateTime(2025, 5, 2),
+      amount: -100.00,
+      name: 'Credit Card Bill Payment',
+      category: 'Bills',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 3 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 3),
-        amount: -7.40,
-        name: 'Toast Box Breakfast',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 109,
+      date: DateTime(2025, 5, 3),
+      amount: -7.40,
+      name: 'Toast Box Breakfast',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 3),
-        amount: -3.00,
-        name: 'MRT Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 110,
+      date: DateTime(2025, 5, 3),
+      amount: -3.00,
+      name: 'MRT Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 3),
-        amount: -23.50,
-        name: 'Watsons',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 111,
+      date: DateTime(2025, 5, 3),
+      amount: -23.50,
+      name: 'Watsons',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 3),
-        amount: -15.00,
-        name: 'Delivery Tip',
-        category: 'Others',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 112,
+      date: DateTime(2025, 5, 3),
+      amount: -15.00,
+      name: 'Delivery Tip',
+      category: 'Others',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 4 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 4),
-        amount: -9.90,
-        name: 'Hawker Center Lunch',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 113,
+      date: DateTime(2025, 5, 4),
+      amount: -9.90,
+      name: 'Hawker Center Lunch',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 4),
-        amount: -18.00,
-        name: 'Grab Ride',
-        category: 'Transport',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 114,
+      date: DateTime(2025, 5, 4),
+      amount: -18.00,
+      name: 'Grab Ride',
+      category: 'Transport',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 4),
-        amount: -5.00,
-        name: 'Arcade Tokens',
-        category: 'Entertainment',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 115,
+      date: DateTime(2025, 5, 4),
+      amount: -5.00,
+      name: 'Arcade Tokens',
+      category: 'Entertainment',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 4),
-        amount: -25.00,
-        name: 'FairPrice Groceries',
-        category: 'Groceries',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 116,
+      date: DateTime(2025, 5, 4),
+      amount: -25.00,
+      name: 'FairPrice Groceries',
+      category: 'Groceries',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 5 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 5),
-        amount: -6.70,
-        name: 'Subway Dinner',
-        category: 'Food',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 117,
+      date: DateTime(2025, 5, 5),
+      amount: -6.70,
+      name: 'Subway Dinner',
+      category: 'Food',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 5),
-        amount: -2.00,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 118,
+      date: DateTime(2025, 5, 5),
+      amount: -2.00,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 5),
-        amount: -12.00,
-        name: 'Spotify',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 119,
+      date: DateTime(2025, 5, 5),
+      amount: -12.00,
+      name: 'Spotify',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 5),
-        amount: -45.00,
-        name: 'Amazon Purchase',
-        category: 'Shopping',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 120,
+      date: DateTime(2025, 5, 5),
+      amount: -45.00,
+      name: 'Amazon Purchase',
+      category: 'Shopping',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 6 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 6),
-        amount: -8.10,
-        name: 'Mixed Rice Lunch',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 121,
+      date: DateTime(2025, 5, 6),
+      amount: -8.10,
+      name: 'Mixed Rice Lunch',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 6),
-        amount: -35.00,
-        name: 'Bill Payment',
-        category: 'Bills',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 122,
+      date: DateTime(2025, 5, 6),
+      amount: -35.00,
+      name: 'Bill Payment',
+      category: 'Bills',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 6),
-        amount: -20.00,
-        name: 'Grab Ride',
-        category: 'Transport',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 123,
+      date: DateTime(2025, 5, 6),
+      amount: -20.00,
+      name: 'Grab Ride',
+      category: 'Transport',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 6),
-        amount: -17.90,
-        name: 'Cinema',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 124,
+      date: DateTime(2025, 5, 6),
+      amount: -17.90,
+      name: 'Cinema',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 7 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 7),
-        amount: -4.50,
-        name: 'Local Kopitiam',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 125,
+      date: DateTime(2025, 5, 7),
+      amount: -4.50,
+      name: 'Local Kopitiam',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 7),
-        amount: -2.50,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 126,
+      date: DateTime(2025, 5, 7),
+      amount: -2.50,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 7),
-        amount: -22.00,
-        name: 'Arcade & Snacks',
-        category: 'Entertainment',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 127,
+      date: DateTime(2025, 5, 7),
+      amount: -22.00,
+      name: 'Arcade & Snacks',
+      category: 'Entertainment',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 7),
-        amount: 3000.00,
-        name: 'Monthly Salary',
-        category: 'Salary',
-        method: 'Transfer',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 128,
+      date: DateTime(2025, 5, 7),
+      amount: 3000.00,
+      name: 'Monthly Salary',
+      category: 'Salary',
+      method: 'Transfer',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 8 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 8),
-        amount: -10.00,
-        name: 'Pasta Lunch',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 129,
+      date: DateTime(2025, 5, 8),
+      amount: -10.00,
+      name: 'Pasta Lunch',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 8),
-        amount: -2.20,
-        name: 'MRT Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 130,
+      date: DateTime(2025, 5, 8),
+      amount: -2.20,
+      name: 'MRT Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 8),
-        amount: -45.00,
-        name: 'Uniqlo Sale',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 131,
+      date: DateTime(2025, 5, 8),
+      amount: -45.00,
+      name: 'Uniqlo Sale',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 8),
-        amount: -3.90,
-        name: 'ShareTea Drink',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 132,
+      date: DateTime(2025, 5, 8),
+      amount: -3.90,
+      name: 'ShareTea Drink',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 9 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 9),
-        amount: -6.50,
-        name: 'Porridge Breakfast',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 133,
+      date: DateTime(2025, 5, 9),
+      amount: -6.50,
+      name: 'Porridge Breakfast',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 9),
-        amount: -15.00,
-        name: 'ComfortDelGro Taxi',
-        category: 'Transport',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 134,
+      date: DateTime(2025, 5, 9),
+      amount: -15.00,
+      name: 'ComfortDelGro Taxi',
+      category: 'Transport',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 9),
-        amount: -27.50,
-        name: 'NTUC Groceries',
-        category: 'Groceries',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 135,
+      date: DateTime(2025, 5, 9),
+      amount: -27.50,
+      name: 'NTUC Groceries',
+      category: 'Groceries',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 9),
-        amount: -8.00,
-        name: 'Baskin Robbins',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 136,
+      date: DateTime(2025, 5, 9),
+      amount: -8.00,
+      name: 'Baskin Robbins',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 10 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 10),
-        amount: -14.00,
-        name: 'McDonald’s',
-        category: 'Food',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 137,
+      date: DateTime(2025, 5, 10),
+      amount: -14.00,
+      name: "McDonald's",
+      category: 'Food',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 10),
-        amount: -1.50,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 138,
+      date: DateTime(2025, 5, 10),
+      amount: -1.50,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 10),
-        amount: -35.00,
-        name: 'Movie Tickets',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 139,
+      date: DateTime(2025, 5, 10),
+      amount: -35.00,
+      name: 'Movie Tickets',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 10),
-        amount: -25.50,
-        name: 'Guardian Items',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 140,
+      date: DateTime(2025, 5, 10),
+      amount: -25.50,
+      name: 'Guardian Items',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 11 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 11),
-        amount: -2.20,
-        name: 'Coffee & Toast',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 141,
+      date: DateTime(2025, 5, 11),
+      amount: -2.20,
+      name: 'Coffee & Toast',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 11),
-        amount: -5.00,
-        name: 'Grab Share Ride',
-        category: 'Transport',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 142,
+      date: DateTime(2025, 5, 11),
+      amount: -5.00,
+      name: 'Grab Share Ride',
+      category: 'Transport',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 11),
-        amount: -12.00,
-        name: 'Nintendo Online',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 143,
+      date: DateTime(2025, 5, 11),
+      amount: -12.00,
+      name: 'Nintendo Online',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 11),
-        amount: -15.00,
-        name: 'Popular Bookstore',
-        category: 'Education',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 144,
+      date: DateTime(2025, 5, 11),
+      amount: -15.00,
+      name: 'Popular Bookstore',
+      category: 'Education',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 12 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 12),
-        amount: -4.70,
-        name: 'Bakery Stop',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 145,
+      date: DateTime(2025, 5, 12),
+      amount: -4.70,
+      name: 'Bakery Stop',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 12),
-        amount: -2.50,
-        name: 'Bus Ride',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 146,
+      date: DateTime(2025, 5, 12),
+      amount: -2.50,
+      name: 'Bus Ride',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 12),
-        amount: -32.00,
-        name: 'Scoot Payment',
-        category: 'Transport',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 147,
+      date: DateTime(2025, 5, 12),
+      amount: -32.00,
+      name: 'Scoot Payment',
+      category: 'Transport',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 12),
-        amount: -29.90,
-        name: 'Mango Sale',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 148,
+      date: DateTime(2025, 5, 12),
+      amount: -29.90,
+      name: 'Mango Sale',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 13 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 13),
-        amount: -10.00,
-        name: 'Food Court Lunch',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 149,
+      date: DateTime(2025, 5, 13),
+      amount: -10.00,
+      name: 'Food Court Lunch',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 13),
-        amount: -2.20,
-        name: 'MRT Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 150,
+      date: DateTime(2025, 5, 13),
+      amount: -2.20,
+      name: 'MRT Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 13),
-        amount: -40.00,
-        name: 'PUB Utilities Bill',
-        category: 'Bills',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 151,
+      date: DateTime(2025, 5, 13),
+      amount: -40.00,
+      name: 'PUB Utilities Bill',
+      category: 'Bills',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 13),
-        amount: -8.50,
-        name: 'Park Entrance Fee',
-        category: 'Entertainment',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 152,
+      date: DateTime(2025, 5, 13),
+      amount: -8.50,
+      name: 'Park Entrance Fee',
+      category: 'Entertainment',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 14 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 14),
-        amount: -5.00,
-        name: 'Hawker Dinner',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 153,
+      date: DateTime(2025, 5, 14),
+      amount: -5.00,
+      name: 'Hawker Dinner',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 14),
-        amount: -3.00,
-        name: 'Train Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 154,
+      date: DateTime(2025, 5, 14),
+      amount: -3.00,
+      name: 'Train Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 14),
-        amount: -12.00,
-        name: 'StarHub Bill',
-        category: 'Bills',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 155,
+      date: DateTime(2025, 5, 14),
+      amount: -12.00,
+      name: 'StarHub Bill',
+      category: 'Bills',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 14),
-        amount: 200.00,
-        name: 'Project Bonus',
-        category: 'Salary',
-        method: 'Transfer',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 156,
+      date: DateTime(2025, 5, 14),
+      amount: 200.00,
+      name: 'Project Bonus',
+      category: 'Salary',
+      method: 'Transfer',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 15 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 15),
-        amount: -8.20,
-        name: 'Teochew Porridge',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 157,
+      date: DateTime(2025, 5, 15),
+      amount: -8.20,
+      name: 'Teochew Porridge',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 15),
-        amount: -1.90,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 158,
+      date: DateTime(2025, 5, 15),
+      amount: -1.90,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 15),
-        amount: -55.00,
-        name: 'Uniqlo Clothing',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 159,
+      date: DateTime(2025, 5, 15),
+      amount: -55.00,
+      name: 'Uniqlo Clothing',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 15),
-        amount: -10.00,
-        name: 'PUB Payment',
-        category: 'Bills',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 160,
+      date: DateTime(2025, 5, 15),
+      amount: -10.00,
+      name: 'PUB Payment',
+      category: 'Bills',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 16 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 16),
-        amount: -9.00,
-        name: 'Fish Soup Lunch',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 161,
+      date: DateTime(2025, 5, 16),
+      amount: -9.00,
+      name: 'Fish Soup Lunch',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 16),
-        amount: -3.00,
-        name: 'Grab Share',
-        category: 'Transport',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 162,
+      date: DateTime(2025, 5, 16),
+      amount: -3.00,
+      name: 'Grab Share',
+      category: 'Transport',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 16),
-        amount: -15.00,
-        name: 'PUB Bill Top-up',
-        category: 'Bills',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 163,
+      date: DateTime(2025, 5, 16),
+      amount: -15.00,
+      name: 'PUB Bill Top-up',
+      category: 'Bills',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 16),
-        amount: -6.50,
-        name: 'KOI Bubble Tea',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 164,
+      date: DateTime(2025, 5, 16),
+      amount: -6.50,
+      name: 'KOI Bubble Tea',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 17 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 17),
-        amount: -10.00,
-        name: 'Cai Fan Dinner',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 165,
+      date: DateTime(2025, 5, 17),
+      amount: -10.00,
+      name: 'Cai Fan Dinner',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 17),
-        amount: -2.10,
-        name: 'Train Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 166,
+      date: DateTime(2025, 5, 17),
+      amount: -2.10,
+      name: 'Train Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 17),
-        amount: -32.00,
-        name: 'FairPrice Weekly',
-        category: 'Groceries',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 167,
+      date: DateTime(2025, 5, 17),
+      amount: -32.00,
+      name: 'FairPrice Weekly',
+      category: 'Groceries',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 17),
-        amount: -50.00,
-        name: 'Online Purchase',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 168,
+      date: DateTime(2025, 5, 17),
+      amount: -50.00,
+      name: 'Online Purchase',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 18 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 18),
-        amount: -7.50,
-        name: 'Bak Kut Teh',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 169,
+      date: DateTime(2025, 5, 18),
+      amount: -7.50,
+      name: 'Bak Kut Teh',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 18),
-        amount: -20.00,
-        name: 'Grab Ride',
-        category: 'Transport',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 170,
+      date: DateTime(2025, 5, 18),
+      amount: -20.00,
+      name: 'Grab Ride',
+      category: 'Transport',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 18),
-        amount: -10.00,
-        name: 'PSN Subscription',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 171,
+      date: DateTime(2025, 5, 18),
+      amount: -10.00,
+      name: 'PSN Subscription',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 18),
-        amount: -85.00,
-        name: 'Wallet Purchase',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 172,
+      date: DateTime(2025, 5, 18),
+      amount: -85.00,
+      name: 'Wallet Purchase',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 19 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 19),
-        amount: -4.90,
-        name: 'Minced Meat Noodles',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 173,
+      date: DateTime(2025, 5, 19),
+      amount: -4.90,
+      name: 'Minced Meat Noodles',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 19),
-        amount: -2.00,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 174,
+      date: DateTime(2025, 5, 19),
+      amount: -2.00,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 19),
-        amount: -25.00,
-        name: 'Wallet Top-Up',
-        category: 'Others',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 175,
+      date: DateTime(2025, 5, 19),
+      amount: -25.00,
+      name: 'Wallet Top-Up',
+      category: 'Others',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 19),
-        amount: -9.50,
-        name: 'Sentosa Monorail',
-        category: 'Entertainment',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 176,
+      date: DateTime(2025, 5, 19),
+      amount: -9.50,
+      name: 'Sentosa Monorail',
+      category: 'Entertainment',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 20 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 20),
-        amount: -8.20,
-        name: 'Kimchi Fried Rice',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 177,
+      date: DateTime(2025, 5, 20),
+      amount: -8.20,
+      name: 'Kimchi Fried Rice',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 20),
-        amount: -3.00,
-        name: 'MRT Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 178,
+      date: DateTime(2025, 5, 20),
+      amount: -3.00,
+      name: 'MRT Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 20),
-        amount: -20.00,
-        name: 'Grab Ride',
-        category: 'Transport',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 179,
+      date: DateTime(2025, 5, 20),
+      amount: -20.00,
+      name: 'Grab Ride',
+      category: 'Transport',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 20),
-        amount: -34.90,
-        name: 'Toys Purchase',
-        category: 'Shopping',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 180,
+      date: DateTime(2025, 5, 20),
+      amount: -34.90,
+      name: 'Toys Purchase',
+      category: 'Shopping',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 21 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 21),
-        amount: -6.00,
-        name: 'Malaysian Food Street',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 181,
+      date: DateTime(2025, 5, 21),
+      amount: -6.00,
+      name: 'Malaysian Food Street',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 21),
-        amount: -3.00,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 182,
+      date: DateTime(2025, 5, 21),
+      amount: -3.00,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 21),
-        amount: -15.00,
-        name: 'iTunes Subscription',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 183,
+      date: DateTime(2025, 5, 21),
+      amount: -15.00,
+      name: 'iTunes Subscription',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 21),
-        amount: 88.00,
-        name: 'Gift from Sibling',
-        category: 'Transfer',
-        method: 'Transfer',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 184,
+      date: DateTime(2025, 5, 21),
+      amount: 88.00,
+      name: 'Gift from Sibling',
+      category: 'Transfer',
+      method: 'Transfer',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
 
     // DAY 22 (Assignment: 1, 2, 3, 1)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 22),
-        amount: -12.40,
-        name: 'Chicken Rice Lunch',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 185,
+      date: DateTime(2025, 5, 22),
+      amount: -12.40,
+      name: 'Chicken Rice Lunch',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 22),
-        amount: -3.30,
-        name: 'MRT & Bus',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 186,
+      date: DateTime(2025, 5, 22),
+      amount: -3.30,
+      name: 'MRT & Bus',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 22),
-        amount: -45.90,
-        name: 'Cold Storage',
-        category: 'Groceries',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 187,
+      date: DateTime(2025, 5, 22),
+      amount: -45.90,
+      name: 'Cold Storage',
+      category: 'Groceries',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 22),
-        amount: -65.00,
-        name: 'KINOKUNIYA Books',
-        category: 'Education',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 188,
+      date: DateTime(2025, 5, 22),
+      amount: -65.00,
+      name: 'KINOKUNIYA Books',
+      category: 'Education',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
 
     // DAY 23 (Assignment: 2, 3, 1, 2)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 23),
-        amount: -6.80,
-        name: 'Kopi & Toast',
-        category: 'Food',
-        method: 'Cash',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 189,
+      date: DateTime(2025, 5, 23),
+      amount: -6.80,
+      name: 'Kopi & Toast',
+      category: 'Food',
+      method: 'Cash',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 23),
-        amount: -2.50,
-        name: 'Bus Fare',
-        category: 'Transport',
-        method: 'EZ-Link',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 190,
+      date: DateTime(2025, 5, 23),
+      amount: -2.50,
+      name: 'Bus Fare',
+      category: 'Transport',
+      method: 'EZ-Link',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 23),
-        amount: -16.00,
-        name: 'Golden Village Ticket',
-        category: 'Entertainment',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 191,
+      date: DateTime(2025, 5, 23),
+      amount: -16.00,
+      name: 'Golden Village Ticket',
+      category: 'Entertainment',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 23),
-        amount: -26.00,
-        name: 'Uniqlo T-Shirt',
-        category: 'Shopping',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('23456788901'),
+      id: 192,
+      date: DateTime(2025, 5, 23),
+      amount: -26.00,
+      name: 'Uniqlo T-Shirt',
+      category: 'Shopping',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('23456788901'),
       ),
     );
 
     // DAY 24 (Assignment: 3, 1, 2, 3)
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 24),
-        amount: -14.00,
-        name: 'Fish & Chips',
-        category: 'Food',
-        method: 'Credit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount('3456789012'),
+      id: 193,
+      date: DateTime(2025, 5, 24),
+      amount: -14.00,
+      name: 'Fish & Chips',
+      category: 'Food',
+      method: 'Credit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount('3456789012'),
       ),
     );
     await transactionManager.addTransaction(
       Transaction(
-        date: DateTime(2025, 5, 24),
-        amount: -20.00,
-        name: 'Grab Ride',
-        category: 'Transport',
-        method: 'Debit Card',
-        note: '',
-        bankAccount: await bankAccountManager.getBankAccount("1234567890"),
+      id: 194,
+      date: DateTime(2025, 5, 24),
+      amount: -20.00,
+      name: 'Grab Ride',
+      category: 'Transport',
+      method: 'Debit Card',
+      note: '',
+      bankAccount: await bankAccountManager.getBankAccount("1234567890"),
       ),
     );
     return true;
+    }
   }
-}

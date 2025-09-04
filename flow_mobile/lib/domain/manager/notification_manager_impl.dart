@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/manager/notification_manager.dart';
 import 'package:flow_mobile/domain/entity/notification.dart';
+import 'package:flow_mobile/service/local_source/local_secure_hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class NotificationManagerImpl implements NotificationManager {
@@ -14,7 +15,7 @@ class NotificationManagerImpl implements NotificationManager {
   // Asynchronous getter to obtain the singleton instance
   static Future<NotificationManagerImpl> getInstance() async {
     if (_instance == null) {
-      final box = await Hive.openBox<Notification>('notificationBox');
+      final box = await SecureHive.getBox<Notification>('notificationBox');
       _instance = NotificationManagerImpl._(box);
     }
     return _instance!;

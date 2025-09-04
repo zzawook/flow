@@ -222,10 +222,14 @@ Future<void> _updateStateForBankDataCompletion(Store<FlowState> store) async {
   BankManager bankManager = getIt<BankManager>();
   TransactionManager transactionManager = getIt<TransactionManager>();
 
+  bankAccountManager.clearBankAccounts();
+  bankManager.clearBanks();
+  transactionManager.clearTransactions();
+
   final bankFuture = bankManager.fetchBanksFromRemote();
   final bankAccountFuture = bankAccountManager.fetchBankAccountsFromRemote();
   final transactionFuture = transactionManager
-      .fetchLast30DaysTransactionsFromRemote();
+      .fetchLastYearTransactionsFromRemote();
 
   final fetchResults = Future.wait([
     bankFuture,

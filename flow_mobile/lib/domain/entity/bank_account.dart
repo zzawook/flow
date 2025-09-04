@@ -101,4 +101,29 @@ class BankAccount extends TransferReceivable {
   bool isEqualTo(BankAccount other) {
     return accountNumber == other.accountNumber && bank.isEqualTo(bank);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BankAccount &&
+          runtimeType == other.runtimeType &&
+          accountNumber == other.accountNumber &&
+          accountHolder == other.accountHolder &&
+          balance == other.balance &&
+          accountName == other.accountName &&
+          bank == other.bank &&
+          transferCount == other.transferCount &&
+          isHidden == other.isHidden &&
+          accountType == other.accountType;
+
+  @override
+  int get hashCode =>
+      accountNumber.hashCode ^
+      accountHolder.hashCode ^
+      balance.hashCode ^
+      accountName.hashCode ^
+      bank.hashCode ^
+      transferCount.hashCode ^
+      isHidden.hashCode ^
+      accountType.hashCode;
 }

@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/manager/setting_manager.dart';
 import 'package:flow_mobile/domain/entity/notification_setting.dart';
 import 'package:flow_mobile/domain/entity/setting_v1.dart';
+import 'package:flow_mobile/service/local_source/local_secure_hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class SettingManagerImpl implements SettingManager {
@@ -15,7 +16,7 @@ class SettingManagerImpl implements SettingManager {
   // Asynchronous getter to obtain the singleton instance
   static Future<SettingManagerImpl> getInstance() async {
     if (_instance == null) {
-      final box = await Hive.openBox<SettingsV1>('settingsBox');
+      final box = await SecureHive.getBox<SettingsV1>('settingsBox');
       await box.put('settings', SettingsV1.initial());
       _instance = SettingManagerImpl._(box);
     }

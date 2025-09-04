@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'paynow_recipient.g.dart';
 
-@HiveType(typeId: 5)
+@HiveType(typeId: 7)
 class PayNowRecipient implements TransferReceivable {
   @override
   @HiveField(0)

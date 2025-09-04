@@ -100,11 +100,24 @@ class FinverseDataRetrievalRequestsManager(
             product: FinverseProduct,
             status: FinverseRetrievalStatus
     ) {
+        var fetched = false
+
         val casResult = casProvider.getObject()
             .configure(key=cacheService.getRefreshSessionPrefix(loginIdentityId), createTtlMs = 120 * 1000L, maxRetries = 5)
             .storeWithRetryOnCasReturning(FinverseDataRetrievalRequest::class) { request ->
                 val finverseDataRetrievalRequest: FinverseDataRetrievalRequest = request ?: createBlankFinverseDataRetrievalEvent(loginIdentityId)
                 finverseDataRetrievalRequest.putOrUpdate(product, status)
+                if ((! fetched) && finverseShouldFetchDecider.shouldFetch(finverseDataRetrievalRequest, product, status)) {
+                    val loginIdentityToken =
+                        finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
+                    product.fetch(
+                        loginIdentityId,
+                        loginIdentityToken,
+                        finverseResponseProcessor,
+                        finverseWebclientService
+                    )
+                    fetched = true
+                }
                 finverseDataRetrievalRequest
             }
 
@@ -113,17 +126,6 @@ class FinverseDataRetrievalRequestsManager(
         if (finverseDataRetrievalRequest == null) {
             logger.error("FinverseDataRetrieval request from CAS Operation was null")
             return
-        }
-
-        if (finverseShouldFetchDecider.shouldFetch(finverseDataRetrievalRequest, product, status)) {
-            val loginIdentityToken =
-                finverseLoginIdentityService.getLoginIdentityTokenWithLoginIdentityID(loginIdentityId)
-            product.fetch(
-                    loginIdentityId,
-                    loginIdentityToken,
-                    finverseResponseProcessor,
-                    finverseWebclientService
-            )
         }
 
         if (finverseDataRetrievalRequest.isComplete()) {

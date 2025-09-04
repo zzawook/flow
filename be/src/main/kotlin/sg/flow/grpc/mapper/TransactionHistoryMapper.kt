@@ -9,6 +9,7 @@ import sg.flow.common.v1.TransactionHistoryDetail as ProtoTxDetail
 import sg.flow.models.transaction.TransactionHistoryDetail as DomainTxDetail
 import java.time.ZoneOffset
 import java.time.LocalDateTime
+import java.time.LocalTime
 import sg.flow.account.v1.AccountWithTransactionHistory as ProtoAccountWithTransactionHistory
 import sg.flow.models.account.AccountWithTransactionHistory as DomainAccountWithTransactionHistory
 
@@ -25,8 +26,24 @@ class TransactionHistoryMapper(
         domain.account?.let { b.setAccount(accountMapper.toProto(it)) }
         domain.card   ?.let { b.setCard(cardMapper.toProto(it)) }
 
-        if (domain.transactionDate != null && domain.transactionTime != null) {
-            val dt = LocalDateTime.of(domain.transactionDate, domain.transactionTime)
+        if (domain.transactionDate != null) {
+            val dt : LocalDateTime
+            if (domain.transactionTime != null) {
+                dt = LocalDateTime.of(domain.transactionDate, domain.transactionTime)
+            } else {
+                dt = LocalDateTime.of(domain.transactionDate, LocalTime.now())
+            }
+
+            b.setTransactionTimestamp(
+                Timestamp.newBuilder()
+                    .setSeconds(dt.toEpochSecond(ZoneOffset.UTC))
+                    .setNanos(dt.nano)
+                    .build()
+            )
+        }
+
+        if (domain.revisedTransactionDate != null) {
+            val dt = LocalDateTime.of(domain.revisedTransactionDate, LocalTime.now())
             b.setTransactionTimestamp(
                 Timestamp.newBuilder()
                     .setSeconds(dt.toEpochSecond(ZoneOffset.UTC))
@@ -40,6 +57,8 @@ class TransactionHistoryMapper(
         domain.transactionType     ?.let(b::setTransactionType)
         domain.transactionStatus   ?.let(b::setTransactionStatus)
         domain.friendlyDescription ?.let(b::setFriendlyDescription)
+        domain.transactionCategory ?.let(b::setTransactionCategory)
+        domain.brandName           ?.let(b::setBrandName)
         return b.build()
     }
 

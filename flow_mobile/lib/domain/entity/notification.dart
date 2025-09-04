@@ -2,7 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'notification.g.dart';
 
-@HiveType(typeId: 6)
+@HiveType(typeId: 5)
 class Notification {
   @HiveField(0)
   final int id;

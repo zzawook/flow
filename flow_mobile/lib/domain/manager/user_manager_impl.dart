@@ -4,6 +4,7 @@ import 'package:flow_mobile/domain/manager/user_manager.dart';
 import 'package:flow_mobile/domain/entity/user.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/service/api_service/api_service.dart';
+import 'package:flow_mobile/service/local_source/local_secure_hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class UserManagerImpl implements UserManager {
@@ -18,7 +19,7 @@ class UserManagerImpl implements UserManager {
   // Asynchronous factory getter to return the singleton instance.
   static Future<UserManagerImpl> getInstance() async {
     if (_instance == null) {
-      final box = await Hive.openBox<User>('userBox');
+      final box = await SecureHive.getBox<User>('userBox');
       _instance = UserManagerImpl._(box);
     }
     return _instance!;
@@ -31,12 +32,9 @@ class UserManagerImpl implements UserManager {
   }
 
   @override
-  Future<User> getUser() async {
+  Future<User?> getUser() async {
     // Retrieve the user stored under the key 'user'
     final user = _userBox.get('user');
-    if (user == null) {
-      throw Exception("User not found");
-    }
     return user;
   }
 
@@ -59,7 +57,6 @@ class UserManagerImpl implements UserManager {
             phoneNumber: userProfile.phoneNumber,
             nickname: userProfile.name,
           );
-          print("Fetched user: ${user.name}, ${user.email}");
           await updateUser(user);
         })
         .catchError((error) {

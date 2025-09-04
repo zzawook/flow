@@ -45,7 +45,7 @@ class FlowStateInitializer {
 
   static Future<UserState> getUserState() async {
     UserManager userManager = await UserManagerImpl.getInstance();
-    User user = await userManager.getUser();
+    User? user = await userManager.getUser();
     return UserState(user: user);
   }
 

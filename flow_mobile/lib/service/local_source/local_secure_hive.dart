@@ -6,7 +6,6 @@ import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/entity/notification.dart';
 import 'package:flow_mobile/domain/entity/notification_setting.dart';
 import 'package:flow_mobile/domain/entity/paynow_recipient.dart';
-import 'package:flow_mobile/domain/entity/setting.dart';
 import 'package:flow_mobile/domain/entity/setting_v1.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/entity/user.dart';
@@ -29,7 +28,6 @@ class SecureHive {
 
     secureKey = base64Decode(encryptionKey);
 
-    Hive.registerAdapter(SettingsAdapter());
     Hive.registerAdapter(SettingsV1Adapter());
     Hive.registerAdapter(UserAdapter());
     Hive.registerAdapter(BankAccountAdapter());
@@ -38,10 +36,8 @@ class SecureHive {
     Hive.registerAdapter(PayNowRecipientAdapter());
     Hive.registerAdapter(NotificationAdapter());
     Hive.registerAdapter(NotificationSettingAdapter());
-
+    
     // ADD ADAPTERS FOR BOTH LEGACY AND NEW ENTITIES
-
-    await _doMigration(secureKey!);
 
     return true;
   }
@@ -55,43 +51,8 @@ class SecureHive {
   }
 
   static Future<Box<E>> getBox<E>(String boxName) {
+    Hive.deleteBoxFromDisk(boxName);
     return Hive.openBox(boxName, encryptionCipher: HiveAesCipher(secureKey!));
   }
 
-  static Future<void> _doMigration(Uint8List secureKey) async {
-    const kHiveVersionKey = '__schema_version__';
-    const hiveBoxKey = 'app_meta';
-
-    if (!await Hive.boxExists(hiveBoxKey)) {
-      // If the version box does not exist, create it with version 0
-      // then return
-      await getBox<int>(hiveBoxKey).then((box) => box.put(kHiveVersionKey, 0));
-      return;
-    }
-
-    final meta = await Hive.openBox(
-      hiveBoxKey,
-      encryptionCipher: HiveAesCipher(secureKey),
-    );
-    final currentVersion = meta.get(kHiveVersionKey, defaultValue: 0) as int;
-
-    if (currentVersion < 1) {
-      await meta.put(kHiveVersionKey, 0);
-      final box = await getBox<Settings>("settingsBox");
-
-      Settings? settings = box.get("settings");
-
-      if (settings == null) {
-        settings = Settings.initial();
-        await box.put("settings", settings);
-      }
-      await box.clear();
-      await box.close();
-      final newVersionBox = await getBox<SettingsV1>('settingsBox');
-
-      await newVersionBox.put("settings", SettingsV1.fromPrevVersion(settings));
-      await newVersionBox.close();
-      await meta.put(kHiveVersionKey, 1);
-    }
-  }
 }

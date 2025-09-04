@@ -1,5 +1,5 @@
-import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/spending_screen_thunks.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
@@ -10,7 +10,7 @@ import 'package:flow_mobile/presentation/spending_screen/components/spending_by_
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_trend_card/spending_trend_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/top_spending_cluster_card/top_spending_cluster_card.dart';
-import 'package:flow_mobile/presentation/spending_screen/spending_screen_contstants.dart';
+import 'package:flow_mobile/presentation/spending_screen/spending_screen_constants.dart';
 import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
 import 'package:flow_mobile/presentation/shared/flow_main_top_bar.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
@@ -180,7 +180,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
                               displayMonthYearSetter:
                                   (newMonth) => StoreProvider.of<FlowState>(
                                     context,
-                                  ).dispatch(SetDisplayedMonthAction(newMonth)),
+                                  ).dispatch(setDisplayedMonthThunk(newMonth)),
                             );
                           },
                         ),

@@ -33,6 +33,9 @@ class TransactionHistoryDetail extends $pb.GeneratedMessage {
     $core.String? description,
     $core.String? transactionStatus,
     $core.String? friendlyDescription,
+    $core.String? transactionCategory,
+    $core.String? brandName,
+    $2.Timestamp? revisedTransactionTimestamp,
   }) {
     final result = create();
     if (id != null) result.id = id;
@@ -48,6 +51,11 @@ class TransactionHistoryDetail extends $pb.GeneratedMessage {
     if (transactionStatus != null) result.transactionStatus = transactionStatus;
     if (friendlyDescription != null)
       result.friendlyDescription = friendlyDescription;
+    if (transactionCategory != null)
+      result.transactionCategory = transactionCategory;
+    if (brandName != null) result.brandName = brandName;
+    if (revisedTransactionTimestamp != null)
+      result.revisedTransactionTimestamp = revisedTransactionTimestamp;
     return result;
   }
 
@@ -78,6 +86,11 @@ class TransactionHistoryDetail extends $pb.GeneratedMessage {
     ..aOS(8, _omitFieldNames ? '' : 'description')
     ..aOS(9, _omitFieldNames ? '' : 'transactionStatus')
     ..aOS(10, _omitFieldNames ? '' : 'friendlyDescription')
+    ..aOS(11, _omitFieldNames ? '' : 'transactionCategory')
+    ..aOS(12, _omitFieldNames ? '' : 'brandName')
+    ..aOM<$2.Timestamp>(
+        13, _omitFieldNames ? '' : 'revisedTransactionTimestamp',
+        subBuilder: $2.Timestamp.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -198,6 +211,35 @@ class TransactionHistoryDetail extends $pb.GeneratedMessage {
   $core.bool hasFriendlyDescription() => $_has(9);
   @$pb.TagNumber(10)
   void clearFriendlyDescription() => $_clearField(10);
+
+  @$pb.TagNumber(11)
+  $core.String get transactionCategory => $_getSZ(10);
+  @$pb.TagNumber(11)
+  set transactionCategory($core.String value) => $_setString(10, value);
+  @$pb.TagNumber(11)
+  $core.bool hasTransactionCategory() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearTransactionCategory() => $_clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.String get brandName => $_getSZ(11);
+  @$pb.TagNumber(12)
+  set brandName($core.String value) => $_setString(11, value);
+  @$pb.TagNumber(12)
+  $core.bool hasBrandName() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearBrandName() => $_clearField(12);
+
+  @$pb.TagNumber(13)
+  $2.Timestamp get revisedTransactionTimestamp => $_getN(12);
+  @$pb.TagNumber(13)
+  set revisedTransactionTimestamp($2.Timestamp value) => $_setField(13, value);
+  @$pb.TagNumber(13)
+  $core.bool hasRevisedTransactionTimestamp() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearRevisedTransactionTimestamp() => $_clearField(13);
+  @$pb.TagNumber(13)
+  $2.Timestamp ensureRevisedTransactionTimestamp() => $_ensure(12);
 }
 
 class TransactionHistoryList extends $pb.GeneratedMessage {

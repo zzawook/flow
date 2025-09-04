@@ -8,7 +8,7 @@ part of 'paynow_recipient.dart';
 
 class PayNowRecipientAdapter extends TypeAdapter<PayNowRecipient> {
   @override
-  final int typeId = 5;
+  final int typeId = 12;
 
   @override
   PayNowRecipient read(BinaryReader reader) {

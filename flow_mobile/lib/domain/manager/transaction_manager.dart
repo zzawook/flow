@@ -10,7 +10,10 @@ abstract class TransactionManager {
   Future<void> putTransaction(String id, Transaction transaction);
   Future<void> clearTransactions();
 
-  getAllTransactions() {}
+  Future<List<Transaction>> getAllTransactions();
 
-  Future<void> fetchLast30DaysTransactionsFromRemote() async {}
+  Future<void> fetchLastYearTransactionsFromRemote() async {}
+  Future<List<Transaction>> fetchPastOverYearTransactionsAroundFromRemote(
+    DateTime month,
+  );
 }

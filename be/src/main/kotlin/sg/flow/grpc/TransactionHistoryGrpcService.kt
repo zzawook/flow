@@ -114,6 +114,7 @@ class TransactionHistoryGrpcService(
                 val domain = transactionService.getTransactionWithinRange(
                         userId, startDate, endDate
                 )
+                println("DB FETCH SUCCESSFUL")
                 return txHistoryMapper.toProto(domain)
         }
 }

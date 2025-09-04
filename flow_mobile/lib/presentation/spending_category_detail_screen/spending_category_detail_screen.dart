@@ -88,7 +88,9 @@ class _SpendingCategoryDetailScreenState
                             )
                             : DateTime.now(),
                       );
-                  final totalTransactionAmount = transactions.fold(
+                  final totalTransactionAmount = transactions
+                      .where((element) => element.amount < 0)
+                      .fold(
                     0.0,
                     (previousValue, element) => previousValue + element.amount,
                   );

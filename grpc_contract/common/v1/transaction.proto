@@ -20,6 +20,9 @@ message TransactionHistoryDetail {
   string                        description           = 8;
   string                        transaction_status    = 9;
   string                        friendly_description  = 10;
+  string                        transaction_category  = 11;
+  string                        brand_name            = 12;
+  google.protobuf.Timestamp     revised_transaction_timestamp = 13; // date+time
 }
 
 message TransactionHistoryList {

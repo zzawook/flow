@@ -29,6 +29,12 @@ class BankManagerImpl implements BankManager {
   }
 
   @override
+  Future<void> clearBanks() {
+    banks.clear();
+    return Future.value();
+  }
+
+  @override
   Future<List<Bank>> getBanks() {
     return Future.value(banks);
   }

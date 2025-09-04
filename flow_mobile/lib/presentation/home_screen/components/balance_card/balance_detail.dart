@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
@@ -11,27 +12,41 @@ class BalanceDetail extends StatelessWidget {
 
   const BalanceDetail({super.key, required this.isOnHomeScreen});
 
-  TransactionState storeToTransactionStateConverter(Store<FlowState> store) {
-    return store.state.transactionState;
+  TransactionStateAndSpendingScreenState storeToTransactionStateConverter(
+    Store<FlowState> store,
+  ) {
+    return TransactionStateAndSpendingScreenState(
+      txState: store.state.transactionState,
+      spendingScreenState: store.state.screenState.spendingScreenState,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     Widget separator = FlowSeparatorBox(height: isOnHomeScreen ? 0 : 16);
-    return StoreConnector<FlowState, TransactionState>(
+    return StoreConnector<FlowState, TransactionStateAndSpendingScreenState>(
       converter: (store) => storeToTransactionStateConverter(store),
-      builder: (context, txState) {
+      builder: (context, states) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _IncomeContainer(txState: txState),
-            separator,
-            _SpendingContainer(
-              txState: txState,
+            _IncomeContainer(
+              txState: states.txState,
               isOnHomeScreen: isOnHomeScreen,
+              spendingScreenState: states.spendingScreenState,
             ),
             separator,
-            _TotalBalanceContainer(txState: txState),
+            _SpendingContainer(
+              txState: states.txState,
+              isOnHomeScreen: isOnHomeScreen,
+              spendingScreenState: states.spendingScreenState,
+            ),
+            separator,
+            _TotalBalanceContainer(
+              txState: states.txState,
+              spendingScreenState: states.spendingScreenState,
+              isOnHomeScreen: isOnHomeScreen,
+            ),
           ],
         );
       },
@@ -39,14 +54,32 @@ class BalanceDetail extends StatelessWidget {
   }
 }
 
-class _IncomeContainer extends StatelessWidget {
+class TransactionStateAndSpendingScreenState {
   final TransactionState txState;
+  final SpendingScreenState spendingScreenState;
 
-  const _IncomeContainer({required this.txState});
+  TransactionStateAndSpendingScreenState({
+    required this.txState,
+    required this.spendingScreenState,
+  });
+}
+
+class _IncomeContainer extends StatelessWidget {
+  final bool isOnHomeScreen;
+  final TransactionState txState;
+  final SpendingScreenState spendingScreenState;
+
+  const _IncomeContainer({
+    required this.txState,
+    required this.isOnHomeScreen,
+    required this.spendingScreenState,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
+    final now = isOnHomeScreen
+        ? DateTime.now()
+        : spendingScreenState.selectedDate;
     final income = txState
         .getIncomeForMonth(DateTime(now.year, now.month))
         .toStringAsFixed(2);
@@ -55,10 +88,9 @@ class _IncomeContainer extends StatelessWidget {
       fontFamily: 'Inter',
       fontSize: 16,
       fontWeight: FontWeight.bold,
-      color:
-          Theme.of(context).brightness == Brightness.light
-              ? const Color(0xFF555555)
-              : Theme.of(context).colorScheme.onSurface.withAlpha(225),
+      color: Theme.of(context).brightness == Brightness.light
+          ? const Color(0xFF555555)
+          : Theme.of(context).colorScheme.onSurface.withAlpha(225),
     );
 
     final valueStyle = labelStyle.copyWith(fontWeight: FontWeight.w900);
@@ -79,25 +111,28 @@ class _IncomeContainer extends StatelessWidget {
 class _SpendingContainer extends StatelessWidget {
   final TransactionState txState;
   final bool isOnHomeScreen;
+  final SpendingScreenState spendingScreenState;
 
   const _SpendingContainer({
     required this.txState,
     required this.isOnHomeScreen,
+    required this.spendingScreenState,
   });
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
+    final now = isOnHomeScreen
+        ? DateTime.now()
+        : spendingScreenState.selectedDate;
     final expense = txState
         .getExpenseForMonth(DateTime(now.year, now.month))
         .abs()
         .toStringAsFixed(2);
 
     final labelStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
-      color:
-          Theme.of(context).brightness == Brightness.light
-              ? const Color(0xFF555555)
-              : Theme.of(context).colorScheme.onSurface.withAlpha(225),
+      color: Theme.of(context).brightness == Brightness.light
+          ? const Color(0xFF555555)
+          : Theme.of(context).colorScheme.onSurface.withAlpha(225),
     );
 
     final valueStyle = labelStyle.copyWith(fontWeight: FontWeight.w900);
@@ -117,7 +152,11 @@ class _SpendingContainer extends StatelessWidget {
             ),
           ),
           FlowSeparatorBox(height: isOnHomeScreen ? 0 : 10),
-          _SpendingDetails(txState: txState, isOnHomeScreen: isOnHomeScreen),
+          _SpendingDetails(
+            txState: txState,
+            isOnHomeScreen: isOnHomeScreen,
+            spendingScreenState: spendingScreenState,
+          ),
         ],
       ),
     );
@@ -125,13 +164,21 @@ class _SpendingContainer extends StatelessWidget {
 }
 
 class _TotalBalanceContainer extends StatelessWidget {
+  final bool isOnHomeScreen;
+  final SpendingScreenState spendingScreenState;
   final TransactionState txState;
 
-  const _TotalBalanceContainer({required this.txState});
+  const _TotalBalanceContainer({
+    required this.txState,
+    required this.spendingScreenState,
+    required this.isOnHomeScreen,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
+    final now = isOnHomeScreen
+        ? DateTime.now()
+        : spendingScreenState.selectedDate;
     final balance = txState.getBalanceForMonth(DateTime(now.year, now.month));
     final sign = balance >= 0 ? '+' : '-';
 
@@ -158,8 +205,13 @@ class _TotalBalanceContainer extends StatelessWidget {
 class _SpendingDetails extends StatelessWidget {
   final TransactionState txState;
   final bool isOnHomeScreen;
+  final SpendingScreenState spendingScreenState;
 
-  const _SpendingDetails({required this.txState, required this.isOnHomeScreen});
+  const _SpendingDetails({
+    required this.txState,
+    required this.isOnHomeScreen,
+    required this.spendingScreenState,
+  });
 
   String _processMethod(String method) {
     if (method == 'Credit Card' || method == 'Debit Card') {
@@ -171,12 +223,19 @@ class _SpendingDetails extends StatelessWidget {
     }
   }
 
+  bool _isTargetMonth(DateTime date) {
+    final now = isOnHomeScreen
+        ? DateTime.now()
+        : spendingScreenState.selectedDate;
+    return date.year == now.year && date.month == now.month;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Categorize all negative‐amount transactions
     final categorized = <String, List<Transaction>>{};
     for (var t in txState.transactions) {
-      if (t.amount >= 0) continue;
+      if (t.amount >= 0 || !_isTargetMonth(t.date)) continue;
       final key = _processMethod(t.method);
       categorized.putIfAbsent(key, () => []).add(t);
     }
@@ -189,10 +248,9 @@ class _SpendingDetails extends StatelessWidget {
           children: [
             Container(
               width: 2,
-              color:
-                  Theme.of(context).brightness == Brightness.light
-                      ? Color(0xFFE5E5E5)
-                      : Color(0xFF444444),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Color(0xFFE5E5E5)
+                  : Color(0xFF444444),
               margin: const EdgeInsets.only(right: 12),
             ),
             Expanded(
@@ -231,10 +289,9 @@ class CardSpending extends StatelessWidget {
     }
 
     final detailValueStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      color:
-          Theme.of(context).brightness == Brightness.light
-              ? const Color(0xFF666666)
-              : const Color(0xFFAFAFAF),
+      color: Theme.of(context).brightness == Brightness.light
+          ? const Color(0xFF666666)
+          : const Color(0xFFAFAFAF),
     );
 
     return Container(
@@ -269,10 +326,9 @@ class TransferSpending extends StatelessWidget {
     }
 
     final detailValueStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      color:
-          Theme.of(context).brightness == Brightness.light
-              ? const Color(0xFF666666)
-              : const Color(0xFFAFAFAF),
+      color: Theme.of(context).brightness == Brightness.light
+          ? const Color(0xFF666666)
+          : const Color(0xFFAFAFAF),
     );
 
     return Container(
@@ -304,10 +360,9 @@ class OtherSpending extends StatelessWidget {
     }
 
     final detailValueStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      color:
-          Theme.of(context).brightness == Brightness.light
-              ? const Color(0xFF666666)
-              : const Color(0xFFAFAFAF),
+      color: Theme.of(context).brightness == Brightness.light
+          ? const Color(0xFF666666)
+          : const Color(0xFFAFAFAF),
     );
 
     return Container(

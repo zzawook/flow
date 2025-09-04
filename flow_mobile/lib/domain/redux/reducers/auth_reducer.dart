@@ -3,7 +3,6 @@ import 'package:flow_mobile/domain/redux/states/auth_state.dart';
 
 AuthState authReducer(AuthState state, dynamic action) {
   if (action is SetLoginEmailAction) {
-    print(action.email);
     return state.copyWith(loginEmail: action.email);
   }
   if (action is SetLoginPasswordAction) {

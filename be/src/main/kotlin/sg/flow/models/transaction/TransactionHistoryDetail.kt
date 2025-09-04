@@ -16,5 +16,8 @@ data class TransactionHistoryDetail(
         val transactionType: String? = null,
         val description: String,
         val transactionStatus: String? = null,
-        val friendlyDescription: String? = null
+        val friendlyDescription: String? = null,
+        val transactionCategory: String? = null,
+        val revisedTransactionDate: LocalDate? = null,
+        val brandName: String? = null
 )

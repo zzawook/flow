@@ -78,11 +78,15 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   TransactionManager transactionManager = getIt<TransactionManager>();
   UserManager userManager = getIt<UserManager>();
 
+  bankManager.clearBanks();
+  bankAccountManager.clearBankAccounts();
+  transactionManager.clearTransactions();
+
   final userFuture = userManager.fetchUserFromRemote();
   final bankFuture = bankManager.fetchBanksFromRemote();
   final bankAccountFuture = bankAccountManager.fetchBankAccountsFromRemote();
-  final transactionFuture =
-      transactionManager.fetchLast30DaysTransactionsFromRemote();
+  final transactionFuture = transactionManager
+      .fetchLastYearTransactionsFromRemote();
   final notificationFuture = notificationManager.fetchNotificationsFromRemote();
 
   final fetchResults = Future.wait([
@@ -116,7 +120,7 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   });
 }
 
-Future<void> _clearStateOnLogout(Store<FlowState> store) async {
+Future<void> _clearState(Store<FlowState> store) async {
   store.dispatch(ClearUserStateAction());
   store.dispatch(ClearBankAccountStateAction());
   store.dispatch(ClearTransactionStateAction());
@@ -141,6 +145,7 @@ ThunkAction<FlowState> signupThunk(String email, String password, String name) {
           email: email,
         ),
       );
+      _clearState(store);
       nav.pushNamed(AppRoutes.home);
     } catch (error) {
       store.dispatch(SignupErrorAction(error.toString()));
@@ -160,7 +165,7 @@ ThunkAction<FlowState> logoutThunk() {
     } catch (error) {
       log('Logout error: $error');
     }
-    await _clearStateOnLogout(store);
+    await _clearState(store);
     // ALWAYS clear tokens after logout
     GrpcInterceptor.setAccessToken("");
     authManager.deleteAccessTokenFromLocal();

@@ -8,7 +8,7 @@ part of 'bank.dart';
 
 class BankAdapter extends TypeAdapter<Bank> {
   @override
-  final int typeId = 3;
+  final int typeId = 13;
 
   @override
   Bank read(BinaryReader reader) {
@@ -16,8 +16,10 @@ class BankAdapter extends TypeAdapter<Bank> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    final bankId = fields[1] is! int ? -1 : fields[1] as int;
-    return Bank(name: fields[0] as String, bankId: bankId);
+    return Bank(
+      name: fields[0] as String,
+      bankId: fields[1] as int,
+    );
   }
 
   @override

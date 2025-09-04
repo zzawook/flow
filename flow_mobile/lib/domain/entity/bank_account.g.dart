@@ -16,15 +16,6 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    bool isHidden = false;
-    String accountType = "default";
-    if (fields.length > 6) {
-      isHidden = fields[6] as bool;
-      
-    }
-    if (fields.length > 7) {
-      accountType = fields[7] as String;
-    }
     return BankAccount(
       accountNumber: fields[0] as String,
       accountHolder: fields[1] as String,
@@ -32,15 +23,15 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
       accountName: fields[3] as String,
       bank: fields[4] as Bank,
       transferCount: fields[5] as int,
-      isHidden: isHidden,
-      accountType: accountType,
+      isHidden: fields[6] as bool,
+      accountType: fields[7] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, BankAccount obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.accountNumber)
       ..writeByte(1)
@@ -54,7 +45,9 @@ class BankAccountAdapter extends TypeAdapter<BankAccount> {
       ..writeByte(5)
       ..write(obj.transferCount)
       ..writeByte(6)
-      ..write(obj.isHidden);
+      ..write(obj.isHidden)
+      ..writeByte(7)
+      ..write(obj.accountType);
   }
 
   @override

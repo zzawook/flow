@@ -623,7 +623,6 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                         .bind(2, userId) // $3  user_id
                                         .bind(3, limit) // $4  limit
                                         .map { row ->
-
                                                 /* nested Account (nullable) */
                                                 val account =
                                                         row.get("account_id", Long::class.java)
@@ -744,7 +743,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                         ),
                                                                                 finverseId =
                                                                                         row.get(
-                                                                                                "finverse_id",
+                                                                                                "account_finverse_id",
                                                                                                 String::class
                                                                                                         .java
                                                                                         )
@@ -802,7 +801,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                         "transaction_time",
                                                                         java.time.LocalTime::class
                                                                                 .java
-                                                                )!!,
+                                                                ),
                                                         amount =
                                                                 row.get(
                                                                         "amount",
@@ -812,7 +811,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                 row.get(
                                                                         "transaction_type",
                                                                         String::class.java
-                                                                )!!,
+                                                                ),
                                                         description =
                                                                 row.get(
                                                                         "description",
@@ -822,12 +821,27 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                 row.get(
                                                                         "transaction_status",
                                                                         String::class.java
-                                                                )!!,
+                                                                ),
                                                         friendlyDescription =
                                                                 row.get(
                                                                         "friendly_description",
                                                                         String::class.java
-                                                                )!!
+                                                                ),
+                                                        transactionCategory =
+                                                                row.get(
+                                                                        "transaction_category",
+                                                                        String::class.java
+                                                                ),
+                                                        revisedTransactionDate =
+                                                                row.get(
+                                                                        "revised_transaction_date",
+                                                                        java.time.LocalDate::class.java
+                                                                ),
+                                                        brandName =
+                                                                row.get(
+                                                                        "brand_name",
+                                                                        String::class.java
+                                                                )
                                                 )
                                         }
                                         .all() // Flux<TransactionHistoryDetail>
@@ -836,6 +850,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
 
                         /* ── wrap the list in your domain object ─────────────────────── */
                         TransactionHistoryList(startDate, endDate).apply {
+                                println("Total length fetched from DB: $details.size")
                                 details.forEach(::add) // same as details.forEach { add(it) }
                         }
                 }

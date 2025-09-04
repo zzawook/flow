@@ -2,7 +2,7 @@ import 'package:hive_flutter/adapters.dart';
 
 part 'notification_setting.g.dart';
 
-@HiveType(typeId: 8)
+@HiveType(typeId: 6)
 class NotificationSetting {
   @HiveField(0)
   final bool masterEnabled;

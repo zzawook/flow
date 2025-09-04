@@ -67,6 +67,22 @@ const TransactionHistoryDetail$json = {
       '5': 9,
       '10': 'friendlyDescription'
     },
+    {
+      '1': 'transaction_category',
+      '3': 11,
+      '4': 1,
+      '5': 9,
+      '10': 'transactionCategory'
+    },
+    {'1': 'brand_name', '3': 12, '4': 1, '5': 9, '10': 'brandName'},
+    {
+      '1': 'revised_transaction_timestamp',
+      '3': 13,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'revisedTransactionTimestamp'
+    },
   ],
 };
 
@@ -80,7 +96,10 @@ final $typed_data.Uint8List transactionHistoryDetailDescriptor = $convert.base64
     'FtcBIWCgZhbW91bnQYBiABKAFSBmFtb3VudBIpChB0cmFuc2FjdGlvbl90eXBlGAcgASgJUg90'
     'cmFuc2FjdGlvblR5cGUSIAoLZGVzY3JpcHRpb24YCCABKAlSC2Rlc2NyaXB0aW9uEi0KEnRyYW'
     '5zYWN0aW9uX3N0YXR1cxgJIAEoCVIRdHJhbnNhY3Rpb25TdGF0dXMSMQoUZnJpZW5kbHlfZGVz'
-    'Y3JpcHRpb24YCiABKAlSE2ZyaWVuZGx5RGVzY3JpcHRpb24=');
+    'Y3JpcHRpb24YCiABKAlSE2ZyaWVuZGx5RGVzY3JpcHRpb24SMQoUdHJhbnNhY3Rpb25fY2F0ZW'
+    'dvcnkYCyABKAlSE3RyYW5zYWN0aW9uQ2F0ZWdvcnkSHQoKYnJhbmRfbmFtZRgMIAEoCVIJYnJh'
+    'bmROYW1lEl4KHXJldmlzZWRfdHJhbnNhY3Rpb25fdGltZXN0YW1wGA0gASgLMhouZ29vZ2xlLn'
+    'Byb3RvYnVmLlRpbWVzdGFtcFIbcmV2aXNlZFRyYW5zYWN0aW9uVGltZXN0YW1w');
 
 @$core.Deprecated('Use transactionHistoryListDescriptor instead')
 const TransactionHistoryList$json = {

@@ -2,7 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'bank.g.dart';
 
-@HiveType(typeId: 3)
+@HiveType(typeId: 1)
 class Bank {
   @HiveField(0)
   final String name;
@@ -20,4 +20,12 @@ class Bank {
   }
 
   String get assetPath => 'assets/bank_logos/${name.toUpperCase()}.png';
+
+  @override
+  operator ==(Object other) =>
+      identical(this, other) ||
+      other is Bank &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          bankId == other.bankId;
 }

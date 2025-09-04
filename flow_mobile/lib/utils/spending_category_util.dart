@@ -32,6 +32,10 @@ class SpendingCategoryUtil {
     "Electronics": {"color": "#CDDC39"},
     "Communication": {"color": "#FF9800"},
     "Salary": {"color": "#FF98FF"},
+    "Analyzing": {
+      "color": "#9E9E9E",
+      "icon": "assets/icons/category_icons/others.png",
+    },
   };
 
   static Color getCategoryColor(String category) {
@@ -52,7 +56,7 @@ class SpendingCategoryUtil {
     return hsl.withLightness(light).toColor();
   }
 
-  static getCategoryIcon(String category) {
+  static dynamic getCategoryIcon(String category) {
     if (!categoryData.containsKey(category)) {
       return "assets/icons/category_icons/others.png";
     }

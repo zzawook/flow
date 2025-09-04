@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/entity/notification.dart';
 
 class NotificationState {
+
   List<Notification> notifications;
 
   NotificationState({

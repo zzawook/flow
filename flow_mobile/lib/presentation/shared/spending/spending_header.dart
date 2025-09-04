@@ -1,7 +1,7 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
-import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/spending_screen_thunks.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flow_mobile/presentation/shared/month_selector.dart';
 import 'package:flow_mobile/presentation/shared/spending/spending_monthly_trend_line_graph.dart';
@@ -32,7 +32,7 @@ class SpendingHeader extends StatelessWidget {
                 displayMonthYearSetter: (date) {
                   StoreProvider.of<FlowState>(
                     context,
-                  ).dispatch(SetDisplayedMonthAction(date));
+                  ).dispatch(setDisplayedMonthThunk(date));
                 },
               ),
               Container(

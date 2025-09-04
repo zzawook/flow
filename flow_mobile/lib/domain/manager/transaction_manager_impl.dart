@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/manager/transaction_manager.dart';
@@ -12,6 +14,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 class TransactionManagerImpl implements TransactionManager {
   final Box<Transaction> _transactionBox;
   final List<Transaction> _transactionList;
+
+  final List<Transaction> _pastOverYearTransactionList = [];
 
   // Private static instance
   static TransactionManagerImpl? _instance;
@@ -38,16 +42,16 @@ class TransactionManagerImpl implements TransactionManager {
     return Future.value(
       _transactionList.isNotEmpty
           ? _transactionList.where((element) {
-            return element.date.isAfter(fromDate) &&
-                element.date.isBefore(toDate);
-          }).toList()
+              return element.date.isAfter(fromDate) &&
+                  element.date.isBefore(toDate);
+            }).toList()
           : _transactionBox.values
-              .where(
-                (element) =>
-                    element.date.isAfter(fromDate) &&
-                    element.date.isBefore(toDate),
-              )
-              .toList(),
+                .where(
+                  (element) =>
+                      element.date.isAfter(fromDate) &&
+                      element.date.isBefore(toDate),
+                )
+                .toList(),
     );
   }
 
@@ -57,10 +61,43 @@ class TransactionManagerImpl implements TransactionManager {
       _transactionList.isNotEmpty
           ? _transactionList
           : _transactionBox.values
-              .where((element) => DateTimeUtil.isSameDate(element.date, date))
-              .toList(),
+                .where((element) => DateTimeUtil.isSameDate(element.date, date))
+                .toList(),
     );
   }
+
+  @override
+  Future<List<Transaction>> fetchPastOverYearTransactionsAroundFromRemote(
+    DateTime month,
+  ) {
+    ApiService apiService = getIt<ApiService>();
+    DateTime startDate = DateTime(
+      month.year,
+      month.month - 1,
+      1,
+    ); // Last month's first day
+    DateTime endDate = DateTime(
+      month.year,
+      month.month + 2,
+      0,
+    ); // Next month's last day
+    return apiService.getTransactionWithinRange(startDate, endDate).then((
+      transactions,
+    ) {
+      List<Transaction> fetchedTransactions = [];
+      for (var transactionHistoryDetail in transactions.transactions) {
+        Transaction transaction = fromTransactionHistoryDetail(
+          transactionHistoryDetail,
+        );
+        fetchedTransactions.add(transaction);
+      }
+      _pastOverYearTransactionList.clear();
+      _pastOverYearTransactionList.addAll(fetchedTransactions);
+      return fetchedTransactions;
+    });
+  }
+
+
 
   void loadTransactionsToList() {
     _transactionList.clear();
@@ -85,10 +122,10 @@ class TransactionManagerImpl implements TransactionManager {
   }
 
   @override
-  Future<void> fetchLast30DaysTransactionsFromRemote() async {
+  Future<void> fetchLastYearTransactionsFromRemote() async {
     ApiService apiService = getIt<ApiService>();
     DateTime now = DateTime.now();
-    DateTime startDate = DateTime(now.year, now.month, now.day - 30);
+    DateTime startDate = DateTime(now.year - 1, now.month, now.day);
     apiService
         .getTransactionWithinRange(startDate, now)
         .then((transactions) async {
@@ -104,16 +141,23 @@ class TransactionManagerImpl implements TransactionManager {
           loadTransactionsToList();
         })
         .catchError((error) {
-          print("Error fetching transactions: $error");
+          log("Error fetching transactions: $error");
         });
   }
 
   Transaction fromTransactionHistoryDetail(TransactionHistoryDetail detail) {
     return Transaction(
-      name: detail.friendlyDescription,
-      date: detail.transactionTimestamp.toDateTime(),
+      id: detail.id.toInt(),
+      name: detail.friendlyDescription.isNotEmpty
+          ? detail.friendlyDescription
+          : detail.description,
+      date: detail.revisedTransactionTimestamp.seconds == 0
+          ? detail.transactionTimestamp.toDateTime()
+          : detail.revisedTransactionTimestamp.toDateTime(),
       amount: detail.amount,
-      category: detail.description,
+      category: detail.transactionCategory.isEmpty
+          ? "Analyzing"
+          : detail.transactionCategory,
       method: "",
       note: "",
       bankAccount: BankAccount(
@@ -132,6 +176,6 @@ class TransactionManagerImpl implements TransactionManager {
 
   @override
   Future<void> putTransaction(String id, Transaction transaction) {
-    return  _transactionBox.put(id, transaction);
+    return _transactionBox.put(id, transaction);
   }
 }

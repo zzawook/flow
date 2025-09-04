@@ -20,6 +20,9 @@ class TransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final processedName = name.length > 35
+        ? "${name.replaceAll("\n", " ").substring(0, 35)}..."
+        : name.replaceAll("\n", " ");
     return Container(
       padding: EdgeInsets.only(bottom: 10),
       child: Row(
@@ -52,7 +55,7 @@ class TransactionItem extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      name,
+                      processedName,
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 12,

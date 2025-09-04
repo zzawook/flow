@@ -1,9 +1,16 @@
+import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 
 class SetTransactionStateAction {
   final TransactionState transactionHistoryState;
 
   SetTransactionStateAction({required this.transactionHistoryState});
+}
+
+class AddTransaction {
+  final List<Transaction> transactions;
+
+  AddTransaction(this.transactions);
 }
 
 class ClearTransactionStateAction {}
