@@ -13,6 +13,7 @@ abstract class TransactionManager {
   Future<List<Transaction>> getAllTransactions();
 
   Future<void> fetchLastYearTransactionsFromRemote() async {}
+  Future<List<Transaction>> fetchProcessedTransactionFromRemote();
   Future<List<Transaction>> fetchPastOverYearTransactionsAroundFromRemote(
     DateTime month,
   );

@@ -28,7 +28,7 @@ class _MonthlySpendingOverviewState extends State<MonthlySpendingOverview> {
         borderRadius: BorderRadius.circular(15),
       ),
       child: StoreConnector<FlowState, SpendingOverviewState>(
-        // distinct: true,
+        distinct: true,
         converter: (store) {
           DateTime displayedMonth =
               store.state.screenState.spendingScreenState.displayedMonth;

@@ -3,6 +3,7 @@ import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/initialization/theme_store.dart';
 import 'package:flow_mobile/presentation/global_hud.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
+import 'package:flow_mobile/service/unprocessed_transaction_poller.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -32,14 +33,26 @@ Future<void> main() async {
 class FlowApplication extends StatelessWidget {
   final FlowState initialState;
 
+  
+
   const FlowApplication({super.key, required this.initialState});
 
   @override
   Widget build(BuildContext context) {
     // Grab store once
     final store = StoreProvider.of<FlowState>(context);
+    UnprocessedTxnPoller? unprocessedTxnPoller;
 
     return StoreConnector<FlowState, String>(
+      onInit: (store) {
+        // Start once; survives rebuilds & hot reload thanks to the top-level var
+        unprocessedTxnPoller ??= UnprocessedTxnPoller(store);
+        unprocessedTxnPoller!.start();
+      },
+      onDispose: (store) {
+        // Stop cleanly when the widget tree goes away (e.g., app exit)
+        unprocessedTxnPoller?.stop();
+      },
       converter: (store) => store.state.settingsState.settings.theme,
       builder: (context, themeName) {
         final theme = ThemeStore.buildTheme(store.state.settingsState.settings);

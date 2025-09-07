@@ -22,6 +22,7 @@ data class TransactionHistory(
         val transactionCategory: String = "",
         val extractedCardNumber: String? = null,
         val revisedTransactionDate: LocalDate? = null,
+        val brandName: String? = null,
         val isProcessed: Boolean = false,
         val finverseId: String,
 )

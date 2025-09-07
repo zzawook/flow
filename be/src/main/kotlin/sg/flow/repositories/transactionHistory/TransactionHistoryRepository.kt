@@ -37,6 +37,7 @@ interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
                 isProcessed: Boolean
         ): Boolean
         suspend fun batchUpdateTransactionAnalysis(updates: List<TransactionAnalysisUpdate>): Int
+        suspend fun findProcessedTransactionsFromTransactionIds(userId: Int, transactionIds: List<String>): TransactionHistoryList
 }
 
 data class TransactionAnalysisUpdate(

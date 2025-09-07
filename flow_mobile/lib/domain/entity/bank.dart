@@ -28,4 +28,7 @@ class Bank {
           runtimeType == other.runtimeType &&
           name == other.name &&
           bankId == other.bankId;
+
+  @override
+  int get hashCode => name.hashCode ^ bankId.hashCode;
 }

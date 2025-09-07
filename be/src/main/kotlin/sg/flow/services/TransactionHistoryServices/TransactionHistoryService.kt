@@ -12,4 +12,5 @@ interface TransactionHistoryService {
     suspend fun getRelevantRecepient(keyword: String): TransferRecepient
     suspend fun getLast30DaysHistoryList(userId: Int): TransactionHistoryList
     suspend fun getTransactionWithinRange(userId: Int, startDate: LocalDate, endDate: LocalDate): TransactionHistoryList
+    suspend fun getProcessedTransactionsForTransactionIds(userId: Int, transactionIds: List<String>): TransactionHistoryList
 } 

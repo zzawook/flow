@@ -97,8 +97,6 @@ class TransactionManagerImpl implements TransactionManager {
     });
   }
 
-
-
   void loadTransactionsToList() {
     _transactionList.clear();
     _transactionList.addAll(_transactionBox.values);
@@ -177,5 +175,58 @@ class TransactionManagerImpl implements TransactionManager {
   @override
   Future<void> putTransaction(String id, Transaction transaction) {
     return _transactionBox.put(id, transaction);
+  }
+
+  @override
+  Future<List<Transaction>> fetchProcessedTransactionFromRemote() async {
+    ApiService apiService = getIt<ApiService>();
+    List<String> unprocessedTransactionIds = getUnprocessedTransaction()
+        .map((transaction) => transaction.id.toString())
+        .toList();
+    if (unprocessedTransactionIds.isEmpty) {
+      return Future.value([]);
+    }
+    log("Fetching processed transactions for IDs: $unprocessedTransactionIds");
+    List<Transaction> fetchedTransactions = [];
+    final transactionList = await apiService
+        .getProcessedTransactions(unprocessedTransactionIds)
+        .then((transactions) async {
+          for (var transactionHistoryDetail in transactions.transactions) {
+            Transaction transaction = fromTransactionHistoryDetail(
+              transactionHistoryDetail,
+            );
+            print(transaction);
+            if (_transactionList.any((t) => t.id == transaction.id)) {
+              await putTransaction(transaction.id.toString(), transaction);
+            } else {
+              _pastOverYearTransactionList.removeWhere(
+                (t) => t.id == transaction.id,
+              );
+              _pastOverYearTransactionList.add(transaction);
+            }
+
+            fetchedTransactions.add(transaction);
+          }
+          loadTransactionsToList();
+          print(fetchedTransactions);
+          return fetchedTransactions;
+        })
+        .catchError((error) {
+          log("Error fetching processed transactions: $error");
+          return List<Transaction>.empty();
+        });
+
+    return transactionList;
+  }
+
+  List<Transaction> getUnprocessedTransaction() {
+    return _transactionList
+        .where((transaction) => transaction.category == "Analyzing")
+        .toList()
+      ..addAll(
+        _pastOverYearTransactionList.where(
+          (transaction) => transaction.category == "Analyzing",
+        ),
+      );
   }
 }

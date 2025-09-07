@@ -67,12 +67,15 @@ message GetDataRetrievalResultResponse {
 message GetBanksForRefreshRequest {
     string country_code = 1; // Optional country code to filter banks
 }
+
 message GetBanksForLinkRequest {
     string country_code = 1; // Optional country code to filter banks
 }
+
 message GetBanksForRefreshResponse {
     repeated sg.flow.common.v1.Bank banks = 1; // List of banks available for refresh
 }
+
 message GetBanksForLinkResponse {
     repeated sg.flow.common.v1.Bank banks = 1; // List of banks available for linking
 }

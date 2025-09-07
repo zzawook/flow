@@ -249,6 +249,16 @@ Future<void> _updateStateForBankDataCompletion(Store<FlowState> store) async {
             await FlowStateInitializer.getTransactionState(),
       ),
     );
+    // If displayed month is older than one year ago, fetch transactionManager.fetchPastOverYearTransactionsAroundFromRemote of the displayed month
+    if (store.state.screenState.spendingScreenState.displayedMonth
+            .isBefore(DateTime.now().subtract(Duration(days: 365)))) {
+      final displayMonthtransactionFuture = await transactionManager
+          .fetchPastOverYearTransactionsAroundFromRemote(
+              store.state.screenState.spendingScreenState.displayedMonth);
+      store.dispatch(
+        AddTransaction(displayMonthtransactionFuture),
+      );
+    }
   });
 }
 

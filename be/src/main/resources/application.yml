@@ -78,7 +78,7 @@ flow:
     batch-size: 25
     max-retries: 3
     retry-delay-ms: 1000
-    enabled: false
+    enabled: true
     processing-timeout-ms: 300000
     max-concurrent-batches: 3
 

@@ -14,11 +14,21 @@ TransactionState transactionReducer(
     return action.transactionHistoryState;
   }
   if (action is AddTransaction) {
-    // Add only new transactions that do not exist in the previous state
     List<Transaction> updatedTransactions = List.from(prevState.transactions)
       ..addAll(
-        action.transactions.where((tx) => !prevState.transactions.contains(tx)),
+        action.transactions.where(
+          (newTransaction) => !prevState.transactions
+              .any((existingTransaction) => existingTransaction.id == newTransaction.id),
+        ),
       );
+
+    // Update existing transactions
+    for (var newTransaction in action.transactions) {
+      int index = updatedTransactions.indexWhere((t) => t.id == newTransaction.id);
+      if (index != -1) {
+        updatedTransactions[index] = newTransaction;
+      }
+    }
     return prevState.copyWith(transactions: updatedTransactions);
   }
   return prevState;

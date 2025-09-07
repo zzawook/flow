@@ -56,9 +56,12 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
                 };
 
                 final monthOfInterest = spendingScreenState.displayedMonth;
-                for (var transaction in transactionState
-                    .getTransactionsForMonth(monthOfInterest)) {
+                for (var transaction
+                    in transactionState.getTransactionsForMonth(
+                      monthOfInterest,
+                    )) {
                   if (transaction.amount < 0) {
+                    print(transaction.category);
                     categoryAmount[transaction.category] =
                         categoryAmount[transaction.category]! +
                         transaction.amount;

@@ -1,6 +1,6 @@
 
 import 'package:flow_mobile/generated/common/v1/transaction.pb.dart';
-import 'package:flow_mobile/generated/transaction_history/transaction_history.pbgrpc.dart';
+import 'package:flow_mobile/generated/transaction_history/v1/transaction_history.pbgrpc.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:grpc/grpc_connection_interface.dart';
@@ -36,6 +36,13 @@ class TransactionHistoryApiService {
       month: date.month,
       year: date.year,
       day: date.day,
+    ));
+    return response;
+  }
+
+  Future<TransactionHistoryList> getProcessedTransactions(List<String> transactionIds) async {
+    final response = await _channel.getProcessedTransaction(GetProcessedTransactionRequest(
+      transactionIds: transactionIds,
     ));
     return response;
   }

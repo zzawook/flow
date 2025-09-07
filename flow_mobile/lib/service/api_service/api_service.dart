@@ -52,6 +52,11 @@ class ApiService {
     _accountApiService = AccountApiService(_channel);
     _transactionHistoryApiService = TransactionHistoryApiService(_channel);
   }
+
+  Future<TransactionHistoryList> getProcessedTransactions(List<String> transactionIds) async {
+    return await _transactionHistoryApiService.getProcessedTransactions(transactionIds);
+  }
+
   Future<GetRelinkUrlResponse> getLinkUrl(Bank bank) async {
     return await _refreshApiService.getLinkUrl(bank);
   }

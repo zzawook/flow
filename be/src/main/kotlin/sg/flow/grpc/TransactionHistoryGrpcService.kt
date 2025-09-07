@@ -19,6 +19,7 @@ import sg.flow.transaction.v1.GetTransactionDetailsRequest
 import sg.flow.transaction.v1.GetTransactionWithinRangeRequest
 import sg.flow.models.transaction.TransactionHistoryList       as DomainHistoryList
 import sg.flow.services.TransactionHistoryServices.TransactionHistoryService
+import sg.flow.transaction.v1.GetProcessedTransactionRequest
 import sg.flow.validation.ValidationException
 import sg.flow.validation.Validator
 
@@ -114,7 +115,12 @@ class TransactionHistoryGrpcService(
                 val domain = transactionService.getTransactionWithinRange(
                         userId, startDate, endDate
                 )
-                println("DB FETCH SUCCESSFUL")
+                return txHistoryMapper.toProto(domain)
+        }
+
+        override suspend fun getProcessedTransaction(request: GetProcessedTransactionRequest): ProtoTransactionHistoryList {
+                val userId = currentUserId()
+                val domain = transactionService.getProcessedTransactionsForTransactionIds(userId, request.transactionIdsList.toList())
                 return txHistoryMapper.toProto(domain)
         }
 }

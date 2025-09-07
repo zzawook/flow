@@ -64,4 +64,8 @@ class TransactionHistoryServiceImpl(
     ): TransactionHistoryList {
         return transactionHistoryRepository.findTransactionBetweenDates(userId, startDate, endDate)
     }
+
+    override suspend fun getProcessedTransactionsForTransactionIds(userId: Int, transactionIds: List<String>): TransactionHistoryList {
+        return transactionHistoryRepository.findProcessedTransactionsFromTransactionIds(userId, transactionIds)
+    }
 }

@@ -71,6 +71,14 @@ class TransactionHistoryServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$1.TransactionHistoryList> getProcessedTransaction(
+    $0.GetProcessedTransactionRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getProcessedTransaction, request,
+        options: options);
+  }
+
   // method descriptors
 
   static final _$getLast30DaysHistoryList = $grpc.ClientMethod<
@@ -97,6 +105,11 @@ class TransactionHistoryServiceClient extends $grpc.Client {
           $0.GetTransactionWithinRangeRequest, $1.TransactionHistoryList>(
       '/sg.flow.transaction.v1.TransactionHistoryService/GetTransactionWithinRange',
       ($0.GetTransactionWithinRangeRequest value) => value.writeToBuffer(),
+      $1.TransactionHistoryList.fromBuffer);
+  static final _$getProcessedTransaction = $grpc.ClientMethod<
+          $0.GetProcessedTransactionRequest, $1.TransactionHistoryList>(
+      '/sg.flow.transaction.v1.TransactionHistoryService/GetProcessedTransaction',
+      ($0.GetProcessedTransactionRequest value) => value.writeToBuffer(),
       $1.TransactionHistoryList.fromBuffer);
 }
 
@@ -150,6 +163,15 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.GetTransactionWithinRangeRequest.fromBuffer(value),
         ($1.TransactionHistoryList value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetProcessedTransactionRequest,
+            $1.TransactionHistoryList>(
+        'GetProcessedTransaction',
+        getProcessedTransaction_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetProcessedTransactionRequest.fromBuffer(value),
+        ($1.TransactionHistoryList value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.TransactionHistoryList> getLast30DaysHistoryList_Pre(
@@ -196,4 +218,13 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
 
   $async.Future<$1.TransactionHistoryList> getTransactionWithinRange(
       $grpc.ServiceCall call, $0.GetTransactionWithinRangeRequest request);
+
+  $async.Future<$1.TransactionHistoryList> getProcessedTransaction_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetProcessedTransactionRequest> $request) async {
+    return getProcessedTransaction($call, await $request);
+  }
+
+  $async.Future<$1.TransactionHistoryList> getProcessedTransaction(
+      $grpc.ServiceCall call, $0.GetProcessedTransactionRequest request);
 }

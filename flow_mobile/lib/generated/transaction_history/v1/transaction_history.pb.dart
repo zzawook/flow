@@ -363,6 +363,61 @@ class GetTransactionWithinRangeRequest extends $pb.GeneratedMessage {
   $2.Timestamp ensureEndTimestamp() => $_ensure(1);
 }
 
+class GetProcessedTransactionRequest extends $pb.GeneratedMessage {
+  factory GetProcessedTransactionRequest({
+    $core.Iterable<$core.String>? transactionIds,
+  }) {
+    final result = create();
+    if (transactionIds != null) result.transactionIds.addAll(transactionIds);
+    return result;
+  }
+
+  GetProcessedTransactionRequest._();
+
+  factory GetProcessedTransactionRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetProcessedTransactionRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetProcessedTransactionRequest',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..pPS(1, _omitFieldNames ? '' : 'transactionIds')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetProcessedTransactionRequest clone() =>
+      GetProcessedTransactionRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetProcessedTransactionRequest copyWith(
+          void Function(GetProcessedTransactionRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetProcessedTransactionRequest))
+          as GetProcessedTransactionRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetProcessedTransactionRequest create() =>
+      GetProcessedTransactionRequest._();
+  @$core.override
+  GetProcessedTransactionRequest createEmptyInstance() => create();
+  static $pb.PbList<GetProcessedTransactionRequest> createRepeated() =>
+      $pb.PbList<GetProcessedTransactionRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetProcessedTransactionRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetProcessedTransactionRequest>(create);
+  static GetProcessedTransactionRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<$core.String> get transactionIds => $_getList(0);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

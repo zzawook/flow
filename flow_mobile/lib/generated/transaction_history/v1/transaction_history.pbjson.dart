@@ -98,3 +98,17 @@ final $typed_data.Uint8List getTransactionWithinRangeRequestDescriptor =
         'ABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wUg5zdGFydFRpbWVzdGFtcBI/Cg1lbmRf'
         'dGltZXN0YW1wGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFIMZW5kVGltZXN0YW'
         '1w');
+
+@$core.Deprecated('Use getProcessedTransactionRequestDescriptor instead')
+const GetProcessedTransactionRequest$json = {
+  '1': 'GetProcessedTransactionRequest',
+  '2': [
+    {'1': 'transaction_ids', '3': 1, '4': 3, '5': 9, '10': 'transactionIds'},
+  ],
+};
+
+/// Descriptor for `GetProcessedTransactionRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getProcessedTransactionRequestDescriptor =
+    $convert.base64Decode(
+        'Ch5HZXRQcm9jZXNzZWRUcmFuc2FjdGlvblJlcXVlc3QSJwoPdHJhbnNhY3Rpb25faWRzGAEgAy'
+        'gJUg50cmFuc2FjdGlvbklkcw==');
