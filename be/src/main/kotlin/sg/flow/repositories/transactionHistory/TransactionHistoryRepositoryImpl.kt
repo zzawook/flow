@@ -1057,6 +1057,29 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 return "($str)"
         }
 
+override suspend fun findTransactionsForUserSinceDate(
+        userId: Int,
+        sinceDate: LocalDate
+): List<TransactionHistory> {
+        return runCatching {
+                databaseClient
+                        .sql(TransactionHistoryQueryStore.FIND_TRANSACTIONS_FOR_USER_SINCE_DATE)
+                        .bind(0, userId)
+                        .bind(1, sinceDate)
+                        .map { row -> mapRowToTransactionHistory(row as Row) }
+                        .all()
+                        .asFlow()
+                        .toList()
+        }
+                .onFailure { e ->
+                        e.printStackTrace()
+                        logger.error(
+                                "Error fetching transactions since $sinceDate for userId=$userId"
+                        )
+                }
+                .getOrElse { emptyList() }
+}
+
         private fun mapRowToTransactionHistory(row: Row): TransactionHistory {
                 // Build nested Account object
                 val account =

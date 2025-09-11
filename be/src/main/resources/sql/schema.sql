@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS recurring_spending_monthly;
 DROP TABLE IF EXISTS transaction_histories;
 DROP TABLE IF EXISTS cards;
 DROP TABLE IF EXISTS login_identities;
@@ -78,3 +79,30 @@ CREATE TABLE IF NOT EXISTS transaction_histories (
 );
 
 CREATE INDEX IF NOT EXISTS transaction_histories_index_by ON transaction_histories (user_id, transaction_date);
+
+-- Recurring spending monthly analysis results
+DROP TABLE IF EXISTS recurring_spending_monthly;
+CREATE TABLE IF NOT EXISTS recurring_spending_monthly (
+    id BIGSERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) NOT NULL,
+    merchant_key TEXT NOT NULL,
+    display_name TEXT DEFAULT NULL,
+    brand_name TEXT DEFAULT NULL,
+    category TEXT DEFAULT NULL,
+    year INT NOT NULL,
+    month INT NOT NULL,
+    expected_amount DECIMAL(10,2) NOT NULL,
+    amount_stddev DECIMAL(10,2) DEFAULT NULL,
+    occurrence_count INT NOT NULL DEFAULT 0,
+    last_transaction_date DATE DEFAULT NULL,
+    interval_days INT DEFAULT NULL,
+    period_label TEXT DEFAULT NULL,
+    next_transaction_date DATE DEFAULT NULL,
+    confidence DOUBLE PRECISION DEFAULT 0.0,
+    transaction_ids BIGINT[] DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_recurring_unique ON recurring_spending_monthly (user_id, merchant_key, year, month);
+CREATE INDEX IF NOT EXISTS idx_recurring_user_month ON recurring_spending_monthly (user_id, year, month);

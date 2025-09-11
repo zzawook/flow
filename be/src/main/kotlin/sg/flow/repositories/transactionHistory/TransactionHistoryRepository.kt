@@ -38,6 +38,12 @@ interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
         ): Boolean
         suspend fun batchUpdateTransactionAnalysis(updates: List<TransactionAnalysisUpdate>): Int
         suspend fun findProcessedTransactionsFromTransactionIds(userId: Int, transactionIds: List<String>): TransactionHistoryList
+// For recurring analysis
+suspend fun findTransactionsForUserSinceDate(
+        userId: Int,
+        sinceDate: LocalDate
+): List<TransactionHistory>
+
 }
 
 data class TransactionAnalysisUpdate(
