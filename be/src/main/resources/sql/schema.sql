@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS recurring_spending_monthly (
     id BIGSERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) NOT NULL,
     merchant_key TEXT NOT NULL,
+    sequence_key TEXT NOT NULL,
     display_name TEXT DEFAULT NULL,
     brand_name TEXT DEFAULT NULL,
     category TEXT DEFAULT NULL,
@@ -104,5 +105,5 @@ CREATE TABLE IF NOT EXISTS recurring_spending_monthly (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_recurring_unique ON recurring_spending_monthly (user_id, merchant_key, year, month);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_recurring_unique ON recurring_spending_monthly (user_id, merchant_key, sequence_key, year, month);
 CREATE INDEX IF NOT EXISTS idx_recurring_user_month ON recurring_spending_monthly (user_id, year, month);

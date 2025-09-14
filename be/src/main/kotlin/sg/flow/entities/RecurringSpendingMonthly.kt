@@ -7,6 +7,7 @@ data class RecurringSpendingMonthly(
         @field:Id val id: Long?,
         val userId: Int,
         val merchantKey: String,
+        val sequenceKey: String,
         val displayName: String?,
         val brandName: String?,
         val category: String?,

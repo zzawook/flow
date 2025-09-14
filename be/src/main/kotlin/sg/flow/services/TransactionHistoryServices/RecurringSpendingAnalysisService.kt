@@ -39,54 +39,43 @@ class RecurringSpendingAnalysisService(
         if (all.isEmpty()) return 0
 
         val groups = groupTransactions(all)
-        val recurringGroups = groups.filterValues { isRecurring(it) }
-
         val recordsToUpsert = mutableListOf<RecurringSpendingMonthly>()
         val months = monthsInRange(YearMonth.from(sinceDate), YearMonth.from(LocalDate.now()))
 
-        recurringGroups.forEach { (merchantKey, txns) ->
-            val sorted = txns.sortedBy { it.transactionDate }
-            val intervalDays = medianIntervalDays(sorted)
-            val lastDate = sorted.last().transactionDate
-            val nextDate = lastDate?.plusDays(intervalDays.toLong())
-            val periodLabel = labelForInterval(intervalDays)
-            val expectedAmount = medianAmount(sorted)
-            val amountStddev = stdDevAmount(sorted)
-            val category = dominantCategory(sorted)
-            val brandName = dominantBrand(sorted)
-            val displayName = brandName ?: deriveDisplayName(sorted)
-            val confidence = computeConfidence(sorted, intervalDays, expectedAmount, category)
-            val txnIds = sorted.mapNotNull { it.id }
+        groups.forEach { (merchantKey, txns) ->
+            val bands = bandTransactionsByAmount(txns)
+            bands.forEach { band ->
+                val sorted = band.sortedBy { it.transactionDate }
+                val sequences = extractSequences(sorted)
 
-            months.forEach { ym ->
-                val anyInMonth =
-                        sorted.any {
-                            it.transactionDate?.let { d -> YearMonth.from(d) == ym } ?: false
-                        }
-
-                if (anyInMonth || properties.includeExpectedMonths) {
-                    recordsToUpsert.add(
-                            RecurringSpendingMonthly(
-                                    id = null,
-                                    userId = userId,
-                                    merchantKey = merchantKey,
-                                    displayName = displayName,
-                                    brandName = brandName,
-                                    category = category,
-                                    year = ym.year,
-                                    month = ym.monthValue,
-                                    expectedAmount = abs(expectedAmount),
-                                    amountStddev = amountStddev?.let { abs(it) },
-                                    occurrenceCount = sorted.size,
-                                    lastTransactionDate = lastDate,
-                                    intervalDays = intervalDays,
-                                    periodLabel = periodLabel,
-                                    nextTransactionDate =
-                                            predictedNextDateForMonth(sorted, ym, intervalDays),
-                                    confidence = confidence,
-                                    transactionIds = txnIds
+                sequences.forEach { seq ->
+                    months.forEach { ym ->
+                        val anyInMonth = seq.txns.any { YearMonth.from(it.transactionDate) == ym }
+                        if (anyInMonth || properties.includeExpectedMonths) {
+                            recordsToUpsert.add(
+                                RecurringSpendingMonthly(
+                                        id = null,
+                                        userId = userId,
+                                        merchantKey = merchantKey,
+                                        sequenceKey = seq.sequenceKey,
+                                        displayName = seq.displayName,
+                                        brandName = seq.brandName,
+                                        category = seq.category,
+                                        year = ym.year,
+                                        month = ym.monthValue,
+                                        expectedAmount = abs(seq.expectedAmount),
+                                        amountStddev = seq.amountStddev?.let { abs(it) },
+                                        occurrenceCount = seq.txns.size,
+                                        lastTransactionDate = seq.lastDate,
+                                        intervalDays = seq.intervalDays,
+                                        periodLabel = labelForInterval(seq.intervalDays),
+                                        nextTransactionDate = predictedNextDateForMonth(seq.txns, ym, seq.intervalDays),
+                                        confidence = seq.confidence,
+                                        transactionIds = seq.txns.mapNotNull { it.id }
+                                )
                             )
-                    )
+                        }
+                    }
                 }
             }
         }
@@ -123,44 +112,12 @@ class RecurringSpendingAnalysisService(
         return cleaned.split(" ").take(6).joinToString(" ")
     }
 
-    private fun isRecurring(list: List<TransactionHistory>): Boolean {
-        if (list.size < properties.minOccurrences) return false
-        val sorted = list.sortedBy { it.transactionDate }
-        val interval = medianIntervalDays(sorted)
-        if (interval <= 0 || interval > properties.maxPeriodDays) return false
-
-        val withinAmount = isAmountConsistent(sorted)
-        if (!withinAmount) return false
-
-        val periodOk = isIntervalConsistent(sorted, interval)
-        return periodOk
-    }
-
-    private fun isAmountConsistent(list: List<TransactionHistory>): Boolean {
-        val amounts = list.map { abs(it.amount) }
-        val median = median(amounts)
-        val tol = properties.amountSimilarityTolerancePct
-        return amounts.all { abs(it - median) / max(1.0, median) <= tol }
-    }
-
-    private fun isIntervalConsistent(
-            sorted: List<TransactionHistory>,
-            medianInterval: Int
-    ): Boolean {
-        val tolPct = properties.periodTolerancePct
-        val low = (medianInterval * (1.0 - tolPct)).roundToInt()
-        val high = (medianInterval * (1.0 + tolPct)).roundToInt()
-        val diffs = consecutiveDiffDays(sorted)
-        return diffs.all { it in low..high }
-    }
-
     private fun consecutiveDiffDays(sorted: List<TransactionHistory>): List<Int> {
         val diffs = mutableListOf<Int>()
         for (i in 1 until sorted.size) {
             val prev = sorted[i - 1].transactionDate
             val cur = sorted[i].transactionDate
-            if (prev != null && cur != null)
-                    diffs.add((cur.toEpochDay() - prev.toEpochDay()).toInt())
+            diffs.add((cur.toEpochDay() - prev.toEpochDay()).toInt())
         }
         return diffs
     }
@@ -206,27 +163,160 @@ class RecurringSpendingAnalysisService(
         val descs =
                 list.map { th ->
                     val fd = th.friendlyDescription
-                    if (fd.isNotBlank()) fd else th.description
+                    fd.ifBlank { th.description }
                 }
         if (descs.isEmpty()) return null
         return descs.groupingBy { normalizeKey(it) }.eachCount().maxByOrNull { it.value }?.key
     }
 
-    private fun computeConfidence(
-            list: List<TransactionHistory>,
-            intervalDays: Int,
-            medianAmount: Double,
-            category: String?
+    private fun computeCompositeConfidence(
+        txns: List<TransactionHistory>,
+        intervalDays: Int,
+        category: String?
     ): Double {
-        var c = properties.defaultConfidence
-        val amountOk = isAmountConsistent(list)
-        val intervalOk = isIntervalConsistent(list.sortedBy { it.transactionDate }, intervalDays)
-        if (amountOk) c += 0.15
-        if (intervalOk) c += 0.15
-        if (category != null) {
-            c *= properties.categoryWeights.getOrDefault(category, 1.0)
+        val amounts = txns.map { abs(it.amount) }
+        val mean = amounts.average().takeIf { !it.isNaN() && it > 0 } ?: return 0.0
+        val std = kotlin.math.sqrt(amounts.map { (it - mean) * (it - mean) }.average())
+        val cv = std / mean
+        val amountScore = kotlin.math.exp(-properties.alphaAmountTightness * cv).coerceIn(0.0, 1.0)
+
+        val deltas = consecutiveDiffDays(txns.sortedBy { it.transactionDate })
+        val medInt = if (intervalDays > 0) intervalDays else medianInt(deltas)
+        val mad = median(deltas.map { abs(it - medInt).toDouble() })
+        val rmad = if (medInt > 0) mad / medInt else Double.MAX_VALUE
+        var periodScore = kotlin.math.exp(-properties.betaPeriodRegularity * rmad).coerceIn(0.0, 1.0)
+        if (properties.canonicalPeriods.any { abs(medInt - it) <= (it * 0.1).roundToInt() }) {
+            periodScore = (periodScore + properties.canonicalBoost).coerceAtMost(1.0)
         }
-        return min(0.99, c)
+
+        val n = txns.size
+        val occScore = if (n < properties.minOccurrences) 0.0 else 1 - kotlin.math.exp(-properties.gammaOccurrenceSaturation * (n - properties.minOccurrences))
+
+        val lastDate = txns.maxOfOrNull { it.transactionDate } ?: LocalDate.MIN
+        val expectedNext = if (lastDate != LocalDate.MIN && medInt > 0) lastDate.plusDays(medInt.toLong()) else null
+        val overdueDays = expectedNext?.let { d -> max(0L, LocalDate.now().toEpochDay() - d.toEpochDay()) } ?: 0L
+        val recencyScore = kotlin.math.exp(-properties.deltaRecencyDecay * (overdueDays.toDouble() / max(1.0, medInt.toDouble())))
+
+        val observedMonths = txns.mapNotNull { it.transactionDate?.let { d -> YearMonth.from(d) } }.toSet()
+        val start = txns.minOfOrNull { it.transactionDate } ?: LocalDate.now()
+        val startYm = YearMonth.from(start)
+        val endYm = YearMonth.from(lastDate)
+        val expectedMonths = monthsInRange(startYm, endYm).toSet()
+        val alignScore = if (expectedMonths.isEmpty()) 0.0 else observedMonths.intersect(expectedMonths).size.toDouble() / expectedMonths.size
+
+        val wA = properties.weightAmount
+        val wP = properties.weightPeriod
+        val wO = properties.weightOccurrences
+        val wR = properties.weightRecency
+        val wX = properties.weightAlignment
+        val base = (wA * amountScore + wP * periodScore + wO * occScore + wR * recencyScore + wX * alignScore).coerceIn(0.0, 1.0)
+        val catW = category?.let { properties.categoryWeights.getOrDefault(it, 1.0) } ?: 1.0
+        return (base * catW).coerceAtMost(0.99)
+    }
+
+    private data class SequenceCandidate(
+        val txns: List<TransactionHistory>,
+        val intervalDays: Int,
+        val expectedAmount: Double,
+        val amountStddev: Double?,
+        val category: String?,
+        val brandName: String?,
+        val displayName: String?,
+        val lastDate: LocalDate?,
+        val confidence: Double,
+        val sequenceKey: String
+    )
+
+    private fun extractSequences(sorted: List<TransactionHistory>): List<SequenceCandidate> {
+        val results = mutableListOf<SequenceCandidate>()
+        var remaining = sorted
+        var count = 0
+        while (remaining.size >= properties.minOccurrences && count < properties.maxSequencesPerGroup) {
+            val candidate = fitOneSequence(remaining)
+            if (candidate == null || candidate.confidence < properties.confidenceThreshold) break
+            results.add(candidate)
+            val ids = candidate.txns.mapNotNull { it.id }.toSet()
+            remaining = remaining.filter { it.id !in ids }
+            count++
+            if (!properties.enableMultiPattern) break
+        }
+        return results
+    }
+
+    private fun fitOneSequence(sorted: List<TransactionHistory>): SequenceCandidate? {
+        if (sorted.size < properties.minOccurrences) return null
+        val base = sorted.sortedBy { it.transactionDate }
+        val medInt = medianIntervalDays(base)
+        if (medInt < properties.minPeriodDays || medInt > properties.maxPeriodDays) return null
+        val trimmed = trimByIntervalMad(base, medInt)
+        if (trimmed.size < properties.minOccurrences) return null
+        val subseq = longestConsistentSubsequence(trimmed, medInt)
+        if (subseq.size < properties.minOccurrences) return null
+        val expectedAmount = medianAmount(subseq)
+        val amountStddev = stdDevAmount(subseq)
+        val category = dominantCategory(subseq)
+        val brand = dominantBrand(subseq)
+        val display = brand ?: deriveDisplayName(subseq)
+        val conf = computeCompositeConfidence(subseq, medInt, category)
+        val lastDate = subseq.last().transactionDate
+        val seqKey = makeSequenceKey(subseq, medInt)
+        return SequenceCandidate(subseq, medInt, expectedAmount, amountStddev, category, brand, display, lastDate, conf, seqKey)
+    }
+
+    private fun trimByIntervalMad(list: List<TransactionHistory>, medianInterval: Int): List<TransactionHistory> {
+        val deltas = consecutiveDiffDays(list)
+        if (deltas.isEmpty()) return list
+        val mad = median(deltas.map { abs(it - medianInterval).toDouble() })
+        val tol = properties.intervalMadMultiplier * mad
+        if (mad == 0.0) return list
+        val kept = mutableListOf<TransactionHistory>()
+        kept.add(list.first())
+        for (i in 1 until list.size) {
+            val diff = (list[i].transactionDate.toEpochDay() - list[i - 1].transactionDate.toEpochDay()).toInt()
+            if (abs(diff - medianInterval) <= tol) kept.add(list[i])
+        }
+        return if (kept.size >= properties.minOccurrences) kept else list
+    }
+
+    private fun longestConsistentSubsequence(list: List<TransactionHistory>, medianInterval: Int): List<TransactionHistory> {
+        if (list.isEmpty()) return list
+        val tol = max(1.0, properties.intervalMadMultiplier).toDouble()
+        val acc = mutableListOf<TransactionHistory>()
+        var last: TransactionHistory? = null
+        list.forEach { t ->
+            if (last == null) {
+                acc.add(t)
+                last = t
+            } else {
+                val diff = (t.transactionDate.toEpochDay() - last.transactionDate.toEpochDay()).toInt()
+                if (abs(diff - medianInterval) <= max(tol, medianInterval * 0.15)) {
+                    acc.add(t)
+                    last = t
+                }
+            }
+        }
+        return acc
+    }
+
+    private fun bandTransactionsByAmount(txns: List<TransactionHistory>): List<List<TransactionHistory>> {
+        if (txns.isEmpty()) return emptyList()
+        val amounts = txns.map { abs(it.amount) }
+        val mean = amounts.average()
+        val std = kotlin.math.sqrt(amounts.map { (it - mean) * (it - mean) }.average())
+        val cv = if (mean > 0) std / mean else 0.0
+        if (cv < 0.1 || txns.size < 6) return listOf(txns)
+        val medianAmt = median(amounts)
+        val low = mutableListOf<TransactionHistory>()
+        val high = mutableListOf<TransactionHistory>()
+        txns.forEach { if (abs(it.amount) <= medianAmt) low.add(it) else high.add(it) }
+        return listOf(low, high).filter { it.isNotEmpty() }
+    }
+
+    private fun makeSequenceKey(txns: List<TransactionHistory>, intervalDays: Int): String {
+        val medianAmt = median(txns.map { abs(it.amount) })
+        val roundedAmt = kotlin.math.round(medianAmt)
+        val intervalBucket = (intervalDays / 5) * 5
+        return "${roundedAmt.toLong()}-${intervalBucket}d"
     }
 
     private fun monthsInRange(start: YearMonth, end: YearMonth): List<YearMonth> {
@@ -268,7 +358,7 @@ class RecurringSpendingAnalysisService(
             intervalDays: Int
     ): LocalDate? {
         if (sorted.isEmpty() || intervalDays <= 0) return null
-        val base = sorted.first().transactionDate ?: return null
+        val base = sorted.first().transactionDate
         // advance from base by intervalDays until we reach or pass the target yearMonth window
         var d = base
         val endOfTarget = yearMonth.atEndOfMonth()

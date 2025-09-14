@@ -81,6 +81,28 @@ flow:
     enabled: true
     processing-timeout-ms: 300000
     max-concurrent-batches: 3
+  recurring-analysis:
+    enabled: true
+    lookbackMonths: 12
+    includeExpectedMonths: true
+    minOccurrences: 3
+    minPeriodDays: 7
+    maxPeriodDays: 92
+    confidenceThreshold: 0.7
+    enableMultiPattern: true
+    maxSequencesPerGroup: 2
+    # Scoring weights (sum ~1.0)
+    weightAmount: 0.25
+    weightPeriod: 0.30
+    weightOccurrences: 0.20
+    weightRecency: 0.15
+    weightAlignment: 0.10
+    # Category multipliers
+    categoryWeights:
+      Utilities: 1.2
+      Telecommunication: 1.2
+      Insurance: 1.1
+      Finance: 1.05
 
 aws:
   region: us-east-1

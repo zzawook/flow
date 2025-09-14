@@ -19,15 +19,11 @@ class Bootstrap(private val databaseClient: DatabaseClient, private val finverse
     override fun run(vararg args: String) {
         logger.info("R2DBC Bootstrap starting – applying schema.sql…")
 
-        // 1. Load the entire SQL file as text
-        val resource = ClassPathResource("sql/schema.sql")
-        // 1) Load your schema.sql as before
         val ddl = ClassPathResource("sql/schema.sql")
             .inputStream
             .bufferedReader()
             .use { it.readText() }
 
-// 2) Split respecting $$ blocks
         val statements = mutableListOf<String>()
         var buffer = StringBuilder()
         var inDollar = false
@@ -45,7 +41,6 @@ class Bootstrap(private val databaseClient: DatabaseClient, private val finverse
             }
         }
 
-// 3) statements now contains whole CREATE TABLE, whole FUNCTION, etc.
         runBlocking {
             statements.forEach { sql ->
                 databaseClient

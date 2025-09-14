@@ -23,32 +23,33 @@ class RecurringSpendingRepositoryImpl(private val databaseClient: DatabaseClient
                                 .sql(RecurringSpendingQueryStore.UPSERT_RECURRING_SPENDING_MONTHLY)
                                 .bind(0, rec.userId)
                                 .bind(1, rec.merchantKey)
-                                .bind(2, rec.displayName)
-                                .bind(3, rec.brandName)
-                                .bind(4, rec.category)
-                                .bind(5, rec.year)
-                                .bind(6, rec.month)
-                                .bind(7, rec.expectedAmount)
-                                .bind(8, rec.amountStddev)
-                                .bind(9, rec.occurrenceCount)
+                                .bind(2, rec.sequenceKey)
+                                .bind(3, rec.displayName)
+                                .bind(4, rec.brandName)
+                                .bind(5, rec.category)
+                                .bind(6, rec.year)
+                                .bind(7, rec.month)
+                                .bind(8, rec.expectedAmount)
+                                .bind(9, rec.amountStddev)
+                                .bind(10, rec.occurrenceCount)
                                 .let { s ->
-                                    rec.lastTransactionDate?.let { s.bind(10, it) }
-                                            ?: s.bindNull(10, java.time.LocalDate::class.java)
+                                    rec.lastTransactionDate?.let { s.bind(11, it) }
+                                            ?: s.bindNull(11, java.time.LocalDate::class.java)
                                 }
                                 .let { s ->
-                                    rec.intervalDays?.let { s.bind(11, it) }
-                                            ?: s.bindNull(11, Int::class.java)
+                                    rec.intervalDays?.let { s.bind(12, it) }
+                                            ?: s.bindNull(12, Int::class.java)
                                 }
-                                .bind(12, rec.periodLabel)
+                                .bind(13, rec.periodLabel)
                                 .let { s ->
-                                    rec.nextTransactionDate?.let { s.bind(13, it) }
-                                            ?: s.bindNull(13, java.time.LocalDate::class.java)
+                                    rec.nextTransactionDate?.let { s.bind(14, it) }
+                                            ?: s.bindNull(14, java.time.LocalDate::class.java)
                                 }
-                                .bind(14, rec.confidence)
+                                .bind(15, rec.confidence)
                                 .let { s ->
                                     val arr: Array<Long>? = rec.transactionIds?.toTypedArray()
-                                    if (arr != null) s.bind(15, arr)
-                                    else s.bindNull(15, Array<Long>::class.java)
+                                    if (arr != null) s.bind(16, arr)
+                                    else s.bindNull(16, Array<Long>::class.java)
                                 }
                                 .fetch()
                                 .awaitRowsUpdated()

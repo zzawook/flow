@@ -4,15 +4,15 @@ object RecurringSpendingQueryStore {
     const val UPSERT_RECURRING_SPENDING_MONTHLY =
             """
         INSERT INTO recurring_spending_monthly (
-            user_id, merchant_key, display_name, brand_name, category, year, month,
+            user_id, merchant_key, sequence_key, display_name, brand_name, category, year, month,
             expected_amount, amount_stddev, occurrence_count, last_transaction_date,
             interval_days, period_label, next_transaction_date, confidence, transaction_ids, created_at, updated_at
         ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7,
-            $8, $9, $10, $11,
-            $12, $13, $14, $15, $16, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+            $1, $2, $3, $4, $5, $6, $7, $8,
+            $9, $10, $11, $12,
+            $13, $14, $15, $16, $17, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
         )
-        ON CONFLICT (user_id, merchant_key, year, month) DO UPDATE SET
+        ON CONFLICT (user_id, merchant_key, sequence_key, year, month) DO UPDATE SET
             display_name = EXCLUDED.display_name,
             brand_name = EXCLUDED.brand_name,
             category = EXCLUDED.category,
