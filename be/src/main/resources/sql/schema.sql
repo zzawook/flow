@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS transaction_histories (
     brand_name TEXT DEFAULT NULL,
     revised_transaction_date DATE DEFAULT NULL,
     is_processed BOOLEAN DEFAULT false,
+    is_category_overridden_by_user BOOLEAN DEFAULT false,
     finverse_id TEXT UNIQUE
 );
 

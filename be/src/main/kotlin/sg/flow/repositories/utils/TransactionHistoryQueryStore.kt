@@ -294,14 +294,19 @@ object TransactionHistoryQueryStore {
 
     const val UPDATE_TRANSACTION_ANALYSIS =
             """
-        UPDATE transaction_histories 
-        SET transaction_category = $2,
-            friendly_description = $3,
-            extracted_card_number = $4,
-            brand_name = $5,
-            revised_transaction_date = $6,
-            is_processed = $7
-        WHERE id = $1
+        UPDATE transaction_histories
+        SET
+          transaction_category =
+            CASE
+              WHEN is_category_overridden_by_user IS FALSE THEN $2
+              ELSE transaction_category
+            END,
+          friendly_description   = $3,
+          extracted_card_number  = $4,
+          brand_name             = $5,
+          revised_transaction_date = $6,
+          is_processed           = $7
+        WHERE id = $1;
     """
 
     const val FIND_PROCESSED_TRANSACTIONS_BY_TRANSACTION_IDS =
@@ -404,7 +409,7 @@ const val FIND_TRANSACTIONS_FOR_USER_SINCE_DATE =
     const val SET_TRANSACTION_CATEGORY =
         """
             UPDATE transaction_histories
-            SET transaction_category = $3
+            SET transaction_category = $3, is_category_overridden_by_user = true 
             WHERE user_id = $1 AND id = $2
         """
 
