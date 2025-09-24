@@ -1,4 +1,5 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/presentation/add_account_screen/add_account_screen.dart';
 import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen.dart';
@@ -21,6 +22,8 @@ import 'package:flow_mobile/presentation/setting_screen/manage_bank_accounts_scr
 import 'package:flow_mobile/presentation/setting_screen/manage_notification_screen/manage_notification_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/setting_screen/setting_screen.dart';
+import 'package:flow_mobile/presentation/transaction_detail_screen/category_selection_screen.dart';
+import 'package:flow_mobile/presentation/transaction_detail_screen/transaction_detail_screen.dart';
 import 'package:flow_mobile/presentation/welcome_screen/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -53,6 +56,8 @@ class AppRoutes {
   static const spendingDetail = '/spending/detail';
   static const category = '/spending/category';
   static const categoryDetail = '/spending/category/detail';
+  static const transactionDetail = "transaction_detail";
+  static const categorySelection = "category_selection";
   static const fixedSpending = '/fixed_spending/details';
   static const accountDetail = '/account_detail';
   static const addAccount = '/add_account';
@@ -122,6 +127,15 @@ class AppRoutes {
           category: data.category,
           displayMonthYear: data.displayMonthYear,
         );
+        break;
+
+      case transactionDetail:
+        final data = args!.extraData as Transaction;
+        page = TransactionDetailScreen(transaction: data);
+        break;
+      case categorySelection:
+        final data = args!.extraData as Transaction;
+        page = CategorySelectionScreen(transaction: data);
         break;
 
       case fixedSpending:
@@ -233,19 +247,14 @@ class AppRoutes {
     return PageRouteBuilder(
       settings: settings,
       transitionDuration: const Duration(milliseconds: 150),
-      pageBuilder:
-          (ctx, anim, secAnim) => PrivacyProtector(
-            child: DefaultTextStyle(
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                color: Color(0xFF000000),
-              ),
-              child: page,
-            ),
-          ),
-      transitionsBuilder:
-          (ctx, anim, sec, child) =>
-              AppTransitions.build(transition, anim, child),
+      pageBuilder: (ctx, anim, secAnim) => PrivacyProtector(
+        child: DefaultTextStyle(
+          style: const TextStyle(fontFamily: 'Inter', color: Color(0xFF000000)),
+          child: page,
+        ),
+      ),
+      transitionsBuilder: (ctx, anim, sec, child) =>
+          AppTransitions.build(transition, anim, child),
     );
   }
 }

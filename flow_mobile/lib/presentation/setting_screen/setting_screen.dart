@@ -192,7 +192,7 @@ class ThemeToggleSwitch extends StatelessWidget {
     ];
 
     return ToggleSwitch(
-      minWidth: 50.0,
+      minWidth: 35.0,
       minHeight: 30.0,
       cornerRadius: 12.0,
       activeBgColors: activeBg,

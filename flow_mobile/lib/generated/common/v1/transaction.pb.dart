@@ -327,6 +327,190 @@ class TransactionHistoryList extends $pb.GeneratedMessage {
   $pb.PbList<TransactionHistoryDetail> get transactions => $_getList(2);
 }
 
+class RecurringTransactionDetail extends $pb.GeneratedMessage {
+  factory RecurringTransactionDetail({
+    $fixnum.Int64? id,
+    $core.String? displayName,
+    $core.String? category,
+    $core.double? expectedAmount,
+    $2.Timestamp? nextTransactionDate,
+    $2.Timestamp? lastTransactionDate,
+    $fixnum.Int64? intervalDays,
+    $fixnum.Int64? occurrenceCount,
+    $core.Iterable<$fixnum.Int64>? transactionIds,
+    $fixnum.Int64? year,
+    $fixnum.Int64? month,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    if (displayName != null) result.displayName = displayName;
+    if (category != null) result.category = category;
+    if (expectedAmount != null) result.expectedAmount = expectedAmount;
+    if (nextTransactionDate != null)
+      result.nextTransactionDate = nextTransactionDate;
+    if (lastTransactionDate != null)
+      result.lastTransactionDate = lastTransactionDate;
+    if (intervalDays != null) result.intervalDays = intervalDays;
+    if (occurrenceCount != null) result.occurrenceCount = occurrenceCount;
+    if (transactionIds != null) result.transactionIds.addAll(transactionIds);
+    if (year != null) result.year = year;
+    if (month != null) result.month = month;
+    return result;
+  }
+
+  RecurringTransactionDetail._();
+
+  factory RecurringTransactionDetail.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory RecurringTransactionDetail.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'RecurringTransactionDetail',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.common.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'displayName')
+    ..aOS(3, _omitFieldNames ? '' : 'category')
+    ..a<$core.double>(
+        4, _omitFieldNames ? '' : 'expectedAmount', $pb.PbFieldType.OD)
+    ..aOM<$2.Timestamp>(5, _omitFieldNames ? '' : 'nextTransactionDate',
+        subBuilder: $2.Timestamp.create)
+    ..aOM<$2.Timestamp>(6, _omitFieldNames ? '' : 'lastTransactionDate',
+        subBuilder: $2.Timestamp.create)
+    ..aInt64(7, _omitFieldNames ? '' : 'intervalDays')
+    ..aInt64(8, _omitFieldNames ? '' : 'occurrenceCount')
+    ..p<$fixnum.Int64>(
+        9, _omitFieldNames ? '' : 'transactionIds', $pb.PbFieldType.K6)
+    ..aInt64(10, _omitFieldNames ? '' : 'year')
+    ..aInt64(11, _omitFieldNames ? '' : 'month')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RecurringTransactionDetail clone() =>
+      RecurringTransactionDetail()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RecurringTransactionDetail copyWith(
+          void Function(RecurringTransactionDetail) updates) =>
+      super.copyWith(
+              (message) => updates(message as RecurringTransactionDetail))
+          as RecurringTransactionDetail;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static RecurringTransactionDetail create() => RecurringTransactionDetail._();
+  @$core.override
+  RecurringTransactionDetail createEmptyInstance() => create();
+  static $pb.PbList<RecurringTransactionDetail> createRepeated() =>
+      $pb.PbList<RecurringTransactionDetail>();
+  @$core.pragma('dart2js:noInline')
+  static RecurringTransactionDetail getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<RecurringTransactionDetail>(create);
+  static RecurringTransactionDetail? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get displayName => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set displayName($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasDisplayName() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDisplayName() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get category => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set category($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasCategory() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearCategory() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.double get expectedAmount => $_getN(3);
+  @$pb.TagNumber(4)
+  set expectedAmount($core.double value) => $_setDouble(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasExpectedAmount() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearExpectedAmount() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $2.Timestamp get nextTransactionDate => $_getN(4);
+  @$pb.TagNumber(5)
+  set nextTransactionDate($2.Timestamp value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasNextTransactionDate() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearNextTransactionDate() => $_clearField(5);
+  @$pb.TagNumber(5)
+  $2.Timestamp ensureNextTransactionDate() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  $2.Timestamp get lastTransactionDate => $_getN(5);
+  @$pb.TagNumber(6)
+  set lastTransactionDate($2.Timestamp value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasLastTransactionDate() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearLastTransactionDate() => $_clearField(6);
+  @$pb.TagNumber(6)
+  $2.Timestamp ensureLastTransactionDate() => $_ensure(5);
+
+  @$pb.TagNumber(7)
+  $fixnum.Int64 get intervalDays => $_getI64(6);
+  @$pb.TagNumber(7)
+  set intervalDays($fixnum.Int64 value) => $_setInt64(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasIntervalDays() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearIntervalDays() => $_clearField(7);
+
+  @$pb.TagNumber(8)
+  $fixnum.Int64 get occurrenceCount => $_getI64(7);
+  @$pb.TagNumber(8)
+  set occurrenceCount($fixnum.Int64 value) => $_setInt64(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasOccurrenceCount() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearOccurrenceCount() => $_clearField(8);
+
+  @$pb.TagNumber(9)
+  $pb.PbList<$fixnum.Int64> get transactionIds => $_getList(8);
+
+  @$pb.TagNumber(10)
+  $fixnum.Int64 get year => $_getI64(9);
+  @$pb.TagNumber(10)
+  set year($fixnum.Int64 value) => $_setInt64(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasYear() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearYear() => $_clearField(10);
+
+  @$pb.TagNumber(11)
+  $fixnum.Int64 get month => $_getI64(10);
+  @$pb.TagNumber(11)
+  set month($fixnum.Int64 value) => $_setInt64(10, value);
+  @$pb.TagNumber(11)
+  $core.bool hasMonth() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearMonth() => $_clearField(11);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

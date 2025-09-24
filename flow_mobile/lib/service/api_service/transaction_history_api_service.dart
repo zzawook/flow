@@ -46,4 +46,12 @@ class TransactionHistoryApiService {
     ));
     return response;
   }
+
+  Future<SetTransactionCategoryResponse> setTransactionCategory(String transactionId, String category) async {
+    final response = await _channel.setTransactionCategory(SetTransactionCategoryRequest(
+      transactionId: transactionId,
+      category: category,
+    ));
+    return response;
+  }
 }

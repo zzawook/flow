@@ -29,6 +29,9 @@ class Transaction {
   @HiveField(6)
   final String note;
 
+  @HiveField(8)
+  final bool isIncludedInSpendingOrIncome;
+
   Transaction({
     required this.id,
     required this.name,
@@ -38,6 +41,7 @@ class Transaction {
     required this.date,
     required this.method,
     required this.note,
+    this.isIncludedInSpendingOrIncome = true,
   });
 
   @override
@@ -46,6 +50,30 @@ class Transaction {
       other is Transaction &&
           runtimeType == other.runtimeType &&
           id == other.id;
+
+  Transaction copyWith({
+    int? id,
+    String? name, 
+    double? amount,
+    BankAccount? bankAccount,
+    String? category,
+    DateTime? date,
+    String? method,
+    String? note,
+    bool? isIncludedInSpendingOrIncome,
+  }) {
+    return Transaction(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      amount: amount ?? this.amount,
+      bankAccount: bankAccount ?? this.bankAccount,
+      category: category ?? this.category,
+      date: date ?? this.date,
+      method: method ?? this.method,
+      note: note ?? this.note,
+      isIncludedInSpendingOrIncome: isIncludedInSpendingOrIncome ?? this.isIncludedInSpendingOrIncome,
+    );
+  }
 
   @override
   int get hashCode =>
@@ -56,10 +84,11 @@ class Transaction {
       category.hashCode ^
       date.hashCode ^
       method.hashCode ^
-      note.hashCode;
+      note.hashCode ^
+      isIncludedInSpendingOrIncome.hashCode;
 
   @override
   String toString() {
     return 'Transaction{name: $name, amount: $amount, date: $date}';
-  } 
+  }
 }

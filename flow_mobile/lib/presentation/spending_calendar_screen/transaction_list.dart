@@ -1,9 +1,17 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
+import 'package:flow_mobile/presentation/navigation/app_routes.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_item.dart';
+import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flow_mobile/presentation/shared/flow_horizontal_divider.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+import '../navigation/transition_type.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
@@ -75,10 +83,9 @@ class TransactionList extends StatelessWidget {
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
                                       ),
                                     ),
                                   ),
@@ -86,21 +93,32 @@ class TransactionList extends StatelessWidget {
                                   FlowSeparatorBox(height: 8),
                                 ],
                               ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8.0,
-                              ),
-                              child: TransactionItem(
-                                name: txn.name,
-                                amount: txn.amount,
-                                category: txn.category,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withAlpha(240),
-                                incomeColor:
-                                    txn.amount > 0
-                                        ? const Color(0xFF00C864)
-                                        : const Color(0xFF000000),
+                            FlowButton(
+                              onPressed: () {
+                                final navigator = getIt<NavigationService>();
+                                navigator.pushNamed(
+                                  AppRoutes.transactionDetail,
+                                  arguments: CustomPageRouteArguments(
+                                    transitionType: TransitionType.slideLeft,
+                                    extraData: txn,
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0,
+                                ),
+                                child: TransactionItem(
+                                  name: txn.name,
+                                  amount: txn.amount,
+                                  category: txn.category,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withAlpha(240),
+                                  incomeColor: txn.amount > 0
+                                      ? const Color(0xFF00C864)
+                                      : const Color(0xFF000000),
+                                ),
                               ),
                             ),
                           ],

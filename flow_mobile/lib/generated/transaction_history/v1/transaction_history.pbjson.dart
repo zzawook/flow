@@ -112,3 +112,73 @@ final $typed_data.Uint8List getProcessedTransactionRequestDescriptor =
     $convert.base64Decode(
         'Ch5HZXRQcm9jZXNzZWRUcmFuc2FjdGlvblJlcXVlc3QSJwoPdHJhbnNhY3Rpb25faWRzGAEgAy'
         'gJUg50cmFuc2FjdGlvbklkcw==');
+
+@$core.Deprecated('Use getRecurringTransactionRequestDescriptor instead')
+const GetRecurringTransactionRequest$json = {
+  '1': 'GetRecurringTransactionRequest',
+};
+
+/// Descriptor for `GetRecurringTransactionRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getRecurringTransactionRequestDescriptor =
+    $convert.base64Decode('Ch5HZXRSZWN1cnJpbmdUcmFuc2FjdGlvblJlcXVlc3Q=');
+
+@$core.Deprecated('Use getRecurringTransactionResponseDescriptor instead')
+const GetRecurringTransactionResponse$json = {
+  '1': 'GetRecurringTransactionResponse',
+  '2': [
+    {
+      '1': 'recurring_transactions',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.sg.flow.common.v1.RecurringTransactionDetail',
+      '10': 'recurringTransactions'
+    },
+    {
+      '1': 'last_updated',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'lastUpdated'
+    },
+  ],
+};
+
+/// Descriptor for `GetRecurringTransactionResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getRecurringTransactionResponseDescriptor =
+    $convert.base64Decode(
+        'Ch9HZXRSZWN1cnJpbmdUcmFuc2FjdGlvblJlc3BvbnNlEmQKFnJlY3VycmluZ190cmFuc2FjdG'
+        'lvbnMYASADKAsyLS5zZy5mbG93LmNvbW1vbi52MS5SZWN1cnJpbmdUcmFuc2FjdGlvbkRldGFp'
+        'bFIVcmVjdXJyaW5nVHJhbnNhY3Rpb25zEj0KDGxhc3RfdXBkYXRlZBgCIAEoCzIaLmdvb2dsZS'
+        '5wcm90b2J1Zi5UaW1lc3RhbXBSC2xhc3RVcGRhdGVk');
+
+@$core.Deprecated('Use setTransactionCategoryRequestDescriptor instead')
+const SetTransactionCategoryRequest$json = {
+  '1': 'SetTransactionCategoryRequest',
+  '2': [
+    {'1': 'transaction_id', '3': 1, '4': 1, '5': 9, '10': 'transactionId'},
+    {'1': 'category', '3': 2, '4': 1, '5': 9, '10': 'category'},
+  ],
+};
+
+/// Descriptor for `SetTransactionCategoryRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List setTransactionCategoryRequestDescriptor =
+    $convert.base64Decode(
+        'Ch1TZXRUcmFuc2FjdGlvbkNhdGVnb3J5UmVxdWVzdBIlCg50cmFuc2FjdGlvbl9pZBgBIAEoCV'
+        'INdHJhbnNhY3Rpb25JZBIaCghjYXRlZ29yeRgCIAEoCVIIY2F0ZWdvcnk=');
+
+@$core.Deprecated('Use setTransactionCategoryResponseDescriptor instead')
+const SetTransactionCategoryResponse$json = {
+  '1': 'SetTransactionCategoryResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+    {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+  ],
+};
+
+/// Descriptor for `SetTransactionCategoryResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List setTransactionCategoryResponseDescriptor =
+    $convert.base64Decode(
+        'Ch5TZXRUcmFuc2FjdGlvbkNhdGVnb3J5UmVzcG9uc2USGAoHc3VjY2VzcxgBIAEoCFIHc3VjY2'
+        'VzcxIYCgdtZXNzYWdlGAIgASgJUgdtZXNzYWdl');

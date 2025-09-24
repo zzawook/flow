@@ -13,6 +13,15 @@ TransactionState transactionReducer(
   if (action is SetTransactionStateAction) {
     return action.transactionHistoryState;
   }
+  if (action is SetTransactionCategoryAction) {
+    List<Transaction> updatedTransactions = prevState.transactions.map((transaction) {
+      if (transaction.id == action.transaction.id) {
+        return transaction.copyWith(category: action.category);
+      }
+      return transaction;
+    }).toList();
+    return prevState.copyWith(transactions: updatedTransactions);
+  }
   if (action is AddTransaction) {
     List<Transaction> updatedTransactions = List.from(prevState.transactions)
       ..addAll(

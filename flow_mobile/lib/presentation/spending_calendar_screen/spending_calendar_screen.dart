@@ -67,7 +67,7 @@ class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
     final screenSize = MediaQuery.of(context).size;
 
     return FlowSafeArea(
-      backgroundColor: Theme.of(context).canvasColor,
+      backgroundColor: Theme.of(context).cardColor,
       child: RefreshIndicator.adaptive(
         onRefresh: () {
           Navigator.pushNamed(

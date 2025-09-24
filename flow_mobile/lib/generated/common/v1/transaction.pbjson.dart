@@ -139,3 +139,47 @@ final $typed_data.Uint8List transactionHistoryListDescriptor = $convert.base64De
     'AiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wUgxlbmRUaW1lc3RhbXASTwoMdHJhbn'
     'NhY3Rpb25zGAMgAygLMisuc2cuZmxvdy5jb21tb24udjEuVHJhbnNhY3Rpb25IaXN0b3J5RGV0'
     'YWlsUgx0cmFuc2FjdGlvbnM=');
+
+@$core.Deprecated('Use recurringTransactionDetailDescriptor instead')
+const RecurringTransactionDetail$json = {
+  '1': 'RecurringTransactionDetail',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'display_name', '3': 2, '4': 1, '5': 9, '10': 'displayName'},
+    {'1': 'category', '3': 3, '4': 1, '5': 9, '10': 'category'},
+    {'1': 'expected_amount', '3': 4, '4': 1, '5': 1, '10': 'expectedAmount'},
+    {
+      '1': 'next_transaction_date',
+      '3': 5,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'nextTransactionDate'
+    },
+    {
+      '1': 'last_transaction_date',
+      '3': 6,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'lastTransactionDate'
+    },
+    {'1': 'interval_days', '3': 7, '4': 1, '5': 3, '10': 'intervalDays'},
+    {'1': 'occurrence_count', '3': 8, '4': 1, '5': 3, '10': 'occurrenceCount'},
+    {'1': 'transaction_ids', '3': 9, '4': 3, '5': 3, '10': 'transactionIds'},
+    {'1': 'year', '3': 10, '4': 1, '5': 3, '10': 'year'},
+    {'1': 'month', '3': 11, '4': 1, '5': 3, '10': 'month'},
+  ],
+};
+
+/// Descriptor for `RecurringTransactionDetail`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List recurringTransactionDetailDescriptor = $convert.base64Decode(
+    'ChpSZWN1cnJpbmdUcmFuc2FjdGlvbkRldGFpbBIOCgJpZBgBIAEoA1ICaWQSIQoMZGlzcGxheV'
+    '9uYW1lGAIgASgJUgtkaXNwbGF5TmFtZRIaCghjYXRlZ29yeRgDIAEoCVIIY2F0ZWdvcnkSJwoP'
+    'ZXhwZWN0ZWRfYW1vdW50GAQgASgBUg5leHBlY3RlZEFtb3VudBJOChVuZXh0X3RyYW5zYWN0aW'
+    '9uX2RhdGUYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wUhNuZXh0VHJhbnNhY3Rp'
+    'b25EYXRlEk4KFWxhc3RfdHJhbnNhY3Rpb25fZGF0ZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi'
+    '5UaW1lc3RhbXBSE2xhc3RUcmFuc2FjdGlvbkRhdGUSIwoNaW50ZXJ2YWxfZGF5cxgHIAEoA1IM'
+    'aW50ZXJ2YWxEYXlzEikKEG9jY3VycmVuY2VfY291bnQYCCABKANSD29jY3VycmVuY2VDb3VudB'
+    'InCg90cmFuc2FjdGlvbl9pZHMYCSADKANSDnRyYW5zYWN0aW9uSWRzEhIKBHllYXIYCiABKANS'
+    'BHllYXISFAoFbW9udGgYCyABKANSBW1vbnRo');

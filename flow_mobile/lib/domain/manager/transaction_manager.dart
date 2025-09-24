@@ -17,4 +17,5 @@ abstract class TransactionManager {
   Future<List<Transaction>> fetchPastOverYearTransactionsAroundFromRemote(
     DateTime month,
   );
+  Future<bool> setTransactionCategory(Transaction transaction, String category);
 }

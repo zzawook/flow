@@ -13,4 +13,11 @@ class AddTransaction {
   AddTransaction(this.transactions);
 }
 
+class SetTransactionCategoryAction {
+  final Transaction transaction;
+  final String category;
+  
+  SetTransactionCategoryAction({required this.transaction, required this.category});
+}
+
 class ClearTransactionStateAction {}

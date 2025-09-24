@@ -195,7 +195,6 @@ class TransactionManagerImpl implements TransactionManager {
             Transaction transaction = fromTransactionHistoryDetail(
               transactionHistoryDetail,
             );
-            print(transaction);
             if (_transactionList.any((t) => t.id == transaction.id)) {
               await putTransaction(transaction.id.toString(), transaction);
             } else {
@@ -208,7 +207,6 @@ class TransactionManagerImpl implements TransactionManager {
             fetchedTransactions.add(transaction);
           }
           loadTransactionsToList();
-          print(fetchedTransactions);
           return fetchedTransactions;
         })
         .catchError((error) {
@@ -228,5 +226,26 @@ class TransactionManagerImpl implements TransactionManager {
           (transaction) => transaction.category == "Analyzing",
         ),
       );
+  }
+
+  @override
+  Future<bool> setTransactionCategory(
+    Transaction transaction,
+    String category,
+  ) async {
+    ApiService apiService = getIt<ApiService>();
+    final response = await apiService.setTransactionCategory(
+      transaction.id.toString(),
+      category,
+    );
+    if (!response.success) {
+      log("Failed to set transaction category: ${response.message}");
+      return false;
+    } else {
+      transaction = transaction.copyWith(category: category);
+      await putTransaction(transaction.id.toString(), transaction);
+      loadTransactionsToList();
+      return true;
+    }
   }
 }

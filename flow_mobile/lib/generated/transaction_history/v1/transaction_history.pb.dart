@@ -14,6 +14,7 @@ import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
+import '../../common/v1/transaction.pb.dart' as $1;
 import '../../google/protobuf/timestamp.pb.dart' as $2;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
@@ -416,6 +417,272 @@ class GetProcessedTransactionRequest extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $pb.PbList<$core.String> get transactionIds => $_getList(0);
+}
+
+class GetRecurringTransactionRequest extends $pb.GeneratedMessage {
+  factory GetRecurringTransactionRequest() => create();
+
+  GetRecurringTransactionRequest._();
+
+  factory GetRecurringTransactionRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetRecurringTransactionRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetRecurringTransactionRequest',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetRecurringTransactionRequest clone() =>
+      GetRecurringTransactionRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetRecurringTransactionRequest copyWith(
+          void Function(GetRecurringTransactionRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetRecurringTransactionRequest))
+          as GetRecurringTransactionRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetRecurringTransactionRequest create() =>
+      GetRecurringTransactionRequest._();
+  @$core.override
+  GetRecurringTransactionRequest createEmptyInstance() => create();
+  static $pb.PbList<GetRecurringTransactionRequest> createRepeated() =>
+      $pb.PbList<GetRecurringTransactionRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetRecurringTransactionRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetRecurringTransactionRequest>(create);
+  static GetRecurringTransactionRequest? _defaultInstance;
+}
+
+class GetRecurringTransactionResponse extends $pb.GeneratedMessage {
+  factory GetRecurringTransactionResponse({
+    $core.Iterable<$1.RecurringTransactionDetail>? recurringTransactions,
+    $2.Timestamp? lastUpdated,
+  }) {
+    final result = create();
+    if (recurringTransactions != null)
+      result.recurringTransactions.addAll(recurringTransactions);
+    if (lastUpdated != null) result.lastUpdated = lastUpdated;
+    return result;
+  }
+
+  GetRecurringTransactionResponse._();
+
+  factory GetRecurringTransactionResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetRecurringTransactionResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetRecurringTransactionResponse',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..pc<$1.RecurringTransactionDetail>(
+        1, _omitFieldNames ? '' : 'recurringTransactions', $pb.PbFieldType.PM,
+        subBuilder: $1.RecurringTransactionDetail.create)
+    ..aOM<$2.Timestamp>(2, _omitFieldNames ? '' : 'lastUpdated',
+        subBuilder: $2.Timestamp.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetRecurringTransactionResponse clone() =>
+      GetRecurringTransactionResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetRecurringTransactionResponse copyWith(
+          void Function(GetRecurringTransactionResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetRecurringTransactionResponse))
+          as GetRecurringTransactionResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetRecurringTransactionResponse create() =>
+      GetRecurringTransactionResponse._();
+  @$core.override
+  GetRecurringTransactionResponse createEmptyInstance() => create();
+  static $pb.PbList<GetRecurringTransactionResponse> createRepeated() =>
+      $pb.PbList<GetRecurringTransactionResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetRecurringTransactionResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetRecurringTransactionResponse>(
+          create);
+  static GetRecurringTransactionResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<$1.RecurringTransactionDetail> get recurringTransactions =>
+      $_getList(0);
+
+  @$pb.TagNumber(2)
+  $2.Timestamp get lastUpdated => $_getN(1);
+  @$pb.TagNumber(2)
+  set lastUpdated($2.Timestamp value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasLastUpdated() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearLastUpdated() => $_clearField(2);
+  @$pb.TagNumber(2)
+  $2.Timestamp ensureLastUpdated() => $_ensure(1);
+}
+
+class SetTransactionCategoryRequest extends $pb.GeneratedMessage {
+  factory SetTransactionCategoryRequest({
+    $core.String? transactionId,
+    $core.String? category,
+  }) {
+    final result = create();
+    if (transactionId != null) result.transactionId = transactionId;
+    if (category != null) result.category = category;
+    return result;
+  }
+
+  SetTransactionCategoryRequest._();
+
+  factory SetTransactionCategoryRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SetTransactionCategoryRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SetTransactionCategoryRequest',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'transactionId')
+    ..aOS(2, _omitFieldNames ? '' : 'category')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetTransactionCategoryRequest clone() =>
+      SetTransactionCategoryRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetTransactionCategoryRequest copyWith(
+          void Function(SetTransactionCategoryRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as SetTransactionCategoryRequest))
+          as SetTransactionCategoryRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SetTransactionCategoryRequest create() =>
+      SetTransactionCategoryRequest._();
+  @$core.override
+  SetTransactionCategoryRequest createEmptyInstance() => create();
+  static $pb.PbList<SetTransactionCategoryRequest> createRepeated() =>
+      $pb.PbList<SetTransactionCategoryRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SetTransactionCategoryRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SetTransactionCategoryRequest>(create);
+  static SetTransactionCategoryRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get transactionId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set transactionId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasTransactionId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTransactionId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get category => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set category($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasCategory() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearCategory() => $_clearField(2);
+}
+
+class SetTransactionCategoryResponse extends $pb.GeneratedMessage {
+  factory SetTransactionCategoryResponse({
+    $core.bool? success,
+    $core.String? message,
+  }) {
+    final result = create();
+    if (success != null) result.success = success;
+    if (message != null) result.message = message;
+    return result;
+  }
+
+  SetTransactionCategoryResponse._();
+
+  factory SetTransactionCategoryResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SetTransactionCategoryResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SetTransactionCategoryResponse',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..aOS(2, _omitFieldNames ? '' : 'message')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetTransactionCategoryResponse clone() =>
+      SetTransactionCategoryResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetTransactionCategoryResponse copyWith(
+          void Function(SetTransactionCategoryResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as SetTransactionCategoryResponse))
+          as SetTransactionCategoryResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SetTransactionCategoryResponse create() =>
+      SetTransactionCategoryResponse._();
+  @$core.override
+  SetTransactionCategoryResponse createEmptyInstance() => create();
+  static $pb.PbList<SetTransactionCategoryResponse> createRepeated() =>
+      $pb.PbList<SetTransactionCategoryResponse>();
+  @$core.pragma('dart2js:noInline')
+  static SetTransactionCategoryResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SetTransactionCategoryResponse>(create);
+  static SetTransactionCategoryResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get message => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set message($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasMessage() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMessage() => $_clearField(2);
 }
 
 const $core.bool _omitFieldNames =

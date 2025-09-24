@@ -8,4 +8,6 @@ class NavigationService {
 
   Future<void> pushNamedAndRemoveUntil(String route) =>
       navigatorKey.currentState!.pushNamedAndRemoveUntil(route, (r) => false);
+
+  void pop() => navigatorKey.currentState!.pop();
 }

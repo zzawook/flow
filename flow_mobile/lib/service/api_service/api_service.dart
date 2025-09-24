@@ -4,6 +4,7 @@ import 'package:flow_mobile/generated/account/v1/account.pb.dart';
 import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
 import 'package:flow_mobile/generated/common/v1/transaction.pb.dart';
 import 'package:flow_mobile/generated/refresh/v1/refresh.pb.dart';
+import 'package:flow_mobile/generated/transaction_history/v1/transaction_history.pb.dart';
 import 'package:flow_mobile/generated/user/user.pb.dart';
 import 'package:flow_mobile/service/api_service/account_api_service.dart';
 import 'package:flow_mobile/service/api_service/auth_api_service.dart';
@@ -51,6 +52,10 @@ class ApiService {
     _userApiService = UserApiService(_channel);
     _accountApiService = AccountApiService(_channel);
     _transactionHistoryApiService = TransactionHistoryApiService(_channel);
+  }
+
+  Future<SetTransactionCategoryResponse> setTransactionCategory(String transactionId, String category) async {
+    return await _transactionHistoryApiService.setTransactionCategory(transactionId, category);
   }
 
   Future<TransactionHistoryList> getProcessedTransactions(List<String> transactionIds) async {

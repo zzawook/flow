@@ -79,6 +79,24 @@ class TransactionHistoryServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$0.GetRecurringTransactionResponse>
+      getRecurringTransaction(
+    $0.GetRecurringTransactionRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getRecurringTransaction, request,
+        options: options);
+  }
+
+  $grpc.ResponseFuture<$0.SetTransactionCategoryResponse>
+      setTransactionCategory(
+    $0.SetTransactionCategoryRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$setTransactionCategory, request,
+        options: options);
+  }
+
   // method descriptors
 
   static final _$getLast30DaysHistoryList = $grpc.ClientMethod<
@@ -111,6 +129,17 @@ class TransactionHistoryServiceClient extends $grpc.Client {
       '/sg.flow.transaction.v1.TransactionHistoryService/GetProcessedTransaction',
       ($0.GetProcessedTransactionRequest value) => value.writeToBuffer(),
       $1.TransactionHistoryList.fromBuffer);
+  static final _$getRecurringTransaction = $grpc.ClientMethod<
+          $0.GetRecurringTransactionRequest,
+          $0.GetRecurringTransactionResponse>(
+      '/sg.flow.transaction.v1.TransactionHistoryService/GetRecurringTransaction',
+      ($0.GetRecurringTransactionRequest value) => value.writeToBuffer(),
+      $0.GetRecurringTransactionResponse.fromBuffer);
+  static final _$setTransactionCategory = $grpc.ClientMethod<
+          $0.SetTransactionCategoryRequest, $0.SetTransactionCategoryResponse>(
+      '/sg.flow.transaction.v1.TransactionHistoryService/SetTransactionCategory',
+      ($0.SetTransactionCategoryRequest value) => value.writeToBuffer(),
+      $0.SetTransactionCategoryResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.transaction.v1.TransactionHistoryService')
@@ -172,6 +201,24 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.GetProcessedTransactionRequest.fromBuffer(value),
         ($1.TransactionHistoryList value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetRecurringTransactionRequest,
+            $0.GetRecurringTransactionResponse>(
+        'GetRecurringTransaction',
+        getRecurringTransaction_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetRecurringTransactionRequest.fromBuffer(value),
+        ($0.GetRecurringTransactionResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.SetTransactionCategoryRequest,
+            $0.SetTransactionCategoryResponse>(
+        'SetTransactionCategory',
+        setTransactionCategory_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.SetTransactionCategoryRequest.fromBuffer(value),
+        ($0.SetTransactionCategoryResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.TransactionHistoryList> getLast30DaysHistoryList_Pre(
@@ -227,4 +274,22 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
 
   $async.Future<$1.TransactionHistoryList> getProcessedTransaction(
       $grpc.ServiceCall call, $0.GetProcessedTransactionRequest request);
+
+  $async.Future<$0.GetRecurringTransactionResponse> getRecurringTransaction_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetRecurringTransactionRequest> $request) async {
+    return getRecurringTransaction($call, await $request);
+  }
+
+  $async.Future<$0.GetRecurringTransactionResponse> getRecurringTransaction(
+      $grpc.ServiceCall call, $0.GetRecurringTransactionRequest request);
+
+  $async.Future<$0.SetTransactionCategoryResponse> setTransactionCategory_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.SetTransactionCategoryRequest> $request) async {
+    return setTransactionCategory($call, await $request);
+  }
+
+  $async.Future<$0.SetTransactionCategoryResponse> setTransactionCategory(
+      $grpc.ServiceCall call, $0.SetTransactionCategoryRequest request);
 }
