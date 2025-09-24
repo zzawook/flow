@@ -20,6 +20,10 @@ import sg.flow.transaction.v1.GetTransactionWithinRangeRequest
 import sg.flow.models.transaction.TransactionHistoryList       as DomainHistoryList
 import sg.flow.services.TransactionHistoryServices.TransactionHistoryService
 import sg.flow.transaction.v1.GetProcessedTransactionRequest
+import sg.flow.transaction.v1.GetRecurringTransactionRequest
+import sg.flow.transaction.v1.GetRecurringTransactionResponse
+import sg.flow.transaction.v1.SetTransactionCategoryRequest
+import sg.flow.transaction.v1.SetTransactionCategoryResponse
 import sg.flow.validation.ValidationException
 import sg.flow.validation.Validator
 
@@ -122,5 +126,18 @@ class TransactionHistoryGrpcService(
                 val userId = currentUserId()
                 val domain = transactionService.getProcessedTransactionsForTransactionIds(userId, request.transactionIdsList.toList())
                 return txHistoryMapper.toProto(domain)
+        }
+
+        override suspend fun getRecurringTransaction(request: GetRecurringTransactionRequest): GetRecurringTransactionResponse {
+                val userId = currentUserId()
+                val domain = transactionService.getRecurringTransactionAnalysisResult(userId)
+                val toReturn = txHistoryMapper.toProto(domain)
+                return toReturn
+        }
+
+        override suspend fun setTransactionCategory(request: SetTransactionCategoryRequest): SetTransactionCategoryResponse {
+                val userId = currentUserId()
+                val success = transactionService.setTransactionCategory(userId, request.transactionId, request.category)
+                return SetTransactionCategoryResponse.newBuilder().setSuccess(success).build()
         }
 }

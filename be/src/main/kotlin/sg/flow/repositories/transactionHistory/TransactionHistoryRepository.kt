@@ -1,5 +1,6 @@
 package sg.flow.repositories.transactionHistory
 
+import sg.flow.entities.RecurringSpendingMonthly
 import java.time.LocalDate
 import sg.flow.entities.TransactionHistory
 import sg.flow.models.transaction.TransactionHistoryDetail
@@ -38,11 +39,13 @@ interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
         ): Boolean
         suspend fun batchUpdateTransactionAnalysis(updates: List<TransactionAnalysisUpdate>): Int
         suspend fun findProcessedTransactionsFromTransactionIds(userId: Int, transactionIds: List<String>): TransactionHistoryList
-// For recurring analysis
-suspend fun findTransactionsForUserSinceDate(
-        userId: Int,
-        sinceDate: LocalDate
-): List<TransactionHistory>
+        // For recurring analysis
+        suspend fun findTransactionsForUserSinceDate(
+                userId: Int,
+                sinceDate: LocalDate
+        ): List<TransactionHistory>
+
+        suspend fun setTransactionCategory(userId: Int, transactionId: String, category: String): Boolean
 
 }
 

@@ -2,15 +2,18 @@ package sg.flow.services.TransactionHistoryServices
 
 import java.time.LocalDate
 import org.springframework.stereotype.Service
+import sg.flow.entities.RecurringSpendingMonthly
 import sg.flow.models.transaction.TransactionHistoryDetail
 import sg.flow.models.transaction.TransactionHistoryList
 import sg.flow.models.transfer.TransferRecepient
 import sg.flow.models.transfer.TransferRequestBody
+import sg.flow.repositories.recurring.RecurringSpendingRepository
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
 
 @Service
 class TransactionHistoryServiceImpl(
         private val transactionHistoryRepository: TransactionHistoryRepository,
+        private val recurringSpendingRepository: RecurringSpendingRepository
 ) : TransactionHistoryService {
 
     override suspend fun getMonthlyTransaction(
@@ -38,7 +41,7 @@ class TransactionHistoryServiceImpl(
             }
             return detail
         }
-                ?: throw IllegalArgumentException("Transaction not found")
+        throw IllegalArgumentException("Transaction not found")
     }
 
     override suspend fun getRelevantRecepient(keyword: String): TransferRecepient {
@@ -67,5 +70,18 @@ class TransactionHistoryServiceImpl(
 
     override suspend fun getProcessedTransactionsForTransactionIds(userId: Int, transactionIds: List<String>): TransactionHistoryList {
         return transactionHistoryRepository.findProcessedTransactionsFromTransactionIds(userId, transactionIds)
+    }
+
+    override suspend fun getRecurringTransactionAnalysisResult(userId: Int): List<RecurringSpendingMonthly> {
+        return recurringSpendingRepository.findRecurringTransactionsForUserId(userId)
+    }
+
+    override suspend fun setTransactionCategory(
+        userId: Int,
+        transactionId: String,
+        category: String
+    ): Boolean {
+        val result = transactionHistoryRepository.setTransactionCategory(userId, transactionId, category);
+        return result
     }
 }

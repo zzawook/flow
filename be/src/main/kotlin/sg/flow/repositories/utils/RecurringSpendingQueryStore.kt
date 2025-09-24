@@ -1,4 +1,4 @@
-package sg.flow.repositories.recurring
+package sg.flow.repositories.utils
 
 object RecurringSpendingQueryStore {
     const val UPSERT_RECURRING_SPENDING_MONTHLY =
@@ -33,4 +33,29 @@ object RecurringSpendingQueryStore {
         DELETE FROM recurring_spending_monthly
         WHERE user_id = $1 AND (year > $2 OR (year = $2 AND month >= $3))
       """
+
+    const val FIND_RECURRING_TRANSACTIONS_FOR_USER =
+        """
+            SELECT r.id,
+            r.user_id,
+            r.merchant_key,
+            r.sequence_key,
+            r.display_name,
+            r.brand_name,
+            r.category,
+            r.year,
+            r.month,
+            r.expected_amount,
+            r.amount_stddev,
+            r.occurrence_count,
+            r.last_transaction_date,
+            r.interval_days,
+            r.period_label,
+            r.next_transaction_date,
+            r.confidence,
+            r.transaction_ids,
+            r.updated_at
+            FROM recurring_spending_monthly
+            WHERE r.user_id = $1
+        """
 }

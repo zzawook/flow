@@ -12,6 +12,7 @@ import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
 import sg.flow.entities.Account
 import sg.flow.entities.Bank
+import sg.flow.entities.RecurringSpendingMonthly
 import sg.flow.entities.TransactionHistory
 import sg.flow.entities.User
 import sg.flow.entities.utils.AccountType
@@ -1057,28 +1058,54 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 return "($str)"
         }
 
-override suspend fun findTransactionsForUserSinceDate(
-        userId: Int,
-        sinceDate: LocalDate
-): List<TransactionHistory> {
-        return runCatching {
-                databaseClient
-                        .sql(TransactionHistoryQueryStore.FIND_TRANSACTIONS_FOR_USER_SINCE_DATE)
-                        .bind(0, userId)
-                        .bind(1, sinceDate)
-                        .map { row -> mapRowToTransactionHistory(row as Row) }
-                        .all()
-                        .asFlow()
-                        .toList()
-        }
-                .onFailure { e ->
-                        e.printStackTrace()
-                        logger.error(
-                                "Error fetching transactions since $sinceDate for userId=$userId"
-                        )
+        override suspend fun findTransactionsForUserSinceDate(
+                userId: Int,
+                sinceDate: LocalDate
+        ): List<TransactionHistory> {
+                return runCatching {
+                        databaseClient
+                                .sql(TransactionHistoryQueryStore.FIND_TRANSACTIONS_FOR_USER_SINCE_DATE)
+                                .bind(0, userId)
+                                .bind(1, sinceDate)
+                                .map { row -> mapRowToTransactionHistory(row as Row) }
+                                .all()
+                                .asFlow()
+                                .toList()
                 }
-                .getOrElse { emptyList() }
-}
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                logger.error(
+                                        "Error fetching transactions since $sinceDate for userId=$userId"
+                                )
+                        }
+                        .getOrElse { emptyList() }
+        }
+
+        override suspend fun setTransactionCategory(
+                userId: Int,
+                transactionId: String,
+                category: String
+        ): Boolean {
+                return runCatching {
+                        val rows = databaseClient
+                                .sql(TransactionHistoryQueryStore.SET_TRANSACTION_CATEGORY)
+                                .bind(0, userId)
+                                .bind(1, transactionId.toLong())
+                                .bind(2, category)
+                                .fetch()
+                                .awaitRowsUpdated()
+
+                        if (rows != 1L) {
+                                false
+                        }
+                        true
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                logger.error("Error updating transaction category of transaction id $transactionId")
+                        }
+                        .getOrElse { false }
+        }
 
         private fun mapRowToTransactionHistory(row: Row): TransactionHistory {
                 // Build nested Account object

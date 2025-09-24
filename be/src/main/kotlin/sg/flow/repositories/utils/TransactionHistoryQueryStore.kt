@@ -401,4 +401,11 @@ const val FIND_TRANSACTIONS_FOR_USER_SINCE_DATE =
             ORDER BY th.transaction_date DESC, th.transaction_time DESC
         """
 
+    const val SET_TRANSACTION_CATEGORY =
+        """
+            UPDATE transaction_histories
+            SET transaction_category = $3
+            WHERE user_id = $1 AND id = $2
+        """
+
 }
