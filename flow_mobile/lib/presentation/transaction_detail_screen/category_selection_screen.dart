@@ -1,5 +1,4 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
-import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/thunks/transaction_thunks.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
