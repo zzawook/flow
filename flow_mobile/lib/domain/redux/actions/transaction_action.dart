@@ -16,8 +16,17 @@ class AddTransaction {
 class SetTransactionCategoryAction {
   final Transaction transaction;
   final String category;
-  
-  SetTransactionCategoryAction({required this.transaction, required this.category});
+
+  SetTransactionCategoryAction({
+    required this.transaction,
+    required this.category,
+  });
+}
+
+class ToggleTransactionIncludeInSpendingOrIncomeAction {
+  final Transaction transaction;
+
+  ToggleTransactionIncludeInSpendingOrIncomeAction({required this.transaction});
 }
 
 class ClearTransactionStateAction {}

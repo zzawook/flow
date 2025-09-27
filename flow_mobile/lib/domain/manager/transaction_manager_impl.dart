@@ -157,6 +157,7 @@ class TransactionManagerImpl implements TransactionManager {
           ? "Analyzing"
           : detail.transactionCategory,
       method: "",
+      isIncludedInSpendingOrIncome: detail.isIncludedInSpendingOrIncome,
       note: "",
       bankAccount: BankAccount(
         accountNumber: detail.account.accountNumber,
@@ -247,5 +248,32 @@ class TransactionManagerImpl implements TransactionManager {
       loadTransactionsToList();
       return true;
     }
+  }
+
+  @override
+  Future<bool> toggleTransactionIncludeInSpendingOrIncome(
+    Transaction transaction,
+  ) {
+    ApiService apiService = getIt<ApiService>();
+    final newValue = !transaction.isIncludedInSpendingOrIncome;
+    return apiService
+        .setTransactionInclusion(transaction.id.toString(), newValue)
+        .then((response) async {
+          if (!response.success) {
+            log("Failed to toggle transaction inclusion: ${response.message}");
+            return false;
+          } else {
+            transaction = transaction.copyWith(
+              isIncludedInSpendingOrIncome: newValue,
+            );
+            await putTransaction(transaction.id.toString(), transaction);
+            loadTransactionsToList();
+            return true;
+          }
+        })
+        .catchError((error) {
+          log("Error toggling transaction inclusion: $error");
+          return false;
+        });
   }
 }

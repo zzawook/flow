@@ -76,8 +76,15 @@ const TransactionHistoryDetail$json = {
     },
     {'1': 'brand_name', '3': 12, '4': 1, '5': 9, '10': 'brandName'},
     {
-      '1': 'revised_transaction_timestamp',
+      '1': 'is_included_in_spending_or_income',
       '3': 13,
+      '4': 1,
+      '5': 8,
+      '10': 'isIncludedInSpendingOrIncome'
+    },
+    {
+      '1': 'revised_transaction_timestamp',
+      '3': 14,
       '4': 1,
       '5': 11,
       '6': '.google.protobuf.Timestamp',
@@ -98,8 +105,10 @@ final $typed_data.Uint8List transactionHistoryDetailDescriptor = $convert.base64
     '5zYWN0aW9uX3N0YXR1cxgJIAEoCVIRdHJhbnNhY3Rpb25TdGF0dXMSMQoUZnJpZW5kbHlfZGVz'
     'Y3JpcHRpb24YCiABKAlSE2ZyaWVuZGx5RGVzY3JpcHRpb24SMQoUdHJhbnNhY3Rpb25fY2F0ZW'
     'dvcnkYCyABKAlSE3RyYW5zYWN0aW9uQ2F0ZWdvcnkSHQoKYnJhbmRfbmFtZRgMIAEoCVIJYnJh'
-    'bmROYW1lEl4KHXJldmlzZWRfdHJhbnNhY3Rpb25fdGltZXN0YW1wGA0gASgLMhouZ29vZ2xlLn'
-    'Byb3RvYnVmLlRpbWVzdGFtcFIbcmV2aXNlZFRyYW5zYWN0aW9uVGltZXN0YW1w');
+    'bmROYW1lEkcKIWlzX2luY2x1ZGVkX2luX3NwZW5kaW5nX29yX2luY29tZRgNIAEoCFIcaXNJbm'
+    'NsdWRlZEluU3BlbmRpbmdPckluY29tZRJeCh1yZXZpc2VkX3RyYW5zYWN0aW9uX3RpbWVzdGFt'
+    'cBgOIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBSG3JldmlzZWRUcmFuc2FjdGlvbl'
+    'RpbWVzdGFtcA==');
 
 @$core.Deprecated('Use transactionHistoryListDescriptor instead')
 const TransactionHistoryList$json = {

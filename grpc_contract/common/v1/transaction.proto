@@ -22,7 +22,8 @@ message TransactionHistoryDetail {
   string                        friendly_description  = 10;
   string                        transaction_category  = 11;
   string                        brand_name            = 12;
-  google.protobuf.Timestamp     revised_transaction_timestamp = 13; // date+time
+  bool                          is_included_in_spending_or_income = 13;
+  google.protobuf.Timestamp     revised_transaction_timestamp = 14; // date+time
 }
 
 message TransactionHistoryList {

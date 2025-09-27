@@ -84,4 +84,13 @@ class TransactionHistoryServiceImpl(
         val result = transactionHistoryRepository.setTransactionCategory(userId, transactionId, category);
         return result
     }
+
+    override suspend fun setTransactionInclusion(
+        userId: Int,
+        transactionId: String,
+        includeInSpendingOrIncome: Boolean
+    ): Boolean {
+        val result = transactionHistoryRepository.setTransactionInclusion(userId, transactionId, includeInSpendingOrIncome)
+        return result
+    }
 }

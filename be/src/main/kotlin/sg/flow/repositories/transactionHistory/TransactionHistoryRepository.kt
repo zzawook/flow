@@ -46,6 +46,7 @@ interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
         ): List<TransactionHistory>
 
         suspend fun setTransactionCategory(userId: Int, transactionId: String, category: String): Boolean
+        suspend fun setTransactionInclusion(userId: Int, transactionId: String, includeInSpendingOrIncome: Boolean): Boolean
 
 }
 

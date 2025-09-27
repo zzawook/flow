@@ -97,6 +97,15 @@ class TransactionHistoryServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$0.SetTransactionInclusionResponse>
+      setTransactionInclusion(
+    $0.SetTransactionInclusionRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$setTransactionInclusion, request,
+        options: options);
+  }
+
   // method descriptors
 
   static final _$getLast30DaysHistoryList = $grpc.ClientMethod<
@@ -140,6 +149,12 @@ class TransactionHistoryServiceClient extends $grpc.Client {
       '/sg.flow.transaction.v1.TransactionHistoryService/SetTransactionCategory',
       ($0.SetTransactionCategoryRequest value) => value.writeToBuffer(),
       $0.SetTransactionCategoryResponse.fromBuffer);
+  static final _$setTransactionInclusion = $grpc.ClientMethod<
+          $0.SetTransactionInclusionRequest,
+          $0.SetTransactionInclusionResponse>(
+      '/sg.flow.transaction.v1.TransactionHistoryService/SetTransactionInclusion',
+      ($0.SetTransactionInclusionRequest value) => value.writeToBuffer(),
+      $0.SetTransactionInclusionResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.transaction.v1.TransactionHistoryService')
@@ -219,6 +234,15 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.SetTransactionCategoryRequest.fromBuffer(value),
         ($0.SetTransactionCategoryResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.SetTransactionInclusionRequest,
+            $0.SetTransactionInclusionResponse>(
+        'SetTransactionInclusion',
+        setTransactionInclusion_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.SetTransactionInclusionRequest.fromBuffer(value),
+        ($0.SetTransactionInclusionResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.TransactionHistoryList> getLast30DaysHistoryList_Pre(
@@ -292,4 +316,13 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
 
   $async.Future<$0.SetTransactionCategoryResponse> setTransactionCategory(
       $grpc.ServiceCall call, $0.SetTransactionCategoryRequest request);
+
+  $async.Future<$0.SetTransactionInclusionResponse> setTransactionInclusion_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.SetTransactionInclusionRequest> $request) async {
+    return setTransactionInclusion($call, await $request);
+  }
+
+  $async.Future<$0.SetTransactionInclusionResponse> setTransactionInclusion(
+      $grpc.ServiceCall call, $0.SetTransactionInclusionRequest request);
 }

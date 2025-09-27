@@ -71,7 +71,8 @@ class TransactionState {
           final transactionDate = transaction.date;
           return transactionDate.year == month.year &&
               transactionDate.month == month.month &&
-              transaction.amount > 0;
+          transaction.amount > 0 &&
+          transaction.isIncludedInSpendingOrIncome;
         }).toList();
 
     return transactionsForMonth.fold(0.0, (previousValue, element) {
@@ -85,6 +86,7 @@ class TransactionState {
           final transactionDate = transaction.date;
           return transactionDate.year == month.year &&
               transactionDate.month == month.month &&
+          transaction.isIncludedInSpendingOrIncome &&
               transaction.amount < 0;
         }).toList();
 

@@ -685,6 +685,154 @@ class SetTransactionCategoryResponse extends $pb.GeneratedMessage {
   void clearMessage() => $_clearField(2);
 }
 
+class SetTransactionInclusionRequest extends $pb.GeneratedMessage {
+  factory SetTransactionInclusionRequest({
+    $core.String? transactionId,
+    $core.bool? includeInSpendingOrIncome,
+  }) {
+    final result = create();
+    if (transactionId != null) result.transactionId = transactionId;
+    if (includeInSpendingOrIncome != null)
+      result.includeInSpendingOrIncome = includeInSpendingOrIncome;
+    return result;
+  }
+
+  SetTransactionInclusionRequest._();
+
+  factory SetTransactionInclusionRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SetTransactionInclusionRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SetTransactionInclusionRequest',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'transactionId')
+    ..aOB(2, _omitFieldNames ? '' : 'includeInSpendingOrIncome')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetTransactionInclusionRequest clone() =>
+      SetTransactionInclusionRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetTransactionInclusionRequest copyWith(
+          void Function(SetTransactionInclusionRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as SetTransactionInclusionRequest))
+          as SetTransactionInclusionRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SetTransactionInclusionRequest create() =>
+      SetTransactionInclusionRequest._();
+  @$core.override
+  SetTransactionInclusionRequest createEmptyInstance() => create();
+  static $pb.PbList<SetTransactionInclusionRequest> createRepeated() =>
+      $pb.PbList<SetTransactionInclusionRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SetTransactionInclusionRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SetTransactionInclusionRequest>(create);
+  static SetTransactionInclusionRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get transactionId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set transactionId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasTransactionId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTransactionId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.bool get includeInSpendingOrIncome => $_getBF(1);
+  @$pb.TagNumber(2)
+  set includeInSpendingOrIncome($core.bool value) => $_setBool(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasIncludeInSpendingOrIncome() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearIncludeInSpendingOrIncome() => $_clearField(2);
+}
+
+class SetTransactionInclusionResponse extends $pb.GeneratedMessage {
+  factory SetTransactionInclusionResponse({
+    $core.bool? success,
+    $core.String? message,
+  }) {
+    final result = create();
+    if (success != null) result.success = success;
+    if (message != null) result.message = message;
+    return result;
+  }
+
+  SetTransactionInclusionResponse._();
+
+  factory SetTransactionInclusionResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SetTransactionInclusionResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SetTransactionInclusionResponse',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..aOS(2, _omitFieldNames ? '' : 'message')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetTransactionInclusionResponse clone() =>
+      SetTransactionInclusionResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetTransactionInclusionResponse copyWith(
+          void Function(SetTransactionInclusionResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as SetTransactionInclusionResponse))
+          as SetTransactionInclusionResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SetTransactionInclusionResponse create() =>
+      SetTransactionInclusionResponse._();
+  @$core.override
+  SetTransactionInclusionResponse createEmptyInstance() => create();
+  static $pb.PbList<SetTransactionInclusionResponse> createRepeated() =>
+      $pb.PbList<SetTransactionInclusionResponse>();
+  @$core.pragma('dart2js:noInline')
+  static SetTransactionInclusionResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SetTransactionInclusionResponse>(
+          create);
+  static SetTransactionInclusionResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get message => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set message($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasMessage() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMessage() => $_clearField(2);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

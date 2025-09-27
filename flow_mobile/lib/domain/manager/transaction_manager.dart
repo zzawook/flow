@@ -18,4 +18,8 @@ abstract class TransactionManager {
     DateTime month,
   );
   Future<bool> setTransactionCategory(Transaction transaction, String category);
+
+  Future<bool> toggleTransactionIncludeInSpendingOrIncome(
+    Transaction transaction,
+  );
 }

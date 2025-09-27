@@ -47,3 +47,39 @@ ThunkAction<FlowState> setTransactionCategoryThunk(
         });
   };
 }
+
+ThunkAction<FlowState> toggleTransactionIncludeInSpendingOrIncomeThunk(
+  Transaction transaction,
+) {
+  return (Store<FlowState> store) async {
+    final transactionManager = getIt<TransactionManager>();
+    final future = transactionManager
+        .toggleTransactionIncludeInSpendingOrIncome(transaction);
+    store.dispatch(
+      ToggleTransactionIncludeInSpendingOrIncomeAction(
+        transaction: transaction,
+      ),
+    );
+
+    future
+        .then((success) {
+          print(success ? "Success" : "Failed");
+          if (!success) {
+            // Revert the change if the API call failed
+            store.dispatch(
+              ToggleTransactionIncludeInSpendingOrIncomeAction(
+                transaction: transaction,
+              ),
+            );
+          }
+        })
+        .catchError((error) {
+          // Revert the change if there was an error
+          store.dispatch(
+            ToggleTransactionIncludeInSpendingOrIncomeAction(
+              transaction: transaction,
+            ),
+          );
+        });
+  };
+}

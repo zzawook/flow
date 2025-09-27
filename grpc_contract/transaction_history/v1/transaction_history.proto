@@ -17,6 +17,7 @@ service TransactionHistoryService {
   rpc GetProcessedTransaction  (GetProcessedTransactionRequest)  returns (sg.flow.common.v1.TransactionHistoryList);
   rpc GetRecurringTransaction  (GetRecurringTransactionRequest)  returns (GetRecurringTransactionResponse);
   rpc SetTransactionCategory   (SetTransactionCategoryRequest)   returns (SetTransactionCategoryResponse);
+  rpc SetTransactionInclusion  (SetTransactionInclusionRequest)  returns (SetTransactionInclusionResponse);
 }
 
 /* ── Requests ── */
@@ -59,6 +60,16 @@ message SetTransactionCategoryRequest {
 }
 
 message SetTransactionCategoryResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message SetTransactionInclusionRequest {
+  string transaction_id = 1;
+  bool include_in_spending_or_income = 2;
+}
+
+message SetTransactionInclusionResponse {
   bool success = 1;
   string message = 2;
 }

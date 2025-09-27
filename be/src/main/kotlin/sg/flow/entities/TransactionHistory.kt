@@ -24,5 +24,6 @@ data class TransactionHistory(
         val revisedTransactionDate: LocalDate? = null,
         val brandName: String? = null,
         val isProcessed: Boolean = false,
+        val isIncludedInSpendingOrIncome: Boolean = true,
         val finverseId: String,
 )

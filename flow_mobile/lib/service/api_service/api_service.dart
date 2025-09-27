@@ -58,6 +58,10 @@ class ApiService {
     return await _transactionHistoryApiService.setTransactionCategory(transactionId, category);
   }
 
+  Future<SetTransactionInclusionResponse> setTransactionInclusion(String transactionId, bool newValue) async {
+    return await _transactionHistoryApiService.setTransactionInclusion(transactionId, newValue);
+  }
+
   Future<TransactionHistoryList> getProcessedTransactions(List<String> transactionIds) async {
     return await _transactionHistoryApiService.getProcessedTransactions(transactionIds);
   }

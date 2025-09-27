@@ -887,7 +887,12 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                 row.get(
                                         "brand_name",
                                         String::class.java
-                                )
+                                ),
+                        isIncludedInSpendingOrIncome =
+                                row.get(
+                                        "is_included_in_spending_or_income"
+                                        , Boolean::class.java
+                                ) ?: true,
                 )
         }
 
@@ -1107,6 +1112,32 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                         .getOrElse { false }
         }
 
+        override suspend fun setTransactionInclusion(
+                userId: Int,
+                transactionId: String,
+                includeInSpendingOrIncome: Boolean
+        ): Boolean {
+                return runCatching {
+                        val rows = databaseClient
+                                .sql(TransactionHistoryQueryStore.SET_TRANSACTION_INCLUSION)
+                                .bind(0, userId)
+                                .bind(1, transactionId.toLong())
+                                .bind(2, includeInSpendingOrIncome)
+                                .fetch()
+                                .awaitRowsUpdated()
+
+                        if (rows != 1L) {
+                                false
+                        }
+                        true
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                logger.error("Error updating transaction inclusion of transaction ID $transactionId")
+                        }
+                        .getOrElse { false }
+        }
+
         private fun mapRowToTransactionHistory(row: Row): TransactionHistory {
                 // Build nested Account object
                 val account =
@@ -1192,6 +1223,11 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                         revisedTransactionDate =
                                 row.get("revised_transaction_date", LocalDate::class.java),
                         isProcessed = row.get("is_processed", Boolean::class.java) ?: false,
+                        isIncludedInSpendingOrIncome =
+                                row.get(
+                                        "is_included_in_spending_or_income"
+                                        , Boolean::class.java
+                                ) ?: true,
                         finverseId = row.get("finverse_id", String::class.java)!!
                 )
         }

@@ -54,4 +54,12 @@ class TransactionHistoryApiService {
     ));
     return response;
   }
+
+  Future<SetTransactionInclusionResponse> setTransactionInclusion(String transactionId, bool newValue) async {
+    final response = await _channel.setTransactionInclusion(SetTransactionInclusionRequest(
+      transactionId: transactionId,
+      includeInSpendingOrIncome: newValue,
+    ));
+    return response;
+  }
 }

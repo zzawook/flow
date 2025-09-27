@@ -24,6 +24,8 @@ import sg.flow.transaction.v1.GetRecurringTransactionRequest
 import sg.flow.transaction.v1.GetRecurringTransactionResponse
 import sg.flow.transaction.v1.SetTransactionCategoryRequest
 import sg.flow.transaction.v1.SetTransactionCategoryResponse
+import sg.flow.transaction.v1.SetTransactionInclusionRequest
+import sg.flow.transaction.v1.SetTransactionInclusionResponse
 import sg.flow.validation.ValidationException
 import sg.flow.validation.Validator
 
@@ -139,5 +141,11 @@ class TransactionHistoryGrpcService(
                 val userId = currentUserId()
                 val success = transactionService.setTransactionCategory(userId, request.transactionId, request.category)
                 return SetTransactionCategoryResponse.newBuilder().setSuccess(success).build()
+        }
+
+        override suspend fun setTransactionInclusion(request: SetTransactionInclusionRequest): SetTransactionInclusionResponse {
+                val userId = currentUserId()
+                val success = transactionService.setTransactionInclusion(userId, request.transactionId, request.includeInSpendingOrIncome)
+                return SetTransactionInclusionResponse.newBuilder().setSuccess(success).build()
         }
 }

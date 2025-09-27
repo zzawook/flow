@@ -182,3 +182,40 @@ final $typed_data.Uint8List setTransactionCategoryResponseDescriptor =
     $convert.base64Decode(
         'Ch5TZXRUcmFuc2FjdGlvbkNhdGVnb3J5UmVzcG9uc2USGAoHc3VjY2VzcxgBIAEoCFIHc3VjY2'
         'VzcxIYCgdtZXNzYWdlGAIgASgJUgdtZXNzYWdl');
+
+@$core.Deprecated('Use setTransactionInclusionRequestDescriptor instead')
+const SetTransactionInclusionRequest$json = {
+  '1': 'SetTransactionInclusionRequest',
+  '2': [
+    {'1': 'transaction_id', '3': 1, '4': 1, '5': 9, '10': 'transactionId'},
+    {
+      '1': 'include_in_spending_or_income',
+      '3': 2,
+      '4': 1,
+      '5': 8,
+      '10': 'includeInSpendingOrIncome'
+    },
+  ],
+};
+
+/// Descriptor for `SetTransactionInclusionRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List setTransactionInclusionRequestDescriptor =
+    $convert.base64Decode(
+        'Ch5TZXRUcmFuc2FjdGlvbkluY2x1c2lvblJlcXVlc3QSJQoOdHJhbnNhY3Rpb25faWQYASABKA'
+        'lSDXRyYW5zYWN0aW9uSWQSQAodaW5jbHVkZV9pbl9zcGVuZGluZ19vcl9pbmNvbWUYAiABKAhS'
+        'GWluY2x1ZGVJblNwZW5kaW5nT3JJbmNvbWU=');
+
+@$core.Deprecated('Use setTransactionInclusionResponseDescriptor instead')
+const SetTransactionInclusionResponse$json = {
+  '1': 'SetTransactionInclusionResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+    {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+  ],
+};
+
+/// Descriptor for `SetTransactionInclusionResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List setTransactionInclusionResponseDescriptor =
+    $convert.base64Decode(
+        'Ch9TZXRUcmFuc2FjdGlvbkluY2x1c2lvblJlc3BvbnNlEhgKB3N1Y2Nlc3MYASABKAhSB3N1Y2'
+        'Nlc3MSGAoHbWVzc2FnZRgCIAEoCVIHbWVzc2FnZQ==');

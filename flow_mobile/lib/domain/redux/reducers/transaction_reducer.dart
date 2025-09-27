@@ -22,6 +22,19 @@ TransactionState transactionReducer(
     }).toList();
     return prevState.copyWith(transactions: updatedTransactions);
   }
+
+  if (action is ToggleTransactionIncludeInSpendingOrIncomeAction) {
+    List<Transaction> updatedTransactions = prevState.transactions.map((transaction) {
+      if (transaction.id == action.transaction.id) {
+        return transaction.copyWith(
+          isIncludedInSpendingOrIncome: !transaction.isIncludedInSpendingOrIncome
+        );
+      }
+      return transaction;
+    }).toList();
+    return prevState.copyWith(transactions: updatedTransactions);
+  }
+
   if (action is AddTransaction) {
     List<Transaction> updatedTransactions = List.from(prevState.transactions)
       ..addAll(

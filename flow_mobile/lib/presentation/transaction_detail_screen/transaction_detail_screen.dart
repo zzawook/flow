@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/transaction_thunks.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
@@ -27,6 +28,15 @@ class TransactionDetailScreen extends StatefulWidget {
 }
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
+  bool isIncludedInSpendingOrIncome = true;
+
+  @override
+  void initState() {
+    super.initState();
+    isIncludedInSpendingOrIncome =
+        widget.transaction.isIncludedInSpendingOrIncome;
+  }
+
   @override
   Widget build(BuildContext context) {
     final transactionProcessedName = widget.transaction.name.length > 25
@@ -273,10 +283,17 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         CupertinoSwitch(
-                          value:
-                              widget.transaction.isIncludedInSpendingOrIncome,
+                          value: isIncludedInSpendingOrIncome,
                           onChanged: (value) {
-                            // TODO: Update transaction inclusion
+                            print(value);
+                            setState(() {
+                              isIncludedInSpendingOrIncome = value;
+                            });
+                            StoreProvider.of<FlowState>(context).dispatch(
+                              toggleTransactionIncludeInSpendingOrIncomeThunk(
+                                widget.transaction,
+                              ),
+                            );
                           },
                         ),
                       ],

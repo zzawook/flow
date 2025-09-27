@@ -74,6 +74,7 @@ object TransactionHistoryQueryStore {
         th.friendly_description, 
         th.transaction_category,
         th.brand_name,
+        th.is_included_in_spending_or_income,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
         acc.balance AS account_balance, 
@@ -120,6 +121,7 @@ object TransactionHistoryQueryStore {
         th.transaction_category,
         th.revised_transaction_date,
         th.brand_name,
+        th.is_included_in_spending_or_income,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
         acc.balance AS account_balance, 
@@ -165,6 +167,7 @@ object TransactionHistoryQueryStore {
         th.transaction_status, 
         th.friendly_description, 
         th.transaction_category,
+        th.is_included_in_spending_or_income,
         th.brand_name,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
@@ -212,6 +215,7 @@ object TransactionHistoryQueryStore {
         th.revised_transaction_date,
         th.brand_name,
         th.is_processed,
+        is_included_in_spending_or_income,
         th.finverse_id,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
@@ -260,6 +264,7 @@ object TransactionHistoryQueryStore {
         th.extracted_card_number,
         th.revised_transaction_date,
         th.is_processed,
+        is_included_in_spending_or_income,
         th.brand_name,
         th.finverse_id,
         acc.id AS account_id, 
@@ -327,6 +332,7 @@ object TransactionHistoryQueryStore {
             th.revised_transaction_date,
             th.is_processed,
             th.brand_name,
+            is_included_in_spending_or_income,
             th.finverse_id,
             acc.id AS account_id, 
             acc.account_number AS account_number, 
@@ -375,6 +381,7 @@ const val FIND_TRANSACTIONS_FOR_USER_SINCE_DATE =
                    th.revised_transaction_date,
                    th.is_processed,
                    th.brand_name,
+                   th.is_included_in_spending_or_income,
                    th.finverse_id,
                    acc.id AS account_id,
                    acc.account_number AS account_number,
@@ -413,4 +420,10 @@ const val FIND_TRANSACTIONS_FOR_USER_SINCE_DATE =
             WHERE user_id = $1 AND id = $2
         """
 
+    const val SET_TRANSACTION_INCLUSION =
+        """
+            UPDATE transaction_histories
+            SET is_included_in_spending_or_income = $3
+            WHERE user_id = $1 AND id = $2
+        """
 }
