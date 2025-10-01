@@ -78,13 +78,13 @@ class _TransactionItemState extends State<TransactionItem> {
               });
             }
             // temporary placeholder so layout doesn’t jump this frame
-            return const SizedBox(height: 45, width: 45);
+            return const SizedBox(height: 35, width: 35);
           },
         ),
       );
     } else {
       // Fallback asset NOT inside ClipOval
-      logoWidget = Image.asset(assetLogo, height: 40, width: 40);
+      logoWidget = Image.asset(assetLogo, height: 35, width: 35);
     }
 
     return Container(
