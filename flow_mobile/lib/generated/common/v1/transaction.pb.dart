@@ -35,6 +35,7 @@ class TransactionHistoryDetail extends $pb.GeneratedMessage {
     $core.String? friendlyDescription,
     $core.String? transactionCategory,
     $core.String? brandName,
+    $core.String? brandDomain,
     $core.bool? isIncludedInSpendingOrIncome,
     $2.Timestamp? revisedTransactionTimestamp,
   }) {
@@ -55,6 +56,7 @@ class TransactionHistoryDetail extends $pb.GeneratedMessage {
     if (transactionCategory != null)
       result.transactionCategory = transactionCategory;
     if (brandName != null) result.brandName = brandName;
+    if (brandDomain != null) result.brandDomain = brandDomain;
     if (isIncludedInSpendingOrIncome != null)
       result.isIncludedInSpendingOrIncome = isIncludedInSpendingOrIncome;
     if (revisedTransactionTimestamp != null)
@@ -91,9 +93,10 @@ class TransactionHistoryDetail extends $pb.GeneratedMessage {
     ..aOS(10, _omitFieldNames ? '' : 'friendlyDescription')
     ..aOS(11, _omitFieldNames ? '' : 'transactionCategory')
     ..aOS(12, _omitFieldNames ? '' : 'brandName')
-    ..aOB(13, _omitFieldNames ? '' : 'isIncludedInSpendingOrIncome')
+    ..aOS(13, _omitFieldNames ? '' : 'brandDomain')
+    ..aOB(14, _omitFieldNames ? '' : 'isIncludedInSpendingOrIncome')
     ..aOM<$2.Timestamp>(
-        14, _omitFieldNames ? '' : 'revisedTransactionTimestamp',
+        15, _omitFieldNames ? '' : 'revisedTransactionTimestamp',
         subBuilder: $2.Timestamp.create)
     ..hasRequiredFields = false;
 
@@ -235,24 +238,33 @@ class TransactionHistoryDetail extends $pb.GeneratedMessage {
   void clearBrandName() => $_clearField(12);
 
   @$pb.TagNumber(13)
-  $core.bool get isIncludedInSpendingOrIncome => $_getBF(12);
+  $core.String get brandDomain => $_getSZ(12);
   @$pb.TagNumber(13)
-  set isIncludedInSpendingOrIncome($core.bool value) => $_setBool(12, value);
+  set brandDomain($core.String value) => $_setString(12, value);
   @$pb.TagNumber(13)
-  $core.bool hasIsIncludedInSpendingOrIncome() => $_has(12);
+  $core.bool hasBrandDomain() => $_has(12);
   @$pb.TagNumber(13)
-  void clearIsIncludedInSpendingOrIncome() => $_clearField(13);
+  void clearBrandDomain() => $_clearField(13);
 
   @$pb.TagNumber(14)
-  $2.Timestamp get revisedTransactionTimestamp => $_getN(13);
+  $core.bool get isIncludedInSpendingOrIncome => $_getBF(13);
   @$pb.TagNumber(14)
-  set revisedTransactionTimestamp($2.Timestamp value) => $_setField(14, value);
+  set isIncludedInSpendingOrIncome($core.bool value) => $_setBool(13, value);
   @$pb.TagNumber(14)
-  $core.bool hasRevisedTransactionTimestamp() => $_has(13);
+  $core.bool hasIsIncludedInSpendingOrIncome() => $_has(13);
   @$pb.TagNumber(14)
-  void clearRevisedTransactionTimestamp() => $_clearField(14);
-  @$pb.TagNumber(14)
-  $2.Timestamp ensureRevisedTransactionTimestamp() => $_ensure(13);
+  void clearIsIncludedInSpendingOrIncome() => $_clearField(14);
+
+  @$pb.TagNumber(15)
+  $2.Timestamp get revisedTransactionTimestamp => $_getN(14);
+  @$pb.TagNumber(15)
+  set revisedTransactionTimestamp($2.Timestamp value) => $_setField(15, value);
+  @$pb.TagNumber(15)
+  $core.bool hasRevisedTransactionTimestamp() => $_has(14);
+  @$pb.TagNumber(15)
+  void clearRevisedTransactionTimestamp() => $_clearField(15);
+  @$pb.TagNumber(15)
+  $2.Timestamp ensureRevisedTransactionTimestamp() => $_ensure(14);
 }
 
 class TransactionHistoryList extends $pb.GeneratedMessage {

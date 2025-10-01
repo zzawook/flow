@@ -23,6 +23,7 @@ data class TransactionHistory(
         val extractedCardNumber: String? = null,
         val revisedTransactionDate: LocalDate? = null,
         val brandName: String? = null,
+        val brandDomain: String? = null,
         val isProcessed: Boolean = false,
         val isIncludedInSpendingOrIncome: Boolean = true,
         val finverseId: String,

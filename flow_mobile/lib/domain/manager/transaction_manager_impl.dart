@@ -158,6 +158,7 @@ class TransactionManagerImpl implements TransactionManager {
           : detail.transactionCategory,
       method: "",
       isIncludedInSpendingOrIncome: detail.isIncludedInSpendingOrIncome,
+      brandDomain: detail.brandDomain,
       note: "",
       bankAccount: BankAccount(
         accountNumber: detail.account.accountNumber,
@@ -274,6 +275,35 @@ class TransactionManagerImpl implements TransactionManager {
         .catchError((error) {
           log("Error toggling transaction inclusion: $error");
           return false;
+        });
+  }
+  
+  @override
+  Future<List<Transaction>> getTransactionForAccount(
+    BankAccount account,
+    int limit, {
+    String? oldestTransactionId,
+  }) {
+    ApiService apiService = getIt<ApiService>();
+    return apiService
+        .fetchAccountTransactions(
+          account,
+          limit,
+          oldestTransactionId: oldestTransactionId,
+        )
+        .then((response) {
+          List<Transaction> fetchedTransactions = [];
+          for (var transactionHistoryDetail in response.transactions) {
+            Transaction transaction = fromTransactionHistoryDetail(
+              transactionHistoryDetail,
+            );
+            fetchedTransactions.add(transaction);
+          }
+          return fetchedTransactions;
+        })
+        .catchError((error) {
+          log("Error fetching transactions for account: $error");
+          return List<Transaction>.empty();
         });
   }
 }

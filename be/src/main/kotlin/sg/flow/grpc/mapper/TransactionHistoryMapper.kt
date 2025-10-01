@@ -63,6 +63,7 @@ class TransactionHistoryMapper(
         domain.friendlyDescription ?.let(b::setFriendlyDescription)
         domain.transactionCategory ?.let(b::setTransactionCategory)
         domain.brandName           ?.let(b::setBrandName)
+        domain.brandDomain         ?.let(b::setBrandDomain)
         b.setIsIncludedInSpendingOrIncome(domain.isIncludedInSpendingOrIncome)
         return b.build()
     }

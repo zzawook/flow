@@ -34,6 +34,7 @@ interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
                 friendlyDescription: String?,
                 extractedCardNumber: String?,
                 brandName: String?,
+                brandDomain: String?,
                 revisedTransactionDate: LocalDate?,
                 isProcessed: Boolean
         ): Boolean
@@ -47,6 +48,13 @@ interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
 
         suspend fun setTransactionCategory(userId: Int, transactionId: String, category: String): Boolean
         suspend fun setTransactionInclusion(userId: Int, transactionId: String, includeInSpendingOrIncome: Boolean): Boolean
+        suspend fun findTransactionForAccountOlderThan(
+                userId: Int,
+                bankId: String,
+                accountNumber: String,
+                oldestTransactionId: String,
+                limit: Int
+        ): TransactionHistoryList
 
 }
 
@@ -56,6 +64,7 @@ data class TransactionAnalysisUpdate(
         val friendlyDescription: String?,
         val extractedCardNumber: String?,
         val brandName: String?,
+        val brandDomain: String?,
         val revisedTransactionDate: LocalDate?,
         val isProcessed: Boolean = true
 )

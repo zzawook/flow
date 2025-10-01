@@ -1,11 +1,12 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/entity/user.dart';
 import 'package:flow_mobile/generated/account/v1/account.pb.dart';
 import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
 import 'package:flow_mobile/generated/common/v1/transaction.pb.dart';
 import 'package:flow_mobile/generated/refresh/v1/refresh.pb.dart';
 import 'package:flow_mobile/generated/transaction_history/v1/transaction_history.pb.dart';
-import 'package:flow_mobile/generated/user/user.pb.dart';
+import 'package:flow_mobile/generated/user/v1/user.pb.dart';
 import 'package:flow_mobile/service/api_service/account_api_service.dart';
 import 'package:flow_mobile/service/api_service/auth_api_service.dart';
 import 'package:flow_mobile/service/api_service/refresh_api_service.dart';
@@ -35,7 +36,6 @@ class ApiService {
 
   Future<void> _initialize() async {
     await connectionService.initialize();
-    
 
     _channel = ClientChannel(
       _host,
@@ -54,16 +54,32 @@ class ApiService {
     _transactionHistoryApiService = TransactionHistoryApiService(_channel);
   }
 
-  Future<SetTransactionCategoryResponse> setTransactionCategory(String transactionId, String category) async {
-    return await _transactionHistoryApiService.setTransactionCategory(transactionId, category);
+  Future<SetTransactionCategoryResponse> setTransactionCategory(
+    String transactionId,
+    String category,
+  ) async {
+    return await _transactionHistoryApiService.setTransactionCategory(
+      transactionId,
+      category,
+    );
   }
 
-  Future<SetTransactionInclusionResponse> setTransactionInclusion(String transactionId, bool newValue) async {
-    return await _transactionHistoryApiService.setTransactionInclusion(transactionId, newValue);
+  Future<SetTransactionInclusionResponse> setTransactionInclusion(
+    String transactionId,
+    bool newValue,
+  ) async {
+    return await _transactionHistoryApiService.setTransactionInclusion(
+      transactionId,
+      newValue,
+    );
   }
 
-  Future<TransactionHistoryList> getProcessedTransactions(List<String> transactionIds) async {
-    return await _transactionHistoryApiService.getProcessedTransactions(transactionIds);
+  Future<TransactionHistoryList> getProcessedTransactions(
+    List<String> transactionIds,
+  ) async {
+    return await _transactionHistoryApiService.getProcessedTransactions(
+      transactionIds,
+    );
   }
 
   Future<GetRelinkUrlResponse> getLinkUrl(Bank bank) async {
@@ -74,15 +90,20 @@ class ApiService {
     return await _refreshApiService.getRefreshUrl(bank);
   }
 
-  Future<GetInstitutionAuthenticationResultResponse> getInstitutionAuthenticationResult(Bank bank) async {
+  Future<GetInstitutionAuthenticationResultResponse>
+  getInstitutionAuthenticationResult(Bank bank) async {
     return await _refreshApiService.getInstitutionAuthenticationResult(bank);
   }
 
-  Future<GetDataRetrievalResultResponse> getDataRetrievalResult(Bank bank) async {
+  Future<GetDataRetrievalResultResponse> getDataRetrievalResult(
+    Bank bank,
+  ) async {
     return await _refreshApiService.getDataRetrievalResult(bank);
   }
 
-  Future<CanStartRefreshSessionResponse> canStartRefreshSession(int bankId) async {
+  Future<CanStartRefreshSessionResponse> canStartRefreshSession(
+    int bankId,
+  ) async {
     return await _refreshApiService.canStartRefreshSession(bankId);
   }
 
@@ -114,8 +135,12 @@ class ApiService {
     await _channel.shutdown();
   }
 
-  Future<TransactionHistoryList> getTransactionWithinRange(DateTime startDate, DateTime endDate) async {
-    final response = await _transactionHistoryApiService.getTransactionWithinRange(startDate, endDate);
+  Future<TransactionHistoryList> getTransactionWithinRange(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    final response = await _transactionHistoryApiService
+        .getTransactionWithinRange(startDate, endDate);
     return response;
   }
 
@@ -132,5 +157,18 @@ class ApiService {
   Future<GetBanksForLinkResponse> getBanksForLink() async {
     final response = await _refreshApiService.getBanksForLink();
     return response;
+  }
+
+  Future<TransactionHistoryList> fetchAccountTransactions(
+    BankAccount account,
+    int limit, {
+    String? oldestTransactionId,
+  }) async {
+    return await _transactionHistoryApiService.getTransactionForAccount(
+      account.accountNumber,
+      account.bank.bankId,
+      limit,
+      oldestTransactionId: oldestTransactionId,
+    );
   }
 }

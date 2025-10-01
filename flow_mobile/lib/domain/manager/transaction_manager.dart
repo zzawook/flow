@@ -1,3 +1,4 @@
+import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
 
 abstract class TransactionManager {
@@ -22,4 +23,10 @@ abstract class TransactionManager {
   Future<bool> toggleTransactionIncludeInSpendingOrIncome(
     Transaction transaction,
   );
+
+  Future<List<Transaction>> getTransactionForAccount(
+    BankAccount account,
+    int limit, {
+    String? oldestTransactionId,
+  });
 }

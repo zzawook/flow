@@ -13,7 +13,6 @@ import java.time.Duration
 import java.util.Optional
 
 @Service
-//@Profile("prod")
 class RedisCacheServiceImpl(
     private val redisTemplate: ReactiveRedisTemplate<String, String>,
     private val objectMapper: ObjectMapper
@@ -29,6 +28,15 @@ class RedisCacheServiceImpl(
     private val TOKEN_TTL = Duration.ofHours(1) // 1 hour TTL for tokens
     private val SESSION_TTL = Duration.ofSeconds(90) // 1.5 minutes for refresh sessions
     private val PRE_AUTH_SESSION_TTL = Duration.ofMinutes(5) // 5 minutes for pre-auth sessions
+    private val LOGO_URL_TTL = Duration.ofHours(24)
+
+    fun getLogoUrlForBrand(brandName: String) : String {
+        return ""
+    }
+
+    fun saveLogoUrlForBrand(brandName: String) {
+        
+    }
 
     fun getRefreshSessionPrefix(loginIdentityId: String): String {
         return "$REFRESH_SESSION_PREFIX{$loginIdentityId}"

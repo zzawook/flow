@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flow_mobile/domain/entity/bank_account.dart';
@@ -188,7 +190,10 @@ class _AccountRow extends StatelessWidget {
                 Navigator.pushNamed(
                   context,
                   '/account_detail',
-                  arguments: bankAccount, // simplified
+                  arguments: CustomPageRouteArguments(
+                    transitionType: TransitionType.slideLeft,
+                    extraData: bankAccount,
+                  ), // simplified
                 );
               },
               child: Row(

@@ -10,6 +10,7 @@ import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_snackbar.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,12 +30,33 @@ class TransactionDetailScreen extends StatefulWidget {
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   bool isIncludedInSpendingOrIncome = true;
+  String logoUrl = "";
+  bool isLogoFromNetwork = false;
 
   @override
   void initState() {
     super.initState();
     isIncludedInSpendingOrIncome =
         widget.transaction.isIncludedInSpendingOrIncome;
+    _loadLogo();
+  }
+
+  void _loadLogo() {
+    setState(() {
+      logoUrl =
+          "assets/icons/category_icons/${widget.transaction.category.toLowerCase()}.png";
+    });
+    if (widget.transaction.brandDomain.isEmpty) {
+      return;
+    }
+    final logoService = getIt<LogoService>();
+    final fetchedLogoUrl = logoService.getLogoUrl(
+      widget.transaction.brandDomain,
+    );
+    setState(() {
+      isLogoFromNetwork = true;
+      logoUrl = fetchedLogoUrl;
+    });
   }
 
   @override
@@ -71,8 +93,11 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                   FlowSeparatorBox(height: 36),
                   Row(
                     children: [
+                      isLogoFromNetwork
+                          ? Image.network(logoUrl, height: 36, width: 36)
+                          :
                       Image.asset(
-                        'assets/icons/transaction_icons/mcdonalds.png',
+                        logoUrl,
                         height: 36,
                         width: 36,
                       ),
@@ -285,7 +310,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                         CupertinoSwitch(
                           value: isIncludedInSpendingOrIncome,
                           onChanged: (value) {
-                            print(value);
                             setState(() {
                               isIncludedInSpendingOrIncome = value;
                             });

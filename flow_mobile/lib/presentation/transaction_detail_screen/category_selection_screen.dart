@@ -1,11 +1,13 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/thunks/transaction_thunks.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flow_mobile/utils/spending_category_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -21,7 +23,11 @@ class CategorySelectionScreen extends StatefulWidget {
 
 class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>(); // <-- add key
-  String selectedCategory = "";
+
+  String logoUrl = "";
+  bool isLogoFromNetwork = false;
+
+  String selectedCategory = "";  
   PersistentBottomSheetController? _sheetController;
 
   void _showConfirmSheet(String category) {
@@ -105,6 +111,25 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   void initState() {
     super.initState();
     selectedCategory = widget.transaction.category;
+    _loadLogo();
+  }
+
+  void _loadLogo() {
+    setState(() {
+      logoUrl =
+          "assets/icons/category_icons/${widget.transaction.category.toLowerCase()}.png";
+    });
+    if (widget.transaction.brandDomain.isEmpty) {
+      return;
+    }
+    final logoService = getIt<LogoService>();
+    final fetchedLogoUrl = logoService.getLogoUrl(
+      widget.transaction.brandDomain,
+    );
+    setState(() {
+      isLogoFromNetwork = true;
+      logoUrl = fetchedLogoUrl;
+    });
   }
 
   @override
@@ -200,8 +225,11 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
               padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
               child: Row(
                 children: [
+                  isLogoFromNetwork
+                      ? Image.network(logoUrl, height: 50, width: 50)
+                      :
                   Image.asset(
-                    'assets/icons/transaction_icons/mcdonalds.png',
+                    logoUrl,
                     height: 50,
                     width: 50,
                   ),

@@ -109,7 +109,7 @@ aws:
   bedrock:
     region: us-east-1
     agent-id: N8IR2MXV8S
-    agent-alias-id: DBQCGNKB7K
+    agent-alias-id: VRIKDPSK8W
     session-id: transaction-analysis-session
     max-tokens: 8192
     temperature: 0.1

@@ -1,5 +1,5 @@
 import 'package:flow_mobile/domain/entity/user.dart';
-import 'package:flow_mobile/generated/user/user.pbgrpc.dart';
+import 'package:flow_mobile/generated/user/v1/user.pbgrpc.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:grpc/grpc_connection_interface.dart';

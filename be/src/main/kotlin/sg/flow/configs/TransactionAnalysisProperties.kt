@@ -8,6 +8,6 @@ data class TransactionAnalysisProperties(
         var maxRetries: Int = 3,
         var retryDelayMs: Long = 1000,
         var enabled: Boolean = true,
-        var processingTimeoutMs: Long = 300000,
+        var processingTimeoutMs: Long = 600000,
         var maxConcurrentBatches: Int = 3
 )

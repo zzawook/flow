@@ -18,6 +18,7 @@ service TransactionHistoryService {
   rpc GetRecurringTransaction  (GetRecurringTransactionRequest)  returns (GetRecurringTransactionResponse);
   rpc SetTransactionCategory   (SetTransactionCategoryRequest)   returns (SetTransactionCategoryResponse);
   rpc SetTransactionInclusion  (SetTransactionInclusionRequest)  returns (SetTransactionInclusionResponse);
+  rpc GetTransactionForAccount (GetTransactionForAccountRequest) returns (sg.flow.common.v1.TransactionHistoryList);
 }
 
 /* ── Requests ── */
@@ -72,4 +73,11 @@ message SetTransactionInclusionRequest {
 message SetTransactionInclusionResponse {
   bool success = 1;
   string message = 2;
+}
+
+message GetTransactionForAccountRequest {
+  string account_number = 1;
+  string bank_id = 2;
+  string oldest_transaction_id = 3; // for pagination, fetch transactions before this id
+  int64 limit = 4; // number of transactions to fetch, default 20
 }

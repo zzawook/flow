@@ -1,5 +1,10 @@
 package sg.flow.services.EventServices
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
@@ -70,69 +75,76 @@ class TransactionAnalysisConsumer(
                                 event.eventId
                         )
 
-                        // Process transactions in configurable batches
-                        val batchSize = transactionAnalysisProperties.batchSize
-                        val batches = unprocessedTransactions.chunked(batchSize)
+                        // Process transactions concurrently with a maximum of 5 simultaneous invocations
+                        val maxConcurrent = 5
+                        val semaphore = Semaphore(maxConcurrent)
                         var totalProcessed = 0
                         var totalSuccessful = 0
 
-                        for ((batchIndex, batch) in batches.withIndex()) {
-                                try {
-                                        logger.info(
-                                                "Processing batch {} of {} (size: {}) for event: {}",
-                                                batchIndex + 1,
-                                                batches.size,
-                                                batch.size,
-                                                event.eventId
-                                        )
+                        logger.info(
+                                "Starting concurrent processing of {} transactions with max {} concurrent invocations for event: {}",
+                                unprocessedTransactions.size,
+                                maxConcurrent,
+                                event.eventId
+                        )
 
-                                        // Call Bedrock service for transaction analysis
-                                        val analysisResults =
-                                                bedrockTransactionAnalysisService
-                                                        .analyzeTransactionBatch(batch)
-
-                                        // Prepare updates for database
-                                        val updates =
-                                                analysisResults.map { result ->
-                                                        TransactionAnalysisUpdate(
-                                                                transactionId =
-                                                                        result.transactionId,
-                                                                category = result.category,
-                                                                friendlyDescription =
-                                                                        result.friendlyDescription,
-                                                                extractedCardNumber =
-                                                                        result.cardNumber,
-                                                                brandName = result.brandName,
-                                                                revisedTransactionDate =
-                                                                        result.revisedTransactionDate,
-                                                                isProcessed = true
+                        // Process all transactions concurrently with semaphore limiting concurrency
+                        val analysisResults = coroutineScope {
+                                unprocessedTransactions.map { transaction ->
+                                        async {
+                                                semaphore.withPermit {
+                                                        logger.debug(
+                                                                "Processing transaction {} for event: {}",
+                                                                transaction.id,
+                                                                event.eventId
                                                         )
+                                                        try {
+                                                                bedrockTransactionAnalysisService
+                                                                        .analyzeSingleTransaction(transaction)
+                                                        } catch (e: Exception) {
+                                                                logger.error(
+                                                                        "Failed to process transaction {} for event: {}",
+                                                                        transaction.id,
+                                                                        event.eventId,
+                                                                        e
+                                                                )
+                                                                // Return a failed result instead of throwing
+                                                                // This allows other transactions to continue processing
+                                                                null
+                                                        }
                                                 }
+                                        }
+                                }.awaitAll().filterNotNull()
+                        }
 
-                                        // Update database with analysis results
-                                        val updatedCount =
-                                                transactionHistoryRepository
-                                                        .batchUpdateTransactionAnalysis(updates)
-                                        totalProcessed += batch.size
-                                        totalSuccessful += analysisResults.count { it.success }
+                        // Prepare updates for database
+                        val updates = analysisResults.map { result ->
+                                TransactionAnalysisUpdate(
+                                        transactionId = result.transactionId,
+                                        category = result.category,
+                                        friendlyDescription = result.friendlyDescription,
+                                        extractedCardNumber = result.cardNumber,
+                                        brandName = result.brandName,
+                                        brandDomain = result.brandDomain,
+                                        revisedTransactionDate = result.revisedTransactionDate,
+                                        isProcessed = true
+                                )
+                        }
 
-                                        logger.info(
-                                                "Batch {} completed: {} transactions updated, {} successful analyses for event: {}",
-                                                batchIndex + 1,
-                                                updatedCount,
-                                                analysisResults.count { it.success },
-                                                event.eventId
-                                        )
-                                } catch (e: Exception) {
-                                        logger.error(
-                                                "Failed to process batch {} for event: {}",
-                                                batchIndex + 1,
-                                                event.eventId,
-                                                e
-                                        )
-                                        // Re-throw to prevent acknowledgment and trigger retry
-                                        throw e
-                                }
+                        // Update database with analysis results
+                        if (updates.isNotEmpty()) {
+                                val updatedCount =
+                                        transactionHistoryRepository
+                                                .batchUpdateTransactionAnalysis(updates)
+                                totalProcessed = updates.size
+                                totalSuccessful = analysisResults.count { it.success }
+
+                                logger.info(
+                                        "Completed concurrent processing: {} transactions updated, {} successful analyses for event: {}",
+                                        updatedCount,
+                                        totalSuccessful,
+                                        event.eventId
+                                )
                         }
 
                         logger.info(

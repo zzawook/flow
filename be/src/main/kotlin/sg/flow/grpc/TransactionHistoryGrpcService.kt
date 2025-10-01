@@ -22,6 +22,7 @@ import sg.flow.services.TransactionHistoryServices.TransactionHistoryService
 import sg.flow.transaction.v1.GetProcessedTransactionRequest
 import sg.flow.transaction.v1.GetRecurringTransactionRequest
 import sg.flow.transaction.v1.GetRecurringTransactionResponse
+import sg.flow.transaction.v1.GetTransactionForAccountRequest
 import sg.flow.transaction.v1.SetTransactionCategoryRequest
 import sg.flow.transaction.v1.SetTransactionCategoryResponse
 import sg.flow.transaction.v1.SetTransactionInclusionRequest
@@ -147,5 +148,11 @@ class TransactionHistoryGrpcService(
                 val userId = currentUserId()
                 val success = transactionService.setTransactionInclusion(userId, request.transactionId, request.includeInSpendingOrIncome)
                 return SetTransactionInclusionResponse.newBuilder().setSuccess(success).build()
+        }
+
+        override suspend fun getTransactionForAccount(request: GetTransactionForAccountRequest): ProtoTransactionHistoryList {
+                val userId = currentUserId()
+                val domainTransactions = transactionService.getTransactionsForAccount(userId, request.accountNumber, request.bankId, request.oldestTransactionId, request.limit.toInt())
+                return txHistoryMapper.toProto(domainTransactions)
         }
 }

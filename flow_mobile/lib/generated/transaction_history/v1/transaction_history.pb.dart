@@ -12,6 +12,7 @@
 
 import 'dart:core' as $core;
 
+import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
 import '../../common/v1/transaction.pb.dart' as $1;
@@ -831,6 +832,105 @@ class SetTransactionInclusionResponse extends $pb.GeneratedMessage {
   $core.bool hasMessage() => $_has(1);
   @$pb.TagNumber(2)
   void clearMessage() => $_clearField(2);
+}
+
+class GetTransactionForAccountRequest extends $pb.GeneratedMessage {
+  factory GetTransactionForAccountRequest({
+    $core.String? accountNumber,
+    $core.String? bankId,
+    $core.String? oldestTransactionId,
+    $fixnum.Int64? limit,
+  }) {
+    final result = create();
+    if (accountNumber != null) result.accountNumber = accountNumber;
+    if (bankId != null) result.bankId = bankId;
+    if (oldestTransactionId != null)
+      result.oldestTransactionId = oldestTransactionId;
+    if (limit != null) result.limit = limit;
+    return result;
+  }
+
+  GetTransactionForAccountRequest._();
+
+  factory GetTransactionForAccountRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetTransactionForAccountRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetTransactionForAccountRequest',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'accountNumber')
+    ..aOS(2, _omitFieldNames ? '' : 'bankId')
+    ..aOS(3, _omitFieldNames ? '' : 'oldestTransactionId')
+    ..aInt64(4, _omitFieldNames ? '' : 'limit')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetTransactionForAccountRequest clone() =>
+      GetTransactionForAccountRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetTransactionForAccountRequest copyWith(
+          void Function(GetTransactionForAccountRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetTransactionForAccountRequest))
+          as GetTransactionForAccountRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetTransactionForAccountRequest create() =>
+      GetTransactionForAccountRequest._();
+  @$core.override
+  GetTransactionForAccountRequest createEmptyInstance() => create();
+  static $pb.PbList<GetTransactionForAccountRequest> createRepeated() =>
+      $pb.PbList<GetTransactionForAccountRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetTransactionForAccountRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetTransactionForAccountRequest>(
+          create);
+  static GetTransactionForAccountRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get accountNumber => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set accountNumber($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasAccountNumber() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAccountNumber() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get bankId => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set bankId($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasBankId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearBankId() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get oldestTransactionId => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set oldestTransactionId($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasOldestTransactionId() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearOldestTransactionId() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $fixnum.Int64 get limit => $_getI64(3);
+  @$pb.TagNumber(4)
+  set limit($fixnum.Int64 value) => $_setInt64(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasLimit() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearLimit() => $_clearField(4);
 }
 
 const $core.bool _omitFieldNames =

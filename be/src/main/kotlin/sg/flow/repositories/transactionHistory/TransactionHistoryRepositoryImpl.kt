@@ -1,5 +1,6 @@
 package sg.flow.repositories.transactionHistory
 
+import aws.smithy.kotlin.runtime.util.length
 import io.r2dbc.spi.Row
 import java.time.LocalDate
 import java.time.LocalTime
@@ -888,6 +889,11 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                         "brand_name",
                                         String::class.java
                                 ),
+                        brandDomain =
+                                row.get(
+                                        "brand_domain",
+                                        String::class.java
+                                ),
                         isIncludedInSpendingOrIncome =
                                 row.get(
                                         "is_included_in_spending_or_income"
@@ -943,6 +949,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 friendlyDescription: String?,
                 extractedCardNumber: String?,
                 brandName: String?,
+                brandDomain: String?,
                 revisedTransactionDate: LocalDate?,
                 isProcessed: Boolean
         ): Boolean {
@@ -971,10 +978,14 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                         ?: spec.bindNull(4, String::class.java)
                                         }
                                         .let { spec ->
-                                                revisedTransactionDate?.let { spec.bind(5, it) }
-                                                        ?: spec.bindNull(5, LocalDate::class.java)
+                                                brandDomain?.let { spec.bind(5, it)}
+                                                        ?: spec.bindNull(5, String::class.java)
                                         }
-                                        .bind(6, isProcessed)
+                                        .let { spec ->
+                                                revisedTransactionDate?.let { spec.bind(6, it) }
+                                                        ?: spec.bindNull(6, LocalDate::class.java)
+                                        }
+                                        .bind(7, isProcessed)
                                         .fetch()
                                         .awaitRowsUpdated()
 
@@ -1007,6 +1018,7 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                         update.friendlyDescription,
                                                         update.extractedCardNumber,
                                                         update.brandName,
+                                                        update.brandDomain,
                                                         update.revisedTransactionDate,
                                                         update.isProcessed
                                                 )
@@ -1138,6 +1150,65 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                         .getOrElse { false }
         }
 
+        override suspend fun findTransactionForAccountOlderThan(
+                userId: Int,
+                bankId: String,
+                accountNumber: String,
+                oldestTransactionId: String,
+                limit: Int
+        ): TransactionHistoryList {
+                println(userId)
+                println(bankId)
+                println(accountNumber)
+                println(oldestTransactionId)
+                return runCatching {
+                        var rows: List<TransactionHistoryDetail>;
+                        if (oldestTransactionId.isEmpty()) {
+                                rows = databaseClient
+                                        .sql(TransactionHistoryQueryStore.FIND_TRANSACTIONS_FOR_ACCOUNT_BEGINNING)
+                                        .bind(0, userId)
+                                        .bind(1, bankId.toInt())
+                                        .bind(2, accountNumber)
+                                        .bind(3, limit)
+                                        .map { row ->
+                                                toTransactionHistoryDetail(row as Row)
+                                        }
+                                        .all()
+                                        .asFlow()
+                                        .toList()
+                        } else {
+                                rows = databaseClient
+                                        .sql(TransactionHistoryQueryStore.FIND_TRANSACTIONS_FOR_ACCOUNT_AFTER)
+                                        .bind(0, userId)
+                                        .bind(1, oldestTransactionId.toLong())
+                                        .bind(2, bankId.toInt())
+                                        .bind(3, accountNumber)
+                                        .bind(4, limit)
+                                        .map { row ->
+                                                toTransactionHistoryDetail(row as Row)
+                                        }
+                                        .all()
+                                        .asFlow()
+                                        .toList()
+                        }
+
+                        println("Total: ${rows.size}")
+                        for (transaction in rows) {
+                                println(transaction.description)
+                        }
+
+                        TransactionHistoryList(LocalDate.now(), LocalDate.now()).apply {
+                                rows.forEach(::add) // same as details.forEach { add(it) }
+                        }
+
+                }
+                        .onFailure { e ->
+                                e.printStackTrace()
+                                logger.error("Error fetching transactions before transaction ID ${oldestTransactionId } for account $accountNumber")
+                        }
+                        .getOrElse { TransactionHistoryList(LocalDate.now(), LocalDate.now()) }
+        }
+
         private fun mapRowToTransactionHistory(row: Row): TransactionHistory {
                 // Build nested Account object
                 val account =
@@ -1223,6 +1294,8 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                         revisedTransactionDate =
                                 row.get("revised_transaction_date", LocalDate::class.java),
                         isProcessed = row.get("is_processed", Boolean::class.java) ?: false,
+                        brandName = row.get("brand_name", String::class.java),
+                        brandDomain = row.get("brand_domain", String::class.java),
                         isIncludedInSpendingOrIncome =
                                 row.get(
                                         "is_included_in_spending_or_income"

@@ -1,0 +1,244 @@
+openapi: 3.0.1
+info:
+  title: flow_web_tools
+  version: "1.0.0"
+  description: Tools for brand-domain discovery (SERP), brand disambiguation, category evidence (Tavily), and optional caching.
+
+paths:
+  /cache_get:
+    get:
+      operationId: cache_get
+      tags: [cache]
+      summary: Get cached brand → domain
+      description: Returns the cached domain information for a brand if present.
+      parameters:
+        - in: query
+          name: brand
+          description: Canonical brand name to look up (e.g., "Nike").
+          required: true
+          schema: { type: string }
+        - in: query
+          name: country
+          description: Optional ISO-2 country hint (defaults to SG if omitted).
+          required: false
+          schema: { type: string, example: "SG" }
+      responses:
+        "200":
+          description: Cached result if present; otherwise null fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  domain:
+                    type: string
+                    nullable: true
+                    description: Official eTLD+1 (e.g., nike.com) or null if not cached.
+                  confidence:
+                    type: number
+                    nullable: true
+                    description: Confidence of the cached mapping.
+                  evidenceUrls:
+                    type: array
+                    description: Up to 3 evidence URLs used when caching.
+                    items: { type: string }
+
+  /cache_put:
+    post:
+      operationId: cache_put
+      tags: [cache]
+      summary: Put brand → domain into cache
+      description: Stores a brand-to-domain mapping with TTL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [brand, country, domain, confidence]
+              properties:
+                brand:
+                  type: string
+                  description: Canonical brand name.
+                country:
+                  type: string
+                  description: ISO-2 country code (e.g., SG, US).
+                  example: SG            # ← example stays on the property
+                domain:
+                  type: string
+                  description: Official eTLD+1 to store.
+                confidence:
+                  type: number
+                  description: Confidence score 0.0–1.0.
+                evidenceUrls:
+                  type: array
+                  description: Optional evidence URLs used to choose the domain.
+                  items: { type: string }
+                ttlSeconds:
+                  type: integer
+                  description: Time-to-live in seconds for the cache entry.
+                  example: 23328000
+            # Optional: named examples go here (NOT under schema)
+            examples:
+              sgSample:
+                value:
+                  brand: Nike
+                  country: SG
+                  domain: nike.com
+                  confidence: 0.9
+              usSample:
+                value:
+                  brand: Starbucks
+                  country: US
+                  domain: starbucks.com
+                  confidence: 0.92
+      responses:
+        "200":
+          description: Cache write acknowledgement.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    description: true if the entry was stored.
+
+  /web_search_serp:
+    get:
+      operationId: web_search_serp
+      tags: [search]
+      summary: Get trimmed SERP results
+      description: Returns unique-domain search results for a query (via Serper).
+      parameters:
+        - in: query
+          name: q
+          description: Search query, e.g., "<brand> official site".
+          required: true
+          schema: { type: string, example: "nike official site" }
+        - in: query
+          name: num
+          description: Number of unique domains to return (1–10). Defaults to 8.
+          required: false
+          schema: { type: integer, default: 8, minimum: 1, maximum: 10 }
+        - in: query
+          name: country
+          description: ISO-2 country bias for search (mapped to Serper `gl`). Defaults to SG.
+          required: false
+          schema: { type: string, example: SG }
+      responses:
+        "200":
+          description: Trimmed SERP results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:    { type: string,  description: Result title. }
+                        snippet:  { type: string,  description: Short snippet/summary. }
+                        url:      { type: string,  description: Full result URL. }
+                        domain:   { type: string,  description: eTLD+1 extracted from the URL. }
+                        position: { type: integer, description: "SERP rank if available (0 = KG site, 1 = first organic, etc.)." }
+
+  /verify_canonical:
+    get:
+      operationId: verify_canonical
+      tags: [search]
+      summary: Verify canonical domain for a URL
+      description: Fetches a page and extracts its <title> and <link rel="canonical">.
+      parameters:
+        - in: query
+          name: url
+          description: URL to verify (e.g., https://www.nike.com/).
+          required: true
+          schema: { type: string, format: uri }
+      responses:
+        "200":
+          description: Canonical domain and title if available.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  canonical_domain: { type: string, nullable: true, description: Canonical eTLD+1 if found. }
+                  title:            { type: string, nullable: true, description: Page title if found. }
+
+  /tavily_search:
+    get:
+      operationId: tavily_search
+      tags: [category]
+      summary: Search Tavily for brand evidence
+      description: Returns Tavily `answer` plus top results for the given query.
+      parameters:
+        - in: query
+          name: q
+          description: 'Search query (e.g., "<brand> company overview <country>").'
+          required: true
+          schema: { type: string }
+        - in: query
+          name: max
+          description: Max results (1–10). Default 8.
+          required: false
+          schema: { type: integer, default: 8, minimum: 1, maximum: 10 }
+      responses:
+        "200":
+          description: Tavily response subset.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  answer:  { type: string }
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:   { type: string }
+                        url:     { type: string }
+                        content: { type: string }
+                        score:   { type: number }
+
+  /brand_expand_serp:
+    get:
+      operationId: brand_expand_serp
+      tags: [brand]
+      summary: Repair or expand truncated brand using Serper
+      description: Returns candidate canonical brands/domains derived only from Serper results (no scores).
+      parameters:
+        - in: query
+          name: q
+          description: Raw merchant/brand string from the transaction.
+          required: true
+          schema: { type: string }
+        - in: query
+          name: country
+          description: Country bias for Serper (ISO-2 lower-case). Defaults to env DEFAULT_COUNTRY.
+          required: false
+          schema: { type: string, example: sg }
+      responses:
+        "200":
+          description: Candidate canonical brands.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [normalized, candidates]
+                properties:
+                  normalized: { type: string }
+                  candidates:
+                    type: array
+                    items:
+                      type: object
+                      required: [brand, domain]
+                      properties:
+                        brand:    { type: string }
+                        domain:   { type: string }
+                        url:      { type: string }
+                        title:    { type: string }
+                        position: { type: integer, description: "SERP rank if available." }

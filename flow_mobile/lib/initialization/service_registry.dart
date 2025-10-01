@@ -5,6 +5,7 @@ import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:flow_mobile/service/connection_service.dart';
 import 'package:flow_mobile/service/local_database_service.dart';
 import 'package:flow_mobile/service/local_secure_storage_service.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flow_mobile/service/notification_service.dart';
 import 'package:flow_mobile/service/sync_service.dart';
@@ -33,4 +34,5 @@ Future<void> initServices() async {
   );
   getIt.registerSingleton<NotificationService>(NotificationService());
   getIt.registerSingleton<NavigationService>(NavigationService());
+  getIt.registerSingleton<LogoService>(LogoService());
 }

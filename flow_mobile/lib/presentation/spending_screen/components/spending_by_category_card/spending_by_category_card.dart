@@ -61,7 +61,6 @@ class _SpendingByCategoryCardState extends State<SpendingByCategoryCard> {
                       monthOfInterest,
                     )) {
                   if (transaction.amount < 0) {
-                    print(transaction.category);
                     categoryAmount[transaction.category] =
                         categoryAmount[transaction.category]! +
                         transaction.amount;

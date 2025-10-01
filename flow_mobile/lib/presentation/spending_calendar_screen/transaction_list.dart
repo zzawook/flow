@@ -111,6 +111,7 @@ class TransactionList extends StatelessWidget {
                                   name: txn.name,
                                   amount: txn.amount,
                                   category: txn.category,
+                                  brandDomain: txn.brandDomain,
                                   color: Theme.of(
                                     context,
                                   ).colorScheme.onSurface.withAlpha(240),

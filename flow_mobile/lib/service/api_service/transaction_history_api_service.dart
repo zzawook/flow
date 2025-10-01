@@ -1,10 +1,10 @@
-
 import 'package:flow_mobile/generated/common/v1/transaction.pb.dart';
 import 'package:flow_mobile/generated/transaction_history/v1/transaction_history.pbgrpc.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:grpc/grpc_connection_interface.dart';
 import 'package:flow_mobile/generated/google/protobuf/timestamp.pb.dart' as gp;
+import 'package:fixnum/fixnum.dart' as fx;
 
 class TransactionHistoryApiService {
 
@@ -60,6 +60,23 @@ class TransactionHistoryApiService {
       transactionId: transactionId,
       includeInSpendingOrIncome: newValue,
     ));
+    return response;
+  }
+
+  Future<TransactionHistoryList> getTransactionForAccount(
+    String accountNumber,
+    int bankId,
+    int limit, {
+    String? oldestTransactionId,
+  }) async {
+    final response = await _channel.getTransactionForAccount(
+      GetTransactionForAccountRequest(
+        accountNumber: accountNumber,
+        bankId: bankId.toString(),
+        limit: fx.Int64(limit),
+        oldestTransactionId: oldestTransactionId ?? '',
+      ),
+    );
     return response;
   }
 }

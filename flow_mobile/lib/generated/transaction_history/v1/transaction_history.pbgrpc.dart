@@ -106,6 +106,14 @@ class TransactionHistoryServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$1.TransactionHistoryList> getTransactionForAccount(
+    $0.GetTransactionForAccountRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getTransactionForAccount, request,
+        options: options);
+  }
+
   // method descriptors
 
   static final _$getLast30DaysHistoryList = $grpc.ClientMethod<
@@ -155,6 +163,11 @@ class TransactionHistoryServiceClient extends $grpc.Client {
       '/sg.flow.transaction.v1.TransactionHistoryService/SetTransactionInclusion',
       ($0.SetTransactionInclusionRequest value) => value.writeToBuffer(),
       $0.SetTransactionInclusionResponse.fromBuffer);
+  static final _$getTransactionForAccount = $grpc.ClientMethod<
+          $0.GetTransactionForAccountRequest, $1.TransactionHistoryList>(
+      '/sg.flow.transaction.v1.TransactionHistoryService/GetTransactionForAccount',
+      ($0.GetTransactionForAccountRequest value) => value.writeToBuffer(),
+      $1.TransactionHistoryList.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.transaction.v1.TransactionHistoryService')
@@ -243,6 +256,15 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.SetTransactionInclusionRequest.fromBuffer(value),
         ($0.SetTransactionInclusionResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetTransactionForAccountRequest,
+            $1.TransactionHistoryList>(
+        'GetTransactionForAccount',
+        getTransactionForAccount_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetTransactionForAccountRequest.fromBuffer(value),
+        ($1.TransactionHistoryList value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.TransactionHistoryList> getLast30DaysHistoryList_Pre(
@@ -325,4 +347,13 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
 
   $async.Future<$0.SetTransactionInclusionResponse> setTransactionInclusion(
       $grpc.ServiceCall call, $0.SetTransactionInclusionRequest request);
+
+  $async.Future<$1.TransactionHistoryList> getTransactionForAccount_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetTransactionForAccountRequest> $request) async {
+    return getTransactionForAccount($call, await $request);
+  }
+
+  $async.Future<$1.TransactionHistoryList> getTransactionForAccount(
+      $grpc.ServiceCall call, $0.GetTransactionForAccountRequest request);
 }

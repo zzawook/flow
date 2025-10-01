@@ -1,10 +1,13 @@
+import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_tag.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flutter/material.dart';
 
 /// Individual Transaction Item
-class TransactionItem extends StatelessWidget {
+class TransactionItem extends StatefulWidget {
   final String name;
   final double amount;
+  final String brandDomain;
   final String category;
   final Color color;
   final Color incomeColor;
@@ -13,18 +16,79 @@ class TransactionItem extends StatelessWidget {
     super.key,
     required this.name,
     required this.amount,
+    required this.brandDomain,
     required this.category,
     required this.color,
     required this.incomeColor,
   });
 
   @override
+  State<TransactionItem> createState() => _TransactionItemState();
+}
+
+class _TransactionItemState extends State<TransactionItem> {
+  String? networkLogoUrl;
+  bool _tryNetwork = false; // whether to attempt network logo
+  bool _networkFailed = false; // once true, never try again
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLogo();
+  }
+
+  void _loadLogo() {
+    // base asset is decided in build() by theme; nothing to do here
+    if (widget.brandDomain.isEmpty) return;
+
+    final logoService = getIt<LogoService>();
+    final fetched = logoService.getLogoUrl(widget.brandDomain);
+    if (fetched.isNotEmpty) {
+      setState(() {
+        networkLogoUrl = fetched;
+        _tryNetwork = true;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final processedName = name.length > 35
-        ? "${name.replaceAll("\n", " ").substring(0, 35)}..."
-        : name.replaceAll("\n", " ");
+    final processedName = widget.name.length > 35
+        ? "${widget.name.replaceAll("\n", " ").substring(0, 35)}..."
+        : widget.name.replaceAll("\n", " ");
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final assetLogo =
+        "assets/icons/category_icons/${widget.category.toLowerCase()}${isDark ? '_dark' : ''}.png";
+
+    Widget logoWidget;
+    if (_tryNetwork && !_networkFailed && networkLogoUrl != null) {
+      // Only the network image is clipped
+      logoWidget = ClipOval(
+        child: Image.network(
+          networkLogoUrl!,
+          height: 45,
+          width: 45,
+          errorBuilder: (context, error, stackTrace) {
+            // Mark failure exactly once, then rebuild to show asset (not clipped)
+            if (!_networkFailed) {
+              _networkFailed = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) setState(() {});
+              });
+            }
+            // temporary placeholder so layout doesn’t jump this frame
+            return const SizedBox(height: 45, width: 45);
+          },
+        ),
+      );
+    } else {
+      // Fallback asset NOT inside ClipOval
+      logoWidget = Image.asset(assetLogo, height: 40, width: 40);
+    }
+
     return Container(
-      padding: EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -32,25 +96,23 @@ class TransactionItem extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  margin: EdgeInsets.only(right: 10),
-                  child: Image.asset(
-                    'assets/icons/transaction_icons/mcdonalds.png',
-                    height: 50,
-                    width: 50,
-                  ),
+                  margin: const EdgeInsets.only(right: 10),
+                  child: logoWidget,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.only(bottom: 4),
+                      padding: const EdgeInsets.only(bottom: 4),
                       child: Text(
-                        "${amount < 0 ? '-' : '+'}${amount.abs().toStringAsFixed(2)}",
+                        "${widget.amount < 0 ? '-' : '+'}${widget.amount.abs().toStringAsFixed(2)}",
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: amount > 0 ? incomeColor : color,
+                          color: widget.amount > 0
+                              ? widget.incomeColor
+                              : widget.color,
                         ),
                       ),
                     ),
@@ -70,8 +132,7 @@ class TransactionItem extends StatelessWidget {
               ],
             ),
           ),
-
-          TransactionTag(tag: category, fontSize: 12.0),
+          TransactionTag(tag: widget.category, fontSize: 12.0),
         ],
       ),
     );

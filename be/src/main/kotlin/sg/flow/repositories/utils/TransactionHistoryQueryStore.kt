@@ -29,6 +29,9 @@ object TransactionHistoryQueryStore {
         th.transaction_status, 
         th.friendly_description, 
         th.transaction_category,
+        th.brand_name,
+        th.brand_domain,
+        th.is_included_in_spending_or_income,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
         acc.balance AS account_balance, 
@@ -74,6 +77,7 @@ object TransactionHistoryQueryStore {
         th.friendly_description, 
         th.transaction_category,
         th.brand_name,
+        th.brand_domain,
         th.is_included_in_spending_or_income,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
@@ -121,6 +125,7 @@ object TransactionHistoryQueryStore {
         th.transaction_category,
         th.revised_transaction_date,
         th.brand_name,
+        th.brand_domain,
         th.is_included_in_spending_or_income,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
@@ -169,6 +174,7 @@ object TransactionHistoryQueryStore {
         th.transaction_category,
         th.is_included_in_spending_or_income,
         th.brand_name,
+        th.brand_domain,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
         acc.balance AS account_balance, 
@@ -214,6 +220,7 @@ object TransactionHistoryQueryStore {
         th.extracted_card_number,
         th.revised_transaction_date,
         th.brand_name,
+        th.brand_domain,
         th.is_processed,
         is_included_in_spending_or_income,
         th.finverse_id,
@@ -266,6 +273,7 @@ object TransactionHistoryQueryStore {
         th.is_processed,
         is_included_in_spending_or_income,
         th.brand_name,
+        th.brand_domain,
         th.finverse_id,
         acc.id AS account_id, 
         acc.account_number AS account_number, 
@@ -309,8 +317,9 @@ object TransactionHistoryQueryStore {
           friendly_description   = $3,
           extracted_card_number  = $4,
           brand_name             = $5,
-          revised_transaction_date = $6,
-          is_processed           = $7
+          brand_domain           = $6,
+          revised_transaction_date = $7,
+          is_processed           = $8
         WHERE id = $1;
     """
 
@@ -332,6 +341,7 @@ object TransactionHistoryQueryStore {
             th.revised_transaction_date,
             th.is_processed,
             th.brand_name,
+            th.brand_domain,
             is_included_in_spending_or_income,
             th.finverse_id,
             acc.id AS account_id, 
@@ -381,6 +391,7 @@ const val FIND_TRANSACTIONS_FOR_USER_SINCE_DATE =
                    th.revised_transaction_date,
                    th.is_processed,
                    th.brand_name,
+                   th.brand_domain,
                    th.is_included_in_spending_or_income,
                    th.finverse_id,
                    acc.id AS account_id,
@@ -425,5 +436,108 @@ const val FIND_TRANSACTIONS_FOR_USER_SINCE_DATE =
             UPDATE transaction_histories
             SET is_included_in_spending_or_income = $3
             WHERE user_id = $1 AND id = $2
+        """
+
+    const val FIND_TRANSACTIONS_FOR_ACCOUNT_AFTER =
+        """
+            SELECT th.id, 
+        th.transaction_reference, 
+        th.account_id, 
+        th.card_id, 
+        th.transaction_date, 
+        th.transaction_time, 
+        th.amount, 
+        th.transaction_type, 
+        th.description, 
+        th.transaction_status, 
+        th.friendly_description, 
+        th.transaction_category,
+        th.revised_transaction_date,
+        th.is_included_in_spending_or_income,
+        th.brand_name,
+        th.brand_domain,
+        acc.id AS account_id, 
+        acc.account_number AS account_number, 
+        acc.balance AS account_balance, 
+        acc.account_name AS account_name, 
+        acc.account_type AS account_type, 
+        acc.last_updated AS account_last_updated,
+        acc.finverse_id AS account_finverse_id,
+        u.id AS user_id,
+        u.name AS user_name,
+        u.email AS email,
+        u.identification_number AS identification_number,
+        u.phone_number AS phone_number,
+        u.date_of_birth AS date_of_birth,
+        u.address AS address,
+        u.setting_json AS setting_json,
+        b.id AS bank_id, 
+        b.bank_name AS bank_name, 
+        b.bank_code AS bank_code, 
+        c.id AS card_id, 
+        c.card_number, 
+        c.card_type
+        FROM transaction_histories th 
+        JOIN accounts acc ON th.account_id = acc.id 
+        JOIN users u ON acc.user_id = u.id
+        JOIN banks b ON acc.bank_id = b.id 
+        LEFT JOIN cards c ON th.card_id = c.id 
+        WHERE th.user_id = $1 
+            AND th.transaction_date >= (SELECT th2.transaction_date FROM transaction_histories th2 WHERE th2.id=$2) 
+            AND b.id = $3 
+            AND acc.account_number = $4 
+        ORDER BY th.transaction_date 
+        LIMIT $5
+        """
+
+    const val FIND_TRANSACTIONS_FOR_ACCOUNT_BEGINNING =
+        """
+            SELECT th.id, 
+        th.transaction_reference, 
+        th.account_id, 
+        th.card_id, 
+        th.transaction_date, 
+        th.transaction_time, 
+        th.amount, 
+        th.transaction_type, 
+        th.description, 
+        th.transaction_status, 
+        th.friendly_description, 
+        th.transaction_category,
+        th.revised_transaction_date,
+        th.is_included_in_spending_or_income,
+        th.brand_name,
+        th.brand_domain,
+        acc.id AS account_id, 
+        acc.account_number AS account_number, 
+        acc.balance AS account_balance, 
+        acc.account_name AS account_name, 
+        acc.account_type AS account_type, 
+        acc.last_updated AS account_last_updated,
+        acc.finverse_id AS account_finverse_id,
+        u.id AS user_id,
+        u.name AS user_name,
+        u.email AS email,
+        u.identification_number AS identification_number,
+        u.phone_number AS phone_number,
+        u.date_of_birth AS date_of_birth,
+        u.address AS address,
+        u.setting_json AS setting_json,
+        b.id AS bank_id, 
+        b.bank_name AS bank_name, 
+        b.bank_code AS bank_code, 
+        c.id AS card_id, 
+        c.card_number, 
+        c.card_type
+        FROM transaction_histories th 
+        JOIN accounts acc ON th.account_id = acc.id 
+        JOIN users u ON acc.user_id = u.id
+        JOIN banks b ON acc.bank_id = b.id 
+        LEFT JOIN cards c ON th.card_id = c.id 
+        WHERE th.user_id = $1  
+            AND b.id = $2 
+            AND acc.account_number = $3 
+        ORDER BY th.transaction_date 
+        LIMIT $4
         """
 }

@@ -219,3 +219,28 @@ final $typed_data.Uint8List setTransactionInclusionResponseDescriptor =
     $convert.base64Decode(
         'Ch9TZXRUcmFuc2FjdGlvbkluY2x1c2lvblJlc3BvbnNlEhgKB3N1Y2Nlc3MYASABKAhSB3N1Y2'
         'Nlc3MSGAoHbWVzc2FnZRgCIAEoCVIHbWVzc2FnZQ==');
+
+@$core.Deprecated('Use getTransactionForAccountRequestDescriptor instead')
+const GetTransactionForAccountRequest$json = {
+  '1': 'GetTransactionForAccountRequest',
+  '2': [
+    {'1': 'account_number', '3': 1, '4': 1, '5': 9, '10': 'accountNumber'},
+    {'1': 'bank_id', '3': 2, '4': 1, '5': 9, '10': 'bankId'},
+    {
+      '1': 'oldest_transaction_id',
+      '3': 3,
+      '4': 1,
+      '5': 9,
+      '10': 'oldestTransactionId'
+    },
+    {'1': 'limit', '3': 4, '4': 1, '5': 3, '10': 'limit'},
+  ],
+};
+
+/// Descriptor for `GetTransactionForAccountRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getTransactionForAccountRequestDescriptor =
+    $convert.base64Decode(
+        'Ch9HZXRUcmFuc2FjdGlvbkZvckFjY291bnRSZXF1ZXN0EiUKDmFjY291bnRfbnVtYmVyGAEgAS'
+        'gJUg1hY2NvdW50TnVtYmVyEhcKB2JhbmtfaWQYAiABKAlSBmJhbmtJZBIyChVvbGRlc3RfdHJh'
+        'bnNhY3Rpb25faWQYAyABKAlSE29sZGVzdFRyYW5zYWN0aW9uSWQSFAoFbGltaXQYBCABKANSBW'
+        'xpbWl0');

@@ -32,6 +32,9 @@ class Transaction {
   @HiveField(8)
   final bool isIncludedInSpendingOrIncome;
 
+  @HiveField(9)
+  final String brandDomain;
+
   Transaction({
     required this.id,
     required this.name,
@@ -42,6 +45,7 @@ class Transaction {
     required this.method,
     required this.note,
     this.isIncludedInSpendingOrIncome = true,
+    this.brandDomain = "",
   });
 
   @override
@@ -61,6 +65,7 @@ class Transaction {
     String? method,
     String? note,
     bool? isIncludedInSpendingOrIncome,
+    String? brandDomain,
   }) {
     return Transaction(
       id: id ?? this.id,
@@ -72,6 +77,7 @@ class Transaction {
       method: method ?? this.method,
       note: note ?? this.note,
       isIncludedInSpendingOrIncome: isIncludedInSpendingOrIncome ?? this.isIncludedInSpendingOrIncome,
+      brandDomain: brandDomain ?? this.brandDomain,
     );
   }
 
@@ -85,7 +91,8 @@ class Transaction {
       date.hashCode ^
       method.hashCode ^
       note.hashCode ^
-      isIncludedInSpendingOrIncome.hashCode;
+      isIncludedInSpendingOrIncome.hashCode ^
+      brandDomain.hashCode;
 
   @override
   String toString() {

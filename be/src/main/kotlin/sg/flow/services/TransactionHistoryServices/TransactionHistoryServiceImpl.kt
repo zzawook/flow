@@ -93,4 +93,14 @@ class TransactionHistoryServiceImpl(
         val result = transactionHistoryRepository.setTransactionInclusion(userId, transactionId, includeInSpendingOrIncome)
         return result
     }
+
+    override suspend fun getTransactionsForAccount(
+        userId: Int,
+        accountNumber: String,
+        bankId: String,
+        oldestTransactionId: String,
+        limit: Int
+    ): TransactionHistoryList {
+        return transactionHistoryRepository.findTransactionForAccountOlderThan(userId, bankId, accountNumber, oldestTransactionId, limit)
+    }
 }

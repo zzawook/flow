@@ -47,6 +47,7 @@ class TransactionsList extends StatelessWidget {
                   return TransactionItem(
                     name: tx.name,
                     amount: tx.amount,
+                    brandDomain: tx.brandDomain,
                     category: tx.category,
                     color: Color(0xFFEB5757),
                     incomeColor: Theme.of(context).primaryColor,

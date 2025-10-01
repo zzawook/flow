@@ -1,6 +1,6 @@
 #! /bin/bash
 
-dart pub global activate protoc_plugin;
+dart pub global activate protoc_plugin 22.5.0;
 export PATH="$PATH":"$HOME/.pub-cache/bin";
 
 OUT=../flow_mobile/lib/generated

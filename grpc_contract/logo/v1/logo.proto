@@ -1,0 +1,26 @@
+syntax = "proto3";
+package sg.flow.logo.v1;
+
+service LogoService {
+  rpc GetLogo (GetLogoRequest) returns (GetLogoResponse);
+  rpc UploadLogo (UploadLogoRequest) returns (UploadLogoResponse);
+}
+
+message GetLogoRequest {
+  string brand_domain = 1;
+}
+
+message GetLogoResponse {
+    bool   success     = 1;
+    string logo_url   = 2;
+}
+
+message UploadLogoRequest {
+    string brand_domain = 1;
+    bytes  logo = 2;
+}
+
+message UploadLogoResponse {
+    bool   success     = 1;
+    string message   = 2;
+}
