@@ -10,8 +10,10 @@ import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.stereotype.Repository
 import sg.flow.entities.Account
 import sg.flow.entities.Bank
+import sg.flow.entities.Card
 import sg.flow.entities.User
 import sg.flow.entities.utils.AccountType
+import sg.flow.entities.utils.CardType
 import sg.flow.models.account.AccountWithTransactionHistory
 import sg.flow.models.account.BriefAccount as BriefAccount
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
@@ -397,5 +399,22 @@ class AccountRepositoryImpl(
                         .awaitFirstOrNull()
 
                 return account
+        }
+
+        override suspend fun findCardAccounts(userId: Int): List<Card> {
+                runCatching {
+                        val sql = AccountQueryStore.FIND_CARD_ACCOUNTS
+
+                        databaseClient.sql(sql)
+                                .bind(0, userId)
+                                .map { rows ->
+                                        Card(
+                                                id = rows.get("id", Long::class.java),
+                                                cardNumber = rows.get("card_number", String::class.java),
+                                                cardType = CardType.valueOf(rows.get("card_type", String::class.java)),
+                                                cardName = rows.get("card_")
+                                        )
+                                }
+                }
         }
 }

@@ -1,6 +1,20 @@
 package sg.flow.repositories.utils
 
 object AccountQueryStore {
+    const val FIND_CARD_ACCOUNTS =
+        """
+            SELECT a.id,
+            c.card_number,
+            c.card_type,
+            b.bank_id,
+            b.bank_name,
+            b.bank_code,
+            a.balance,
+            FROM accounts a
+            JOIN banks b ON a.bank_id = b.id
+            JOIN cards c ON a.account_number = c.card_number
+            WHERE a.user_id = $1
+        """
     const val SAVE_ACCOUNT =
             """
         INSERT INTO accounts 

@@ -11,6 +11,8 @@ data class Card(
         @field:Id val id: Long?,
         val owner: User? = null, // Made nullable for partial loading
         @field:NotBlank val cardNumber: String,
+        val cardName: String = "",
         val issuingBank: Bank? = null, // Made nullable for partial loading
-        @field:NotNull val cardType: CardType
+        @field:NotNull val cardType: CardType,
+        val balance: Double = 0.0
 )
