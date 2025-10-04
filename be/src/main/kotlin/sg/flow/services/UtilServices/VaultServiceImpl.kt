@@ -2,6 +2,7 @@ package sg.flow.services.UtilServices
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.reactive.awaitFirstOrNull
+import kotlinx.coroutines.reactor.awaitSingle
 import org.slf4j.LoggerFactory
 import java.util.Optional
 import org.springframework.stereotype.Service
@@ -40,6 +41,10 @@ class VaultServiceImpl(
 
     private fun generateLoginIdentityByUserIdAndInstitutionIdKey(userId: Int, institution_id: String): String {
         return "$LOGIN_IDENTITY_BY_USERID_AND_INSTITUTION_ID$userId/$institution_id"
+    }
+
+    private fun generateLoginIdentityByUserId(userId: Int): String {
+        return "$LOGIN_IDENTITY_BY_USERID_AND_INSTITUTION_ID$userId"
     }
 
     private fun keyFor(refreshToken: String): String {
@@ -171,6 +176,13 @@ class VaultServiceImpl(
 
         // objectMapper is the one Spring injects into your beans
         return objectMapper.convertValue(data, LoginIdentity::class.java)
+    }
+
+    override suspend fun getInstitutionIdsForUserId(userId: Int): List<String> {
+        val key = generateLoginIdentityByUserId(userId)
+
+        val keys = kv.list(key).collectList().awaitSingle()
+        return keys
     }
 
 

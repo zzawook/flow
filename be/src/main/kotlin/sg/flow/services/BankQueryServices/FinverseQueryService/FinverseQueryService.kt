@@ -22,6 +22,7 @@ import sg.flow.repositories.account.AccountRepository
 import sg.flow.repositories.bank.BankRepository
 import sg.flow.repositories.user.UserRepository
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
+import sg.flow.services.UtilServices.VaultService
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.Duration.Companion.minutes
@@ -29,7 +30,7 @@ import kotlin.time.Duration.Companion.minutes
 @Service
 class FinverseQueryService(
     private val finverseLoginIdentityService: FinverseLoginIdentityService,
-
+    private val vaultService: VaultService,
     private val finverseTimeoutWatcher: FinverseTimeoutWatcher,
     private val bankRepository: BankRepository,
     private val accountRepository: AccountRepository,
@@ -73,7 +74,9 @@ class FinverseQueryService(
     }
 
     suspend fun getBanksForLink(userId: Int, country: String = "SGP"): List<Bank> {
-        val banks = bankRepository.findAllBanksInCountry(country)
+        var banks = bankRepository.findAllBanksInCountry(country)
+        val institutionIdAlreadyLinked = vaultService.getInstitutionIdsForUserId(userId)
+        banks = banks.filter { bank -> ! institutionIdAlreadyLinked.contains(bank.bankCode) }
         return banks
     }
 

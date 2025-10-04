@@ -13,4 +13,5 @@ interface VaultService {
     suspend fun getLoginIdentity(userId: Int, institutionId: String): LoginIdentity?
     suspend fun getLoginIdentity(loginIdentityId: String): LoginIdentity?
     suspend fun getRefreshTokenForUserId(userId: Int): Optional<String>
+    suspend fun getInstitutionIdsForUserId(userId: Int): List<String>
 }
