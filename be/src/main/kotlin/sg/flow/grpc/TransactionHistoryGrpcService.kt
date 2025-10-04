@@ -9,6 +9,7 @@ import sg.flow.grpc.exception.InvalidTransactionIdException
 import sg.flow.grpc.exception.InvalidYearMonthDayException
 import sg.flow.grpc.mapper.DateTimeMapper
 import sg.flow.grpc.mapper.TransactionHistoryMapper
+import sg.flow.services.SpendingMedianServices.SpendingMedianService
 import sg.flow.common.v1.TransactionHistoryDetail as ProtoTransactionHistoryDetail
 import sg.flow.common.v1.TransactionHistoryList   as ProtoTransactionHistoryList
 import sg.flow.transaction.v1.TransactionHistoryServiceGrpcKt
@@ -22,11 +23,17 @@ import sg.flow.services.TransactionHistoryServices.TransactionHistoryService
 import sg.flow.transaction.v1.GetProcessedTransactionRequest
 import sg.flow.transaction.v1.GetRecurringTransactionRequest
 import sg.flow.transaction.v1.GetRecurringTransactionResponse
+import sg.flow.transaction.v1.GetSpendingMedianRequest
+import sg.flow.transaction.v1.GetSpendingMedianResponse
 import sg.flow.transaction.v1.GetTransactionForAccountRequest
 import sg.flow.transaction.v1.SetTransactionCategoryRequest
 import sg.flow.transaction.v1.SetTransactionCategoryResponse
 import sg.flow.transaction.v1.SetTransactionInclusionRequest
 import sg.flow.transaction.v1.SetTransactionInclusionResponse
+
+
+
+
 import sg.flow.validation.ValidationException
 import sg.flow.validation.Validator
 
@@ -35,6 +42,8 @@ class TransactionHistoryGrpcService(
         private val transactionService: TransactionHistoryService,
         private val txHistoryMapper: TransactionHistoryMapper,
         private val datetimeMapper: DateTimeMapper,
+private val spendingMedianService: SpendingMedianService
+
 ) : TransactionHistoryServiceGrpcKt.TransactionHistoryServiceCoroutineImplBase() {
 
         private fun currentUserId(): Int {
@@ -155,4 +164,58 @@ class TransactionHistoryGrpcService(
                 val domainTransactions = transactionService.getTransactionsForAccount(userId, request.accountNumber, request.bankId, request.oldestTransactionId, request.limit.toInt())
                 return txHistoryMapper.toProto(domainTransactions)
         }
+override suspend fun getSpendingMedianForAgeGroup(
+        request: GetSpendingMedianRequest
+): GetSpendingMedianResponse {
+        val userId = currentUserId()
+
+        // Extract year and month from request (optional fields)
+        val year = if (request.hasYear()) request.year else null
+        val month = if (request.hasMonth()) request.month else null
+
+        // Validate month if provided
+        if (month != null) {
+                try {
+                        Validator.validateMonth(month)
+                } catch (e: ValidationException) {
+                        throw Status.INVALID_ARGUMENT
+                                .withDescription("Invalid month: ${e.message}")
+                                .asRuntimeException()
+                }
+        }
+
+        // Validate year if provided
+        if (year != null) {
+                try {
+                        Validator.validateYear(year)
+                } catch (e: ValidationException) {
+                        throw Status.INVALID_ARGUMENT
+                                .withDescription("Invalid year: ${e.message}")
+                                .asRuntimeException()
+                }
+        }
+
+        // Get the median for the user's age group
+        val median =
+                try {
+                        spendingMedianService.getSpendingMedianForUser(userId, year, month)
+                } catch (e: IllegalArgumentException) {
+                        throw Status.FAILED_PRECONDITION
+                                .withDescription(e.message ?: "Cannot determine user age group")
+                                .asRuntimeException()
+                }
+
+        // If no median found, return error
+        if (median == null) {
+                throw Status.NOT_FOUND
+                        .withDescription(
+                                "No spending median data available for this age group and time period"
+                        )
+                        .asRuntimeException()
+        }
+
+        // Map to proto and return
+        return txHistoryMapper.toProto(median)
+}
+
 }

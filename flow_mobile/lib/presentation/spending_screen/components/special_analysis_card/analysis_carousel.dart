@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/spending_screen_thunks.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/analysis/demographic_analysis_card.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -24,18 +25,42 @@ class _AnalysisCarouselState extends State<AnalysisCarousel>
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<FlowState, TransactionState>(
+    return StoreConnector<FlowState, AnalysisCarouselState>(
       distinct: true,
-      converter: (store) => store.state.transactionState,
-      builder: (context, transactionState) {
+      converter: (store) {
+        final displayedMonth =
+            store.state.screenState.spendingScreenState.displayedMonth;
+        final median = store.state.screenState.spendingScreenState
+            .getMedianForMonth(displayedMonth);
+        final myAmount = store.state.transactionState
+            .getExpenseForMonth(displayedMonth)
+            .abs();
+        final isLoading =
+            store.state.screenState.spendingScreenState.isLoadingMedian;
+        final error = store.state.screenState.spendingScreenState.medianError;
+
+        return AnalysisCarouselState(
+          displayedMonth: displayedMonth,
+          median: median,
+          myAmount: myAmount,
+          isLoading: isLoading,
+          error: error,
+        );
+      },
+      onInit: (store) {
+        // Fetch median data for current displayed month on mount
+        final displayedMonth =
+            store.state.screenState.spendingScreenState.displayedMonth;
+        store.dispatch(fetchSpendingMedianThunk(displayedMonth));
+      },
+      builder: (context, state) {
         List<Widget> cards = [
           DemographicAnalysisCard(
-            myAmount:
-                transactionState
-                    .getExpenseForMonth(
-                      DateTime(DateTime.now().year, DateTime.now().month),
-                    )
-                    .abs(),
+            displayedMonth: state.displayedMonth,
+            median: state.median,
+            myAmount: state.myAmount,
+            isLoading: state.isLoading,
+            error: state.error,
           ),
         ];
 
@@ -83,4 +108,21 @@ class _AnalysisCarouselState extends State<AnalysisCarousel>
       ),
     );
   }
+}
+
+/// State for AnalysisCarousel
+class AnalysisCarouselState {
+  final DateTime displayedMonth;
+  final SpendingMedianData? median;
+  final double myAmount;
+  final bool isLoading;
+  final String? error;
+
+  AnalysisCarouselState({
+    required this.displayedMonth,
+    required this.median,
+    required this.myAmount,
+    required this.isLoading,
+    required this.error,
+  });
 }

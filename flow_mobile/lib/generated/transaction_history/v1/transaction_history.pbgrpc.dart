@@ -114,6 +114,15 @@ class TransactionHistoryServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$0.GetSpendingMedianResponse>
+      getSpendingMedianForAgeGroup(
+    $0.GetSpendingMedianRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getSpendingMedianForAgeGroup, request,
+        options: options);
+  }
+
   // method descriptors
 
   static final _$getLast30DaysHistoryList = $grpc.ClientMethod<
@@ -168,6 +177,11 @@ class TransactionHistoryServiceClient extends $grpc.Client {
       '/sg.flow.transaction.v1.TransactionHistoryService/GetTransactionForAccount',
       ($0.GetTransactionForAccountRequest value) => value.writeToBuffer(),
       $1.TransactionHistoryList.fromBuffer);
+  static final _$getSpendingMedianForAgeGroup = $grpc.ClientMethod<
+          $0.GetSpendingMedianRequest, $0.GetSpendingMedianResponse>(
+      '/sg.flow.transaction.v1.TransactionHistoryService/GetSpendingMedianForAgeGroup',
+      ($0.GetSpendingMedianRequest value) => value.writeToBuffer(),
+      $0.GetSpendingMedianResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.transaction.v1.TransactionHistoryService')
@@ -265,6 +279,15 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.GetTransactionForAccountRequest.fromBuffer(value),
         ($1.TransactionHistoryList value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetSpendingMedianRequest,
+            $0.GetSpendingMedianResponse>(
+        'GetSpendingMedianForAgeGroup',
+        getSpendingMedianForAgeGroup_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetSpendingMedianRequest.fromBuffer(value),
+        ($0.GetSpendingMedianResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.TransactionHistoryList> getLast30DaysHistoryList_Pre(
@@ -356,4 +379,13 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
 
   $async.Future<$1.TransactionHistoryList> getTransactionForAccount(
       $grpc.ServiceCall call, $0.GetTransactionForAccountRequest request);
+
+  $async.Future<$0.GetSpendingMedianResponse> getSpendingMedianForAgeGroup_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetSpendingMedianRequest> $request) async {
+    return getSpendingMedianForAgeGroup($call, await $request);
+  }
+
+  $async.Future<$0.GetSpendingMedianResponse> getSpendingMedianForAgeGroup(
+      $grpc.ServiceCall call, $0.GetSpendingMedianRequest request);
 }

@@ -79,4 +79,20 @@ class TransactionHistoryApiService {
     );
     return response;
   }
+
+  Future<GetSpendingMedianResponse> getSpendingMedianForAgeGroup({
+    int? year,
+    int? month,
+  }) async {
+    final request = GetSpendingMedianRequest();
+    if (year != null) {
+      request.year = year;
+    }
+    if (month != null) {
+      request.month = month;
+    }
+
+    final response = await _channel.getSpendingMedianForAgeGroup(request);
+    return response;
+  }
 }

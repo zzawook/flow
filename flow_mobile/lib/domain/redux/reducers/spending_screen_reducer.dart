@@ -5,6 +5,34 @@ SpendingScreenState spendingScreenReducer(
   SpendingScreenState state,
   dynamic action,
 ) {
+  // Handle spending median actions
+  if (action is SetSpendingMedianLoadingAction) {
+    return state.copyWith(isLoadingMedian: action.isLoading);
+  } else if (action is SetSpendingMedianAction) {
+    final medianData = SpendingMedianData(
+      ageGroup: action.ageGroup,
+      medianSpending: action.medianSpending,
+      year: action.year,
+      month: action.month,
+      userCount: action.userCount,
+      calculatedAt: action.calculatedAt,
+    );
+
+    final updatedMedians = Map<String, SpendingMedianData>.from(
+      state.mediansByMonth,
+    );
+    updatedMedians[action.monthKey] = medianData;
+
+    return state.copyWith(
+      mediansByMonth: updatedMedians,
+      isLoadingMedian: false,
+      medianError: null,
+    );
+  } else if (action is SetSpendingMedianErrorAction) {
+    return state.copyWith(isLoadingMedian: false, medianError: action.error);
+  }
+
+  // Handle existing actions
   if (action is DecrementDisplayedMonthAction) {
     DateTime modifiedDisplayedMonth = decrementMonth(state.displayedMonth);
 

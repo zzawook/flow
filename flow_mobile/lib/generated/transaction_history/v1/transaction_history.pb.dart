@@ -933,6 +933,202 @@ class GetTransactionForAccountRequest extends $pb.GeneratedMessage {
   void clearLimit() => $_clearField(4);
 }
 
+class GetSpendingMedianRequest extends $pb.GeneratedMessage {
+  factory GetSpendingMedianRequest({
+    $core.int? year,
+    $core.int? month,
+  }) {
+    final result = create();
+    if (year != null) result.year = year;
+    if (month != null) result.month = month;
+    return result;
+  }
+
+  GetSpendingMedianRequest._();
+
+  factory GetSpendingMedianRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetSpendingMedianRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetSpendingMedianRequest',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'year', $pb.PbFieldType.O3)
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'month', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetSpendingMedianRequest clone() =>
+      GetSpendingMedianRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetSpendingMedianRequest copyWith(
+          void Function(GetSpendingMedianRequest) updates) =>
+      super.copyWith((message) => updates(message as GetSpendingMedianRequest))
+          as GetSpendingMedianRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetSpendingMedianRequest create() => GetSpendingMedianRequest._();
+  @$core.override
+  GetSpendingMedianRequest createEmptyInstance() => create();
+  static $pb.PbList<GetSpendingMedianRequest> createRepeated() =>
+      $pb.PbList<GetSpendingMedianRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetSpendingMedianRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetSpendingMedianRequest>(create);
+  static GetSpendingMedianRequest? _defaultInstance;
+
+  /// userId extracted from metadata
+  /// If year/month not provided, returns current month in SGT timezone
+  @$pb.TagNumber(1)
+  $core.int get year => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set year($core.int value) => $_setSignedInt32(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasYear() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearYear() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get month => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set month($core.int value) => $_setSignedInt32(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasMonth() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMonth() => $_clearField(2);
+}
+
+class GetSpendingMedianResponse extends $pb.GeneratedMessage {
+  factory GetSpendingMedianResponse({
+    $core.String? ageGroup,
+    $core.double? medianSpending,
+    $core.int? year,
+    $core.int? month,
+    $core.int? userCount,
+    $2.Timestamp? calculatedAt,
+  }) {
+    final result = create();
+    if (ageGroup != null) result.ageGroup = ageGroup;
+    if (medianSpending != null) result.medianSpending = medianSpending;
+    if (year != null) result.year = year;
+    if (month != null) result.month = month;
+    if (userCount != null) result.userCount = userCount;
+    if (calculatedAt != null) result.calculatedAt = calculatedAt;
+    return result;
+  }
+
+  GetSpendingMedianResponse._();
+
+  factory GetSpendingMedianResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetSpendingMedianResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetSpendingMedianResponse',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'ageGroup')
+    ..a<$core.double>(
+        2, _omitFieldNames ? '' : 'medianSpending', $pb.PbFieldType.OD)
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'year', $pb.PbFieldType.O3)
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'month', $pb.PbFieldType.O3)
+    ..a<$core.int>(5, _omitFieldNames ? '' : 'userCount', $pb.PbFieldType.O3)
+    ..aOM<$2.Timestamp>(6, _omitFieldNames ? '' : 'calculatedAt',
+        subBuilder: $2.Timestamp.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetSpendingMedianResponse clone() =>
+      GetSpendingMedianResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetSpendingMedianResponse copyWith(
+          void Function(GetSpendingMedianResponse) updates) =>
+      super.copyWith((message) => updates(message as GetSpendingMedianResponse))
+          as GetSpendingMedianResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetSpendingMedianResponse create() => GetSpendingMedianResponse._();
+  @$core.override
+  GetSpendingMedianResponse createEmptyInstance() => create();
+  static $pb.PbList<GetSpendingMedianResponse> createRepeated() =>
+      $pb.PbList<GetSpendingMedianResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetSpendingMedianResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetSpendingMedianResponse>(create);
+  static GetSpendingMedianResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get ageGroup => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set ageGroup($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasAgeGroup() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAgeGroup() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get medianSpending => $_getN(1);
+  @$pb.TagNumber(2)
+  set medianSpending($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasMedianSpending() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMedianSpending() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get year => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set year($core.int value) => $_setSignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasYear() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearYear() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get month => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set month($core.int value) => $_setSignedInt32(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasMonth() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearMonth() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.int get userCount => $_getIZ(4);
+  @$pb.TagNumber(5)
+  set userCount($core.int value) => $_setSignedInt32(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasUserCount() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearUserCount() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $2.Timestamp get calculatedAt => $_getN(5);
+  @$pb.TagNumber(6)
+  set calculatedAt($2.Timestamp value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasCalculatedAt() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearCalculatedAt() => $_clearField(6);
+  @$pb.TagNumber(6)
+  $2.Timestamp ensureCalculatedAt() => $_ensure(5);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

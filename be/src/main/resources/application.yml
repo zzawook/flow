@@ -115,6 +115,9 @@ flow:
       Telecommunication: 1.2
       Insurance: 1.1
       Finance: 1.05
+  spending-median:
+    enabled: true
+    backfill-months: 60  # 5 years
 
 aws:
   region: us-east-1

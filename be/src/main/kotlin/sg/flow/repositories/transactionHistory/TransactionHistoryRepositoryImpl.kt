@@ -1157,10 +1157,6 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                 oldestTransactionId: String,
                 limit: Int
         ): TransactionHistoryList {
-                println(userId)
-                println(bankId)
-                println(accountNumber)
-                println(oldestTransactionId)
                 return runCatching {
                         var rows: List<TransactionHistoryDetail>;
                         if (oldestTransactionId.isEmpty()) {
@@ -1190,11 +1186,6 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                         .all()
                                         .asFlow()
                                         .toList()
-                        }
-
-                        println("Total: ${rows.size}")
-                        for (transaction in rows) {
-                                println(transaction.description)
                         }
 
                         TransactionHistoryList(LocalDate.now(), LocalDate.now()).apply {

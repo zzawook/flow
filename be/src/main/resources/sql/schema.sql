@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS spending_medians_by_age_group;
 DROP TABLE IF EXISTS recurring_spending_monthly;
 DROP TABLE IF EXISTS transaction_histories;
 DROP TABLE IF EXISTS cards;
@@ -111,3 +112,19 @@ CREATE TABLE IF NOT EXISTS recurring_spending_monthly (
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_recurring_unique ON recurring_spending_monthly (user_id, merchant_key, sequence_key, year, month);
 CREATE INDEX IF NOT EXISTS idx_recurring_user_month ON recurring_spending_monthly (user_id, year, month);
+
+-- Spending medians by age group for monthly comparisons
+DROP TABLE IF EXISTS spending_medians_by_age_group;
+CREATE TABLE IF NOT EXISTS spending_medians_by_age_group (
+    id BIGSERIAL PRIMARY KEY,
+    age_group TEXT NOT NULL,
+    year INT NOT NULL,
+    month INT NOT NULL,
+    median_spending DECIMAL(10,2) NOT NULL,
+    user_count INT NOT NULL,
+    transaction_count INT NOT NULL,
+    calculated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(age_group, year, month)
+);
+
+CREATE INDEX IF NOT EXISTS idx_spending_medians_lookup ON spending_medians_by_age_group(age_group, year, month);

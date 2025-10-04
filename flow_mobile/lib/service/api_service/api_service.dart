@@ -82,6 +82,16 @@ class ApiService {
     );
   }
 
+  Future<GetSpendingMedianResponse> getSpendingMedianForAgeGroup({
+    int? year,
+    int? month,
+  }) async {
+    return await _transactionHistoryApiService.getSpendingMedianForAgeGroup(
+      year: year,
+      month: month,
+    );
+  }
+
   Future<GetRelinkUrlResponse> getLinkUrl(Bank bank) async {
     return await _refreshApiService.getLinkUrl(bank);
   }

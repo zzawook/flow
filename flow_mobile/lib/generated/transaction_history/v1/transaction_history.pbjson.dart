@@ -244,3 +244,50 @@ final $typed_data.Uint8List getTransactionForAccountRequestDescriptor =
         'gJUg1hY2NvdW50TnVtYmVyEhcKB2JhbmtfaWQYAiABKAlSBmJhbmtJZBIyChVvbGRlc3RfdHJh'
         'bnNhY3Rpb25faWQYAyABKAlSE29sZGVzdFRyYW5zYWN0aW9uSWQSFAoFbGltaXQYBCABKANSBW'
         'xpbWl0');
+
+@$core.Deprecated('Use getSpendingMedianRequestDescriptor instead')
+const GetSpendingMedianRequest$json = {
+  '1': 'GetSpendingMedianRequest',
+  '2': [
+    {'1': 'year', '3': 1, '4': 1, '5': 5, '9': 0, '10': 'year', '17': true},
+    {'1': 'month', '3': 2, '4': 1, '5': 5, '9': 1, '10': 'month', '17': true},
+  ],
+  '8': [
+    {'1': '_year'},
+    {'1': '_month'},
+  ],
+};
+
+/// Descriptor for `GetSpendingMedianRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getSpendingMedianRequestDescriptor =
+    $convert.base64Decode(
+        'ChhHZXRTcGVuZGluZ01lZGlhblJlcXVlc3QSFwoEeWVhchgBIAEoBUgAUgR5ZWFyiAEBEhkKBW'
+        '1vbnRoGAIgASgFSAFSBW1vbnRoiAEBQgcKBV95ZWFyQggKBl9tb250aA==');
+
+@$core.Deprecated('Use getSpendingMedianResponseDescriptor instead')
+const GetSpendingMedianResponse$json = {
+  '1': 'GetSpendingMedianResponse',
+  '2': [
+    {'1': 'age_group', '3': 1, '4': 1, '5': 9, '10': 'ageGroup'},
+    {'1': 'median_spending', '3': 2, '4': 1, '5': 1, '10': 'medianSpending'},
+    {'1': 'year', '3': 3, '4': 1, '5': 5, '10': 'year'},
+    {'1': 'month', '3': 4, '4': 1, '5': 5, '10': 'month'},
+    {'1': 'user_count', '3': 5, '4': 1, '5': 5, '10': 'userCount'},
+    {
+      '1': 'calculated_at',
+      '3': 6,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'calculatedAt'
+    },
+  ],
+};
+
+/// Descriptor for `GetSpendingMedianResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getSpendingMedianResponseDescriptor = $convert.base64Decode(
+    'ChlHZXRTcGVuZGluZ01lZGlhblJlc3BvbnNlEhsKCWFnZV9ncm91cBgBIAEoCVIIYWdlR3JvdX'
+    'ASJwoPbWVkaWFuX3NwZW5kaW5nGAIgASgBUg5tZWRpYW5TcGVuZGluZxISCgR5ZWFyGAMgASgF'
+    'UgR5ZWFyEhQKBW1vbnRoGAQgASgFUgVtb250aBIdCgp1c2VyX2NvdW50GAUgASgFUgl1c2VyQ2'
+    '91bnQSPwoNY2FsY3VsYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBS'
+    'DGNhbGN1bGF0ZWRBdA==');

@@ -19,6 +19,7 @@ service TransactionHistoryService {
   rpc SetTransactionCategory   (SetTransactionCategoryRequest)   returns (SetTransactionCategoryResponse);
   rpc SetTransactionInclusion  (SetTransactionInclusionRequest)  returns (SetTransactionInclusionResponse);
   rpc GetTransactionForAccount (GetTransactionForAccountRequest) returns (sg.flow.common.v1.TransactionHistoryList);
+  rpc GetSpendingMedianForAgeGroup (GetSpendingMedianRequest)    returns (GetSpendingMedianResponse);
 }
 
 /* ── Requests ── */
@@ -80,4 +81,20 @@ message GetTransactionForAccountRequest {
   string bank_id = 2;
   string oldest_transaction_id = 3; // for pagination, fetch transactions before this id
   int64 limit = 4; // number of transactions to fetch, default 20
+}
+
+message GetSpendingMedianRequest {
+  // userId extracted from metadata
+  // If year/month not provided, returns current month in SGT timezone
+  optional int32 year = 1;
+  optional int32 month = 2;  // 1-12
+}
+
+message GetSpendingMedianResponse {
+  string age_group = 1;  // e.g., "0s", "20s", "30s", "150s"
+  double median_spending = 2;  // positive value representing median spending
+  int32 year = 3;
+  int32 month = 4;
+  int32 user_count = 5;  // number of users included in this age group
+  google.protobuf.Timestamp calculated_at = 6;
 }

@@ -5,7 +5,13 @@ import com.google.protobuf.Timestamp
 import org.springframework.stereotype.Component
 import sg.flow.common.v1.RecurringTransactionDetail
 import sg.flow.entities.RecurringSpendingMonthly
+import sg.flow.entities.SpendingMedianByAgeGroup
+
+
 import sg.flow.transaction.v1.GetRecurringTransactionResponse
+import sg.flow.transaction.v1.GetSpendingMedianResponse
+
+
 import java.time.LocalDate
 import sg.flow.common.v1.TransactionHistoryList as ProtoTransactionHistoryList
 import sg.flow.models.transaction.TransactionHistoryList as DomainHistoryList
@@ -160,4 +166,21 @@ class TransactionHistoryMapper(
         }
         return proto.build()
     }
+fun toProto(domain: SpendingMedianByAgeGroup): GetSpendingMedianResponse {
+    val calculatedAtTimestamp =
+            Timestamp.newBuilder()
+                    .setSeconds(domain.calculatedAt.toEpochSecond(ZoneOffset.UTC))
+                    .setNanos(domain.calculatedAt.nano)
+                    .build()
+
+    return GetSpendingMedianResponse.newBuilder()
+            .setAgeGroup(domain.ageGroup)
+            .setMedianSpending(domain.medianSpending)
+            .setYear(domain.year)
+            .setMonth(domain.month)
+            .setUserCount(domain.userCount)
+            .setCalculatedAt(calculatedAtTimestamp)
+            .build()
+}
+
 }

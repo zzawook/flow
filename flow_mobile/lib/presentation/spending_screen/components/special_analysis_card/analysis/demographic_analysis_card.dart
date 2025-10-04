@@ -1,23 +1,28 @@
+import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class DemographicAnalysisCard extends StatelessWidget {
-  late String demographic = "";
-  late double demographicAmount = 1;
+  final DateTime displayedMonth;
+  final SpendingMedianData? median;
   final double myAmount;
+  final bool isLoading;
+  final String? error;
   final double height = 250;
 
-  DemographicAnalysisCard({super.key, required this.myAmount}) {
-    setDemographic();
-  }
-
-  void setDemographic() {
-    demographic = "Male of age 20-24";
-    demographicAmount = 2458.68;
-  }
+  const DemographicAnalysisCard({
+    super.key,
+    required this.displayedMonth,
+    required this.median,
+    required this.myAmount,
+    required this.isLoading,
+    required this.error,
+  });
 
   double getDemographicHeight() {
+    final demographicAmount = median?.medianSpending ?? 0;
+    if (myAmount == 0) return 100.0;
+
     if (demographicAmount > myAmount) {
       return 100.0;
     } else {
@@ -26,6 +31,9 @@ class DemographicAnalysisCard extends StatelessWidget {
   }
 
   double getMyHeight() {
+    final demographicAmount = median?.medianSpending ?? 0;
+    if (demographicAmount == 0) return 100.0;
+
     if (myAmount > demographicAmount) {
       return 100.0;
     } else {
@@ -35,6 +43,95 @@ class DemographicAnalysisCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Handle error state
+    if (error != null) {
+      return Container(
+        height: height,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.info_outline, color: Color(0xFF565656), size: 48),
+              SizedBox(height: 16),
+              Text(
+                error!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  color: Color(0xFF565656),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Handle loading or no data state
+    if (isLoading) {
+      return Container(
+        height: height,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: Color(0xFF00C864)),
+              SizedBox(height: 16),
+              Text(
+                'Loading comparison data...',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  color: Color(0xFF565656),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (median == null) {
+      return Container(
+        height: height,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'No comparison data available yet. \nVisit again later!',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  color: Color(0xFF565656),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final demographicAmount = median!.medianSpending;
+    final ageGroupLabel = median!.formattedAgeGroup;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -49,7 +146,7 @@ class DemographicAnalysisCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '$demographic spent',
+                '$ageGroupLabel spent',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 16,
@@ -110,7 +207,7 @@ class DemographicAnalysisCard extends StatelessWidget {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          '20-24 Male',
+                          ageGroupLabel,
                           style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 12,
