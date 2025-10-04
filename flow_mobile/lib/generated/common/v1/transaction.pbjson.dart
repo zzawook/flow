@@ -179,6 +179,8 @@ const RecurringTransactionDetail$json = {
     {'1': 'transaction_ids', '3': 9, '4': 3, '5': 3, '10': 'transactionIds'},
     {'1': 'year', '3': 10, '4': 1, '5': 3, '10': 'year'},
     {'1': 'month', '3': 11, '4': 1, '5': 3, '10': 'month'},
+    {'1': 'brand_domain', '3': 12, '4': 1, '5': 9, '10': 'brandDomain'},
+    {'1': 'brand_name', '3': 13, '4': 1, '5': 9, '10': 'brandName'},
   ],
 };
 
@@ -192,4 +194,5 @@ final $typed_data.Uint8List recurringTransactionDetailDescriptor = $convert.base
     '5UaW1lc3RhbXBSE2xhc3RUcmFuc2FjdGlvbkRhdGUSIwoNaW50ZXJ2YWxfZGF5cxgHIAEoA1IM'
     'aW50ZXJ2YWxEYXlzEikKEG9jY3VycmVuY2VfY291bnQYCCABKANSD29jY3VycmVuY2VDb3VudB'
     'InCg90cmFuc2FjdGlvbl9pZHMYCSADKANSDnRyYW5zYWN0aW9uSWRzEhIKBHllYXIYCiABKANS'
-    'BHllYXISFAoFbW9udGgYCyABKANSBW1vbnRo');
+    'BHllYXISFAoFbW9udGgYCyABKANSBW1vbnRoEiEKDGJyYW5kX2RvbWFpbhgMIAEoCVILYnJhbm'
+    'REb21haW4SHQoKYnJhbmRfbmFtZRgNIAEoCVIJYnJhbmROYW1l');

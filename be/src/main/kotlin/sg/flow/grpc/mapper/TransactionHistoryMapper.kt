@@ -153,6 +153,14 @@ class TransactionHistoryMapper(
                 .setMonth(d.month.toLong())
                 .setYear(d.year.toLong())
 
+if (d.brandDomain != null) {
+    b.setBrandDomain(d.brandDomain)
+}
+
+if (d.brandName != null) {
+    b.setBrandName(d.brandName)
+}
+
             if (d.transactionIds != null) {
                 var index = 0
                 for (tx in d.transactionIds) {

@@ -365,6 +365,8 @@ class RecurringTransactionDetail extends $pb.GeneratedMessage {
     $core.Iterable<$fixnum.Int64>? transactionIds,
     $fixnum.Int64? year,
     $fixnum.Int64? month,
+    $core.String? brandDomain,
+    $core.String? brandName,
   }) {
     final result = create();
     if (id != null) result.id = id;
@@ -380,6 +382,8 @@ class RecurringTransactionDetail extends $pb.GeneratedMessage {
     if (transactionIds != null) result.transactionIds.addAll(transactionIds);
     if (year != null) result.year = year;
     if (month != null) result.month = month;
+    if (brandDomain != null) result.brandDomain = brandDomain;
+    if (brandName != null) result.brandName = brandName;
     return result;
   }
 
@@ -412,6 +416,8 @@ class RecurringTransactionDetail extends $pb.GeneratedMessage {
         9, _omitFieldNames ? '' : 'transactionIds', $pb.PbFieldType.K6)
     ..aInt64(10, _omitFieldNames ? '' : 'year')
     ..aInt64(11, _omitFieldNames ? '' : 'month')
+    ..aOS(12, _omitFieldNames ? '' : 'brandDomain')
+    ..aOS(13, _omitFieldNames ? '' : 'brandName')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -534,6 +540,24 @@ class RecurringTransactionDetail extends $pb.GeneratedMessage {
   $core.bool hasMonth() => $_has(10);
   @$pb.TagNumber(11)
   void clearMonth() => $_clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.String get brandDomain => $_getSZ(11);
+  @$pb.TagNumber(12)
+  set brandDomain($core.String value) => $_setString(11, value);
+  @$pb.TagNumber(12)
+  $core.bool hasBrandDomain() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearBrandDomain() => $_clearField(12);
+
+  @$pb.TagNumber(13)
+  $core.String get brandName => $_getSZ(12);
+  @$pb.TagNumber(13)
+  set brandName($core.String value) => $_setString(12, value);
+  @$pb.TagNumber(13)
+  $core.bool hasBrandName() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearBrandName() => $_clearField(13);
 }
 
 const $core.bool _omitFieldNames =

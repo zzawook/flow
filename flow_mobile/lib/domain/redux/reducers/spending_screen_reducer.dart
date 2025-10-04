@@ -1,10 +1,42 @@
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
+import 'package:flow_mobile/domain/entity/recurring_spending.dart';
 
 SpendingScreenState spendingScreenReducer(
   SpendingScreenState state,
   dynamic action,
 ) {
+  // Handle recurring spending actions
+  if (action is SetRecurringSpendingLoadingAction) {
+    return state.copyWith(isLoadingRecurring: action.isLoading);
+  } else if (action is SetRecurringSpendingDataAction) {
+    // Group recurring spending by month
+    final Map<String, List<RecurringSpending>> groupedByMonth = {};
+
+    for (final recurring in action.recurringList) {
+      if (recurring is RecurringSpending) {
+        final monthKey =
+            '${recurring.year}-${recurring.month.toString().padLeft(2, '0')}';
+        if (!groupedByMonth.containsKey(monthKey)) {
+          groupedByMonth[monthKey] = [];
+        }
+        groupedByMonth[monthKey]!.add(recurring);
+      }
+    }
+
+    return state.copyWith(
+      recurringByMonth: groupedByMonth,
+      isLoadingRecurring: false,
+      recurringError: null,
+      recurringLastFetched: DateTime.now(),
+    );
+  } else if (action is SetRecurringSpendingErrorAction) {
+    return state.copyWith(
+      isLoadingRecurring: false,
+      recurringError: action.error,
+    );
+  }
+
   // Handle spending median actions
   if (action is SetSpendingMedianLoadingAction) {
     return state.copyWith(isLoadingMedian: action.isLoading);

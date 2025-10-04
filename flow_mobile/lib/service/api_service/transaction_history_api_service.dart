@@ -95,4 +95,10 @@ class TransactionHistoryApiService {
     final response = await _channel.getSpendingMedianForAgeGroup(request);
     return response;
   }
+
+  Future<GetRecurringTransactionResponse> getRecurringTransactions() async {
+    final request = GetRecurringTransactionRequest();
+    final response = await _channel.getRecurringTransaction(request);
+    return response;
+  }
 }

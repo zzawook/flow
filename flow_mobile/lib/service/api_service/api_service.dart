@@ -92,6 +92,10 @@ class ApiService {
     );
   }
 
+  Future<GetRecurringTransactionResponse> getRecurringTransactions() async {
+    return await _transactionHistoryApiService.getRecurringTransactions();
+  }
+
   Future<GetRelinkUrlResponse> getLinkUrl(Bank bank) async {
     return await _refreshApiService.getLinkUrl(bank);
   }

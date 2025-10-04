@@ -60,6 +60,7 @@ class RecurringSpendingAnalysisService(
                                         sequenceKey = seq.sequenceKey,
                                         displayName = seq.displayName,
                                         brandName = seq.brandName,
+                                        brandDomain = seq.brandDomain,
                                         category = seq.category,
                                         year = ym.year,
                                         month = ym.monthValue,
@@ -159,6 +160,15 @@ class RecurringSpendingAnalysisService(
         return grouped.maxByOrNull { it.value }?.key
     }
 
+    private fun dominantBrandDomain(list: List<TransactionHistory>): String? {
+        val grouped =
+                list
+                        .mapNotNull { it.brandDomain?.takeIf { d -> d.isNotBlank() } }
+                        .groupingBy { it }
+                        .eachCount()
+        return grouped.maxByOrNull { it.value }?.key
+    }
+
     private fun deriveDisplayName(list: List<TransactionHistory>): String? {
         val descs =
                 list.map { th ->
@@ -221,6 +231,7 @@ class RecurringSpendingAnalysisService(
         val amountStddev: Double?,
         val category: String?,
         val brandName: String?,
+        val brandDomain: String?,
         val displayName: String?,
         val lastDate: LocalDate?,
         val confidence: Double,
@@ -256,11 +267,12 @@ class RecurringSpendingAnalysisService(
         val amountStddev = stdDevAmount(subseq)
         val category = dominantCategory(subseq)
         val brand = dominantBrand(subseq)
+        val brandDomain = dominantBrandDomain(subseq)
         val display = brand ?: deriveDisplayName(subseq)
         val conf = computeCompositeConfidence(subseq, medInt, category)
         val lastDate = subseq.last().transactionDate
         val seqKey = makeSequenceKey(subseq, medInt)
-        return SequenceCandidate(subseq, medInt, expectedAmount, amountStddev, category, brand, display, lastDate, conf, seqKey)
+        return SequenceCandidate(subseq, medInt, expectedAmount, amountStddev, category, brand, brandDomain, display, lastDate, conf, seqKey)
     }
 
     private fun trimByIntervalMad(list: List<TransactionHistory>, medianInterval: Int): List<TransactionHistory> {

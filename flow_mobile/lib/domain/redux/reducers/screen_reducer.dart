@@ -36,7 +36,10 @@ ScreenState screenReducer(ScreenState state, dynamic action) {
       action is SetDisplayedMonthAction ||
       action is SetSelectedDateAction ||
       action is SetCalendarSelectedDateAction ||
-      action is SetSpendingMedianAction) {
+      action is SetSpendingMedianAction ||
+      action is SetRecurringSpendingLoadingAction ||
+      action is SetRecurringSpendingDataAction ||
+      action is SetRecurringSpendingErrorAction) {
     return state.copyWith(
       screenName: state.screenName,
       spendingScreenState: spendingScreenReducer(

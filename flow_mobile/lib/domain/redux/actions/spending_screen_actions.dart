@@ -69,3 +69,23 @@ class SetSpendingMedianErrorAction {
 
   SetSpendingMedianErrorAction(this.error);
 }
+
+// Recurring Spending Actions
+
+class SetRecurringSpendingLoadingAction {
+  final bool isLoading;
+
+  SetRecurringSpendingLoadingAction(this.isLoading);
+}
+
+class SetRecurringSpendingDataAction {
+  final List<dynamic> recurringList;
+
+  SetRecurringSpendingDataAction(this.recurringList);
+}
+
+class SetRecurringSpendingErrorAction {
+  final String? error;
+
+  SetRecurringSpendingErrorAction(this.error);
+}

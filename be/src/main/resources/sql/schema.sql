@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS recurring_spending_monthly (
     sequence_key TEXT NOT NULL,
     display_name TEXT DEFAULT NULL,
     brand_name TEXT DEFAULT NULL,
+    brand_domain TEXT DEFAULT NULL,
     category TEXT DEFAULT NULL,
     year INT NOT NULL,
     month INT NOT NULL,

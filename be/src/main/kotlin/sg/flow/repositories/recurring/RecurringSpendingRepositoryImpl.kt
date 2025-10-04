@@ -32,6 +32,7 @@ class RecurringSpendingRepositoryImpl(private val databaseClient: DatabaseClient
                                 .bind(2, rec.sequenceKey)
                                 .bind(3, rec.displayName)
                                 .bind(4, rec.brandName)
+                                .bind(17, rec.brandDomain)
                                 .bind(5, rec.category)
                                 .bind(6, rec.year)
                                 .bind(7, rec.month)
@@ -92,6 +93,7 @@ class RecurringSpendingRepositoryImpl(private val databaseClient: DatabaseClient
             sequenceKey = row.get("sequence_key", String::class.java)!!,
             displayName = row.get("display_name", String::class.java) ?: "",
             brandName = row.get("brand_name", String::class.java) ?: "",
+            brandDomain = row.get("brand_domain", String::class.java),
             category = row.get("category", String::class.java)!!,
             year = row.get("year", Int::class.java)!!,
             month = row.get("month", Int::class.java)!!,
@@ -103,7 +105,7 @@ class RecurringSpendingRepositoryImpl(private val databaseClient: DatabaseClient
             periodLabel = row.get("period_label", String::class.java) ?: "",
             confidence = row.get("confidence", Double::class.java)!!,
             nextTransactionDate = row.get("next_transaction_date", LocalDate::class.java) ?: LocalDate.MIN,
-            transactionIds = row.get("transaction_ids", Array<Long>::class.java)?.toList().orEmpty()
+            transactionIds = row.get("transaction_ids", Array<Long>::class.java)?.toList().orEmpty(),
         )
         return recurringSpending
     }

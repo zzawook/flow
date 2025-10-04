@@ -1,3 +1,5 @@
+import 'package:flow_mobile/domain/entity/recurring_spending.dart';
+
 /// Helper class to store spending median data for a specific month
 class SpendingMedianData {
   final String ageGroup;
@@ -38,6 +40,12 @@ class SpendingScreenState {
   final bool isLoadingMedian;
   final String? medianError;
 
+  // Recurring spending data
+  final Map<String, List<RecurringSpending>> recurringByMonth; // key: "YYYY-MM"
+  final bool isLoadingRecurring;
+  final String? recurringError;
+  final DateTime? recurringLastFetched;
+
   SpendingScreenState({
     this.isLoading = false,
     this.error = '',
@@ -48,6 +56,10 @@ class SpendingScreenState {
     this.mediansByMonth = const {},
     this.isLoadingMedian = false,
     this.medianError,
+    this.recurringByMonth = const {},
+    this.isLoadingRecurring = false,
+    this.recurringError,
+    this.recurringLastFetched,
   });
 
   SpendingScreenState copyWith({
@@ -60,6 +72,10 @@ class SpendingScreenState {
     Map<String, SpendingMedianData>? mediansByMonth,
     bool? isLoadingMedian,
     String? medianError,
+    Map<String, List<RecurringSpending>>? recurringByMonth,
+    bool? isLoadingRecurring,
+    String? recurringError,
+    DateTime? recurringLastFetched,
   }) {
     return SpendingScreenState(
       isLoading: isLoading ?? this.isLoading,
@@ -73,6 +89,10 @@ class SpendingScreenState {
       mediansByMonth: mediansByMonth ?? this.mediansByMonth,
       isLoadingMedian: isLoadingMedian ?? this.isLoadingMedian,
       medianError: medianError,
+      recurringByMonth: recurringByMonth ?? this.recurringByMonth,
+      isLoadingRecurring: isLoadingRecurring ?? this.isLoadingRecurring,
+      recurringError: recurringError,
+      recurringLastFetched: recurringLastFetched ?? this.recurringLastFetched,
     );
   }
 
@@ -90,6 +110,29 @@ class SpendingScreenState {
   /// Generate month key in format "YYYY-MM"
   static String monthKey(DateTime month) {
     return '${month.year}-${month.month.toString().padLeft(2, '0')}';
+  }
+
+  /// Get recurring spending for a specific month
+  List<RecurringSpending> getRecurringForMonth(DateTime month) {
+    final key = SpendingScreenState.monthKey(month);
+    return recurringByMonth[key] ?? [];
+  }
+
+  /// Calculate total recurring spending for a month
+  double getTotalRecurringForMonth(DateTime month) {
+    final recurring = getRecurringForMonth(month);
+    return recurring.fold(0.0, (sum, item) => sum + item.expectedAmount);
+  }
+
+  /// Check if we have recurring data
+  bool hasRecurringData() {
+    return recurringByMonth.isNotEmpty;
+  }
+
+  /// Check if data is stale (older than 1 hour)
+  bool isRecurringDataStale() {
+    if (recurringLastFetched == null) return true;
+    return DateTime.now().difference(recurringLastFetched!).inHours >= 1;
   }
 
   factory SpendingScreenState.initial() => SpendingScreenState(

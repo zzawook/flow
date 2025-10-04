@@ -10,6 +10,7 @@ data class RecurringSpendingMonthly(
         val sequenceKey: String,
         val displayName: String?,
         val brandName: String?,
+        val brandDomain: String?,
         val category: String?,
         val year: Int,
         val month: Int,
