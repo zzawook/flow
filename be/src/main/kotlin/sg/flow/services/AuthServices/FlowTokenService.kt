@@ -11,4 +11,6 @@ interface FlowTokenService {
     suspend fun generateAndStoreAccessToken(refreshToken: String): TokenSet?
     suspend fun generateAndStoreRefreshTokenAndAccessToken(userId: Int): TokenSet?
     suspend fun revokeAccessToken(accessToken: String): Boolean
+    suspend fun generateAndStoreEmailVerificationToken(email: String): String
+    suspend fun validateEmailVerificationToken(token: String): String
 }

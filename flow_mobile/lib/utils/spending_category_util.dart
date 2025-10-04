@@ -6,7 +6,7 @@ class SpendingCategoryUtil {
       "color": "#9CCD4BC",
       "icon": "assets/icons/category_icons/transfer.png",
     },
-    "Transport": {
+    "Transportation": {
       "color": "#FF9800",
       "icon": "assets/icons/category_icons/transport.png",
     },
@@ -25,8 +25,8 @@ class SpendingCategoryUtil {
     },
     "Travel": {"color": "#E91E63"},
     "Shopping": {"color": "#FFC107"},
-    "Bills": {"color": "#FF5722"},
-    "Medical": {"color": "#4CAF50"},
+    "Utilities": {"color": "#FF5722"},
+    "Health": {"color": "#4CAF50"},
     "Beauty": {"color": "#03A9F4"},
     "Education": {"color": "#9C27B0"},
     "Insurance": {"color": "#00BCD4"},

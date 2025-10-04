@@ -7,6 +7,7 @@ class AuthState {
   final String? signupName;
   final String? signupPassword;
   final String? signupEmail;
+  final DateTime? signupDateOfBirth;
 
   AuthState({
     this.loginEmail,
@@ -16,6 +17,7 @@ class AuthState {
     this.signupName,
     this.signupPassword,
     this.signupEmail,
+    this.signupDateOfBirth,
   });
 
   AuthState copyWith({
@@ -26,6 +28,7 @@ class AuthState {
     String? signupName,
     String? signupPassword,
     String? signupEmail,
+    DateTime? signupDateOfBirth,
   }) {
     return AuthState(
       loginEmail: loginEmail ?? this.loginEmail,
@@ -35,12 +38,13 @@ class AuthState {
       signupName: signupName ?? this.signupName,
       signupPassword: signupPassword ?? this.signupPassword,
       signupEmail: signupEmail ?? this.signupEmail,
+      signupDateOfBirth: signupDateOfBirth ?? this.signupDateOfBirth,
     );
   }
 
   @override
   String toString() {
-    return 'AuthState{loginEmail: $loginEmail, loginPassword: $loginPassword, isAuthenticated: $isAuthenticated, loginError: $loginError, signupName: $signupName, signupPassword: $signupPassword, signupEmail: $signupEmail}';
+    return 'AuthState{loginEmail: $loginEmail, loginPassword: $loginPassword, isAuthenticated: $isAuthenticated, loginError: $loginError, signupName: $signupName, signupPassword: $signupPassword, signupEmail: $signupEmail, signupDateOfBirth: $signupDateOfBirth}';
   }
 
   factory AuthState.initial() {
@@ -52,6 +56,7 @@ class AuthState {
       signupName: null,
       signupPassword: null,
       signupEmail: null,
+      signupDateOfBirth: null,
     );
   }
 }

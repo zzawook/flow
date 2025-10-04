@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS users (
     date_of_birth DATE DEFAULT NULL,
     address TEXT DEFAULT '',
     setting_json JSONB DEFAULT '{}',
-    password_hash TEXT DEFAULT ''
+    password_hash TEXT DEFAULT '',
+    is_email_verified BOOLEAN DEFAULT false
 );
 
 CREATE INDEX IF NOT EXISTS user_by_id_index ON users (id);

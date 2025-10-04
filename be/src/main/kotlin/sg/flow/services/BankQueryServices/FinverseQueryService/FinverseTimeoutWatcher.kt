@@ -74,8 +74,6 @@ class FinverseTimeoutWatcher(
 
         val topic = "__keyspace@0__:$key"
 
-        println(topic)
-
         val statusMono: Mono<FinverseOverallRetrievalStatus> = container
             .receive(PatternTopic(topic))
             .map { msg ->

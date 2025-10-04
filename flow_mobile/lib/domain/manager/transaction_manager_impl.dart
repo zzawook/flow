@@ -159,6 +159,7 @@ class TransactionManagerImpl implements TransactionManager {
       method: "",
       isIncludedInSpendingOrIncome: detail.isIncludedInSpendingOrIncome,
       brandDomain: detail.brandDomain,
+      brandName: detail.brandName,
       note: "",
       bankAccount: BankAccount(
         accountNumber: detail.account.accountNumber,

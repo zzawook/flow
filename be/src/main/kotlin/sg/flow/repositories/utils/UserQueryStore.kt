@@ -78,4 +78,18 @@ object UserQueryStore {
             FROM users u
             WHERE u.email = $1
         """
+
+    const val MARK_USER_EMAIL_VERIFIED =
+        """
+            UPDATE users
+            SET is_email_verified = $2
+            WHERE email = $1
+        """
+
+    const val FIND_USER_EMAIL_VERIFIED =
+        """
+            SELECT u.is_email_verified
+            FROM users u
+            WHERE email = $1
+        """
 }

@@ -7,8 +7,10 @@ import 'package:flow_mobile/presentation/link_bank_screen/all_link_success_scree
 import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen_argument.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_failed_screen.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_success_screen.dart';
+import 'package:flow_mobile/presentation/login_screen/email_validation_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/login_password_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/login_screen.dart';
+import 'package:flow_mobile/presentation/login_screen/signup_date_of_birth_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_name_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_password_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/all_refresh_success_screen.dart';
@@ -79,6 +81,8 @@ class AppRoutes {
   static const login = '/login';
   static const loginPassword = '/login/password';
   static const signupPassword = '/signup/password';
+  static const signupDateOfBirth = '/signup/date_of_birth';
+  static const emailVerification = '/email_verification';
   static const signupName = '/signup/name';
   static const setting = '/setting';
   static const notificationSetting = '/notification/setting';
@@ -196,6 +200,12 @@ class AppRoutes {
         break;
       case signupName:
         page = const SignupNameScreen();
+        break;
+      case signupDateOfBirth:
+        page = const SignupDateOfBirthScreen();
+        break;
+      case emailVerification:
+        page = const EmailValidationScreen();
         break;
 
       case setting:

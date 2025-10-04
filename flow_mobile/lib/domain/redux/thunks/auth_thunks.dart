@@ -22,7 +22,7 @@ import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-ThunkAction<FlowState> setELoginEmailThunk(String email) {
+ThunkAction<FlowState> setLoginEmailThunk(String email) {
   final ApiService apiService = getIt<ApiService>();
   final nav = getIt<NavigationService>();
   return (Store<FlowState> store) async {
@@ -127,13 +127,23 @@ Future<void> _clearState(Store<FlowState> store) async {
   store.dispatch(ClearNotificationStateAction());
 }
 
-ThunkAction<FlowState> signupThunk(String email, String password, String name) {
+ThunkAction<FlowState> signupThunk(
+  String email,
+  String password,
+  String name,
+  DateTime dateOfBirth,
+) {
   ApiService apiService = getIt<ApiService>();
   AuthManager authManager = getIt<AuthManager>();
   final nav = getIt<NavigationService>();
   return (Store<FlowState> store) async {
     try {
-      final tokenSet = await apiService.signup(email, password, name);
+      final tokenSet = await apiService.signup(
+        email,
+        password,
+        name,
+        dateOfBirth,
+      );
       authManager.saveAccessTokenToLocal(tokenSet.accessToken);
       authManager.saveRefreshTokenToLocal(tokenSet.refreshToken);
       GrpcInterceptor.setAccessToken(tokenSet.accessToken);
@@ -146,7 +156,8 @@ ThunkAction<FlowState> signupThunk(String email, String password, String name) {
         ),
       );
       _clearState(store);
-      nav.pushNamed(AppRoutes.home);
+      store.dispatch(sendVerificationEmailThunk());
+      nav.pushNamed(AppRoutes.emailVerification);
     } catch (error) {
       store.dispatch(SignupErrorAction(error.toString()));
     }
@@ -172,5 +183,39 @@ ThunkAction<FlowState> logoutThunk() {
     authManager.deleteRefreshTokenFromLocal();
     store.dispatch(LogoutAction());
     nav.pushNamedAndRemoveUntil(AppRoutes.welcome);
+  };
+}
+
+ThunkAction<FlowState> sendVerificationEmailThunk() {
+  ApiService apiService = getIt<ApiService>();
+  return (Store<FlowState> store) async {
+    try {
+      final emailSendResult = await apiService.sendVerificationEmail(
+        store.state.authState.loginEmail,
+      );
+      if (emailSendResult) {
+        store.dispatch(checkEmailVerifiedThunk());
+      }
+    } catch (error) {
+      log('Error sending verification email: $error');
+    }
+  };
+}
+
+ThunkAction<FlowState> checkEmailVerifiedThunk() {
+  print("Checking email verification");
+  ApiService apiService = getIt<ApiService>();
+  final nav = getIt<NavigationService>();
+  return (Store<FlowState> store) async {
+    try {
+      final emailVerifyResult = await apiService.checkEmailVerified(
+        store.state.authState.loginEmail ?? '',
+      );
+      if (emailVerifyResult.verified) {
+        nav.pushNamedAndRemoveUntil(AppRoutes.home);
+      }
+    } catch (error) {
+      log('Error sending verification email: $error');
+    }
   };
 }

@@ -68,6 +68,20 @@ class AuthServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$0.SendVerificationEmailResponse> sendVerificationEmail(
+    $0.SendVerificationEmailRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$sendVerificationEmail, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.CheckEmailVerifiedResponse> checkEmailVerified(
+    $0.CheckEmailVerifiedRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$checkEmailVerified, request, options: options);
+  }
+
   // method descriptors
 
   static final _$checkUserExists =
@@ -93,6 +107,16 @@ class AuthServiceClient extends $grpc.Client {
           '/sg.flow.auth.v1.AuthService/GetAccessTokenByRefreshToken',
           ($0.AccessTokenRefreshRequest value) => value.writeToBuffer(),
           $0.TokenSet.fromBuffer);
+  static final _$sendVerificationEmail = $grpc.ClientMethod<
+          $0.SendVerificationEmailRequest, $0.SendVerificationEmailResponse>(
+      '/sg.flow.auth.v1.AuthService/SendVerificationEmail',
+      ($0.SendVerificationEmailRequest value) => value.writeToBuffer(),
+      $0.SendVerificationEmailResponse.fromBuffer);
+  static final _$checkEmailVerified = $grpc.ClientMethod<
+          $0.CheckEmailVerifiedRequest, $0.CheckEmailVerifiedResponse>(
+      '/sg.flow.auth.v1.AuthService/CheckEmailVerified',
+      ($0.CheckEmailVerifiedRequest value) => value.writeToBuffer(),
+      $0.CheckEmailVerifiedResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.auth.v1.AuthService')
@@ -138,6 +162,24 @@ abstract class AuthServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.AccessTokenRefreshRequest.fromBuffer(value),
         ($0.TokenSet value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.SendVerificationEmailRequest,
+            $0.SendVerificationEmailResponse>(
+        'SendVerificationEmail',
+        sendVerificationEmail_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.SendVerificationEmailRequest.fromBuffer(value),
+        ($0.SendVerificationEmailResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.CheckEmailVerifiedRequest,
+            $0.CheckEmailVerifiedResponse>(
+        'CheckEmailVerified',
+        checkEmailVerified_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.CheckEmailVerifiedRequest.fromBuffer(value),
+        ($0.CheckEmailVerifiedResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.CheckUserExistsResponse> checkUserExists_Pre(
@@ -181,4 +223,22 @@ abstract class AuthServiceBase extends $grpc.Service {
 
   $async.Future<$0.TokenSet> getAccessTokenByRefreshToken(
       $grpc.ServiceCall call, $0.AccessTokenRefreshRequest request);
+
+  $async.Future<$0.SendVerificationEmailResponse> sendVerificationEmail_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.SendVerificationEmailRequest> $request) async {
+    return sendVerificationEmail($call, await $request);
+  }
+
+  $async.Future<$0.SendVerificationEmailResponse> sendVerificationEmail(
+      $grpc.ServiceCall call, $0.SendVerificationEmailRequest request);
+
+  $async.Future<$0.CheckEmailVerifiedResponse> checkEmailVerified_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.CheckEmailVerifiedRequest> $request) async {
+    return checkEmailVerified($call, await $request);
+  }
+
+  $async.Future<$0.CheckEmailVerifiedResponse> checkEmailVerified(
+      $grpc.ServiceCall call, $0.CheckEmailVerifiedRequest request);
 }

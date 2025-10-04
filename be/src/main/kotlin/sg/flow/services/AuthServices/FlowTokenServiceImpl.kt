@@ -10,6 +10,11 @@ import sg.flow.services.UserServices.UserService
 import sg.flow.services.UtilServices.CacheService.CacheService
 import sg.flow.services.UtilServices.JwtTokenProvider
 import sg.flow.services.UtilServices.VaultService
+import java.time.Duration
+import java.util.UUID
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Service
 class FlowTokenServiceImpl(
@@ -64,5 +69,53 @@ class FlowTokenServiceImpl(
     override suspend fun revokeAccessToken(accessToken: String): Boolean {
         cacheService.clearAccessToken(accessToken)
         return true
+    }
+
+    override suspend fun generateAndStoreEmailVerificationToken(email: String): String {
+        return withContext(Dispatchers.IO) {
+            val sessionId = UUID.randomUUID().toString()
+            val jti = UUID.randomUUID().toString()
+            val token = jwtTokenProvider.generateEmailVerificationToken(email, sessionId, jti)
+
+            val payload =
+                """
+                    {
+                        "email": "$email",
+                        "jti": "$jti"
+                    }
+                """.trimIndent()
+            val ttl = Duration.ofMinutes(5)
+            cacheService.storeEmailValidationSessionData(email, sessionId, payload, ttl)
+
+            token
+        }
+    }
+
+    override suspend fun validateEmailVerificationToken(token: String): String {
+        return withContext(Dispatchers.IO) {
+            val validatedResult = jwtTokenProvider.validateEmailVerificationToken(token)
+
+            val email = validatedResult["email"]!!
+            val sid = validatedResult["sid"]!!
+            val jti = validatedResult["jti"]!!
+
+            val jsonPayload = cacheService.getEmailValidationSessionData(email, sid)
+
+            if (checkEmailSidAndJtiNull(email, sid, jti) || (! checkPayloadCOntainsEmailAndJti(jsonPayload, email, jti))) {
+                return@withContext ""
+            }
+
+            cacheService.removeEmailValidationSessionData(email, sid)
+
+            email
+        }
+    }
+
+    private fun checkEmailSidAndJtiNull(email: String, sid: String, jti: String): Boolean {
+        return email == "null claim" || sid == "null claim" || jti == "null claim"
+    }
+
+    private fun checkPayloadCOntainsEmailAndJti(jsonPayload: String, email: String, jti: String): Boolean {
+        return !jsonPayload.contains("\"email\":\"${email}\"") || !jsonPayload.contains("\"jti\":\"${jti}\"")
     }
 }

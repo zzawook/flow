@@ -42,6 +42,7 @@ class FlowSecurityConfig {
                     .pathMatchers(HttpMethod.POST, "/finverse/webhooks/**").permitAll()
                     .pathMatchers(HttpMethod.GET, "/finverse/callback").permitAll()
                     .pathMatchers(HttpMethod.POST, "/finverse/callback").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/auth/email/verify").permitAll()
                     .anyExchange().authenticated()
             }
             .build()

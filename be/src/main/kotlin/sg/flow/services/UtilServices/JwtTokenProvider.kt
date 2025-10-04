@@ -10,9 +10,14 @@ import java.security.interfaces.RSAPublicKey
 import java.util.Date
 import org.springframework.stereotype.Service
 import sg.flow.configs.JwtProperties
+import sg.flow.configs.MagicLinkProps
+import java.time.Instant
 
 @Service
-open class JwtTokenProvider(jwtProperties: JwtProperties) {
+open class JwtTokenProvider(
+    jwtProperties: JwtProperties,
+    private val linkProps: MagicLinkProps,
+) {
 
     private val publicKey: RSAPublicKey
     private val privateKey: RSAPrivateKey
@@ -66,9 +71,39 @@ open class JwtTokenProvider(jwtProperties: JwtProperties) {
         return verifier.verify(token)
     }
 
-    /** Convenience method to extract user ID from a validated token. */
-    fun getUserIdFromToken(token: String): Int {
-        val decoded = verifyToken(token)
-        return decoded.subject.toInt()
+    fun generateEmailVerificationToken(email: String, sessionId: String, jti: String): String {
+        // 2) Sign token (JWT)
+        val now = Instant.now()
+        val token = JWT.create()
+            .withIssuer(linkProps.issuer)
+            .withSubject("verify-email")
+            .withAudience("flow-users")
+            .withClaim("sid", sessionId)
+            .withClaim("email", email)
+            .withJWTId(jti)
+            .withIssuedAt(Date.from(now))
+            .withExpiresAt(Date.from(now.plusSeconds(linkProps.ttlMinutes * 60)))
+            .sign(algorithm)
+
+        return token
+    }
+
+    fun validateEmailVerificationToken(token: String): Map<String, String> {
+        val verifier = JWT.require(algorithm)
+            .withIssuer(linkProps.issuer)
+            .withSubject("verify-email")
+            .build()
+        val jwt: DecodedJWT = verifier.verify(token)
+
+        val sid = jwt.getClaim("sid").asString()
+        val email = jwt.getClaim("email").asString()
+        val jti  = jwt.id
+
+        val ans = HashMap<String, String>()
+        ans.put("sid", sid)
+        ans.put("email", email)
+        ans.put("jti", jti)
+
+        return ans
     }
 }

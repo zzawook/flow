@@ -1,44 +1,33 @@
-import 'package:flow_mobile/domain/redux/actions/auth_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/auth_state.dart';
-import 'package:flow_mobile/initialization/service_registry.dart';
-import 'package:flow_mobile/presentation/navigation/app_routes.dart';
+import 'package:flow_mobile/domain/redux/thunks/auth_thunks.dart';
 import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/transfer_screen/input.dart';
-import 'package:flow_mobile/service/navigation_service.dart';
+import 'package:flow_mobile/utils/date_time_util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-class SignupNameScreen extends StatefulWidget {
-  const SignupNameScreen({super.key});
+class SignupDateOfBirthScreen extends StatefulWidget {
+  const SignupDateOfBirthScreen({super.key});
 
   @override
-  State<SignupNameScreen> createState() => _SignupNameScreenState();
+  State<SignupDateOfBirthScreen> createState() =>
+      _SignupDateOfBirthScreenState();
 }
 
-class _SignupNameScreenState extends State<SignupNameScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final FocusNode _nameFocus = FocusNode();
+class _SignupDateOfBirthScreenState extends State<SignupDateOfBirthScreen> {
+  DateTime selectedDate = DateTime.now();
 
-  String message = "";
-
-  void _onNext(String email, String password) {
-    if (_nameController.text.isEmpty) {
-      setState(() {
-        message = 'Please enter your name';
-      });
-      return;
-    }
-    // Dispatch the action to save the name
+  void _onNext(String email, String password, String name) {
+    // Dispatch the action to save the date of birth
     StoreProvider.of<FlowState>(
       context,
       listen: false,
-    ).dispatch(SetSignupNameAction(name:  _nameController.text));
-    final navService = getIt<NavigationService>();
-    navService.pushNamed(AppRoutes.signupDateOfBirth);
+    ).dispatch(signupThunk(email, password, name, selectedDate));
   }
 
   @override
@@ -57,27 +46,34 @@ class _SignupNameScreenState extends State<SignupNameScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Text(
-                  "How should we call you?",
+                  "When's your birthday?",
                   style: Theme.of(context).textTheme.displayLarge,
                 ),
               ),
+              FlowSeparatorBox(height: 20),
               Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Text(
-                  message,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.red),
+                  "Let us celebrate together!",
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
-                child: EditableTextWidget(
-                  controller: _nameController,
-                  focusNode: _nameFocus,
-                  hintText: 'Name',
-                  labelText: 'Name',
-                  keyboardType: TextInputType.name,
+                child: SizedBox(
+                  height: 200,
+                  width: double.infinity,
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.date, // .time, .dateAndTime
+                    initialDateTime: DateTime.now(),
+                    minimumDate: DateTime(2000),
+                    maximumDate: DateTime(2100),
+                    onDateTimeChanged: (dt) {
+                      setState(() {
+                        selectedDate = dt;
+                      });
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -92,6 +88,7 @@ class _SignupNameScreenState extends State<SignupNameScreen> {
                         _onNext(
                           authState.loginEmail ?? '',
                           authState.signupPassword ?? '',
+                          authState.signupName ?? '',
                         );
                       },
                     );

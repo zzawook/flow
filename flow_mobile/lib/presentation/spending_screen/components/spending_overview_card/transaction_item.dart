@@ -1,6 +1,7 @@
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_tag.dart';
 import 'package:flow_mobile/service/logo_service.dart';
+import 'package:flow_mobile/utils/spending_category_util.dart';
 import 'package:flutter/material.dart';
 
 /// Individual Transaction Item
@@ -67,8 +68,8 @@ class _TransactionItemState extends State<TransactionItem> {
       logoWidget = ClipOval(
         child: Image.network(
           networkLogoUrl!,
-          height: 45,
-          width: 45,
+          height: 42,
+          width: 42,
           errorBuilder: (context, error, stackTrace) {
             // Mark failure exactly once, then rebuild to show asset (not clipped)
             if (!_networkFailed) {
@@ -77,14 +78,23 @@ class _TransactionItemState extends State<TransactionItem> {
                 if (mounted) setState(() {});
               });
             }
-            // temporary placeholder so layout doesn’t jump this frame
-            return const SizedBox(height: 35, width: 35);
+            // temporary placeholder so layout doesn't jump this frame
+            return const SizedBox(height: 42, width: 42);
           },
         ),
       );
     } else {
-      // Fallback asset NOT inside ClipOval
-      logoWidget = Image.asset(assetLogo, height: 35, width: 35);
+      // Fallback: category icon inside a colored circle
+      logoWidget = Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: SpendingCategoryUtil.getCategoryColor(widget.category),
+        ),
+        padding: const EdgeInsets.all(8),
+        child: Image.asset(assetLogo, fit: BoxFit.contain),
+      );
     }
 
     return Container(

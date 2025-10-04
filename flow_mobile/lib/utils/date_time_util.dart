@@ -17,10 +17,22 @@ class DateTimeUtil {
     return DateTime(year, month, day);
   }
 
+  static DateTime parseDateYYYYMMDDWithDash(String dateString) {
+    final dateParts = dateString.split('-');
+    final year = int.parse(dateParts[0]);
+    final month = int.parse(dateParts[1]);
+    final day = int.parse(dateParts[2]);
+    return DateTime(year, month, day);
+  }
+
   static bool isSameDate(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
         date1.month == date2.month &&
         date1.day == date2.day;
+  }
+
+  static bool isSameMonth(DateTime date1, DateTime date2) {
+    return date1.year == date2.year && date1.month == date2.month;
   }
 
   static String getDatePostFix(int dat) {

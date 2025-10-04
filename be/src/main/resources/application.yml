@@ -74,6 +74,18 @@ flow:
       finverse-auth-complete: finverse-auth-complete-events
       finverse-product-complete: finverse-product-complete-events
       transaction-analysis-trigger: transaction-analysis-trigger
+  email:
+    region: ap-southeast-1
+    sender: noreply@flowfinancials.io
+    templates:
+      en: FlowVerifyEn
+  magiclink:
+    baseUrl: https://40d0adb10140.ngrok-free.app/api/auth/email/verify
+    issuer: flowfinancials.io
+    ttlMinutes: 5
+    hmacSecret: test
+    redirectUrl: https://flowfinancials.io/auth/email_verification_success
+    failRedirectUrl: https://flowfinancials.io/auth/email_verification_sucess
   transaction-analysis:
     batch-size: 25
     max-retries: 3
@@ -109,7 +121,7 @@ aws:
   bedrock:
     region: us-east-1
     agent-id: N8IR2MXV8S
-    agent-alias-id: VRIKDPSK8W
+    agent-alias-id: KWGILBCE7R
     session-id: transaction-analysis-session
     max-tokens: 8192
     temperature: 0.1

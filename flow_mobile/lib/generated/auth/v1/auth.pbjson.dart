@@ -47,15 +47,16 @@ const SignUpRequest$json = {
     {'1': 'email', '3': 1, '4': 1, '5': 9, '10': 'email'},
     {'1': 'password', '3': 2, '4': 1, '5': 9, '10': 'password'},
     {'1': 'phone_number', '3': 3, '4': 1, '5': 9, '10': 'phoneNumber'},
-    {'1': 'name', '3': 4, '4': 1, '5': 9, '10': 'name'},
+    {'1': 'date_of_birth', '3': 4, '4': 1, '5': 9, '10': 'dateOfBirth'},
+    {'1': 'name', '3': 5, '4': 1, '5': 9, '10': 'name'},
   ],
 };
 
 /// Descriptor for `SignUpRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List signUpRequestDescriptor = $convert.base64Decode(
     'Cg1TaWduVXBSZXF1ZXN0EhQKBWVtYWlsGAEgASgJUgVlbWFpbBIaCghwYXNzd29yZBgCIAEoCV'
-    'IIcGFzc3dvcmQSIQoMcGhvbmVfbnVtYmVyGAMgASgJUgtwaG9uZU51bWJlchISCgRuYW1lGAQg'
-    'ASgJUgRuYW1l');
+    'IIcGFzc3dvcmQSIQoMcGhvbmVfbnVtYmVyGAMgASgJUgtwaG9uZU51bWJlchIiCg1kYXRlX29m'
+    'X2JpcnRoGAQgASgJUgtkYXRlT2ZCaXJ0aBISCgRuYW1lGAUgASgJUgRuYW1l');
 
 @$core.Deprecated('Use signInRequestDescriptor instead')
 const SignInRequest$json = {
@@ -122,3 +123,57 @@ const TokenSet$json = {
 final $typed_data.Uint8List tokenSetDescriptor = $convert.base64Decode(
     'CghUb2tlblNldBIhCgxhY2Nlc3NfdG9rZW4YASABKAlSC2FjY2Vzc1Rva2VuEiMKDXJlZnJlc2'
     'hfdG9rZW4YAiABKAlSDHJlZnJlc2hUb2tlbg==');
+
+@$core.Deprecated('Use sendVerificationEmailRequestDescriptor instead')
+const SendVerificationEmailRequest$json = {
+  '1': 'SendVerificationEmailRequest',
+  '2': [
+    {'1': 'email', '3': 1, '4': 1, '5': 9, '10': 'email'},
+  ],
+};
+
+/// Descriptor for `SendVerificationEmailRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List sendVerificationEmailRequestDescriptor =
+    $convert.base64Decode(
+        'ChxTZW5kVmVyaWZpY2F0aW9uRW1haWxSZXF1ZXN0EhQKBWVtYWlsGAEgASgJUgVlbWFpbA==');
+
+@$core.Deprecated('Use sendVerificationEmailResponseDescriptor instead')
+const SendVerificationEmailResponse$json = {
+  '1': 'SendVerificationEmailResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+  ],
+};
+
+/// Descriptor for `SendVerificationEmailResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List sendVerificationEmailResponseDescriptor =
+    $convert.base64Decode(
+        'Ch1TZW5kVmVyaWZpY2F0aW9uRW1haWxSZXNwb25zZRIYCgdzdWNjZXNzGAEgASgIUgdzdWNjZX'
+        'Nz');
+
+@$core.Deprecated('Use checkEmailVerifiedRequestDescriptor instead')
+const CheckEmailVerifiedRequest$json = {
+  '1': 'CheckEmailVerifiedRequest',
+  '2': [
+    {'1': 'email', '3': 1, '4': 1, '5': 9, '10': 'email'},
+  ],
+};
+
+/// Descriptor for `CheckEmailVerifiedRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List checkEmailVerifiedRequestDescriptor =
+    $convert.base64Decode(
+        'ChlDaGVja0VtYWlsVmVyaWZpZWRSZXF1ZXN0EhQKBWVtYWlsGAEgASgJUgVlbWFpbA==');
+
+@$core.Deprecated('Use checkEmailVerifiedResponseDescriptor instead')
+const CheckEmailVerifiedResponse$json = {
+  '1': 'CheckEmailVerifiedResponse',
+  '2': [
+    {'1': 'verified', '3': 1, '4': 1, '5': 8, '10': 'verified'},
+  ],
+};
+
+/// Descriptor for `CheckEmailVerifiedResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List checkEmailVerifiedResponseDescriptor =
+    $convert.base64Decode(
+        'ChpDaGVja0VtYWlsVmVyaWZpZWRSZXNwb25zZRIaCgh2ZXJpZmllZBgBIAEoCFIIdmVyaWZpZW'
+        'Q=');

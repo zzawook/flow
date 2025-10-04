@@ -6,8 +6,12 @@ import sg.flow.auth.GrpcSecurityContext
 
 import sg.flow.auth.v1.AuthServiceGrpcKt              // generated from auth_service.proto
 import sg.flow.auth.v1.AccessTokenRefreshRequest
+import sg.flow.auth.v1.CheckEmailVerifiedRequest
+import sg.flow.auth.v1.CheckEmailVerifiedResponse
 import sg.flow.auth.v1.CheckUserExistsRequest
 import sg.flow.auth.v1.CheckUserExistsResponse
+import sg.flow.auth.v1.SendVerificationEmailRequest
+import sg.flow.auth.v1.SendVerificationEmailResponse
 import sg.flow.auth.v1.SignInRequest
 import sg.flow.auth.v1.SignOutRequest
 import sg.flow.auth.v1.SignOutResponse
@@ -19,6 +23,10 @@ import sg.flow.grpc.mapper.AuthMapper
 import sg.flow.services.AuthServices.AuthService
 import sg.flow.validation.ValidationException
 import sg.flow.validation.Validator                        // validation helper we built earlier
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 @GrpcService
 class AuthGrpcService(
@@ -64,9 +72,11 @@ class AuthGrpcService(
                         throw InvalidSignupCredentialException(e.message ?: "")
                 }
 
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val dateOfBirth = LocalDate.parse(request.dateOfBirth, formatter)
 
                 val token = authService.registerUser(
-                        request.email, request.name, request.password
+                        request.email, request.name, request.password, dateOfBirth
                 )
                 return authMapper.toProto(token)
         }
@@ -97,5 +107,13 @@ class AuthGrpcService(
                         .asRuntimeException()
 
                 return authMapper.toProto(token)
+        }
+
+        override suspend fun sendVerificationEmail(request: SendVerificationEmailRequest): SendVerificationEmailResponse {
+                return SendVerificationEmailResponse.newBuilder().setSuccess(authService.sendVerificationEmail(request.email)).build()
+        }
+
+        override suspend fun checkEmailVerified(request: CheckEmailVerifiedRequest): CheckEmailVerifiedResponse {
+                return CheckEmailVerifiedResponse.newBuilder().setVerified(authService.checkEmailVerified(request.email)).build()
         }
 }

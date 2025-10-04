@@ -32,9 +32,7 @@ Future<void> main() async {
 
 class FlowApplication extends StatelessWidget {
   final FlowState initialState;
-
   
-
   const FlowApplication({super.key, required this.initialState});
 
   @override

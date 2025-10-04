@@ -203,4 +203,34 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
         return userIdAndPasswordHash ?: UserIdAndPasswordHash(-1, "")
     }
 
+    override suspend fun markUserEmailVerified(email: String): Boolean {
+        val sql = UserQueryStore.MARK_USER_EMAIL_VERIFIED
+
+        val result = databaseClient.sql(sql)
+            .bind(0, email)
+            .bind(1, true)
+            .fetch()
+            .awaitRowsUpdated()
+
+        return result == 1L
+    }
+
+    override suspend fun fetchIsUserEmailVerified(email: String): Boolean {
+        val sql = UserQueryStore.FIND_USER_EMAIL_VERIFIED
+
+        val result = databaseClient.sql(sql)
+            .bind(0, email)
+            .map {row ->
+                row.get("is_email_verified", Boolean::class.java)
+            }
+            .one()
+            .awaitFirstOrNull()
+
+        if (result != null) {
+            return result
+        }
+        return false
+    }
+
+
 }

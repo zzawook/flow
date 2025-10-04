@@ -119,8 +119,13 @@ class ApiService {
     return await _authApiService.login(email, password);
   }
 
-  Future<TokenSet> signup(String email, String password, String name) async {
-    return await _authApiService.signup(email, password, name);
+  Future<TokenSet> signup(
+    String email,
+    String password,
+    String name,
+    DateTime dateOfBirth,
+  ) async {
+    return await _authApiService.signup(email, password, name, dateOfBirth);
   }
 
   Future<SignOutResponse> signout() async {
@@ -170,5 +175,17 @@ class ApiService {
       limit,
       oldestTransactionId: oldestTransactionId,
     );
+  }
+
+  Future<bool> sendVerificationEmail(String? loginEmail) async {
+    final response = await _authApiService.sendVerificationEmail(loginEmail);
+    return response.success;
+  }
+
+  Future<CheckEmailVerifiedResponse> checkEmailVerified(
+    String loginEmail,
+  ) async {
+    final response = await _authApiService.checkEmailVerified(loginEmail);
+    return response;
   }
 }

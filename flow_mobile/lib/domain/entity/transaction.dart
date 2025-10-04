@@ -35,6 +35,9 @@ class Transaction {
   @HiveField(9)
   final String brandDomain;
 
+  @HiveField(10)
+  final String brandName;
+
   Transaction({
     required this.id,
     required this.name,
@@ -46,6 +49,7 @@ class Transaction {
     required this.note,
     this.isIncludedInSpendingOrIncome = true,
     this.brandDomain = "",
+    this.brandName = "",
   });
 
   @override
@@ -57,7 +61,7 @@ class Transaction {
 
   Transaction copyWith({
     int? id,
-    String? name, 
+    String? name,
     double? amount,
     BankAccount? bankAccount,
     String? category,
@@ -66,6 +70,7 @@ class Transaction {
     String? note,
     bool? isIncludedInSpendingOrIncome,
     String? brandDomain,
+    String? brandName,
   }) {
     return Transaction(
       id: id ?? this.id,
@@ -76,8 +81,10 @@ class Transaction {
       date: date ?? this.date,
       method: method ?? this.method,
       note: note ?? this.note,
-      isIncludedInSpendingOrIncome: isIncludedInSpendingOrIncome ?? this.isIncludedInSpendingOrIncome,
+      isIncludedInSpendingOrIncome:
+          isIncludedInSpendingOrIncome ?? this.isIncludedInSpendingOrIncome,
       brandDomain: brandDomain ?? this.brandDomain,
+      brandName: brandName ?? this.brandName,
     );
   }
 
@@ -96,6 +103,6 @@ class Transaction {
 
   @override
   String toString() {
-    return 'Transaction{name: $name, amount: $amount, date: $date}';
+    return 'Transaction{name: $name, amount: $amount, date: $date, category: $category}';
   }
 }

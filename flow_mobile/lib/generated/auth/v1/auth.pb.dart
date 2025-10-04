@@ -139,12 +139,14 @@ class SignUpRequest extends $pb.GeneratedMessage {
     $core.String? email,
     $core.String? password,
     $core.String? phoneNumber,
+    $core.String? dateOfBirth,
     $core.String? name,
   }) {
     final result = create();
     if (email != null) result.email = email;
     if (password != null) result.password = password;
     if (phoneNumber != null) result.phoneNumber = phoneNumber;
+    if (dateOfBirth != null) result.dateOfBirth = dateOfBirth;
     if (name != null) result.name = name;
     return result;
   }
@@ -166,7 +168,8 @@ class SignUpRequest extends $pb.GeneratedMessage {
     ..aOS(1, _omitFieldNames ? '' : 'email')
     ..aOS(2, _omitFieldNames ? '' : 'password')
     ..aOS(3, _omitFieldNames ? '' : 'phoneNumber')
-    ..aOS(4, _omitFieldNames ? '' : 'name')
+    ..aOS(4, _omitFieldNames ? '' : 'dateOfBirth')
+    ..aOS(5, _omitFieldNames ? '' : 'name')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -218,13 +221,22 @@ class SignUpRequest extends $pb.GeneratedMessage {
   void clearPhoneNumber() => $_clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get name => $_getSZ(3);
+  $core.String get dateOfBirth => $_getSZ(3);
   @$pb.TagNumber(4)
-  set name($core.String value) => $_setString(3, value);
+  set dateOfBirth($core.String value) => $_setString(3, value);
   @$pb.TagNumber(4)
-  $core.bool hasName() => $_has(3);
+  $core.bool hasDateOfBirth() => $_has(3);
   @$pb.TagNumber(4)
-  void clearName() => $_clearField(4);
+  void clearDateOfBirth() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get name => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set name($core.String value) => $_setString(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasName() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearName() => $_clearField(5);
 }
 
 class SignInRequest extends $pb.GeneratedMessage {
@@ -534,6 +546,247 @@ class TokenSet extends $pb.GeneratedMessage {
   $core.bool hasRefreshToken() => $_has(1);
   @$pb.TagNumber(2)
   void clearRefreshToken() => $_clearField(2);
+}
+
+class SendVerificationEmailRequest extends $pb.GeneratedMessage {
+  factory SendVerificationEmailRequest({
+    $core.String? email,
+  }) {
+    final result = create();
+    if (email != null) result.email = email;
+    return result;
+  }
+
+  SendVerificationEmailRequest._();
+
+  factory SendVerificationEmailRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SendVerificationEmailRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SendVerificationEmailRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.auth.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'email')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SendVerificationEmailRequest clone() =>
+      SendVerificationEmailRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SendVerificationEmailRequest copyWith(
+          void Function(SendVerificationEmailRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as SendVerificationEmailRequest))
+          as SendVerificationEmailRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SendVerificationEmailRequest create() =>
+      SendVerificationEmailRequest._();
+  @$core.override
+  SendVerificationEmailRequest createEmptyInstance() => create();
+  static $pb.PbList<SendVerificationEmailRequest> createRepeated() =>
+      $pb.PbList<SendVerificationEmailRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SendVerificationEmailRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SendVerificationEmailRequest>(create);
+  static SendVerificationEmailRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get email => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set email($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasEmail() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearEmail() => $_clearField(1);
+}
+
+class SendVerificationEmailResponse extends $pb.GeneratedMessage {
+  factory SendVerificationEmailResponse({
+    $core.bool? success,
+  }) {
+    final result = create();
+    if (success != null) result.success = success;
+    return result;
+  }
+
+  SendVerificationEmailResponse._();
+
+  factory SendVerificationEmailResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SendVerificationEmailResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SendVerificationEmailResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.auth.v1'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SendVerificationEmailResponse clone() =>
+      SendVerificationEmailResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SendVerificationEmailResponse copyWith(
+          void Function(SendVerificationEmailResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as SendVerificationEmailResponse))
+          as SendVerificationEmailResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SendVerificationEmailResponse create() =>
+      SendVerificationEmailResponse._();
+  @$core.override
+  SendVerificationEmailResponse createEmptyInstance() => create();
+  static $pb.PbList<SendVerificationEmailResponse> createRepeated() =>
+      $pb.PbList<SendVerificationEmailResponse>();
+  @$core.pragma('dart2js:noInline')
+  static SendVerificationEmailResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SendVerificationEmailResponse>(create);
+  static SendVerificationEmailResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => $_clearField(1);
+}
+
+class CheckEmailVerifiedRequest extends $pb.GeneratedMessage {
+  factory CheckEmailVerifiedRequest({
+    $core.String? email,
+  }) {
+    final result = create();
+    if (email != null) result.email = email;
+    return result;
+  }
+
+  CheckEmailVerifiedRequest._();
+
+  factory CheckEmailVerifiedRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory CheckEmailVerifiedRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'CheckEmailVerifiedRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.auth.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'email')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CheckEmailVerifiedRequest clone() =>
+      CheckEmailVerifiedRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CheckEmailVerifiedRequest copyWith(
+          void Function(CheckEmailVerifiedRequest) updates) =>
+      super.copyWith((message) => updates(message as CheckEmailVerifiedRequest))
+          as CheckEmailVerifiedRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CheckEmailVerifiedRequest create() => CheckEmailVerifiedRequest._();
+  @$core.override
+  CheckEmailVerifiedRequest createEmptyInstance() => create();
+  static $pb.PbList<CheckEmailVerifiedRequest> createRepeated() =>
+      $pb.PbList<CheckEmailVerifiedRequest>();
+  @$core.pragma('dart2js:noInline')
+  static CheckEmailVerifiedRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<CheckEmailVerifiedRequest>(create);
+  static CheckEmailVerifiedRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get email => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set email($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasEmail() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearEmail() => $_clearField(1);
+}
+
+class CheckEmailVerifiedResponse extends $pb.GeneratedMessage {
+  factory CheckEmailVerifiedResponse({
+    $core.bool? verified,
+  }) {
+    final result = create();
+    if (verified != null) result.verified = verified;
+    return result;
+  }
+
+  CheckEmailVerifiedResponse._();
+
+  factory CheckEmailVerifiedResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory CheckEmailVerifiedResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'CheckEmailVerifiedResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.auth.v1'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'verified')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CheckEmailVerifiedResponse clone() =>
+      CheckEmailVerifiedResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CheckEmailVerifiedResponse copyWith(
+          void Function(CheckEmailVerifiedResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as CheckEmailVerifiedResponse))
+          as CheckEmailVerifiedResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CheckEmailVerifiedResponse create() => CheckEmailVerifiedResponse._();
+  @$core.override
+  CheckEmailVerifiedResponse createEmptyInstance() => create();
+  static $pb.PbList<CheckEmailVerifiedResponse> createRepeated() =>
+      $pb.PbList<CheckEmailVerifiedResponse>();
+  @$core.pragma('dart2js:noInline')
+  static CheckEmailVerifiedResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<CheckEmailVerifiedResponse>(create);
+  static CheckEmailVerifiedResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get verified => $_getBF(0);
+  @$pb.TagNumber(1)
+  set verified($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasVerified() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearVerified() => $_clearField(1);
 }
 
 const $core.bool _omitFieldNames =

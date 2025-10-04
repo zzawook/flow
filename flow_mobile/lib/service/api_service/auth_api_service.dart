@@ -22,12 +22,23 @@ class AuthApiService {
       final response = await client.signIn(request);
       return response;
     } catch (e) {
-      throw Exception('Login failed: ${e}');
+      throw Exception('Login failed: $e');
     }
   }
 
-  Future<TokenSet> signup(String email, String password, String name) async {
-    final request = SignUpRequest(email: email, password: password, name: name);
+  Future<TokenSet> signup(
+    String email,
+    String password,
+    String name,
+    DateTime dateOfBirth,
+  ) async {
+    final request = SignUpRequest(
+      email: email,
+      password: password,
+      name: name,
+      dateOfBirth:
+          "${dateOfBirth.year.toString().padLeft(4, '0')}-${dateOfBirth.month.toString().padLeft(2, '0')}-${dateOfBirth.day.toString().padLeft(2, '0')}",
+    );
 
     try {
       final response = await client.signUp(request);
@@ -69,6 +80,30 @@ class AuthApiService {
       return response;
     } catch (e) {
       throw Exception('Check user exists failed: $e');
+    }
+  }
+
+  Future<SendVerificationEmailResponse> sendVerificationEmail(
+    String? loginEmail,
+  ) async {
+    final request = SendVerificationEmailRequest(email: loginEmail);
+
+    try {
+      final response = await client.sendVerificationEmail(request);
+      return response;
+    } catch (e) {
+      throw Exception('Send verification email failed: $e');
+    }
+  }
+
+  Future<CheckEmailVerifiedResponse> checkEmailVerified(String email) async {
+    final request = CheckEmailVerifiedRequest(email: email);
+
+    try {
+      final response = await client.checkEmailVerified(request);
+      return response;
+    } catch (e) {
+      throw Exception('Check email verified failed: $e');
     }
   }
 }

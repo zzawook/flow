@@ -4,6 +4,7 @@ import sg.flow.models.finverse.FinverseAuthenticationStatus
 import sg.flow.models.finverse.FinverseDataRetrievalRequest
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseLoginIdentityCredential
 import sg.flow.services.UtilServices.UserIdAndInstitutionId
+import java.time.Duration
 import java.util.Optional
 
 interface CacheService {
@@ -36,4 +37,9 @@ interface CacheService {
     suspend fun storeFinalAuth(userId: Int, institutionId: String, authStatus: FinverseAuthenticationStatus)
 
     suspend fun getFinalAuth(userId: Int, institutionId: String): FinverseAuthenticationStatus
+
+    suspend fun storeEmailValidationSessionData(email: String, sessionId: String, payload: String, ttl: Duration)
+
+    suspend fun getEmailValidationSessionData(email: String, sessionId: String): String
+    suspend fun removeEmailValidationSessionData(email: String, sid: String): Boolean
 }

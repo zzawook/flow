@@ -104,6 +104,13 @@ dependencies {
 
 	// AWS SDK for Bedrock
 	implementation("aws.sdk.kotlin:bedrockagentruntime:1.5.7")
+	// AWS SES (Java SDK v2) — async client
+	implementation("software.amazon.awssdk:sesv2:2.25.64")
+	implementation("software.amazon.awssdk:netty-nio-client:2.25.64") // required for SesV2AsyncClient
+
+	// Coroutines bridge for CompletableFuture.await()
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8") // version comes from your BOM (1.7.3)
+
 
 
 	// Spring gRPC integration

@@ -12,6 +12,8 @@ service AuthService {
   rpc SignIn (SignInRequest) returns (TokenSet);
   rpc SignOut (SignOutRequest) returns (SignOutResponse);
   rpc GetAccessTokenByRefreshToken (AccessTokenRefreshRequest) returns (TokenSet);
+  rpc SendVerificationEmail (SendVerificationEmailRequest) returns (SendVerificationEmailResponse);
+  rpc CheckEmailVerified (CheckEmailVerifiedRequest) returns (CheckEmailVerifiedResponse);
 }
 
 message CheckUserExistsRequest {
@@ -25,8 +27,9 @@ message CheckUserExistsResponse {
 message SignUpRequest {
   string email = 1;  // validated: not blank, size 1-100
   string password = 2;  // validated: not blank, size 6-100
-  string phone_number = 3;
-  string name = 4;
+  string phone_number = 3; // validated: not blank, size 1-15
+  string date_of_birth = 4; // validated: not blank, format YYYY-MM-DD
+  string name = 5; // validated: not blank, size 1-100
 }
 
 message SignInRequest {
@@ -49,4 +52,20 @@ message AccessTokenRefreshRequest {
 message TokenSet {
   string access_token = 1;
   string refresh_token = 2;
+}
+
+message SendVerificationEmailRequest {
+  string email = 1; // validated: not blank, size 1-100
+}
+
+message SendVerificationEmailResponse {
+  bool success = 1; // true if email was sent successfully
+}
+
+message CheckEmailVerifiedRequest {
+  string email = 1; // validated: not blank, size 1-100
+}
+
+message CheckEmailVerifiedResponse {
+  bool verified = 1; // true if email is verified
 }

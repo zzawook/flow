@@ -13,4 +13,6 @@ interface UserRepository : Repository<User, Long> {
     suspend fun checkUserExists(email: String): Boolean
     suspend fun getUserIdByEmail(email: String): Int
     suspend fun getUserIdAndPasswordHashWithEmail(email: String): UserIdAndPasswordHash
+    suspend fun markUserEmailVerified(email: String): Boolean
+    suspend fun fetchIsUserEmailVerified(email: String): Boolean
 }

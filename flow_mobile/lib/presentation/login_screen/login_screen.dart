@@ -42,7 +42,7 @@ class _LoginEmailScreenState extends State<LoginEmailScreen> {
     StoreProvider.of<FlowState>(
       context,
       listen: false,
-    ).dispatch(setELoginEmailThunk(_usernameController.text));
+    ).dispatch(setLoginEmailThunk(_usernameController.text));
   }
 
   void _onSignUp() {

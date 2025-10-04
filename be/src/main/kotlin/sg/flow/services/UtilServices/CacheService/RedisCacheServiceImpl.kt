@@ -25,18 +25,10 @@ class RedisCacheServiceImpl(
     private val REFRESH_SESSION_PREFIX = "refresh_session:"
     private val PRE_AUTH_SESSION_PREFIX = "preauth:"
     private val POST_AUTH_RESULT_PREFIX = "postauth:"
+    private val EMAIL_VERIFICATION_SESSION_PREFIX = "email_verification:"
     private val TOKEN_TTL = Duration.ofHours(1) // 1 hour TTL for tokens
     private val SESSION_TTL = Duration.ofSeconds(90) // 1.5 minutes for refresh sessions
     private val PRE_AUTH_SESSION_TTL = Duration.ofMinutes(5) // 5 minutes for pre-auth sessions
-    private val LOGO_URL_TTL = Duration.ofHours(24)
-
-    fun getLogoUrlForBrand(brandName: String) : String {
-        return ""
-    }
-
-    fun saveLogoUrlForBrand(brandName: String) {
-        
-    }
 
     fun getRefreshSessionPrefix(loginIdentityId: String): String {
         return "$REFRESH_SESSION_PREFIX{$loginIdentityId}"
@@ -52,6 +44,14 @@ class RedisCacheServiceImpl(
 
     fun getPostAuthKey(userId: Int, institutionId: String): String {
         return "$POST_AUTH_RESULT_PREFIX$userId:$institutionId"
+    }
+
+    fun getEmailVerificationSessionKey(email: String, sessionId: String): String {
+        return "$EMAIL_VERIFICATION_SESSION_PREFIX$email:$sessionId"
+    }
+
+    fun getEmailVerificationSessionWildcardKey(email: String): String {
+        return "$EMAIL_VERIFICATION_SESSION_PREFIX$email:*"
     }
 
     override fun getUserIdByAccessToken(token: String): Optional<Int> {
@@ -366,6 +366,7 @@ class RedisCacheServiceImpl(
                 .set(key, jsonStatus, SESSION_TTL)
                 .awaitSingleOrNull()
         } catch (e: Exception) {
+            e.printStackTrace()
             logger.error("Failed to store final authentication result: ${e.message} FOR $userId, $institutionId")
         }
     }
@@ -385,8 +386,65 @@ class RedisCacheServiceImpl(
             }
 
         } catch (e: Exception) {
+            e.printStackTrace()
             logger.error("Failed to get final authentication result: ${e.message} FOR $userId, $institutionId")
             FinverseAuthenticationStatus.FAILED
+        }
+    }
+
+    override suspend fun storeEmailValidationSessionData(
+        email: String,
+        sessionId: String,
+        payload: String,
+        ttl: Duration
+    ) {
+        try {
+            val key = getEmailVerificationSessionKey(email, sessionId)
+
+            redisTemplate.opsForValue()
+                .set(key, payload, ttl)
+                .awaitSingleOrNull()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Failed to store email validation session payload: email: $email, sessionId: $sessionId")
+        }
+    }
+
+    override suspend fun getEmailValidationSessionData(email: String, sessionId: String): String {
+        try {
+            val key = getEmailVerificationSessionKey(email, sessionId)
+
+            val result = redisTemplate.opsForValue()
+                .get(key)
+                .awaitSingleOrNull()
+
+            if (result == null) {
+                return ""
+            }
+            return result
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Failed to fetch stored email validation session payload: email: $email, sessionID: $sessionId")
+            return ""
+        }
+    }
+
+    override suspend fun removeEmailValidationSessionData(
+        email: String,
+        sid: String
+    ): Boolean {
+        try {
+            val key = getEmailVerificationSessionKey(email, sid)
+
+            redisTemplate.opsForValue()
+                .delete(key)
+                .awaitSingleOrNull()
+
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Error removing stored email validation session payload: email: $email, session ID: $sid")
+            return false
         }
     }
 }

@@ -26,7 +26,8 @@ class AccessTokenValidationInterceptor(
         "sg.flow.auth.v1.AuthService/SignUp",
         "sg.flow.auth.v1.AuthService/SignIn",
         "sg.flow.auth.v1.AuthService/GetAccessTokenByRefreshToken",
-        "sg.flow.auth.v1.AuthService/CheckUserExists"
+        "sg.flow.auth.v1.AuthService/CheckUserExists",
+        "sg.flow.auth.v1.AuthService/SendVerificationEmail"
     )
 
     override fun <ReqT, RespT> interceptCall(
