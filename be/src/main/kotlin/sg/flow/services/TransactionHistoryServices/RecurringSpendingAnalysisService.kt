@@ -1,5 +1,8 @@
 package sg.flow.services.TransactionHistoryServices
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.math.abs
@@ -7,21 +10,34 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import sg.flow.configs.RecurringSpendingProperties
 import sg.flow.entities.RecurringSpendingMonthly
 import sg.flow.entities.TransactionHistory
 import sg.flow.repositories.recurring.RecurringSpendingRepository
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
+import sg.flow.repositories.user.UserRepository
 
 @Service
 class RecurringSpendingAnalysisService(
         private val transactionHistoryRepository: TransactionHistoryRepository,
         private val recurringSpendingRepository: RecurringSpendingRepository,
+        private val userRepository: UserRepository,
         private val properties: RecurringSpendingProperties
 ) {
 
     private val logger = LoggerFactory.getLogger(RecurringSpendingAnalysisService::class.java)
+
+    @Scheduled(cron = "0 0 0 * *")
+    fun analyzeAllUsers() {
+        val userIds = userRepository.getAllUserIds()
+        for (userId in userIds) {
+            CoroutineScope(Dispatchers.Default).launch {
+                analyzeUser(userId)
+            }
+        }
+    }
 
     /**
      * Analyze a user's past transactions and persist recurring spending results per month. Returns

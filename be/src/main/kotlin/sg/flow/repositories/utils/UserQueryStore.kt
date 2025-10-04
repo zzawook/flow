@@ -1,6 +1,11 @@
 package sg.flow.repositories.utils
 
 object UserQueryStore {
+    const val FIND_ALL_USER_IDS =
+        """
+            SELECT u.id
+            FROM users u
+        """
     const val SAVE_USER =
             """
         INSERT INTO users 

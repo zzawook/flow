@@ -7,6 +7,8 @@ import java.time.LocalDate
 import java.util.Date
 
 interface UserService {
+    suspend fun getAllUserIds(): List<Int>
+
     suspend fun getUserProfile(userId: Int): UserProfile
     suspend fun getUserPreferenceJson(userId: Int): String
     suspend fun updateUserProfile(userId: Int, userProfile: UpdateUserProfile): UserProfile

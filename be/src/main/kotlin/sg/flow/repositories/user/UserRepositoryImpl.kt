@@ -1,5 +1,7 @@
 package sg.flow.repositories.user
 
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asFlow
 import java.time.LocalDate
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
@@ -84,6 +86,23 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
             e.printStackTrace()
             false
         }
+    }
+
+    override fun getAllUserIds(): List<Int> {
+        return runCatching {
+            val sql = UserQueryStore.FIND_ALL_USER_IDS
+
+            databaseClient.sql(sql)
+                .map { row -> row.get("id", Int::class.java) }
+                .all()
+                .collectList()              // Mono<List<Int?>>
+                .map { it.filterNotNull() } // Mono<List<Int>>
+                .block() ?: emptyList()
+
+        }.onFailure { e ->
+            e.printStackTrace()
+            logger.error("Failed to fetch all user IDs")
+        } .getOrElse { emptyList() }
     }
 
     override suspend fun getUserProfile(id: Int): UserProfile {

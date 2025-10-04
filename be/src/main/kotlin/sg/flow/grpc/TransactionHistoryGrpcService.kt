@@ -164,58 +164,59 @@ private val spendingMedianService: SpendingMedianService
                 val domainTransactions = transactionService.getTransactionsForAccount(userId, request.accountNumber, request.bankId, request.oldestTransactionId, request.limit.toInt())
                 return txHistoryMapper.toProto(domainTransactions)
         }
-override suspend fun getSpendingMedianForAgeGroup(
-        request: GetSpendingMedianRequest
-): GetSpendingMedianResponse {
-        val userId = currentUserId()
 
-        // Extract year and month from request (optional fields)
-        val year = if (request.hasYear()) request.year else null
-        val month = if (request.hasMonth()) request.month else null
+        override suspend fun getSpendingMedianForAgeGroup(
+                request: GetSpendingMedianRequest
+        ): GetSpendingMedianResponse {
+                val userId = currentUserId()
 
-        // Validate month if provided
-        if (month != null) {
-                try {
-                        Validator.validateMonth(month)
-                } catch (e: ValidationException) {
-                        throw Status.INVALID_ARGUMENT
-                                .withDescription("Invalid month: ${e.message}")
-                                .asRuntimeException()
-                }
-        }
+                // Extract year and month from request (optional fields)
+                val year = if (request.hasYear()) request.year else null
+                val month = if (request.hasMonth()) request.month else null
 
-        // Validate year if provided
-        if (year != null) {
-                try {
-                        Validator.validateYear(year)
-                } catch (e: ValidationException) {
-                        throw Status.INVALID_ARGUMENT
-                                .withDescription("Invalid year: ${e.message}")
-                                .asRuntimeException()
-                }
-        }
-
-        // Get the median for the user's age group
-        val median =
-                try {
-                        spendingMedianService.getSpendingMedianForUser(userId, year, month)
-                } catch (e: IllegalArgumentException) {
-                        throw Status.FAILED_PRECONDITION
-                                .withDescription(e.message ?: "Cannot determine user age group")
-                                .asRuntimeException()
+                // Validate month if provided
+                if (month != null) {
+                        try {
+                                Validator.validateMonth(month)
+                        } catch (e: ValidationException) {
+                                throw Status.INVALID_ARGUMENT
+                                        .withDescription("Invalid month: ${e.message}")
+                                        .asRuntimeException()
+                        }
                 }
 
-        // If no median found, return error
-        if (median == null) {
-                throw Status.NOT_FOUND
-                        .withDescription(
-                                "No spending median data available for this age group and time period"
-                        )
-                        .asRuntimeException()
-        }
+                // Validate year if provided
+                if (year != null) {
+                        try {
+                                Validator.validateYear(year)
+                        } catch (e: ValidationException) {
+                                throw Status.INVALID_ARGUMENT
+                                        .withDescription("Invalid year: ${e.message}")
+                                        .asRuntimeException()
+                        }
+                }
 
-        // Map to proto and return
-        return txHistoryMapper.toProto(median)
-}
+                // Get the median for the user's age group
+                val median =
+                        try {
+                                spendingMedianService.getSpendingMedianForUser(userId, year, month)
+                        } catch (e: IllegalArgumentException) {
+                                throw Status.FAILED_PRECONDITION
+                                        .withDescription(e.message ?: "Cannot determine user age group")
+                                        .asRuntimeException()
+                        }
+
+                // If no median found, return error
+                if (median == null) {
+                        throw Status.NOT_FOUND
+                                .withDescription(
+                                        "No spending median data available for this age group and time period"
+                                )
+                                .asRuntimeException()
+                }
+
+                // Map to proto and return
+                return txHistoryMapper.toProto(median)
+        }
 
 }

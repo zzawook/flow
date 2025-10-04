@@ -14,6 +14,9 @@ class UserServiceImpl(
         private val userRepository: UserRepository,
 ) : UserService {
     val logger = LoggerFactory.getLogger(UserServiceImpl::class.java)
+    override suspend fun getAllUserIds(): List<Int> {
+        return userRepository.getAllUserIds()
+    }
 
     override suspend fun getUserProfile(userId: Int): UserProfile =
             userRepository.getUserProfile(userId)

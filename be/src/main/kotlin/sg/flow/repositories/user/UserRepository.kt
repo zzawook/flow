@@ -7,6 +7,8 @@ import sg.flow.models.user.UserProfile
 import sg.flow.repositories.Repository
 
 interface UserRepository : Repository<User, Long> {
+    fun getAllUserIds(): List<Int>
+
     suspend fun getUserProfile(id: Int): UserProfile
     suspend fun getUserPreferenceJson(userId: Int): String
     suspend fun updateUserProfile(userId: Int, userProfile: UpdateUserProfile): UserProfile
