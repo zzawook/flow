@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/redux/states/auth_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
+import 'package:flow_mobile/domain/redux/states/card_state.dart';
 import 'package:flow_mobile/domain/redux/states/notification_state.dart';
 import 'package:flow_mobile/domain/redux/states/screen_state.dart';
 import 'package:flow_mobile/domain/redux/states/setting_state.dart';
@@ -14,6 +15,7 @@ class FlowState {
   final SettingsState settingsState;
   final ScreenState screenState;
   final BankAccountState bankAccountState;
+  final CardState cardState;
   final TransactionState transactionState;
   final TransferReceivableState transferReceivableState;
   final NotificationState notificationState;
@@ -25,6 +27,7 @@ class FlowState {
     required this.settingsState,
     required this.screenState,
     required this.bankAccountState,
+    required this.cardState,
     required this.transactionState,
     required this.transferReceivableState,
     required this.notificationState,
@@ -37,6 +40,7 @@ class FlowState {
     settingsState: SettingsState.initial(),
     screenState: ScreenState.initial(),
     bankAccountState: BankAccountState.initial(),
+    cardState: CardState.initial(),
     transactionState: TransactionState.initial(),
     transferReceivableState: TransferReceivableState.initial(),
     notificationState: NotificationState.initial(),

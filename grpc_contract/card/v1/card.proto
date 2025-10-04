@@ -1,0 +1,28 @@
+syntax = "proto3";
+package sg.flow.card.v1;
+
+option java_multiple_files  = true;
+option java_package         = "sg.flow.card.v1";
+option java_outer_classname = "CardServiceProto";
+
+import "common/v1/card.proto";
+import "common/v1/transaction.proto";
+
+service CardService {
+    rpc GetCards (GetCardsRequest) returns (GetCardsResponse);
+    rpc GetCardTransactions (GetCardTransactionsRequest) returns (sg.flow.common.v1.TransactionHistoryList);
+}
+
+/* ── Requests ── */
+message GetCardsRequest {
+}
+
+message GetCardsResponse {
+    repeated sg.flow.common.v1.Card cards = 1; // List of cards associated with the user
+}
+
+message GetCardTransactionsRequest {
+    string card_number = 1; // Card number for which transactions are requested
+    string oldest_transaction_id = 2; // Optional: Fetch transactions older than this ID
+    int32 limit = 3; // Optional: Limit the number of transactions returned (default: 20)
+}

@@ -1,14 +1,17 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/card.dart';
 import 'package:flow_mobile/domain/entity/user.dart';
 import 'package:flow_mobile/generated/account/v1/account.pb.dart';
 import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
+import 'package:flow_mobile/generated/card/v1/card.pb.dart';
 import 'package:flow_mobile/generated/common/v1/transaction.pb.dart';
 import 'package:flow_mobile/generated/refresh/v1/refresh.pb.dart';
 import 'package:flow_mobile/generated/transaction_history/v1/transaction_history.pb.dart';
 import 'package:flow_mobile/generated/user/v1/user.pb.dart';
 import 'package:flow_mobile/service/api_service/account_api_service.dart';
 import 'package:flow_mobile/service/api_service/auth_api_service.dart';
+import 'package:flow_mobile/service/api_service/card_api_service.dart';
 import 'package:flow_mobile/service/api_service/refresh_api_service.dart';
 import 'package:flow_mobile/service/api_service/transaction_history_api_service.dart';
 import 'package:flow_mobile/service/api_service/user_api_service.dart';
@@ -33,6 +36,7 @@ class ApiService {
   late final UserApiService _userApiService;
   late final AccountApiService _accountApiService;
   late final TransactionHistoryApiService _transactionHistoryApiService;
+  late final CardApiService _cardApiService;
 
   Future<void> _initialize() async {
     await connectionService.initialize();
@@ -201,5 +205,9 @@ class ApiService {
   ) async {
     final response = await _authApiService.checkEmailVerified(loginEmail);
     return response;
+  }
+
+  Future<GetCardsResponse> fetchCards() async {
+    return await _cardApiService.fetchCards();
   }
 }
