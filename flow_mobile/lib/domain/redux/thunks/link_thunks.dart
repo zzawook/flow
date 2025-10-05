@@ -1,8 +1,10 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/manager/bank_account_manager.dart';
 import 'package:flow_mobile/domain/manager/bank_manager.dart';
+import 'package:flow_mobile/domain/manager/card_manager.dart';
 import 'package:flow_mobile/domain/manager/transaction_manager.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
+import 'package:flow_mobile/domain/redux/actions/card_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/refresh_screen_action.dart';
 import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
@@ -220,21 +222,25 @@ ThunkAction<FlowState> monitorBankDataFetchThunk(Bank bank) {
 Future<void> _updateStateForBankDataCompletion(Store<FlowState> store) async {
   BankAccountManager bankAccountManager = getIt<BankAccountManager>();
   BankManager bankManager = getIt<BankManager>();
+  CardManager cardManager = getIt<CardManager>();
   TransactionManager transactionManager = getIt<TransactionManager>();
 
   bankAccountManager.clearBankAccounts();
   bankManager.clearBanks();
+  cardManager.clearCards();
   transactionManager.clearTransactions();
 
   final bankFuture = bankManager.fetchBanksFromRemote();
   final bankAccountFuture = bankAccountManager.fetchBankAccountsFromRemote();
   final transactionFuture = transactionManager
       .fetchLastYearTransactionsFromRemote();
+  final cardFuture = cardManager.fetchCardsFromRemote();
 
   final fetchResults = Future.wait([
     bankFuture,
     bankAccountFuture,
     transactionFuture,
+    cardFuture,
   ]);
 
   fetchResults.then((_) async {
@@ -247,6 +253,13 @@ Future<void> _updateStateForBankDataCompletion(Store<FlowState> store) async {
       SetTransactionStateAction(
         transactionHistoryState:
             await FlowStateInitializer.getTransactionState(),
+      ),
+    );
+    store.dispatch(
+      SetCardStateAction(
+        store.state.cardState.copyWith(
+          cards: await cardManager.getCards(),
+        ),
       ),
     );
     // If displayed month is older than one year ago, fetch transactionManager.fetchPastOverYearTransactionsAroundFromRemote of the displayed month

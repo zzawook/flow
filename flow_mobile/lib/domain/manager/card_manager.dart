@@ -1,4 +1,5 @@
 import 'package:flow_mobile/domain/entity/card.dart';
+import 'package:flow_mobile/domain/entity/transaction.dart';
 
 abstract class CardManager {
   Future<void> clearCards();
@@ -9,6 +10,14 @@ abstract class CardManager {
   Future<void> removeCard(Card card);
   Future<void> updateCard(Card card);
   Future<void> fetchCardsFromRemote() async {}
+  Future<List<Transaction>> getTransactionForCard(
+    Card card,
+    int limit, {
+    String? oldestTransactionId,
+  }) async {
+    return [];
+  }
+
   // Future<void> fetchCardDetailFromRemote({
   //   required String cardNumber,
   //   String? oldestTransactionId,

@@ -11,6 +11,7 @@ import "common/v1/bank.proto";
 import "common/v1/account.proto";
 import "common/v1/transaction.proto";
 import "google/protobuf/wrappers.proto";          // for optional DoubleValue
+import "google/protobuf/timestamp.proto";
 
 
 service AccountService {
@@ -18,6 +19,9 @@ service AccountService {
   rpc GetAccountsWithTransactionHistory (GetAccountsWithTransactionHistoryRequest) returns (GetAccountsWithTransactionHistoryResponse);
   rpc GetAccount                        (GetAccountRequest)                        returns (sg.flow.common.v1.Account);
   rpc GetAccountWithTransactionHistory  (GetAccountWithTransactionHistoryRequest)  returns (AccountWithTransactionHistory);
+  rpc GetDailyAssets                    (GetDailyAssetsRequest)                    returns (GetDailyAssetsResponse);
+  rpc GetLast7DaysAssets                (GetLast7DaysAssetsRequest)                returns (GetLast7DaysAssetsResponse);
+  rpc GetLast6MonthsEndOfMonthAssets    (GetLast6MonthsEndOfMonthAssetsRequest)    returns (GetLast6MonthsEndOfMonthAssetsResponse);
 }
 
 message GetAccountsRequest {
@@ -63,4 +67,34 @@ enum AccountType {
   FIXED_DEPOSIT            = 3;
   FOREIGN_CURRENCY         = 4;
   OTHERS                   = 5;
+}
+
+/* ── Daily Asset Tracking ── */
+
+message DailyAsset {
+  google.protobuf.Timestamp asset_date = 1;
+  double total_asset_value = 2;
+  int32 account_count = 3;
+  google.protobuf.Timestamp calculated_at = 4;
+}
+
+message GetDailyAssetsRequest {
+  google.protobuf.Timestamp start_date = 1;
+  google.protobuf.Timestamp end_date = 2;
+}
+
+message GetDailyAssetsResponse {
+  repeated DailyAsset daily_assets = 1;
+}
+
+message GetLast7DaysAssetsRequest {}
+
+message GetLast7DaysAssetsResponse {
+  repeated DailyAsset daily_assets = 1;
+}
+
+message GetLast6MonthsEndOfMonthAssetsRequest {}
+
+message GetLast6MonthsEndOfMonthAssetsResponse {
+  repeated DailyAsset daily_assets = 1;
 }

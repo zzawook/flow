@@ -129,3 +129,18 @@ CREATE TABLE IF NOT EXISTS spending_medians_by_age_group (
 );
 
 CREATE INDEX IF NOT EXISTS idx_spending_medians_lookup ON spending_medians_by_age_group(age_group, year, month);
+
+-- Daily user asset tracking for portfolio value over time
+DROP TABLE IF EXISTS daily_user_assets;
+CREATE TABLE IF NOT EXISTS daily_user_assets (
+    id BIGSERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) NOT NULL,
+    asset_date DATE NOT NULL,
+    total_asset_value DECIMAL(15,2) NOT NULL,
+    account_count INT NOT NULL,
+    calculated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, asset_date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_daily_assets_user_date ON daily_user_assets(user_id, asset_date DESC);
+CREATE INDEX IF NOT EXISTS idx_daily_assets_date ON daily_user_assets(asset_date);

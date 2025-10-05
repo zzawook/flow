@@ -118,6 +118,8 @@ flow:
   spending-median:
     enabled: true
     backfill-months: 60  # 5 years
+  daily-asset:
+    enabled: true
 
 aws:
   region: us-east-1

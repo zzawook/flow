@@ -57,8 +57,6 @@ class _CardRow extends StatelessWidget {
   final int listIndex;
   final BankCard.Card card;
 
-  static const _spacing = 16.0;
-
   @override
   Widget build(BuildContext context) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
@@ -104,13 +102,6 @@ class _CardRow extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          const SizedBox(width: _spacing),
-
-          // ── drag handle
-          ReorderableDragStartListener(
-            index: listIndex,
-            child: const Icon(Icons.menu),
           ),
         ],
       ),

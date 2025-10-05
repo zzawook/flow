@@ -1,5 +1,6 @@
 package sg.flow.services.CardServices
 
+import org.springframework.stereotype.Service
 import sg.flow.entities.Card
 import sg.flow.entities.TransactionHistory
 import sg.flow.models.transaction.TransactionHistoryList
@@ -7,6 +8,7 @@ import sg.flow.repositories.account.AccountRepository
 import sg.flow.repositories.card.CardRepository
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
 
+@Service
 class CardServiceImpl(
     private val cardRepository: CardRepository,
     private val accountRepository: AccountRepository,

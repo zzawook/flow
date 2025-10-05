@@ -38,25 +38,13 @@ enum RecurringSpendingTestMode {
   edgeCases,
 }
 
+enum CardTestMode { none, multipleItems, singleItem, edgeCases, empty }
+
 class DebugConfig {
-  /// Master switch for all debug features
-  /// Set to false for production builds
   static const bool isDebugMode = true;
 
-  /// Current test mode for recurring spending feature
-  /// Change this value to test different UI states
-  ///
-  /// Quick Reference:
-  /// - production: Use real API data
-  /// - loading: Show loading spinner indefinitely
-  /// - error: Show error message
-  /// - empty: Show "No recurring spendings found"
-  /// - singleItem: Show 1 item (Netflix)
-  /// - multipleItems: Show 6 diverse items (recommended for demos)
-  /// - edgeCases: Show 7 edge cases (long names, extreme amounts, etc.)
-  ///
-  /// After changing, hot reload and navigate to Spending screen to see changes.
-  /// See lib/utils/test_data/README.md for detailed documentation.
   static const RecurringSpendingTestMode recurringSpendingMode =
       RecurringSpendingTestMode.multipleItems;
+
+  static const CardTestMode cardTestMode = CardTestMode.multipleItems;
 }
