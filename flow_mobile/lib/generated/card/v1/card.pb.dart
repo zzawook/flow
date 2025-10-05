@@ -115,11 +115,13 @@ class GetCardsResponse extends $pb.GeneratedMessage {
 class GetCardTransactionsRequest extends $pb.GeneratedMessage {
   factory GetCardTransactionsRequest({
     $core.String? cardNumber,
+    $core.String? bankId,
     $core.String? oldestTransactionId,
     $core.int? limit,
   }) {
     final result = create();
     if (cardNumber != null) result.cardNumber = cardNumber;
+    if (bankId != null) result.bankId = bankId;
     if (oldestTransactionId != null)
       result.oldestTransactionId = oldestTransactionId;
     if (limit != null) result.limit = limit;
@@ -141,8 +143,9 @@ class GetCardTransactionsRequest extends $pb.GeneratedMessage {
           const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.card.v1'),
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'cardNumber')
-    ..aOS(2, _omitFieldNames ? '' : 'oldestTransactionId')
-    ..a<$core.int>(3, _omitFieldNames ? '' : 'limit', $pb.PbFieldType.O3)
+    ..aOS(2, _omitFieldNames ? '' : 'bankId')
+    ..aOS(3, _omitFieldNames ? '' : 'oldestTransactionId')
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'limit', $pb.PbFieldType.O3)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -179,22 +182,31 @@ class GetCardTransactionsRequest extends $pb.GeneratedMessage {
   void clearCardNumber() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get oldestTransactionId => $_getSZ(1);
+  $core.String get bankId => $_getSZ(1);
   @$pb.TagNumber(2)
-  set oldestTransactionId($core.String value) => $_setString(1, value);
+  set bankId($core.String value) => $_setString(1, value);
   @$pb.TagNumber(2)
-  $core.bool hasOldestTransactionId() => $_has(1);
+  $core.bool hasBankId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearOldestTransactionId() => $_clearField(2);
+  void clearBankId() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.int get limit => $_getIZ(2);
+  $core.String get oldestTransactionId => $_getSZ(2);
   @$pb.TagNumber(3)
-  set limit($core.int value) => $_setSignedInt32(2, value);
+  set oldestTransactionId($core.String value) => $_setString(2, value);
   @$pb.TagNumber(3)
-  $core.bool hasLimit() => $_has(2);
+  $core.bool hasOldestTransactionId() => $_has(2);
   @$pb.TagNumber(3)
-  void clearLimit() => $_clearField(3);
+  void clearOldestTransactionId() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get limit => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set limit($core.int value) => $_setSignedInt32(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasLimit() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearLimit() => $_clearField(4);
 }
 
 const $core.bool _omitFieldNames =

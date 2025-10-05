@@ -48,14 +48,15 @@ const GetCardTransactionsRequest$json = {
   '1': 'GetCardTransactionsRequest',
   '2': [
     {'1': 'card_number', '3': 1, '4': 1, '5': 9, '10': 'cardNumber'},
+    {'1': 'bank_id', '3': 2, '4': 1, '5': 9, '10': 'bankId'},
     {
       '1': 'oldest_transaction_id',
-      '3': 2,
+      '3': 3,
       '4': 1,
       '5': 9,
       '10': 'oldestTransactionId'
     },
-    {'1': 'limit', '3': 3, '4': 1, '5': 5, '10': 'limit'},
+    {'1': 'limit', '3': 4, '4': 1, '5': 5, '10': 'limit'},
   ],
 };
 
@@ -63,5 +64,5 @@ const GetCardTransactionsRequest$json = {
 final $typed_data.Uint8List getCardTransactionsRequestDescriptor =
     $convert.base64Decode(
         'ChpHZXRDYXJkVHJhbnNhY3Rpb25zUmVxdWVzdBIfCgtjYXJkX251bWJlchgBIAEoCVIKY2FyZE'
-        '51bWJlchIyChVvbGRlc3RfdHJhbnNhY3Rpb25faWQYAiABKAlSE29sZGVzdFRyYW5zYWN0aW9u'
-        'SWQSFAoFbGltaXQYAyABKAVSBWxpbWl0');
+        '51bWJlchIXCgdiYW5rX2lkGAIgASgJUgZiYW5rSWQSMgoVb2xkZXN0X3RyYW5zYWN0aW9uX2lk'
+        'GAMgASgJUhNvbGRlc3RUcmFuc2FjdGlvbklkEhQKBWxpbWl0GAQgASgFUgVsaW1pdA==');
