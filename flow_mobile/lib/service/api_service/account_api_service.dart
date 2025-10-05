@@ -1,15 +1,18 @@
+import 'package:fixnum/fixnum.dart' as fx;
 import 'package:flow_mobile/generated/account/v1/account.pbgrpc.dart';
 import 'package:flow_mobile/generated/common/v1/account.pb.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:grpc/grpc_connection_interface.dart';
-import 'package:fixnum/fixnum.dart' as fx;
 
 class AccountApiService {
   final AccountServiceClient _client;
 
   AccountApiService(ClientChannel channel)
-    : _client = AccountServiceClient(channel, interceptors: [getIt<GrpcInterceptor>()]);
+    : _client = AccountServiceClient(
+        channel,
+        interceptors: [getIt<GrpcInterceptor>()],
+      );
 
   Future<GetAccountsResponse> getBankAccounts() async {
     final request = GetAccountsRequest();
@@ -61,6 +64,17 @@ class AccountApiService {
       throw Exception(
         'Failed to fetch bank account with transaction history: $e',
       );
+    }
+  }
+
+  Future<GetLast6MonthsEndOfMonthAssetsResponse> getLast6MonthsAssets() async {
+    final request = GetLast6MonthsEndOfMonthAssetsRequest();
+
+    try {
+      final response = await _client.getLast6MonthsEndOfMonthAssets(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to fetch last 6 months assets: $e');
     }
   }
 }

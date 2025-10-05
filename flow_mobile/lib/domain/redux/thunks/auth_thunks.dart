@@ -19,6 +19,10 @@ import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
+import 'package:flow_mobile/utils/debug_config.dart';
+import 'package:flow_mobile/utils/test_data/bank_account_test_data.dart';
+import 'package:flow_mobile/utils/test_data/transaction_history_test_data.dart';
+import 'package:flow_mobile/utils/test_data/user_test_data.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
@@ -27,6 +31,13 @@ ThunkAction<FlowState> setLoginEmailThunk(String email) {
   final nav = getIt<NavigationService>();
   return (Store<FlowState> store) async {
     try {
+      if (DebugConfig.isDebugMode &&
+          DebugConfig.authTestMode == AuthTestMode.testAccount) {
+        // In test mode, always go to login screen with test account
+        store.dispatch(SetLoginEmailAction(email: email));
+        nav.pushNamed(AppRoutes.loginPassword);
+        return;
+      }
       final hasUserWithEmail = await apiService.checkUserExists(email);
       store.dispatch(SetLoginEmailAction(email: email));
       if (hasUserWithEmail.exists) {
@@ -50,6 +61,34 @@ ThunkAction<FlowState> loginThunk(
   final nav = getIt<NavigationService>();
   return (Store<FlowState> store) async {
     TokenSet tokenSet;
+
+    // ======== DEBUG MODE HANDLING ========
+    if (DebugConfig.isDebugMode &&
+        DebugConfig.authTestMode == AuthTestMode.testAccount) {
+      // Skip API authentication in test mode
+      // Use mock tokens and test credentials
+      const mockAccessToken = 'test_access_token_debug_mode';
+      const mockRefreshToken = 'test_refresh_token_debug_mode';
+
+      authManager.saveAccessTokenToLocal(mockAccessToken);
+      authManager.saveRefreshTokenToLocal(mockRefreshToken);
+      GrpcInterceptor.setAccessToken(mockAccessToken);
+
+      await _initStateForLoggedInUser(store);
+
+      store.dispatch(
+        LoginSuccessAction(
+          accessToken: mockAccessToken,
+          refreshToken: mockRefreshToken,
+        ),
+      );
+
+      // Skip email verification and go directly to home
+      nav.pushNamed(AppRoutes.home);
+      return;
+    }
+
+    // ======== PRODUCTION MODE ========
     try {
       tokenSet = await apiService.signin(email, password);
     } catch (error) {
@@ -82,6 +121,57 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   bankAccountManager.clearBankAccounts();
   transactionManager.clearTransactions();
 
+  // ======== DEBUG MODE HANDLING ========
+  if (DebugConfig.isDebugMode &&
+      DebugConfig.authTestMode == AuthTestMode.testAccount) {
+    // Load test data directly without API calls
+
+    // 1. Load test user profile
+    if (DebugConfig.userProfileTestMode == UserProfileTestMode.testUser) {
+      final testUser = UserTestData.getTestUser();
+      await userManager.updateUser(testUser);
+    }
+
+    // 2. Load test bank accounts
+    // Banks are hardcoded in BankManager, so we only need to add accounts
+    final testBankAccounts = BankAccountTestData.getAllTestAccounts();
+    for (final account in testBankAccounts) {
+      await bankAccountManager.createBankAccount(account);
+    }
+
+    // 3. Load test transactions based on mode
+    final testTransactions =
+        DebugConfig.transactionHistoryTestMode ==
+            TransactionHistoryTestMode.singleItemPerMonth
+        ? TransactionHistoryTestData.getSingleItemPerMonth()
+        : TransactionHistoryTestData.getMultipleItems();
+
+    for (final transaction in testTransactions) {
+      await transactionManager.addTransaction(transaction);
+    }
+
+    // 4. Load state into Redux store
+    store.dispatch(
+      SetUserStateAction(userState: await FlowStateInitializer.getUserState()),
+    );
+    store.dispatch(
+      SetBankAccountStateAction(
+        bankAccountState: await FlowStateInitializer.getBankAccountState(),
+      ),
+    );
+    store.dispatch(
+      SetTransactionStateAction(
+        transactionHistoryState:
+            await FlowStateInitializer.getTransactionState(),
+      ),
+    );
+
+    // Skip notifications in debug mode
+    log('Debug mode: Loaded test data (user, accounts, transactions)');
+    return;
+  }
+
+  // ======== PRODUCTION MODE ========
   final userFuture = userManager.fetchUserFromRemote();
   final bankFuture = bankManager.fetchBanksFromRemote();
   final bankAccountFuture = bankAccountManager.fetchBankAccountsFromRemote();

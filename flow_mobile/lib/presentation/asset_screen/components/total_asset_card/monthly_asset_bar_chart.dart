@@ -29,9 +29,8 @@ class MonthlyAssetBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // chronological order, oldest → newest
-    final entries =
-        last6MonthlyAssetData.entries.toList()
-          ..sort((a, b) => a.key.compareTo(b.key));
+    final entries = last6MonthlyAssetData.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
 
     final maxY = entries.map((e) => e.value).reduce((a, b) => a > b ? a : b);
 
@@ -45,50 +44,49 @@ class MonthlyAssetBarChart extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.end,
-          children:
-              entries.map((e) {
-                final date = e.key;
-                final value = e.value;
-                final height = (value / maxY) * availableH;
+          children: entries.map((e) {
+            final date = e.key;
+            final value = e.value;
+            final height = (value / maxY) * availableH;
 
-                final isToday =
-                    date.year == DateTime.now().year &&
-                    date.month == DateTime.now().month &&
-                    date.day == DateTime.now().day;
+            final isToday =
+                date.year == DateTime.now().year &&
+                date.month == DateTime.now().month &&
+                date.day == DateTime.now().day;
 
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // ── top label
-                    Text(
-                      numberFmt.format(value),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: labelGap),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // ── top label
+                Text(
+                  numberFmt.format(value),
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).textTheme.labelMedium?.color?.withValues(alpha: 80),
+                  ),
+                ),
+                SizedBox(height: labelGap),
 
-                    // ── bar
-                    Container(
-                      width: barWidth,
-                      height: height,
-                      decoration: BoxDecoration(
-                        color: isToday ? todayBarColor : normalBarColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    SizedBox(height: labelGap),
+                // ── bar
+                Container(
+                  width: barWidth,
+                  height: height,
+                  decoration: BoxDecoration(
+                    color: isToday ? todayBarColor : normalBarColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                SizedBox(height: labelGap),
 
-                    // ── month label
-                    Text(
-                      monthFmt.format(date),
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                  ],
-                );
-              }).toList(),
+                // ── month label
+                Text(
+                  monthFmt.format(date),
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              ],
+            );
+          }).toList(),
         );
       },
     );

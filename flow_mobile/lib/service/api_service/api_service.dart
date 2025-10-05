@@ -211,7 +211,19 @@ class ApiService {
     return await _cardApiService.fetchCards();
   }
 
-  Future<TransactionHistoryList> fetchCardTransactions(Card card, int limit, {String? oldestTransactionId}) async {
-    return await _cardApiService.fetchCardTransaction(card, limit, oldestTransactionId);
+  Future<TransactionHistoryList> fetchCardTransactions(
+    Card card,
+    int limit, {
+    String? oldestTransactionId,
+  }) async {
+    return await _cardApiService.fetchCardTransaction(
+      card,
+      limit,
+      oldestTransactionId,
+    );
+  }
+
+  Future<GetLast6MonthsEndOfMonthAssetsResponse> getLast6MonthsAssets() async {
+    return await _accountApiService.getLast6MonthsAssets();
   }
 }

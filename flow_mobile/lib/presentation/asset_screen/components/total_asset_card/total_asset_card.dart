@@ -1,33 +1,68 @@
+import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/asset_screen/components/total_asset_card/monthly_asset_bar_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
-class TotalAssetCard extends StatefulWidget {
+class TotalAssetCard extends StatelessWidget {
   const TotalAssetCard({super.key});
 
   @override
-  State<TotalAssetCard> createState() => _TotalAssetCardState();
+  Widget build(BuildContext context) {
+    return StoreConnector<FlowState, _ViewModel>(
+      converter: (store) => _ViewModel(
+        monthlyAssets: store.state.screenState.assetScreenState.monthlyAssets,
+        isLoading: store.state.screenState.assetScreenState.isLoading,
+        error: store.state.screenState.assetScreenState.error,
+      ),
+      builder: (context, vm) => _TotalAssetCardContent(
+        monthlyAssets: vm.monthlyAssets,
+        isLoading: vm.isLoading,
+        error: vm.error,
+      ),
+    );
+  }
 }
 
-class _TotalAssetCardState extends State<TotalAssetCard> {
-  Map<DateTime, double> last6MonthlyAssetData = {
-    DateTime.now(): 719.2,
-    DateTime(DateTime.now().year, DateTime.now().month, 0):
-        1219.0, // Last day of previous month
-    DateTime(DateTime.now().year, DateTime.now().month - 1, 0):
-        899.1, // Last day of 2 months ago
-    DateTime(DateTime.now().year, DateTime.now().month - 2, 0):
-        1512.9, // Last day of 3 months ago
-    DateTime(DateTime.now().year, DateTime.now().month - 3, 0):
-        901.9, // Last day of 4 months ago
-    DateTime(DateTime.now().year, DateTime.now().month - 4, 0):
-        1109.5, // Last day of 5 months ago
-  };
+class _ViewModel {
+  final Map<DateTime, double> monthlyAssets;
+  final bool isLoading;
+  final String? error;
 
-  Widget getCurrentMonthStatusComparedToLastMonthMessage() {
-    final currentMonth = DateTime.now();
-    final lastMonth = DateTime(currentMonth.year, currentMonth.month - 1, 0);
-    final currentMonthAmount = last6MonthlyAssetData[currentMonth] ?? 0.0;
-    final lastMonthAmount = last6MonthlyAssetData[lastMonth] ?? 0.0;
+  _ViewModel({
+    required this.monthlyAssets,
+    required this.isLoading,
+    this.error,
+  });
+}
+
+class _TotalAssetCardContent extends StatelessWidget {
+  final Map<DateTime, double> monthlyAssets;
+  final bool isLoading;
+  final String? error;
+
+  const _TotalAssetCardContent({
+    required this.monthlyAssets,
+    required this.isLoading,
+    this.error,
+  });
+
+  Widget _getCurrentMonthStatusComparedToLastMonthMessage(
+    BuildContext context,
+  ) {
+    if (monthlyAssets.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Get most recent month (current) and previous month
+    final sortedDates = monthlyAssets.keys.toList()..sort();
+    if (sortedDates.length < 2) {
+      return const SizedBox.shrink();
+    }
+
+    final currentMonth = sortedDates.last;
+    final lastMonth = sortedDates[sortedDates.length - 2];
+    final currentMonthAmount = monthlyAssets[currentMonth] ?? 0.0;
+    final lastMonthAmount = monthlyAssets[lastMonth] ?? 0.0;
 
     Widget message = Row(
       children: [
@@ -36,10 +71,9 @@ class _TotalAssetCardState extends State<TotalAssetCard> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color:
-                currentMonthAmount < lastMonthAmount
-                    ? Colors.red
-                    : Theme.of(context).primaryColor,
+            color: currentMonthAmount < lastMonthAmount
+                ? Colors.red
+                : Theme.of(context).primaryColor,
           ),
         ),
         Text(
@@ -68,7 +102,7 @@ class _TotalAssetCardState extends State<TotalAssetCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Placeholder for total asset display
+          // Header with title and comparison message
           Padding(
             padding: const EdgeInsets.only(left: 24, top: 8, bottom: 8),
             child: Column(
@@ -78,24 +112,72 @@ class _TotalAssetCardState extends State<TotalAssetCard> {
                   'Total Balance',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                getCurrentMonthStatusComparedToLastMonthMessage(),
+                _getCurrentMonthStatusComparedToLastMonthMessage(context),
               ],
             ),
           ),
-          // Placeholder for asset amount
+          // Chart area
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             height: 300,
-            child: MonthlyAssetBarChart(
-              last6MonthlyAssetData: last6MonthlyAssetData,
-              normalBarColor:
-                  Theme.of(context).brightness == Brightness.light
-                      ? const Color(0xFFCACACA)
-                      : const Color(0xFF4A4A4A),
-            ),
+            child: _buildChartContent(context),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildChartContent(BuildContext context) {
+    // Show loading state
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Show error state
+    if (error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red.shade300, size: 48),
+            const SizedBox(height: 16),
+            Text(
+              error!,
+              style: TextStyle(color: Colors.red.shade300, fontSize: 14),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Show empty state
+    if (monthlyAssets.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.analytics_outlined,
+              color: Colors.grey.shade400,
+              size: 48,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No asset data available',
+              style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Show chart with data
+    return MonthlyAssetBarChart(
+      last6MonthlyAssetData: monthlyAssets,
+      normalBarColor: Theme.of(context).brightness == Brightness.light
+          ? const Color(0xFFCACACA)
+          : const Color(0xFF4A4A4A),
     );
   }
 }

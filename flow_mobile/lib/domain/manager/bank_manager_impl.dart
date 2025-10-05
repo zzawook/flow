@@ -1,11 +1,12 @@
-import 'package:flow_mobile/domain/manager/bank_manager.dart';
 import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/domain/manager/bank_manager.dart';
 
 class BankManagerImpl implements BankManager {
   List<Bank> banks = [
     Bank(name: 'DBS', bankId: 1),
     Bank(name: 'UOB', bankId: 2),
     Bank(name: 'Maybank', bankId: 3),
+    Bank(name: 'OCBC', bankId: 4),
   ];
 
   static BankManagerImpl? _instance;

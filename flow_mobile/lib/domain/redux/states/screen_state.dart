@@ -1,4 +1,5 @@
 import 'package:flow_mobile/domain/redux/states/account_detail_screen_state.dart';
+import 'package:flow_mobile/domain/redux/states/asset_screen_state.dart';
 import 'package:flow_mobile/domain/redux/states/refresh_screen_state.dart';
 import 'package:flow_mobile/domain/redux/states/spending_category_screen_state.dart';
 import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
@@ -9,6 +10,7 @@ class ScreenState {
   final RefreshScreenState refreshScreenState;
   final SpendingCategoryScreenState spendingCategoryScreenState;
   final AccountDetailScreenState accountDetailScreenState;
+  final AssetScreenState assetScreenState;
   final bool isRefreshing;
 
   ScreenState({
@@ -18,6 +20,7 @@ class ScreenState {
     required this.refreshScreenState,
     required this.spendingCategoryScreenState,
     required this.accountDetailScreenState,
+    required this.assetScreenState,
   });
 
   ScreenState copyWith({
@@ -27,6 +30,7 @@ class ScreenState {
     required RefreshScreenState refreshScreenState,
     required SpendingCategoryScreenState spendingCategoryScreenState,
     required AccountDetailScreenState accountDetailScreenState,
+    required AssetScreenState assetScreenState,
   }) {
     return ScreenState(
       screenName: screenName,
@@ -35,6 +39,7 @@ class ScreenState {
       refreshScreenState: refreshScreenState,
       spendingCategoryScreenState: spendingCategoryScreenState,
       accountDetailScreenState: accountDetailScreenState,
+      assetScreenState: assetScreenState,
     );
   }
 
@@ -46,6 +51,7 @@ class ScreenState {
       refreshScreenState: RefreshScreenState.initial(),
       spendingCategoryScreenState: SpendingCategoryScreenState.initial(),
       accountDetailScreenState: AccountDetailScreenState.initial(),
+      assetScreenState: AssetScreenState.initial(),
     );
   }
 
@@ -59,7 +65,8 @@ class ScreenState {
           isRefreshing == other.isRefreshing &&
           refreshScreenState == other.refreshScreenState &&
           spendingCategoryScreenState == other.spendingCategoryScreenState &&
-          accountDetailScreenState == other.accountDetailScreenState;
+          accountDetailScreenState == other.accountDetailScreenState &&
+          assetScreenState == other.assetScreenState;
 
   @override
   int get hashCode => screenName.hashCode;
