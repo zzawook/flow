@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:flow_mobile/domain/entity/card.dart';
 import 'package:flow_mobile/generated/card/v1/card.pbgrpc.dart';
+import 'package:flow_mobile/generated/common/v1/transaction.pb.dart';
 import 'package:grpc/grpc.dart';
 
 class CardApiService {
@@ -16,6 +18,22 @@ class CardApiService {
     } catch (e) {
       log('Error fetching cards: $e');
       return GetCardsResponse();
+    }
+  }
+
+  Future<TransactionHistoryList> fetchCardTransaction(Card card, int limit, String? oldestTransactionId) async {
+    try {
+      final request = GetCardTransactionsRequest(
+        cardNumber: card.cardNumber,
+        oldestTransactionId: oldestTransactionId,
+        limit: limit
+      );
+
+      final response = await client.getCardTransactions(request);
+      return response;
+    } catch (e) {
+      log("Error fetching transactions for card: ${card.cardNumber}: $e");
+      return TransactionHistoryList();
     }
   }
 }

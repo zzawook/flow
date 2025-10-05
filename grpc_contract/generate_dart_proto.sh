@@ -20,4 +20,5 @@ protoc -I . --dart_out=grpc:"$OUT" common/v1/*.proto;
 protoc -I . --dart_out=grpc:"$OUT" refresh/v1/refresh.proto;
 protoc -I . --dart_out=grpc:"$OUT" transaction_history/v1/transaction_history.proto;
 protoc -I . --dart_out=grpc:"$OUT" transfer/v1/transfer.proto;
-protoc -I . --dart_out=grpc:"$OUT" user/v1/user.proto;  
+protoc -I . --dart_out=grpc:"$OUT" user/v1/user.proto;
+protoc -I . --dart_out=grpc:"$OUT" card/v1/card.proto;

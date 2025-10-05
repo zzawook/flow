@@ -143,6 +143,7 @@ class TransactionManagerImpl implements TransactionManager {
         });
   }
 
+  @override
   Transaction fromTransactionHistoryDetail(TransactionHistoryDetail detail) {
     return Transaction(
       id: detail.id.toInt(),

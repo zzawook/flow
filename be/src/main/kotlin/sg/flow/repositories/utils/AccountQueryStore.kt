@@ -4,11 +4,14 @@ object AccountQueryStore {
     const val FIND_CARD_ACCOUNTS =
         """
             SELECT a.id,
+            a.account_name AS card_name,
             c.card_number,
             c.card_type,
             b.bank_id,
             b.bank_name,
             b.bank_code,
+            b.finverse_id,
+            b.countries,
             a.balance,
             FROM accounts a
             JOIN banks b ON a.bank_id = b.id

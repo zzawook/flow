@@ -3,10 +3,13 @@ import 'dart:developer';
 import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/entity/card.dart';
 import 'package:flow_mobile/domain/manager/card_manager.dart';
+import 'package:flow_mobile/domain/manager/transaction_manager.dart';
 import 'package:flow_mobile/generated/common/v1/card.pb.dart' as ProtoCard;
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+import '../entity/transaction.dart';
 
 class CardManagerImpl implements CardManager {
   final Box<Card> cardBox;
@@ -75,6 +78,35 @@ class CardManagerImpl implements CardManager {
       // Handle error appropriately, e.g., logging
       log('Error fetching cards from remote: $e');
     }
+  }
+
+  @override
+  Future<List<Transaction>> getTransactionForCard(
+      Card card,
+      int limit, {
+      String? oldestTransactionId,
+  }
+  ) {
+    ApiService apiService = getIt<ApiService>();
+    return apiService
+        .fetchCardTransactions(
+          card,
+          limit,
+          oldestTransactionId: oldestTransactionId,
+        )
+        .then((response) {
+          List<Transaction> fetchedTransactions = [];
+          TransactionManager transactionManager = getIt<TransactionManager>();
+          for (var transactionHistoryDetail in response.transactions) {
+            Transaction transaction = transactionManager.fromTransactionHistoryDetail(transactionHistoryDetail);
+            fetchedTransactions.add(transaction);
+          }
+
+          return fetchedTransactions;
+    }).catchError((error) {
+      log("Error fetching transaction for card: ${card.cardNumber}");
+      return List<Transaction>.empty();
+    })
   }
 
   Card fromProtoCard(ProtoCard.Card protoCard) {

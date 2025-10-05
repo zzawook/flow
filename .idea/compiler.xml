@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="android.connectivity_plus" target="21" />
+      <module name="android.flutter_contacts" target="21" />
+      <module name="android.flutter_local_notifications" target="21" />
+      <module name="android.flutter_native_splash" target="21" />
+    </bytecodeTargetLevel>
+  </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="sg.flow" options="-parameters" />

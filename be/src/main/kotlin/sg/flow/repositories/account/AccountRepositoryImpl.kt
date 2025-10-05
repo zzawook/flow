@@ -402,7 +402,7 @@ class AccountRepositoryImpl(
         }
 
         override suspend fun findCardAccounts(userId: Int): List<Card> {
-                runCatching {
+                return runCatching {
                         val sql = AccountQueryStore.FIND_CARD_ACCOUNTS
 
                         databaseClient.sql(sql)
@@ -410,11 +410,24 @@ class AccountRepositoryImpl(
                                 .map { rows ->
                                         Card(
                                                 id = rows.get("id", Long::class.java),
-                                                cardNumber = rows.get("card_number", String::class.java),
-                                                cardType = CardType.valueOf(rows.get("card_type", String::class.java)),
-                                                cardName = rows.get("card_")
+                                                cardNumber = rows.get("card_number", String::class.java)!!,
+                                                cardType = CardType.valueOf(rows.get("card_type", String::class.java)!!),
+                                                cardName = rows.get("card_name", String::class.java)!!,
+                                                balance = rows.get("balance", Double::class.java)!!,
+                                                issuingBank = Bank(
+                                                        id = rows.get("bank_id", Int::class.java)!!,
+                                                        name = rows.get("bank_name", String::class.java)!!,
+                                                        bankCode = rows.get("bank_code", String::class.java)!!,
+                                                        finverseId = rows.get("finverse_id", String::class.java) ?: "",
+                                                        countries = rows.get("countries", String::class.java) ?: ""
+                                                )
                                         )
                                 }
-                }
+                                .all()
+                                .asFlow()
+                                .toList()
+                }.onFailure { e ->
+                        e.printStackTrace()
+                }.getOrElse { emptyList() }
         }
 }

@@ -1,6 +1,8 @@
 import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
 
+import '../../generated/common/v1/transaction.pb.dart';
+
 abstract class TransactionManager {
   Future<List<Transaction>> getTransactions(DateTime date);
   Future<List<Transaction>> getTransactionsFromTo(
@@ -18,6 +20,7 @@ abstract class TransactionManager {
   Future<List<Transaction>> fetchPastOverYearTransactionsAroundFromRemote(
     DateTime month,
   );
+  Transaction fromTransactionHistoryDetail(TransactionHistoryDetail detail);
   Future<bool> setTransactionCategory(Transaction transaction, String category);
 
   Future<bool> toggleTransactionIncludeInSpendingOrIncome(

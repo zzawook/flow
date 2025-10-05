@@ -210,4 +210,8 @@ class ApiService {
   Future<GetCardsResponse> fetchCards() async {
     return await _cardApiService.fetchCards();
   }
+
+  Future<TransactionHistoryList> fetchCardTransactions(Card card, int limit, {String? oldestTransactionId}) async {
+    return await _cardApiService.fetchCardTransaction(card, limit, oldestTransactionId);
+  }
 }

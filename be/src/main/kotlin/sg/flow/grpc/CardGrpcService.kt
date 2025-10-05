@@ -5,15 +5,19 @@ import io.grpc.Status
 import org.springframework.grpc.server.service.GrpcService
 import sg.flow.auth.GrpcSecurityContext
 import sg.flow.card.v1.CardServiceGrpcKt
+import sg.flow.card.v1.GetCardTransactionsRequest
 import sg.flow.card.v1.GetCardsRequest
 import sg.flow.card.v1.GetCardsResponse
+import sg.flow.common.v1.TransactionHistoryList
 import sg.flow.grpc.mapper.CardMapper
+import sg.flow.grpc.mapper.TransactionHistoryMapper
 import sg.flow.services.CardServices.CardService
 
 @GrpcService
 class CardGrpcService(
     private val cardService: CardService,
     private val cardMapper: CardMapper,
+    private val transactionHistoryMapper: TransactionHistoryMapper
 ) : CardServiceGrpcKt.CardServiceCoroutineImplBase() {
 
     private fun currentUserId(): Int {
@@ -27,5 +31,11 @@ class CardGrpcService(
         val cardList = cardService.getCards(userId)
         val protoCardList = cardMapper.toProto(cardList)
         return GetCardsResponse.newBuilder().addAllCards(protoCardList).build()
+    }
+
+    override suspend fun getCardTransactions(request: GetCardTransactionsRequest): TransactionHistoryList {
+        val userId = currentUserId()
+        val domainTransactionHistoryList = cardService.getTransactionForCard(userId, request.bankId, request.cardNumber, request.oldestTransactionId, request.limit)
+        return transactionHistoryMapper.toProto(domainTransactionHistoryList)
     }
 }

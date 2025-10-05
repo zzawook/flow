@@ -23,6 +23,7 @@ message GetCardsResponse {
 
 message GetCardTransactionsRequest {
     string card_number = 1; // Card number for which transactions are requested
-    string oldest_transaction_id = 2; // Optional: Fetch transactions older than this ID
-    int32 limit = 3; // Optional: Limit the number of transactions returned (default: 20)
+    string bank_id = 2;
+    string oldest_transaction_id = 3; // Optional: Fetch transactions older than this ID
+    int32 limit = 4; // Optional: Limit the number of transactions returned (default: 20)
 }
