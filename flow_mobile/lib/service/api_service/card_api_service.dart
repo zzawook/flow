@@ -25,6 +25,7 @@ class CardApiService {
     try {
       final request = GetCardTransactionsRequest(
         cardNumber: card.cardNumber,
+        bankId: card.bank.bankId,
         oldestTransactionId: oldestTransactionId,
         limit: limit
       );

@@ -103,10 +103,10 @@ class CardManagerImpl implements CardManager {
           }
 
           return fetchedTransactions;
-    }).catchError((error) {
-      log("Error fetching transaction for card: ${card.cardNumber}");
-      return List<Transaction>.empty();
-    })
+        }).catchError((error) {
+          log("Error fetching transaction for card: ${card.cardNumber}");
+          return List<Transaction>.empty();
+        });
   }
 
   Card fromProtoCard(ProtoCard.Card protoCard) {
