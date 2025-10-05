@@ -18,6 +18,7 @@ import 'package:protobuf/protobuf.dart' as $pb;
 import '../../common/v1/account.pb.dart' as $1;
 import '../../common/v1/bank.pb.dart' as $3;
 import '../../common/v1/transaction.pb.dart' as $4;
+import '../../google/protobuf/timestamp.pb.dart' as $5;
 import '../../google/protobuf/wrappers.pb.dart' as $2;
 import 'account.pbenum.dart';
 
@@ -501,6 +502,441 @@ class AccountWithTransactionHistory extends $pb.GeneratedMessage {
   @$pb.TagNumber(8)
   $pb.PbList<$4.TransactionHistoryDetail> get recentTransactionHistoryDetails =>
       $_getList(7);
+}
+
+class DailyAsset extends $pb.GeneratedMessage {
+  factory DailyAsset({
+    $5.Timestamp? assetDate,
+    $core.double? totalAssetValue,
+    $core.int? accountCount,
+    $5.Timestamp? calculatedAt,
+  }) {
+    final result = create();
+    if (assetDate != null) result.assetDate = assetDate;
+    if (totalAssetValue != null) result.totalAssetValue = totalAssetValue;
+    if (accountCount != null) result.accountCount = accountCount;
+    if (calculatedAt != null) result.calculatedAt = calculatedAt;
+    return result;
+  }
+
+  DailyAsset._();
+
+  factory DailyAsset.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory DailyAsset.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DailyAsset',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.account.v1'),
+      createEmptyInstance: create)
+    ..aOM<$5.Timestamp>(1, _omitFieldNames ? '' : 'assetDate',
+        subBuilder: $5.Timestamp.create)
+    ..a<$core.double>(
+        2, _omitFieldNames ? '' : 'totalAssetValue', $pb.PbFieldType.OD)
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'accountCount', $pb.PbFieldType.O3)
+    ..aOM<$5.Timestamp>(4, _omitFieldNames ? '' : 'calculatedAt',
+        subBuilder: $5.Timestamp.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DailyAsset clone() => DailyAsset()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DailyAsset copyWith(void Function(DailyAsset) updates) =>
+      super.copyWith((message) => updates(message as DailyAsset)) as DailyAsset;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DailyAsset create() => DailyAsset._();
+  @$core.override
+  DailyAsset createEmptyInstance() => create();
+  static $pb.PbList<DailyAsset> createRepeated() => $pb.PbList<DailyAsset>();
+  @$core.pragma('dart2js:noInline')
+  static DailyAsset getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<DailyAsset>(create);
+  static DailyAsset? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $5.Timestamp get assetDate => $_getN(0);
+  @$pb.TagNumber(1)
+  set assetDate($5.Timestamp value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasAssetDate() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAssetDate() => $_clearField(1);
+  @$pb.TagNumber(1)
+  $5.Timestamp ensureAssetDate() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.double get totalAssetValue => $_getN(1);
+  @$pb.TagNumber(2)
+  set totalAssetValue($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasTotalAssetValue() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTotalAssetValue() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get accountCount => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set accountCount($core.int value) => $_setSignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasAccountCount() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearAccountCount() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $5.Timestamp get calculatedAt => $_getN(3);
+  @$pb.TagNumber(4)
+  set calculatedAt($5.Timestamp value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasCalculatedAt() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearCalculatedAt() => $_clearField(4);
+  @$pb.TagNumber(4)
+  $5.Timestamp ensureCalculatedAt() => $_ensure(3);
+}
+
+class GetDailyAssetsRequest extends $pb.GeneratedMessage {
+  factory GetDailyAssetsRequest({
+    $5.Timestamp? startDate,
+    $5.Timestamp? endDate,
+  }) {
+    final result = create();
+    if (startDate != null) result.startDate = startDate;
+    if (endDate != null) result.endDate = endDate;
+    return result;
+  }
+
+  GetDailyAssetsRequest._();
+
+  factory GetDailyAssetsRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetDailyAssetsRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetDailyAssetsRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.account.v1'),
+      createEmptyInstance: create)
+    ..aOM<$5.Timestamp>(1, _omitFieldNames ? '' : 'startDate',
+        subBuilder: $5.Timestamp.create)
+    ..aOM<$5.Timestamp>(2, _omitFieldNames ? '' : 'endDate',
+        subBuilder: $5.Timestamp.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetDailyAssetsRequest clone() =>
+      GetDailyAssetsRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetDailyAssetsRequest copyWith(
+          void Function(GetDailyAssetsRequest) updates) =>
+      super.copyWith((message) => updates(message as GetDailyAssetsRequest))
+          as GetDailyAssetsRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetDailyAssetsRequest create() => GetDailyAssetsRequest._();
+  @$core.override
+  GetDailyAssetsRequest createEmptyInstance() => create();
+  static $pb.PbList<GetDailyAssetsRequest> createRepeated() =>
+      $pb.PbList<GetDailyAssetsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetDailyAssetsRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetDailyAssetsRequest>(create);
+  static GetDailyAssetsRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $5.Timestamp get startDate => $_getN(0);
+  @$pb.TagNumber(1)
+  set startDate($5.Timestamp value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasStartDate() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearStartDate() => $_clearField(1);
+  @$pb.TagNumber(1)
+  $5.Timestamp ensureStartDate() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $5.Timestamp get endDate => $_getN(1);
+  @$pb.TagNumber(2)
+  set endDate($5.Timestamp value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasEndDate() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearEndDate() => $_clearField(2);
+  @$pb.TagNumber(2)
+  $5.Timestamp ensureEndDate() => $_ensure(1);
+}
+
+class GetDailyAssetsResponse extends $pb.GeneratedMessage {
+  factory GetDailyAssetsResponse({
+    $core.Iterable<DailyAsset>? dailyAssets,
+  }) {
+    final result = create();
+    if (dailyAssets != null) result.dailyAssets.addAll(dailyAssets);
+    return result;
+  }
+
+  GetDailyAssetsResponse._();
+
+  factory GetDailyAssetsResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetDailyAssetsResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetDailyAssetsResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.account.v1'),
+      createEmptyInstance: create)
+    ..pc<DailyAsset>(
+        1, _omitFieldNames ? '' : 'dailyAssets', $pb.PbFieldType.PM,
+        subBuilder: DailyAsset.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetDailyAssetsResponse clone() =>
+      GetDailyAssetsResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetDailyAssetsResponse copyWith(
+          void Function(GetDailyAssetsResponse) updates) =>
+      super.copyWith((message) => updates(message as GetDailyAssetsResponse))
+          as GetDailyAssetsResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetDailyAssetsResponse create() => GetDailyAssetsResponse._();
+  @$core.override
+  GetDailyAssetsResponse createEmptyInstance() => create();
+  static $pb.PbList<GetDailyAssetsResponse> createRepeated() =>
+      $pb.PbList<GetDailyAssetsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetDailyAssetsResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetDailyAssetsResponse>(create);
+  static GetDailyAssetsResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<DailyAsset> get dailyAssets => $_getList(0);
+}
+
+class GetLast7DaysAssetsRequest extends $pb.GeneratedMessage {
+  factory GetLast7DaysAssetsRequest() => create();
+
+  GetLast7DaysAssetsRequest._();
+
+  factory GetLast7DaysAssetsRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetLast7DaysAssetsRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetLast7DaysAssetsRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.account.v1'),
+      createEmptyInstance: create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLast7DaysAssetsRequest clone() =>
+      GetLast7DaysAssetsRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLast7DaysAssetsRequest copyWith(
+          void Function(GetLast7DaysAssetsRequest) updates) =>
+      super.copyWith((message) => updates(message as GetLast7DaysAssetsRequest))
+          as GetLast7DaysAssetsRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetLast7DaysAssetsRequest create() => GetLast7DaysAssetsRequest._();
+  @$core.override
+  GetLast7DaysAssetsRequest createEmptyInstance() => create();
+  static $pb.PbList<GetLast7DaysAssetsRequest> createRepeated() =>
+      $pb.PbList<GetLast7DaysAssetsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetLast7DaysAssetsRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetLast7DaysAssetsRequest>(create);
+  static GetLast7DaysAssetsRequest? _defaultInstance;
+}
+
+class GetLast7DaysAssetsResponse extends $pb.GeneratedMessage {
+  factory GetLast7DaysAssetsResponse({
+    $core.Iterable<DailyAsset>? dailyAssets,
+  }) {
+    final result = create();
+    if (dailyAssets != null) result.dailyAssets.addAll(dailyAssets);
+    return result;
+  }
+
+  GetLast7DaysAssetsResponse._();
+
+  factory GetLast7DaysAssetsResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetLast7DaysAssetsResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetLast7DaysAssetsResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.account.v1'),
+      createEmptyInstance: create)
+    ..pc<DailyAsset>(
+        1, _omitFieldNames ? '' : 'dailyAssets', $pb.PbFieldType.PM,
+        subBuilder: DailyAsset.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLast7DaysAssetsResponse clone() =>
+      GetLast7DaysAssetsResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLast7DaysAssetsResponse copyWith(
+          void Function(GetLast7DaysAssetsResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetLast7DaysAssetsResponse))
+          as GetLast7DaysAssetsResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetLast7DaysAssetsResponse create() => GetLast7DaysAssetsResponse._();
+  @$core.override
+  GetLast7DaysAssetsResponse createEmptyInstance() => create();
+  static $pb.PbList<GetLast7DaysAssetsResponse> createRepeated() =>
+      $pb.PbList<GetLast7DaysAssetsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetLast7DaysAssetsResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetLast7DaysAssetsResponse>(create);
+  static GetLast7DaysAssetsResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<DailyAsset> get dailyAssets => $_getList(0);
+}
+
+class GetLast6MonthsEndOfMonthAssetsRequest extends $pb.GeneratedMessage {
+  factory GetLast6MonthsEndOfMonthAssetsRequest() => create();
+
+  GetLast6MonthsEndOfMonthAssetsRequest._();
+
+  factory GetLast6MonthsEndOfMonthAssetsRequest.fromBuffer(
+          $core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetLast6MonthsEndOfMonthAssetsRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetLast6MonthsEndOfMonthAssetsRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.account.v1'),
+      createEmptyInstance: create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLast6MonthsEndOfMonthAssetsRequest clone() =>
+      GetLast6MonthsEndOfMonthAssetsRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLast6MonthsEndOfMonthAssetsRequest copyWith(
+          void Function(GetLast6MonthsEndOfMonthAssetsRequest) updates) =>
+      super.copyWith((message) =>
+              updates(message as GetLast6MonthsEndOfMonthAssetsRequest))
+          as GetLast6MonthsEndOfMonthAssetsRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetLast6MonthsEndOfMonthAssetsRequest create() =>
+      GetLast6MonthsEndOfMonthAssetsRequest._();
+  @$core.override
+  GetLast6MonthsEndOfMonthAssetsRequest createEmptyInstance() => create();
+  static $pb.PbList<GetLast6MonthsEndOfMonthAssetsRequest> createRepeated() =>
+      $pb.PbList<GetLast6MonthsEndOfMonthAssetsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetLast6MonthsEndOfMonthAssetsRequest getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<
+          GetLast6MonthsEndOfMonthAssetsRequest>(create);
+  static GetLast6MonthsEndOfMonthAssetsRequest? _defaultInstance;
+}
+
+class GetLast6MonthsEndOfMonthAssetsResponse extends $pb.GeneratedMessage {
+  factory GetLast6MonthsEndOfMonthAssetsResponse({
+    $core.Iterable<DailyAsset>? dailyAssets,
+  }) {
+    final result = create();
+    if (dailyAssets != null) result.dailyAssets.addAll(dailyAssets);
+    return result;
+  }
+
+  GetLast6MonthsEndOfMonthAssetsResponse._();
+
+  factory GetLast6MonthsEndOfMonthAssetsResponse.fromBuffer(
+          $core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetLast6MonthsEndOfMonthAssetsResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetLast6MonthsEndOfMonthAssetsResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.account.v1'),
+      createEmptyInstance: create)
+    ..pc<DailyAsset>(
+        1, _omitFieldNames ? '' : 'dailyAssets', $pb.PbFieldType.PM,
+        subBuilder: DailyAsset.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLast6MonthsEndOfMonthAssetsResponse clone() =>
+      GetLast6MonthsEndOfMonthAssetsResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLast6MonthsEndOfMonthAssetsResponse copyWith(
+          void Function(GetLast6MonthsEndOfMonthAssetsResponse) updates) =>
+      super.copyWith((message) =>
+              updates(message as GetLast6MonthsEndOfMonthAssetsResponse))
+          as GetLast6MonthsEndOfMonthAssetsResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetLast6MonthsEndOfMonthAssetsResponse create() =>
+      GetLast6MonthsEndOfMonthAssetsResponse._();
+  @$core.override
+  GetLast6MonthsEndOfMonthAssetsResponse createEmptyInstance() => create();
+  static $pb.PbList<GetLast6MonthsEndOfMonthAssetsResponse> createRepeated() =>
+      $pb.PbList<GetLast6MonthsEndOfMonthAssetsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetLast6MonthsEndOfMonthAssetsResponse getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<
+          GetLast6MonthsEndOfMonthAssetsResponse>(create);
+  static GetLast6MonthsEndOfMonthAssetsResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<DailyAsset> get dailyAssets => $_getList(0);
 }
 
 const $core.bool _omitFieldNames =

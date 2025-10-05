@@ -65,6 +65,29 @@ class AccountServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$0.GetDailyAssetsResponse> getDailyAssets(
+    $0.GetDailyAssetsRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getDailyAssets, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.GetLast7DaysAssetsResponse> getLast7DaysAssets(
+    $0.GetLast7DaysAssetsRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getLast7DaysAssets, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.GetLast6MonthsEndOfMonthAssetsResponse>
+      getLast6MonthsEndOfMonthAssets(
+    $0.GetLast6MonthsEndOfMonthAssetsRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getLast6MonthsEndOfMonthAssets, request,
+        options: options);
+  }
+
   // method descriptors
 
   static final _$getAccounts =
@@ -91,6 +114,22 @@ class AccountServiceClient extends $grpc.Client {
       ($0.GetAccountWithTransactionHistoryRequest value) =>
           value.writeToBuffer(),
       $0.AccountWithTransactionHistory.fromBuffer);
+  static final _$getDailyAssets =
+      $grpc.ClientMethod<$0.GetDailyAssetsRequest, $0.GetDailyAssetsResponse>(
+          '/sg.flow.account.v1.AccountService/GetDailyAssets',
+          ($0.GetDailyAssetsRequest value) => value.writeToBuffer(),
+          $0.GetDailyAssetsResponse.fromBuffer);
+  static final _$getLast7DaysAssets = $grpc.ClientMethod<
+          $0.GetLast7DaysAssetsRequest, $0.GetLast7DaysAssetsResponse>(
+      '/sg.flow.account.v1.AccountService/GetLast7DaysAssets',
+      ($0.GetLast7DaysAssetsRequest value) => value.writeToBuffer(),
+      $0.GetLast7DaysAssetsResponse.fromBuffer);
+  static final _$getLast6MonthsEndOfMonthAssets = $grpc.ClientMethod<
+          $0.GetLast6MonthsEndOfMonthAssetsRequest,
+          $0.GetLast6MonthsEndOfMonthAssetsResponse>(
+      '/sg.flow.account.v1.AccountService/GetLast6MonthsEndOfMonthAssets',
+      ($0.GetLast6MonthsEndOfMonthAssetsRequest value) => value.writeToBuffer(),
+      $0.GetLast6MonthsEndOfMonthAssetsResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.account.v1.AccountService')
@@ -133,6 +172,34 @@ abstract class AccountServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.GetAccountWithTransactionHistoryRequest.fromBuffer(value),
         ($0.AccountWithTransactionHistory value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetDailyAssetsRequest,
+            $0.GetDailyAssetsResponse>(
+        'GetDailyAssets',
+        getDailyAssets_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetDailyAssetsRequest.fromBuffer(value),
+        ($0.GetDailyAssetsResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetLast7DaysAssetsRequest,
+            $0.GetLast7DaysAssetsResponse>(
+        'GetLast7DaysAssets',
+        getLast7DaysAssets_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetLast7DaysAssetsRequest.fromBuffer(value),
+        ($0.GetLast7DaysAssetsResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetLast6MonthsEndOfMonthAssetsRequest,
+            $0.GetLast6MonthsEndOfMonthAssetsResponse>(
+        'GetLast6MonthsEndOfMonthAssets',
+        getLast6MonthsEndOfMonthAssets_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetLast6MonthsEndOfMonthAssetsRequest.fromBuffer(value),
+        ($0.GetLast6MonthsEndOfMonthAssetsResponse value) =>
+            value.writeToBuffer()));
   }
 
   $async.Future<$0.GetAccountsResponse> getAccounts_Pre($grpc.ServiceCall $call,
@@ -174,4 +241,34 @@ abstract class AccountServiceBase extends $grpc.Service {
   $async.Future<$0.AccountWithTransactionHistory>
       getAccountWithTransactionHistory($grpc.ServiceCall call,
           $0.GetAccountWithTransactionHistoryRequest request);
+
+  $async.Future<$0.GetDailyAssetsResponse> getDailyAssets_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetDailyAssetsRequest> $request) async {
+    return getDailyAssets($call, await $request);
+  }
+
+  $async.Future<$0.GetDailyAssetsResponse> getDailyAssets(
+      $grpc.ServiceCall call, $0.GetDailyAssetsRequest request);
+
+  $async.Future<$0.GetLast7DaysAssetsResponse> getLast7DaysAssets_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetLast7DaysAssetsRequest> $request) async {
+    return getLast7DaysAssets($call, await $request);
+  }
+
+  $async.Future<$0.GetLast7DaysAssetsResponse> getLast7DaysAssets(
+      $grpc.ServiceCall call, $0.GetLast7DaysAssetsRequest request);
+
+  $async.Future<$0.GetLast6MonthsEndOfMonthAssetsResponse>
+      getLast6MonthsEndOfMonthAssets_Pre(
+          $grpc.ServiceCall $call,
+          $async.Future<$0.GetLast6MonthsEndOfMonthAssetsRequest>
+              $request) async {
+    return getLast6MonthsEndOfMonthAssets($call, await $request);
+  }
+
+  $async.Future<$0.GetLast6MonthsEndOfMonthAssetsResponse>
+      getLast6MonthsEndOfMonthAssets($grpc.ServiceCall call,
+          $0.GetLast6MonthsEndOfMonthAssetsRequest request);
 }
