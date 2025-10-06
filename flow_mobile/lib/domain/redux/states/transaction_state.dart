@@ -1,4 +1,5 @@
 import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/card.dart';
 import 'package:flow_mobile/domain/entity/date_spending_statistics.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
@@ -29,13 +30,12 @@ class TransactionState {
   factory TransactionState.initial() => TransactionState();
 
   DateSpendingStatistics getTransactionStatisticForDate(DateTime date) {
-    final transactionsForDate =
-        transactions.where((transaction) {
-          final transactionDate = transaction.date;
-          return transactionDate.year == date.year &&
-              transactionDate.month == date.month &&
-              transactionDate.day == date.day;
-        }).toList();
+    final transactionsForDate = transactions.where((transaction) {
+      final transactionDate = transaction.date;
+      return transactionDate.year == date.year &&
+          transactionDate.month == date.month &&
+          transactionDate.day == date.day;
+    }).toList();
 
     final totalIncome = transactionsForDate
         .where((transaction) => transaction.amount > 0)
@@ -53,12 +53,11 @@ class TransactionState {
   }
 
   double getBalanceForMonth(DateTime month) {
-    final transactionsForMonth =
-        transactions.where((transaction) {
-          final transactionDate = transaction.date;
-          return transactionDate.year == month.year &&
-              transactionDate.month == month.month;
-        }).toList();
+    final transactionsForMonth = transactions.where((transaction) {
+      final transactionDate = transaction.date;
+      return transactionDate.year == month.year &&
+          transactionDate.month == month.month;
+    }).toList();
 
     return transactionsForMonth.fold(0.0, (previousValue, element) {
       return previousValue + element.amount;
@@ -66,14 +65,13 @@ class TransactionState {
   }
 
   double getIncomeForMonth(DateTime month) {
-    final transactionsForMonth =
-        transactions.where((transaction) {
-          final transactionDate = transaction.date;
-          return transactionDate.year == month.year &&
-              transactionDate.month == month.month &&
+    final transactionsForMonth = transactions.where((transaction) {
+      final transactionDate = transaction.date;
+      return transactionDate.year == month.year &&
+          transactionDate.month == month.month &&
           transaction.amount > 0 &&
           transaction.isIncludedInSpendingOrIncome;
-        }).toList();
+    }).toList();
 
     return transactionsForMonth.fold(0.0, (previousValue, element) {
       return previousValue + element.amount;
@@ -81,14 +79,13 @@ class TransactionState {
   }
 
   double getExpenseForMonth(DateTime month) {
-    final transactionsForMonth =
-        transactions.where((transaction) {
-          final transactionDate = transaction.date;
-          return transactionDate.year == month.year &&
-              transactionDate.month == month.month &&
+    final transactionsForMonth = transactions.where((transaction) {
+      final transactionDate = transaction.date;
+      return transactionDate.year == month.year &&
+          transactionDate.month == month.month &&
           transaction.isIncludedInSpendingOrIncome &&
-              transaction.amount < 0;
-        }).toList();
+          transaction.amount < 0;
+    }).toList();
 
     return transactionsForMonth.fold(0.0, (previousValue, element) {
       return previousValue + element.amount;
@@ -138,6 +135,12 @@ class TransactionState {
                   DateTimeUtil.isSameDate(transaction.date, dateTime2)) ||
               transaction.date.isAfter(dateTime) &&
                   transaction.date.isBefore(dateTime2));
+    }).toList();
+  }
+
+  List<Transaction> getTransactionsByCard(Card card) {
+    return transactions.where((transaction) {
+      return transaction.bankAccount.accountNumber == card.cardNumber;
     }).toList();
   }
 }

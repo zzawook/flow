@@ -1,9 +1,11 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/domain/entity/card.dart' as BankCard;
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/presentation/add_account_screen/add_account_screen.dart';
 import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
-import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen.dart';
+import 'package:flow_mobile/presentation/card_detail_screen/card_detail_screen.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/all_link_success_screen.dart';
+import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen_argument.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_failed_screen.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_success_screen.dart';
@@ -13,16 +15,16 @@ import 'package:flow_mobile/presentation/login_screen/login_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_date_of_birth_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_name_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_password_screen.dart';
+import 'package:flow_mobile/presentation/manage_bank_account_screen/manage_bank_account_screen.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/refresh_screen/all_refresh_success_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_bank_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_bank_screen_argument.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_failed_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_success_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_account_screen/manage_account_screen.dart';
-import 'package:flow_mobile/presentation/manage_bank_account_screen/manage_bank_account_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_bank_accounts_screen/manage_bank_accounts_screen.dart';
 import 'package:flow_mobile/presentation/setting_screen/manage_notification_screen/manage_notification_screen.dart';
-import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/setting_screen/setting_screen.dart';
 import 'package:flow_mobile/presentation/transaction_detail_screen/category_selection_screen.dart';
 import 'package:flow_mobile/presentation/transaction_detail_screen/transaction_detail_screen.dart';
@@ -35,6 +37,7 @@ import '../account_detail_screen/account_detail_screen.dart';
 import '../fixed_spending_screen/fixed_spending_screen.dart';
 import '../home_screen/home_screen.dart';
 import '../notification_screen/notification_screen.dart';
+import '../privacy_protector.dart';
 import '../refresh_screen/refresh_init_screen.dart';
 import '../spending_calendar_screen/spending_calendar_screen.dart';
 import '../spending_category_detail_screen/spending_category_detail_screen.dart';
@@ -45,9 +48,8 @@ import '../transfer_screen/transfer_confirm.dart';
 import '../transfer_screen/transfer_result_screen.dart';
 import '../transfer_screen/transfer_screen.dart';
 import '../transfer_screen/transfer_to_screen/transfer_to_screen.dart';
-import '../privacy_protector.dart';
-import 'transition_type.dart';
 import 'app_transitions.dart';
+import 'transition_type.dart';
 
 typedef ScreenTracker = void Function(String screenName);
 
@@ -62,6 +64,7 @@ class AppRoutes {
   static const categorySelection = "category_selection";
   static const fixedSpending = '/fixed_spending/details';
   static const accountDetail = '/account_detail';
+  static const cardDetail = '/card_detail';
   static const addAccount = '/add_account';
   static const transfer = '/transfer';
   static const transferAmount = '/transfer/amount';
@@ -150,6 +153,9 @@ class AppRoutes {
         page = BankAccountDetailScreen(
           bankAccount: args!.extraData as BankAccount,
         );
+        break;
+      case cardDetail:
+        page = CardDetailScreen(card: args!.extraData as BankCard.Card);
         break;
 
       case transfer:

@@ -3,6 +3,7 @@ import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 import 'package:flow_mobile/domain/redux/thunks/account_thunks.dart';
+import 'package:flow_mobile/initialization/manager_registry.dart';
 import 'package:flow_mobile/presentation/account_detail_screen/account_transaction_list.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
@@ -11,6 +12,7 @@ import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_snackbar.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -204,48 +206,66 @@ class BalanceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final logoService = getIt<LogoService>();
+
     return Container(
       padding: const EdgeInsets.only(top: 48, left: 24, right: 24, bottom: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          GestureDetector(
-            onTap: () {
-              // Capture messenger & snackbar synchronously
-              final messenger = ScaffoldMessenger.of(context);
-              final snack = FlowSnackbar(
-                content: const Text(
-                  "Copied to clipboard",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.white,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    // Capture messenger & snackbar synchronously
+                    final messenger = ScaffoldMessenger.of(context);
+                    final snack = FlowSnackbar(
+                      content: const Text(
+                        "Copied to clipboard",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.white,
+                        ),
+                      ),
+                      duration: 2,
+                    ).build(context);
+
+                    // Now do the async, then show using the captured messenger
+                    Clipboard.setData(
+                      ClipboardData(
+                        text:
+                            "${bankAccount.bank.name} ${bankAccount.accountNumber}",
+                      ),
+                    ).then((_) {
+                      messenger.showSnackBar(snack);
+                    });
+                  },
+                  child: Text(
+                    "${bankAccount.bank.name} ${bankAccount.accountNumber}",
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
-                duration: 2,
-              ).build(context);
-
-              // Now do the async, then show using the captured messenger
-              Clipboard.setData(
-                ClipboardData(
-                  text: "${bankAccount.bank.name} ${bankAccount.accountNumber}",
+                const FlowSeparatorBox(height: 12),
+                Text(
+                  '\$ ${bankAccount.balance.toStringAsFixed(2)}',
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
-              ).then((_) {
-                messenger.showSnackBar(snack);
-              });
-            },
-            child: Text(
-              "${bankAccount.bank.name} ${bankAccount.accountNumber}",
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                decoration: TextDecoration.underline,
-              ),
+              ],
             ),
           ),
-          const FlowSeparatorBox(height: 12),
-          Text(
-            '\$ ${bankAccount.balance.toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              color: Theme.of(context).primaryColor,
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Image.asset(
+              logoService.getBankLogoUri(bankAccount.bank),
+              width: 60,
+              height: 60,
+              fit: BoxFit.contain,
             ),
           ),
         ],

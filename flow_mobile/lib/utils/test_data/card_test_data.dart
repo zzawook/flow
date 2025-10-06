@@ -9,18 +9,21 @@ class CardTestData {
         cardNumber: "1111-2222-3333-4444",
         cardType: "CREDIT",
         bank: Bank(name: "DBS", bankId: 1),
+        balance: -1500.75,
       ),
       BankCard.Card(
         cardName: "OCBC Debit Card",
         cardNumber: "5555-6666-7777-8888",
         cardType: "DEBIT",
         bank: Bank(name: "OCBC", bankId: 2),
+        balance: 0,
       ),
       BankCard.Card(
         cardName: "UOB Credit Card",
         cardNumber: "9999-0000-1111-2222",
         cardType: "CREDIT",
         bank: Bank(name: "UOB", bankId: 3),
+        balance: -250.00,
       ),
     ];
   }

@@ -1,6 +1,16 @@
+import 'package:flow_mobile/domain/entity/bank.dart';
+
 class LogoService {
   String getLogoUrl(String brandDomain) {
     return generateLogoSearchUrl(brandDomain);
+  }
+
+  String getBankLogoUri(Bank bank) {
+    return "assets/bank_logos/${bank.name.toUpperCase()}.png";
+  }
+
+  String getBankLogouri(String bankName) {
+    return "assets/bank_logos/${bankName.toUpperCase()}.png";
   }
 
   String generateLogoSearchUrl(String brandDomain) {

@@ -52,8 +52,20 @@ ThunkAction<FlowState> getCardDetailThunk({
         ),
       );
       return;
-    
+  };
+}
 
-    
+ThunkAction<FlowState> getCardTransactionsThunk({
+  required BankCard.Card card,
+  String? oldestTransactionId,
+  int limit = 20,
+}) {
+  return (Store<FlowState> store) async {
+    final cardManager = getIt<CardManager>();
+    await cardManager.fetchTransactionForCardFromRemote(
+      card,
+      limit,
+      oldestTransactionId: oldestTransactionId,
+    );
   };
 }

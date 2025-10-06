@@ -1,3 +1,5 @@
+import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/card.dart' as BankCard;
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/asset_screen/components/total_asset_card/monthly_asset_bar_chart.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +13,15 @@ class TotalAssetCard extends StatelessWidget {
     return StoreConnector<FlowState, _ViewModel>(
       converter: (store) => _ViewModel(
         monthlyAssets: store.state.screenState.assetScreenState.monthlyAssets,
+        bankAccounts: store.state.bankAccountState.bankAccounts,
+        cards: store.state.cardState.cards,
         isLoading: store.state.screenState.assetScreenState.isLoading,
         error: store.state.screenState.assetScreenState.error,
       ),
       builder: (context, vm) => _TotalAssetCardContent(
         monthlyAssets: vm.monthlyAssets,
+        bankAccounts: vm.bankAccounts,
+        cards: vm.cards,
         isLoading: vm.isLoading,
         error: vm.error,
       ),
@@ -25,11 +31,15 @@ class TotalAssetCard extends StatelessWidget {
 
 class _ViewModel {
   final Map<DateTime, double> monthlyAssets;
+  final List<BankAccount> bankAccounts;
+  final List<BankCard.Card> cards;
   final bool isLoading;
   final String? error;
 
   _ViewModel({
     required this.monthlyAssets,
+    required this.bankAccounts,
+    required this.cards,
     required this.isLoading,
     this.error,
   });
@@ -37,11 +47,15 @@ class _ViewModel {
 
 class _TotalAssetCardContent extends StatelessWidget {
   final Map<DateTime, double> monthlyAssets;
+  final List<BankAccount> bankAccounts;
+  final List<BankCard.Card> cards;
   final bool isLoading;
   final String? error;
 
   const _TotalAssetCardContent({
     required this.monthlyAssets,
+    required this.bankAccounts,
+    required this.cards,
     required this.isLoading,
     this.error,
   });
@@ -59,8 +73,18 @@ class _TotalAssetCardContent extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final currentMonthAccountSum = bankAccounts.fold<double>(
+      0,
+      (sum, account) => sum + account.balance,
+    );
+    final currentMonthCardSum = cards.fold<double>(
+      0,
+      (sum, card) => sum + card.balance,
+    );
+
     final currentMonth = sortedDates.last;
     final lastMonth = sortedDates[sortedDates.length - 2];
+    monthlyAssets[currentMonth] = currentMonthAccountSum + currentMonthCardSum;
     final currentMonthAmount = monthlyAssets[currentMonth] ?? 0.0;
     final lastMonthAmount = monthlyAssets[lastMonth] ?? 0.0;
 

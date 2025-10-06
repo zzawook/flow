@@ -1,9 +1,11 @@
 import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/transfer_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/initialization/manager_registry.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -82,19 +84,17 @@ class AccountRow extends StatelessWidget {
               height: 40,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Color(0xFFF0F0F0)
-                        : Theme.of(context).colorScheme.surfaceBright,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Color(0xFFF0F0F0)
+                    : Theme.of(context).colorScheme.surfaceBright,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 Icons.swap_horiz,
                 size: 24,
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Color(0xFF565656)
-                        : Color(0xFFAAAAAA),
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Color(0xFF565656)
+                    : Color(0xFFAAAAAA),
               ),
             ),
           ),
@@ -104,12 +104,12 @@ class AccountRow extends StatelessWidget {
   }
 
   Widget _buildAvatar() {
+    final logoService = getIt<LogoService>();
     return SizedBox(
       width: 50,
       height: 50,
       child: Image.asset(
-        // 'assets/bank_logos/${bankAccount.bank.name}.png',
-        'assets/bank_logos/DBS.png',
+        logoService.getBankLogoUri(bankAccount.bank),
         fit: BoxFit.contain,
       ),
     );
@@ -125,17 +125,15 @@ class AccountRow extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
-              color:
-                  Theme.of(context).brightness == Brightness.light
-                      ? Color(0xFF565656)
-                      : Color(0xFFCCCCCC),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Color(0xFF565656)
+                  : Color(0xFFCCCCCC),
             ),
           ),
           const SizedBox(height: 4),
           StoreConnector<FlowState, bool>(
-            converter:
-                (store) =>
-                    store.state.settingsState.settings.displayBalanceOnHome,
+            converter: (store) =>
+                store.state.settingsState.settings.displayBalanceOnHome,
             builder: (context, showBalance) {
               return Text(
                 showBalance ? "\$ ${bankAccount.balance}" : 'View Balance',

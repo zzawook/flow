@@ -1,13 +1,15 @@
 import 'dart:math';
 
+import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
+import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/initialization/manager_registry.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
+import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flow_mobile/domain/entity/bank_account.dart';
-import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/presentation/shared/flow_button.dart';
 
 class BankAccountCard extends StatefulWidget {
   const BankAccountCard({super.key});
@@ -175,6 +177,7 @@ class _AccountRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
+    final logoService = getIt<LogoService>();
 
     return Padding(
       key: key, // ReorderableListView needs this
@@ -202,8 +205,7 @@ class _AccountRow extends StatelessWidget {
                     width: 50,
                     height: 50,
                     child: Image.asset(
-                      // 'assets/bank_logos/${bankAccount.bank.name}.png',
-                      'assets/bank_logos/DBS.png',
+                      logoService.getBankLogoUri(bankAccount.bank),
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -254,10 +256,9 @@ class _ToggleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label =
-        expanded
-            ? '$hiddenCount Accounts Hidden from Home Screen'
-            : 'Show Hidden Accounts';
+    final label = expanded
+        ? '$hiddenCount Accounts Hidden from Home Screen'
+        : 'Show Hidden Accounts';
 
     return FlowButton(
       key: key,

@@ -10,7 +10,7 @@ abstract class CardManager {
   Future<void> removeCard(Card card);
   Future<void> updateCard(Card card);
   Future<void> fetchCardsFromRemote() async {}
-  Future<List<Transaction>> getTransactionForCard(
+  Future<List<Transaction>> fetchTransactionForCardFromRemote(
     Card card,
     int limit, {
     String? oldestTransactionId,

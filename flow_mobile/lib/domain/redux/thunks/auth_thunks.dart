@@ -1,17 +1,21 @@
 import 'dart:developer';
 
+import 'package:flow_mobile/domain/entity/card.dart' as BankCard;
 import 'package:flow_mobile/domain/manager/auth_manager.dart';
 import 'package:flow_mobile/domain/manager/bank_account_manager.dart';
 import 'package:flow_mobile/domain/manager/bank_manager.dart';
+import 'package:flow_mobile/domain/manager/card_manager.dart';
 import 'package:flow_mobile/domain/manager/notification_manager.dart';
 import 'package:flow_mobile/domain/manager/transaction_manager.dart';
 import 'package:flow_mobile/domain/manager/user_manager.dart';
 import 'package:flow_mobile/domain/redux/actions/auth_action.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
+import 'package:flow_mobile/domain/redux/actions/card_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/notification_action.dart';
 import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/states/card_state.dart';
 import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
 import 'package:flow_mobile/initialization/flow_state_initializer.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
@@ -21,6 +25,7 @@ import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flow_mobile/utils/debug_config.dart';
 import 'package:flow_mobile/utils/test_data/bank_account_test_data.dart';
+import 'package:flow_mobile/utils/test_data/card_test_data.dart';
 import 'package:flow_mobile/utils/test_data/transaction_history_test_data.dart';
 import 'package:flow_mobile/utils/test_data/user_test_data.dart';
 import 'package:redux/redux.dart';
@@ -116,10 +121,13 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   NotificationManager notificationManager = getIt<NotificationManager>();
   TransactionManager transactionManager = getIt<TransactionManager>();
   UserManager userManager = getIt<UserManager>();
+  CardManager cardManager = getIt<CardManager>();
 
   bankManager.clearBanks();
   bankAccountManager.clearBankAccounts();
   transactionManager.clearTransactions();
+  cardManager.clearCards();
+  notificationManager.clearNotifications();
 
   // ======== DEBUG MODE HANDLING ========
   if (DebugConfig.isDebugMode &&
@@ -150,6 +158,14 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
       await transactionManager.addTransaction(transaction);
     }
 
+    final testCards = DebugConfig.cardTestMode == CardTestMode.singleItem
+        ? CardTestData.getSingleCard()
+        : DebugConfig.cardTestMode == CardTestMode.multipleItems
+        ? CardTestData.getMultipleCards()
+        : DebugConfig.cardTestMode == CardTestMode.edgeCases
+        ? CardTestData.getEdgeCases()
+        : <BankCard.Card>[];
+
     // 4. Load state into Redux store
     store.dispatch(
       SetUserStateAction(userState: await FlowStateInitializer.getUserState()),
@@ -164,6 +180,9 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
         transactionHistoryState:
             await FlowStateInitializer.getTransactionState(),
       ),
+    );
+    store.dispatch(
+      SetCardStateAction(CardState.initial().copyWith(cards: testCards)),
     );
 
     // Skip notifications in debug mode

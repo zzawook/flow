@@ -81,12 +81,11 @@ class CardManagerImpl implements CardManager {
   }
 
   @override
-  Future<List<Transaction>> getTransactionForCard(
-      Card card,
-      int limit, {
-      String? oldestTransactionId,
-  }
-  ) {
+  Future<List<Transaction>> fetchTransactionForCardFromRemote(
+    Card card,
+    int limit, {
+    String? oldestTransactionId,
+  }) {
     ApiService apiService = getIt<ApiService>();
     return apiService
         .fetchCardTransactions(
@@ -98,12 +97,15 @@ class CardManagerImpl implements CardManager {
           List<Transaction> fetchedTransactions = [];
           TransactionManager transactionManager = getIt<TransactionManager>();
           for (var transactionHistoryDetail in response.transactions) {
-            Transaction transaction = transactionManager.fromTransactionHistoryDetail(transactionHistoryDetail);
+            Transaction transaction = transactionManager
+                .fromTransactionHistoryDetail(transactionHistoryDetail);
             fetchedTransactions.add(transaction);
+            transactionManager.addTransaction(transaction);
           }
 
           return fetchedTransactions;
-        }).catchError((error) {
+        })
+        .catchError((error) {
           log("Error fetching transaction for card: ${card.cardNumber}");
           return List<Transaction>.empty();
         });

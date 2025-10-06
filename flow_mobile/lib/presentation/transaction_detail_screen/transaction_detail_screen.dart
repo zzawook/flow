@@ -13,6 +13,7 @@ import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
+import 'package:flow_mobile/utils/spending_category_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,9 +30,11 @@ class TransactionDetailScreen extends StatefulWidget {
 }
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
+  String? networkLogoUrl;
+  bool _tryNetwork = false; // whether to attempt network logo
+  bool _networkFailed = false; // once true, never try again
+
   bool isIncludedInSpendingOrIncome = true;
-  String logoUrl = "";
-  bool isLogoFromNetwork = false;
 
   @override
   void initState() {
@@ -42,21 +45,17 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   }
 
   void _loadLogo() {
-    setState(() {
-      logoUrl =
-          "assets/icons/category_icons/${widget.transaction.category.toLowerCase()}.png";
-    });
-    if (widget.transaction.brandDomain.isEmpty) {
-      return;
-    }
+    // base asset is decided in build() by theme; nothing to do here
+    if (widget.transaction.brandDomain.isEmpty) return;
+
     final logoService = getIt<LogoService>();
-    final fetchedLogoUrl = logoService.getLogoUrl(
-      widget.transaction.brandDomain,
-    );
-    setState(() {
-      isLogoFromNetwork = true;
-      logoUrl = fetchedLogoUrl;
-    });
+    final fetched = logoService.getLogoUrl(widget.transaction.brandDomain);
+    if (fetched.isNotEmpty) {
+      setState(() {
+        networkLogoUrl = fetched;
+        _tryNetwork = true;
+      });
+    }
   }
 
   @override
@@ -68,6 +67,47 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     final transactionAmountString = widget.transaction.amount < 0
         ? "-\$${widget.transaction.amount.abs().toStringAsFixed(2)}"
         : "+\$${widget.transaction.amount.abs().toStringAsFixed(2)}";
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final assetLogo =
+        "assets/icons/category_icons/${widget.transaction.category.toLowerCase()}${isDark ? '_dark' : ''}.png";
+
+    Widget logoWidget;
+    if (_tryNetwork && networkLogoUrl != null && !_networkFailed) {
+      logoWidget = ClipOval(
+        child: Image.network(
+          networkLogoUrl!,
+          height: 42,
+          width: 42,
+          errorBuilder: (context, error, stackTrace) {
+            // Network image failed; never try again
+            _networkFailed = true;
+
+            if (!_networkFailed) {
+              _networkFailed = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) setState(() {});
+              });
+            }
+
+            return const SizedBox(height: 42, width: 42);
+          },
+        ),
+      );
+    } else {
+      logoWidget = Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: SpendingCategoryUtil.getCategoryColor(
+            widget.transaction.category,
+          ),
+          shape: BoxShape.circle,
+        ),
+        padding: const EdgeInsets.all(8),
+        child: Image.asset(assetLogo, fit: BoxFit.contain),
+      );
+    }
 
     return Scaffold(
       body: FlowSafeArea(
@@ -93,14 +133,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                   FlowSeparatorBox(height: 36),
                   Row(
                     children: [
-                      isLogoFromNetwork
-                          ? Image.network(logoUrl, height: 36, width: 36)
-                          :
-                      Image.asset(
-                        logoUrl,
-                        height: 36,
-                        width: 36,
-                      ),
+                      logoWidget,
                       FlowSeparatorBox(width: 8),
                       Text(
                         transactionProcessedName,
