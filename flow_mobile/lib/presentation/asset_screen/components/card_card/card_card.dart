@@ -16,7 +16,17 @@ class CardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<FlowState, List<BankCard.Card>>(
-      converter: (store) => store.state.cardState.cards,
+      converter: (store) {
+        final cards = store.state.cardState.cards;
+        cards.sort((a, b) {
+          final cardTypeCompared = a.cardType.compareTo(b.cardType);
+          if (cardTypeCompared != 0) {
+            return cardTypeCompared;
+          }
+          return a.bank.name.compareTo(b.bank.name);
+        });
+        return cards;
+      },
       builder: (context, cards) {
         if (cards.isEmpty) {
           return const SizedBox.shrink();
@@ -93,7 +103,7 @@ class _CardRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 14),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,  
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [

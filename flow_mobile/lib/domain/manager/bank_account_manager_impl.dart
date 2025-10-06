@@ -1,9 +1,9 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/manager/bank_account_manager.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:flow_mobile/service/local_source/local_secure_hive.dart';
-import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class BankAccountManagerImpl implements BankAccountManager {
@@ -46,6 +46,8 @@ class BankAccountManagerImpl implements BankAccountManager {
 
   @override
   Future<List<BankAccount>> getBankAccounts() async {
+    final temp = _bankAccountBox.values.toList();
+    print("length of bank accounts: ${temp.length}");
     return _bankAccountBox.values.toList();
   }
 

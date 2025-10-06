@@ -129,12 +129,30 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   UserManager userManager = getIt<UserManager>();
   CardManager cardManager = getIt<CardManager>();
 
-  bankManager.clearBanks();
-  bankAccountManager.clearBankAccounts();
-  transactionManager.clearTransactions();
-  cardManager.clearCards();
-  notificationManager.clearNotifications();
+  final bankClearFuture = bankManager.clearBanks();
+  final bankAccountClearFuture = bankAccountManager.clearBankAccounts();
+  final transactionManagerClearFuture = transactionManager.clearTransactions();
+  final cardClearFuture = cardManager.clearCards();
+  final notificationClearFuture = notificationManager.clearNotifications();
 
+  final successList =
+      await Future.wait([
+        bankClearFuture,
+        bankAccountClearFuture,
+        transactionManagerClearFuture,
+        cardClearFuture,
+        notificationClearFuture,
+      ]).then((_) {
+        store.dispatch(ClearBankAccountStateAction());
+        store.dispatch(ClearTransactionStateAction());
+        store.dispatch(ClearNotificationStateAction());
+        store.dispatch(ClearUserStateAction());
+        store.dispatch(ClearCardStateAction());
+      });
+
+  if (successList == null) {
+    log('Error clearing local data on login');
+  }
   // ======== DEBUG MODE HANDLING ========
   if (DebugConfig.isDebugMode &&
       DebugConfig.authTestMode == AuthTestMode.testAccount) {
@@ -203,6 +221,7 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   final transactionFuture = transactionManager
       .fetchLastYearTransactionsFromRemote();
   final notificationFuture = notificationManager.fetchNotificationsFromRemote();
+  final cardFuture = cardManager.fetchCardsFromRemote();
 
   final fetchResults = Future.wait([
     userFuture,
@@ -210,6 +229,7 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
     bankAccountFuture,
     transactionFuture,
     notificationFuture,
+    cardFuture,
   ]);
 
   fetchResults.then((_) async {
@@ -232,6 +252,9 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
         notificationState: await FlowStateInitializer.getNotificationState(),
       ),
     );
+    store.dispatch(
+      SetCardStateAction(await FlowStateInitializer.getCardState()),
+    );
   });
 }
 
@@ -240,6 +263,7 @@ Future<void> _clearState(Store<FlowState> store) async {
   store.dispatch(ClearBankAccountStateAction());
   store.dispatch(ClearTransactionStateAction());
   store.dispatch(ClearNotificationStateAction());
+  store.dispatch(ClearCardStateAction());
 }
 
 ThunkAction<FlowState> signupThunk(
