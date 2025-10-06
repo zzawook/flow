@@ -93,38 +93,35 @@ class _CardRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 14),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,  
           children: [
-            // ── account info
-            Expanded(
-              child: SizedBox(
-                height: 50,
-                child: Row(
-                  children: [
-                    // ── bank logo
-                    Image.asset(logoService.getBankLogoUri(card.bank)),
-                    const SizedBox(width: 20),
+            Row(
+              children: [
+                // ── bank logo
+                Image.asset(
+                  logoService.getBankLogoUri(card.bank),
+                  width: 50,
+                  height: 50,
+                ),
+                const SizedBox(width: 20),
 
-                    // ── account name & balance
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            card.cardName,
-                            style: TextStyle(color: onSurface.withAlpha(180)),
-                          ),
-                          if (card.cardType == "CREDIT")
-                            Text(
-                              '\$ ${card.balance}',
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                        ],
-                      ),
+                // ── account name & balance
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      card.cardName,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
+                    if (card.cardType == "CREDIT")
+                      Text(
+                        '\$ ${card.balance}',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
                   ],
                 ),
-              ),
+              ],
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
