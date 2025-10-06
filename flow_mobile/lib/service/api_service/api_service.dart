@@ -56,6 +56,7 @@ class ApiService {
     _userApiService = UserApiService(_channel);
     _accountApiService = AccountApiService(_channel);
     _transactionHistoryApiService = TransactionHistoryApiService(_channel);
+    _cardApiService = CardApiService(_channel);
   }
 
   Future<SetTransactionCategoryResponse> setTransactionCategory(
