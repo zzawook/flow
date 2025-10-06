@@ -26,6 +26,7 @@ import sg.flow.transaction.v1.GetRecurringTransactionResponse
 import sg.flow.transaction.v1.GetSpendingMedianRequest
 import sg.flow.transaction.v1.GetSpendingMedianResponse
 import sg.flow.transaction.v1.GetTransactionForAccountRequest
+import sg.flow.transaction.v1.GetTransactionsByIdRequest
 import sg.flow.transaction.v1.SetTransactionCategoryRequest
 import sg.flow.transaction.v1.SetTransactionCategoryResponse
 import sg.flow.transaction.v1.SetTransactionInclusionRequest
@@ -217,6 +218,12 @@ private val spendingMedianService: SpendingMedianService
 
                 // Map to proto and return
                 return txHistoryMapper.toProto(median)
+        }
+
+        override suspend fun getTransactionsByIds(request: GetTransactionsByIdRequest): ProtoTransactionHistoryList {
+                val userId = currentUserId()
+                val transactions = transactionService.getTransactionByIds(userId, request.transactionIdsList)
+                return txHistoryMapper.toProto(transactions);
         }
 
 }

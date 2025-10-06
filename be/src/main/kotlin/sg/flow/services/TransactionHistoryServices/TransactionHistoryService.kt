@@ -18,4 +18,5 @@ interface TransactionHistoryService {
     suspend fun setTransactionCategory(userId: Int, transactionId: String, category: String): Boolean
     suspend fun setTransactionInclusion(userId: Int, transactionId: String, includeInSpendingOrIncome: Boolean): Boolean
     suspend fun getTransactionsForAccount(userId: Int, accountNumber: String, bankId: String, oldestTransactionId: String, limit: Int): TransactionHistoryList
+    suspend fun getTransactionByIds(userId: Int, transactionIdsList: List<Long>): TransactionHistoryList
 } 

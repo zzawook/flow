@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/entity/recurring_spending.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/transaction_thunks.dart';
 import 'package:flow_mobile/initialization/manager_registry.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
@@ -39,7 +40,16 @@ class _RecurringSpendingDetailScreenState
   }
 
   void _loadTransactions() {
-    // nothing to do here; transactions are loaded in SpendingScreen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final store = StoreProvider.of<FlowState>(context);
+      store.dispatch(
+        fetchTransactionsIfNotOnLocalThunk(
+          widget.recurringSpending.transactionIds
+              .map((e) => e.toString())
+              .toList(),
+        ),
+      );
+    });
   }
 
   void _loadLogo() {

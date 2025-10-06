@@ -84,7 +84,7 @@ ThunkAction<FlowState> toggleTransactionIncludeInSpendingOrIncomeThunk(
   };
 }
 
-ThunkAction<FlowState> fetchTransactionsIfNotOnLocal(List<String> ids) {
+ThunkAction<FlowState> fetchTransactionsIfNotOnLocalThunk(List<String> ids) {
   return (Store<FlowState> store) async {
     final transactionManager = getIt<TransactionManager>();
     List<String> idsToFetch = []; // IDs that are not on local

@@ -103,4 +103,11 @@ class TransactionHistoryServiceImpl(
     ): TransactionHistoryList {
         return transactionHistoryRepository.findTransactionForAccountOlderThan(userId, bankId, accountNumber, oldestTransactionId, limit)
     }
+
+    override suspend fun getTransactionByIds(
+        userId: Int,
+        transactionIdsList: List<Long>
+    ): TransactionHistoryList {
+        return transactionHistoryRepository.getTransactionsByIds(userId, transactionIdsList);
+    }
 }

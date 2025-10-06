@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS spending_medians_by_age_group;
 DROP TABLE IF EXISTS recurring_spending_monthly;
+DROP TABLE IF EXISTS daily_user_assets;
 DROP TABLE IF EXISTS transaction_histories;
 DROP TABLE IF EXISTS cards;
 DROP TABLE IF EXISTS login_identities;

@@ -56,6 +56,8 @@ interface TransactionHistoryRepository : Repository<TransactionHistory, Long> {
                 limit: Int
         ): TransactionHistoryList
 
+        suspend fun getTransactionsByIds(userId: Int, transactionIdsList: List<Long>): TransactionHistoryList
+
 }
 
 data class TransactionAnalysisUpdate(

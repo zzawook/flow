@@ -1200,6 +1200,31 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                         .getOrElse { TransactionHistoryList(LocalDate.now(), LocalDate.now()) }
         }
 
+        override suspend fun getTransactionsByIds(
+                userId: Int,
+                transactionIdsList: List<Long>
+        ): TransactionHistoryList {
+                return runCatching {
+                        val sql = TransactionHistoryQueryStore.FIND_TRANSACTION_HISTORY_BY_IDS
+
+                        val idListLongArray: Array<Long> = transactionIdsList.toTypedArray()
+
+                        val transactions = databaseClient.sql(sql)
+                                .bind(0,  idListLongArray)
+                                .map { row ->
+                                        toTransactionHistoryDetail(row as Row)
+                                }
+                                .all()
+                                .asFlow()
+                                .toList()
+
+                        TransactionHistoryList(LocalDate.now(), LocalDate.now()).apply{transactions.forEach(::add)}
+                }.onFailure { e ->
+                        e.printStackTrace()
+                        logger.error("Error fetching transactions if ID list: $transactionIdsList")
+                }.getOrElse { TransactionHistoryList(LocalDate.now(), LocalDate.now()) }
+        }
+
         private fun mapRowToTransactionHistory(row: Row): TransactionHistory {
                 // Build nested Account object
                 val account =

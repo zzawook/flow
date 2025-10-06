@@ -103,8 +103,8 @@ class TransactionHistoryApiService {
   }
 
   Future<TransactionHistoryList> getTransactionsByIds(List<String> idsToFetch) async {
-    final response = await _channel.getTransactionsByIds(GetTransactionsByIdsRequest(
-      transactionIds: idsToFetch,
+    final response = await _channel.getTransactionsByIds(GetTransactionsByIdRequest(
+      transactionIds: idsToFetch.map((e) => fx.Int64(int.parse(e))).toList(),
     ));
     return response;
   }
