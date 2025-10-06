@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/entity/card.dart' as BankCard;
+import 'package:flow_mobile/domain/entity/recurring_spending.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/presentation/add_account_screen/add_account_screen.dart';
 import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
@@ -17,6 +18,7 @@ import 'package:flow_mobile/presentation/login_screen/signup_name_screen.dart';
 import 'package:flow_mobile/presentation/login_screen/signup_password_screen.dart';
 import 'package:flow_mobile/presentation/manage_bank_account_screen/manage_bank_account_screen.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/recurring_spending_detail_screen/recurring_spending_detail_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/all_refresh_success_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_bank_screen.dart';
 import 'package:flow_mobile/presentation/refresh_screen/refresh_bank_screen_argument.dart';
@@ -34,7 +36,6 @@ import 'package:flutter/material.dart';
 import '../../domain/entity/bank_account.dart';
 import '../../domain/redux/actions/screen_actions.dart';
 import '../account_detail_screen/account_detail_screen.dart';
-import '../fixed_spending_screen/fixed_spending_screen.dart';
 import '../home_screen/home_screen.dart';
 import '../notification_screen/notification_screen.dart';
 import '../privacy_protector.dart';
@@ -146,7 +147,9 @@ class AppRoutes {
         break;
 
       case fixedSpending:
-        page = FixedSpendingDetailsScreen(month: args!.extraData as DateTime);
+        page = RecurringSpendingDetailScreen(
+          recurringSpending: args!.extraData as RecurringSpending,
+        );
         break;
 
       case accountDetail:

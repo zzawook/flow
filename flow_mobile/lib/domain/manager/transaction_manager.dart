@@ -32,4 +32,6 @@ abstract class TransactionManager {
     int limit, {
     String? oldestTransactionId,
   });
+
+  Future<List<Transaction>> fetchTransactionsByIdsFromRemote(List<String> idsToFetch);
 }

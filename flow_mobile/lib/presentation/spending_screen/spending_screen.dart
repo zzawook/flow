@@ -4,18 +4,18 @@ import 'package:flow_mobile/presentation/home_screen/components/balance_card/bal
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/presentation/spending_screen/components/fixed_spending_card/fixed_spending_card.dart';
+import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_main_top_bar.dart';
+import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
+import 'package:flow_mobile/presentation/shared/month_selector.dart';
+import 'package:flow_mobile/presentation/spending_screen/components/recurring_spending_card/recurring_spending_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/special_analysis_card/special_analysis_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_by_category_card/spending_by_category_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_trend_card/spending_trend_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/top_spending_cluster_card/top_spending_cluster_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/spending_screen_constants.dart';
-import 'package:flow_mobile/presentation/shared/flow_bottom_nav_bar.dart';
-import 'package:flow_mobile/presentation/shared/flow_main_top_bar.dart';
-import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
-import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
-import 'package:flow_mobile/presentation/shared/month_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -164,25 +164,23 @@ class _SpendingScreenState extends State<SpendingScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         StoreConnector<FlowState, DateTime>(
-                          converter:
-                              (store) =>
-                                  store
-                                      .state
-                                      .screenState
-                                      .spendingScreenState
-                                      .displayedMonth,
-                          builder: (
-                            BuildContext context,
-                            DateTime displayedMonth,
-                          ) {
-                            return MonthSelector(
-                              displayMonthYear: displayedMonth,
-                              displayMonthYearSetter:
-                                  (newMonth) => StoreProvider.of<FlowState>(
-                                    context,
-                                  ).dispatch(setDisplayedMonthThunk(newMonth)),
-                            );
-                          },
+                          converter: (store) => store
+                              .state
+                              .screenState
+                              .spendingScreenState
+                              .displayedMonth,
+                          builder:
+                              (BuildContext context, DateTime displayedMonth) {
+                                return MonthSelector(
+                                  displayMonthYear: displayedMonth,
+                                  displayMonthYearSetter: (newMonth) =>
+                                      StoreProvider.of<FlowState>(
+                                        context,
+                                      ).dispatch(
+                                        setDisplayedMonthThunk(newMonth),
+                                      ),
+                                );
+                              },
                         ),
                       ],
                     ),

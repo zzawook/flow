@@ -101,4 +101,11 @@ class TransactionHistoryApiService {
     final response = await _channel.getRecurringTransaction(request);
     return response;
   }
+
+  Future<TransactionHistoryList> getTransactionsByIds(List<String> idsToFetch) async {
+    final response = await _channel.getTransactionsByIds(GetTransactionsByIdsRequest(
+      transactionIds: idsToFetch,
+    ));
+    return response;
+  }
 }

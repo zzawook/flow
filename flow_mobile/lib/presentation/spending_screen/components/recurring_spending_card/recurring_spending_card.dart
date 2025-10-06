@@ -1,9 +1,12 @@
 import 'package:flow_mobile/domain/entity/recurring_spending.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/thunks/spending_screen_thunks.dart';
+import 'package:flow_mobile/initialization/manager_registry.dart';
+import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/presentation/spending_screen/components/fixed_spending_card/recurring_spending_item.dart';
+import 'package:flow_mobile/presentation/spending_screen/components/recurring_spending_card/recurring_spending_item.dart';
+import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
@@ -202,12 +205,12 @@ class FixedSpendingCard extends StatelessWidget {
         recurring: recurring,
         month: viewModel.displayedMonth,
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            "/fixed_spending/details",
+          final navigationService = getIt<NavigationService>();
+          navigationService.pushNamed(
+            AppRoutes.fixedSpending,
             arguments: CustomPageRouteArguments(
               transitionType: TransitionType.slideLeft,
-              extraData: viewModel.displayedMonth,
+              extraData: recurring,
             ),
           );
         },

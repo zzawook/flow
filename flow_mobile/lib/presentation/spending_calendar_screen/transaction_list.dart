@@ -3,11 +3,11 @@ import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/presentation/shared/flow_horizontal_divider.dart';
+import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/transaction_item.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flow_mobile/utils/date_time_util.dart';
-import 'package:flow_mobile/presentation/shared/flow_horizontal_divider.dart';
-import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flutter/material.dart';
 
 import '../navigation/transition_type.dart';
@@ -15,11 +15,13 @@ import '../navigation/transition_type.dart';
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
   final Map<DateTime, GlobalKey> detailKeys;
+  final bool hasFade;
 
   const TransactionList({
     super.key,
     required this.transactions,
     this.detailKeys = const {},
+    this.hasFade = true,
   });
 
   @override
@@ -34,14 +36,14 @@ class TransactionList extends StatelessWidget {
       );
     }
 
-    const double fadeHeight = 24.0;
+    double fadeHeight = hasFade ? 24.0 : 0.0;
 
     return Stack(
       children: [
         // Scrollable content with top padding for fade region
         SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(top: fadeHeight),
+            padding: EdgeInsets.only(top: fadeHeight),
             child: Column(
               children: [
                 for (int index = 0; index < sorted.length; index++) ...[

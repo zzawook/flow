@@ -83,3 +83,25 @@ ThunkAction<FlowState> toggleTransactionIncludeInSpendingOrIncomeThunk(
         });
   };
 }
+
+ThunkAction<FlowState> fetchTransactionsIfNotOnLocal(List<String> ids) {
+  return (Store<FlowState> store) async {
+    final transactionManager = getIt<TransactionManager>();
+    List<String> idsToFetch = []; // IDs that are not on local
+    List<Transaction> localTransactions =
+        store.state.transactionState.transactions;
+    for (String id in ids) {     
+      if (!localTransactions.any((t) => t.id.toString() == id)) {
+        idsToFetch.add(id);
+      } 
+    } 
+
+    if (idsToFetch.isNotEmpty) {
+      List<Transaction> fetchedTransactions = await transactionManager
+          .fetchTransactionsByIdsFromRemote(idsToFetch);
+      store.dispatch(AddTransaction(fetchedTransactions));
+    } else {
+      print("All transactions are already on local");
+    }
+  };
+}

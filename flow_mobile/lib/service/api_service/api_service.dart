@@ -227,4 +227,8 @@ class ApiService {
   Future<GetLast6MonthsEndOfMonthAssetsResponse> getLast6MonthsAssets() async {
     return await _accountApiService.getLast6MonthsAssets();
   }
+
+  Future<TransactionHistoryList> getTransactionsByIds(List<String> idsToFetch) async {
+    return await _transactionHistoryApiService.getTransactionsByIds(idsToFetch);
+  }
 }

@@ -308,4 +308,34 @@ class TransactionManagerImpl implements TransactionManager {
           return List<Transaction>.empty();
         });
   }
+  
+  @override
+  Future<List<Transaction>> fetchTransactionsByIdsFromRemote(List<String> idsToFetch) {
+    ApiService apiService = getIt<ApiService>();
+    return apiService
+        .getTransactionsByIds(idsToFetch)
+        .then((response) {
+          List<Transaction> fetchedTransactions = [];
+          for (var transactionHistoryDetail in response.transactions) {
+            Transaction transaction = fromTransactionHistoryDetail(
+              transactionHistoryDetail,
+            );
+            if (_transactionList.any((t) => t.id == transaction.id)) {
+              putTransaction(transaction.id.toString(), transaction);
+            } else {
+              _pastOverYearTransactionList.removeWhere(
+                (t) => t.id == transaction.id,
+              );
+              _pastOverYearTransactionList.add(transaction);
+            }
+            fetchedTransactions.add(transaction);
+          }
+          loadTransactionsToList();
+          return fetchedTransactions;
+        })
+        .catchError((error) {
+          log("Error fetching transactions by IDs: $error");
+          return List<Transaction>.empty();
+        });
+  }
 }
