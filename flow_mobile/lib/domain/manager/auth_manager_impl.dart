@@ -1,4 +1,7 @@
 import 'package:flow_mobile/domain/manager/auth_manager.dart';
+import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
+import 'package:flow_mobile/initialization/manager_registry.dart';
+import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:flow_mobile/service/local_source/local_secure_storage.dart';
 
 class AuthManagerImpl implements AuthManager {
@@ -27,15 +30,31 @@ class AuthManagerImpl implements AuthManager {
 
   @override
   Future<String?> getAccessTokenFromLocal() {
-    return _localSecureStorage.getData('accessToken');
+    return _localSecureStorage.getData('accessToken').then((value) {
+      return value;
+    });
   }
 
   @override
-  Future<bool> getAndSaveAccessTokenFromRemote() async {
+  Future<String?> getAndSaveAccessTokenFromRemote(String refreshToken) async {
     String accessToken = 'access_token';
-    // DO API REQUEST TO GET ACCESS TOKEN FROM REMOTE
+    final apiService = getIt<ApiService>();
+    TokenSet tokenSet;
+    try {
+      tokenSet = await apiService.refreshAccessToken(refreshToken);
+    } catch (e) {
+      return null;
+    }
+
+    if (tokenSet.accessToken.isEmpty || tokenSet.refreshToken.isEmpty) {
+      return null;
+    }
+
+    saveAccessTokenToLocal(tokenSet.accessToken);
+    saveRefreshTokenToLocal(tokenSet.refreshToken);
+
     await _localSecureStorage.saveData('accessToken', accessToken);
-    return true;
+    return accessToken;
   }
 
   @override
@@ -62,7 +81,7 @@ class AuthManagerImpl implements AuthManager {
   }
 
   @override
-  Future<bool> attemptLogin() async {
+  Future<bool> attemptTokenValidation() async {
     String? accessToken = await getAccessTokenFromLocal();
     String? refreshToken = await getRefreshTokenFromLocal();
 
@@ -70,9 +89,11 @@ class AuthManagerImpl implements AuthManager {
     switch ([accessToken != null, refreshToken != null]) {
       case [false, false]:
         return false;
+      case [true, false]:
+        return false;
       case [false, true]:
-        bool success = await getAndSaveAccessTokenFromRemote();
-        return success;
+        String? accessToken = await getAndSaveAccessTokenFromRemote(refreshToken!);
+        return accessToken != null;
       default:
         break;
     }

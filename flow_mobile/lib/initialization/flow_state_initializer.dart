@@ -4,18 +4,14 @@ import 'package:flow_mobile/domain/entity/setting_v1.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/entity/transfer_receivable.dart';
 import 'package:flow_mobile/domain/entity/user.dart';
+import 'package:flow_mobile/domain/manager/auth_manager.dart';
 import 'package:flow_mobile/domain/manager/bank_account_manager.dart';
-import 'package:flow_mobile/domain/manager/bank_account_manager_impl.dart';
+import 'package:flow_mobile/domain/manager/card_manager.dart';
 import 'package:flow_mobile/domain/manager/notification_manager.dart';
-import 'package:flow_mobile/domain/manager/notification_manager_impl.dart';
 import 'package:flow_mobile/domain/manager/setting_manager.dart';
-import 'package:flow_mobile/domain/manager/setting_manager_impl.dart';
 import 'package:flow_mobile/domain/manager/transaction_manager.dart';
-import 'package:flow_mobile/domain/manager/transaction_manager_impl.dart';
 import 'package:flow_mobile/domain/manager/transfer_receiveble_manager.dart';
-import 'package:flow_mobile/domain/manager/transfer_receiveble_manager_impl.dart';
 import 'package:flow_mobile/domain/manager/user_manager.dart';
-import 'package:flow_mobile/domain/manager/user_manager_impl.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/auth_state.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
@@ -27,9 +23,11 @@ import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_receivable_state.dart';
 import 'package:flow_mobile/domain/redux/states/transfer_state.dart';
 import 'package:flow_mobile/domain/redux/states/user_state.dart';
+import 'package:flow_mobile/initialization/manager_registry.dart';
+import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 
 class FlowStateInitializer {
-    static Future<FlowState> buildInitialState() async {
+  static Future<FlowState> buildInitialState() async {
     final bankState = await getBankAccountState();
     return FlowState(
       transferState: TransferState.initial(),
@@ -37,22 +35,43 @@ class FlowStateInitializer {
       settingsState: await getSettingState(),
       screenState: ScreenState.initial(),
       bankAccountState: bankState,
-      cardState: CardState.initial(),
+      cardState: await getCardState(),
       transactionState: await getTransactionState(),
       transferReceivableState: await getTransferReceivableState(bankState),
       notificationState: await getNotificationState(),
-      authState: AuthState.initial()
+      authState: await getAuthState()
     );
   }
 
+  static Future<CardState> getCardState() async {
+    final cardManager = getIt<CardManager>();
+    final cards = cardManager.getCards();
+    return CardState(cards: await cards);
+  }
+
+  static Future<AuthState> getAuthState() async {
+    final authManager = getIt<AuthManager>();
+
+    final credentialCheck = await authManager.attemptTokenValidation();
+    if (credentialCheck) {
+      final accessToken = await authManager.getAccessTokenFromLocal();
+      if (accessToken != null) {
+        GrpcInterceptor.setAccessToken(accessToken);
+      }
+      return AuthState(isAuthenticated: true);
+    } else {
+      return AuthState(isAuthenticated: false);
+    }
+  }
+
   static Future<UserState> getUserState() async {
-    UserManager userManager = await UserManagerImpl.getInstance();
+    UserManager userManager = getIt<UserManager>();
     User? user = await userManager.getUser();
     return UserState(user: user);
   }
 
   static Future<SettingsState> getSettingState() async {
-    SettingManager settingManager = await SettingManagerImpl.getInstance();
+    SettingManager settingManager = getIt<SettingManager>();
     return SettingsState(
       settings: SettingsV1(
         fontScale: await settingManager.getFontScale(),
@@ -65,17 +84,15 @@ class FlowStateInitializer {
   }
 
   static Future<BankAccountState> getBankAccountState() async {
-    BankAccountManager bankAccountManager =
-        await BankAccountManagerImpl.getInstance();
+    BankAccountManager bankAccountManager = getIt<BankAccountManager>();
     List<BankAccount> bankAccounts = await bankAccountManager.getBankAccounts();
     return BankAccountState(bankAccounts: bankAccounts);
   }
 
   static Future<TransactionState> getTransactionState() async {
-    TransactionManager transactionManager =
-        await TransactionManagerImpl.getInstance();
-    List<Transaction> transactions =
-        await transactionManager.getAllTransactions();
+    TransactionManager transactionManager = getIt<TransactionManager>();
+    List<Transaction> transactions = await transactionManager
+        .getAllTransactions();
     return TransactionState(transactions: transactions);
   }
 
@@ -83,7 +100,7 @@ class FlowStateInitializer {
     BankAccountState bankAccountState,
   ) async {
     TransferReceivebleManager transferReceivableManager =
-        await TransferReceivebleManagerImpl.getInstance();
+        getIt<TransferReceivebleManager>();
     List<TransferReceivable> transferReceivables =
         await transferReceivableManager.getTransferReceivables();
     List<BankAccount> myBankAccounts = bankAccountState.bankAccounts;
@@ -94,11 +111,10 @@ class FlowStateInitializer {
   }
 
   static Future<NotificationState> getNotificationState() async {
-    NotificationManager notificationManager =
-        await NotificationManagerImpl.getInstance();
+    NotificationManager notificationManager = getIt<NotificationManager>();
 
-    List<Notification> notifications =
-        await notificationManager.getNotifications();
+    List<Notification> notifications = await notificationManager
+        .getNotifications();
     return NotificationState(notifications: notifications);
   }
 }

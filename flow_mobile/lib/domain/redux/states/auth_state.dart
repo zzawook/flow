@@ -1,7 +1,8 @@
 class AuthState {
+  final bool isAuthenticated;
+  
   final String? loginEmail;
   final String? loginPassword;
-  final bool isAuthenticated;
   final String? loginError;
 
   final String? signupName;

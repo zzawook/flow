@@ -1,13 +1,13 @@
 abstract class AuthManager {
-  Future<void> getAccessTokenFromLocal();
-  Future<void> getRefreshTokenFromLocal();
+  Future<String?> getAccessTokenFromLocal();
+  Future<String?> getRefreshTokenFromLocal();
   Future<void> saveAccessTokenToLocal(String accessToken);
   Future<void> saveRefreshTokenToLocal(String refreshToken);
   Future<void> deleteAccessTokenFromLocal();
   Future<void> deleteRefreshTokenFromLocal();
 
-  Future<void> getAndSaveAccessTokenFromRemote();
+  Future<String?> getAndSaveAccessTokenFromRemote(String refreshToken);
   Future<void> getAndSaveRefreshTokenFromRemote();
 
-  Future<bool> attemptLogin();
+  Future<bool> attemptTokenValidation();
 }

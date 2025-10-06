@@ -36,7 +36,7 @@ class SecureHive {
     Hive.registerAdapter(PayNowRecipientAdapter());
     Hive.registerAdapter(NotificationAdapter());
     Hive.registerAdapter(NotificationSettingAdapter());
-    
+
     // ADD ADAPTERS FOR BOTH LEGACY AND NEW ENTITIES
 
     return true;
@@ -51,8 +51,7 @@ class SecureHive {
   }
 
   static Future<Box<E>> getBox<E>(String boxName) {
-    Hive.deleteBoxFromDisk(boxName);
+    // Hive.deleteBoxFromDisk(boxName); // For development only
     return Hive.openBox(boxName, encryptionCipher: HiveAesCipher(secureKey!));
   }
-
 }

@@ -1,3 +1,4 @@
+import 'package:flow_mobile/domain/redux/thunks/auth_thunks.dart';
 import 'package:flow_mobile/initialization/app_initializer.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/initialization/theme_store.dart';
@@ -18,21 +19,22 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  final initialState = await AppInitializer.initializeApplication();
+  final initialState = AppInitializer.initializeApplication();
 
-  FlutterNativeSplash.remove();
-
-  runApp(
-    StoreProvider<FlowState>(
-      store: flowStateStore(initialState),
-      child: FlowApplication(initialState: initialState),
-    ),
-  );
+  initialState.then((state) {
+    FlutterNativeSplash.remove();
+    runApp(
+      StoreProvider<FlowState>(
+        store: flowStateStore(state),
+        child: FlowApplication(initialState: state),
+      ),
+    );
+  });
 }
 
 class FlowApplication extends StatelessWidget {
   final FlowState initialState;
-  
+
   const FlowApplication({super.key, required this.initialState});
 
   @override
@@ -46,6 +48,7 @@ class FlowApplication extends StatelessWidget {
         // Start once; survives rebuilds & hot reload thanks to the top-level var
         unprocessedTxnPoller ??= UnprocessedTxnPoller(store);
         unprocessedTxnPoller!.start();
+        store.dispatch(initUserOnLoginThunk());
       },
       onDispose: (store) {
         // Stop cleanly when the widget tree goes away (e.g., app exit)
@@ -59,30 +62,22 @@ class FlowApplication extends StatelessWidget {
           theme: theme,
           navigatorKey: getIt<NavigationService>().navigatorKey,
           navigatorObservers: [ReduxRouteObserver(store)],
-          builder:
-              (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle.light.copyWith(
-                  statusBarColor: theme.scaffoldBackgroundColor,
-                  statusBarIconBrightness:
-                      theme.brightness == Brightness.light
-                          ? Brightness.dark
-                          : Brightness.light,
-                  systemNavigationBarContrastEnforced: true,
-                ),
-                child: Stack(
-                  children: [
-                    child ?? SizedBox.shrink(),
-                    GlobalHud(),
-                  ],
-                ),
-              ),
+          builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.light.copyWith(
+              statusBarColor: theme.scaffoldBackgroundColor,
+              statusBarIconBrightness: theme.brightness == Brightness.light
+                  ? Brightness.dark
+                  : Brightness.light,
+              systemNavigationBarContrastEnforced: true,
+            ),
+            child: Stack(children: [child ?? SizedBox.shrink(), GlobalHud()]),
+          ),
 
-          initialRoute:
-              initialState.authState.isAuthenticated
-                  ? AppRoutes.home
-                  : AppRoutes.welcome,
-          onGenerateRoute:
-              (settings) => AppRoutes.generate(settings, store.dispatch),
+          initialRoute: initialState.authState.isAuthenticated
+              ? AppRoutes.home
+              : AppRoutes.welcome,
+          onGenerateRoute: (settings) =>
+              AppRoutes.generate(settings, store.dispatch),
         );
       },
     );

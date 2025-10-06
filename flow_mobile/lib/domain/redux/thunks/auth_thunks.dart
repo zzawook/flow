@@ -115,6 +115,12 @@ ThunkAction<FlowState> loginThunk(
   };
 }
 
+ThunkAction<FlowState> initUserOnLoginThunk() {
+  return (Store<FlowState> store) async {
+    await _initStateForLoggedInUser(store);
+  };
+}
+
 Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   BankAccountManager bankAccountManager = getIt<BankAccountManager>();
   BankManager bankManager = getIt<BankManager>();
