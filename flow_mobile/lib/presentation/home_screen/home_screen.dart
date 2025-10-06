@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flow_mobile/presentation/home_screen/components/accounts_card/accounts_card.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
 import 'package:flow_mobile/presentation/home_screen/components/quick_transfer_card/quick_transfer_card.dart';
+import 'package:flow_mobile/presentation/home_screen/components/refresh_card/refresh_card.dart';
 import 'package:flow_mobile/presentation/home_screen/home_screen_constants.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
@@ -86,7 +87,9 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const FlowMainTopBar(),
+                            const RefreshCard(),
                             AccountsCard(onToggleBalance: _onToggleBalance),
+
                             const QuickTransferCard(),
                             const BalanceCard(isOnHomeScreen: true),
                           ],

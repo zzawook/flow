@@ -60,6 +60,7 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
         children: [
           Expanded(
             child: RefreshIndicator(
+              color: Theme.of(context).primaryColor,
               onRefresh: _onRefresh,
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),

@@ -101,6 +101,7 @@ class TransferScreen extends StatelessWidget {
           // ── scrollable list with pull-to-refresh ─────────────────
           Expanded(
             child: RefreshIndicator.adaptive(
+              color: Theme.of(context).primaryColor,
               onRefresh: () {
                 Navigator.pushNamed(
                   context,

@@ -3,13 +3,13 @@ import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar.dart';
-import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
-import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/shared/month_selector.dart';
+import 'package:flow_mobile/presentation/spending_calendar_screen/spending_calendar.dart';
+import 'package:flow_mobile/presentation/spending_calendar_screen/transaction_list.dart';
+import 'package:flow_mobile/utils/date_time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -69,6 +69,7 @@ class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
     return FlowSafeArea(
       backgroundColor: Theme.of(context).cardColor,
       child: RefreshIndicator.adaptive(
+        color: Theme.of(context).primaryColor,
         onRefresh: () {
           Navigator.pushNamed(
             context,
@@ -101,16 +102,14 @@ class _SpendingDetailScreenState extends State<SpendingCalendarScreen> {
                       onDateSelected: _handleDateTap,
                     ),
                     StoreConnector<FlowState, List<Transaction>>(
-                      converter:
-                          (store) => store.state.transactionState
-                              .getTransactionsForMonth(displayedMonth),
-                      builder:
-                          (context, transactions) => Expanded(
-                            child: TransactionList(
-                              transactions: transactions,
-                              detailKeys: _detailKeys,
-                            ),
-                          ),
+                      converter: (store) => store.state.transactionState
+                          .getTransactionsForMonth(displayedMonth),
+                      builder: (context, transactions) => Expanded(
+                        child: TransactionList(
+                          transactions: transactions,
+                          detailKeys: _detailKeys,
+                        ),
+                      ),
                     ),
                   ],
                 ),

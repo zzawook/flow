@@ -59,6 +59,7 @@ class _SpendingCategoryDetailScreenState
     return FlowSafeArea(
       backgroundColor: Theme.of(context).cardColor,
       child: RefreshIndicator.adaptive(
+        color: Theme.of(context).primaryColor,
         onRefresh: _onRefresh,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

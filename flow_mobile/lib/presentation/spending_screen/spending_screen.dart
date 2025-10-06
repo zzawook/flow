@@ -83,6 +83,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
             children: [
               Expanded(
                 child: RefreshIndicator.adaptive(
+                  color: Theme.of(context).primaryColor,
                   onRefresh: () => _handleRefresh(context),
                   child: SingleChildScrollView(
                     controller: _scrollController,
