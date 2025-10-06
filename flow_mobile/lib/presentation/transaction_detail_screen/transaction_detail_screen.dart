@@ -69,8 +69,11 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         : "+\$${widget.transaction.amount.abs().toStringAsFixed(2)}";
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final assetLogo =
-        "assets/icons/category_icons/${widget.transaction.category.toLowerCase()}${isDark ? '_dark' : ''}.png";
+    final logoService = getIt<LogoService>();
+    final assetLogo = logoService.getCategoryIcon(
+      widget.transaction.category,
+      isDark,
+    );
 
     Widget logoWidget;
     if (_tryNetwork && networkLogoUrl != null && !_networkFailed) {

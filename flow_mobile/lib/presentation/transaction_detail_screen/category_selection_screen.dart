@@ -27,7 +27,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   String logoUrl = "";
   bool isLogoFromNetwork = false;
 
-  String selectedCategory = "";  
+  String selectedCategory = "";
   PersistentBottomSheetController? _sheetController;
 
   void _showConfirmSheet(String category) {
@@ -115,14 +115,17 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   }
 
   void _loadLogo() {
+    final logoService = getIt<LogoService>();
     setState(() {
-      logoUrl =
-          "assets/icons/category_icons/${widget.transaction.category.toLowerCase()}.png";
+      logoUrl = logoService.getCategoryIcon(
+        widget.transaction.category,
+        Theme.of(context).brightness == Brightness.dark,
+      );
     });
     if (widget.transaction.brandDomain.isEmpty) {
       return;
     }
-    final logoService = getIt<LogoService>();
+
     final fetchedLogoUrl = logoService.getLogoUrl(
       widget.transaction.brandDomain,
     );
@@ -227,12 +230,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                 children: [
                   isLogoFromNetwork
                       ? Image.network(logoUrl, height: 50, width: 50)
-                      :
-                  Image.asset(
-                    logoUrl,
-                    height: 50,
-                    width: 50,
-                  ),
+                      : Image.asset(logoUrl, height: 50, width: 50),
                   const FlowSeparatorBox(width: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

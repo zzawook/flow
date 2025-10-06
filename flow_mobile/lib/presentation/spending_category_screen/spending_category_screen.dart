@@ -1,17 +1,19 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
+import 'package:flow_mobile/initialization/manager_registry.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
-import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
-import 'package:flow_mobile/utils/spending_category_util.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/shared/month_selector.dart';
 import 'package:flow_mobile/presentation/shared/spending/stacked_bar.dart';
+import 'package:flow_mobile/presentation/spending_category_detail_screen/spending_category_detail_screen.dart';
+import 'package:flow_mobile/service/logo_service.dart';
+import 'package:flow_mobile/utils/spending_category_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -94,9 +96,8 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
                     // Remove categories with 0 amount
                     categoryAmount.removeWhere((key, value) => value == 0);
 
-                    final sortedCategories =
-                        categoryAmount.entries.toList()
-                          ..sort((a, b) => a.value.compareTo(b.value));
+                    final sortedCategories = categoryAmount.entries.toList()
+                      ..sort((a, b) => a.value.compareTo(b.value));
 
                     // BUILD
                     return Column(
@@ -126,11 +127,10 @@ class _SpendingCategoryScreenState extends State<SpendingCategoryScreen> {
                             children: [
                               Text(
                                 '\$ ${total.toStringAsFixed(2)}',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.displayLarge?.copyWith(
-                                  color: Theme.of(context).primaryColor,
-                                ),
+                                style: Theme.of(context).textTheme.displayLarge
+                                    ?.copyWith(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                               ),
                             ],
                           ),
@@ -177,6 +177,9 @@ class SpendingCategoryList extends StatelessWidget {
     final total = sortedCategories.fold(0.0, (double sum, entry) {
       return sum + entry.value.abs();
     });
+
+    final logoService = getIt<LogoService>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,7 +237,8 @@ class SpendingCategoryList extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: Image.asset(
-                        SpendingCategoryUtil.getCategoryIcon(entry.key),
+                        logoService.getCategoryIcon(entry.key, isDark),
+                        fit: BoxFit.contain,
                       ),
                     ),
                     const FlowSeparatorBox(width: 8),

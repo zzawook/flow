@@ -2,46 +2,22 @@ import 'package:flutter/material.dart';
 
 class SpendingCategoryUtil {
   static Map<String, Map<String, dynamic>> categoryData = {
-    "Transfer": {
-      "color": "#9CCD4BC",
-      "icon": "assets/icons/category_icons/transfer.png",
-    },
-    "Transportation": {
-      "color": "#FF9800",
-      "icon": "assets/icons/category_icons/transport.png",
-    },
-    "Food": {
-      "color": "#F554477",
-      "icon": "assets/icons/category_icons/food.png",
-    },
-    "Others": {
-      "color": "#9E9E9E",
-      "icon": "assets/icons/category_icons/others.png",
-    },
-    "Grocery": {"color": "#2196F3"},
-    "Entertainment": {
-      "color": "#4a50f7",
-      "icon": "assets/icons/category_icons/entertainment.png",
-    },
-    "Travel": {"color": "#E91E63"},
-    "Shopping": {"color": "#FFC107"},
-    "Utilities": {"color": "#FF5722"},
-    "Health": {"color": "#4CAF50"},
-    "Beauty": {"color": "#03A9F4"},
-    "Education": {"color": "#9C27B0"},
-    "Insurance": {"color": "#00BCD4"},
-    "Electronics": {"color": "#CDDC39"},
-    "Telecommunication": {"color": "#FF9800"},
-    "Finance": {"color": "#FF9800"},
-    "Salary": {"color": "#FF98FF"},
-    "Analyzing": {
-      "color": "#9E9E9E",
-      "icon": "assets/icons/category_icons/others.png",
-    },
-    "Not Identifiable": {
-      "color": "#9E9E9E",
-      "icon": "assets/icons/category_icons/others.png",
-    },
+    "Transfer": {"color": "#6D4C41"}, // Brown 600
+    "Transportation": {"color": "#F57C00"}, // Orange 700
+    "Food": {"color": "#D32F2F"}, // Red 700
+    "Others": {"color": "#616161"}, // Grey 700
+    "Grocery": {"color": "#2E7D32"}, // Green 800
+    "Entertainment": {"color": "#5E35B1"}, // Deep Purple 600
+    "Travel": {"color": "#00796B"}, // Teal 700
+    "Shopping": {"color": "#C2185B"}, // Pink 700
+    "Utilities": {"color": "#E64A19"}, // Deep Orange 600
+    "Health": {"color": "#00ACC1"}, // Cyan 600
+    "Education": {"color": "#303F9F"}, // Indigo 700
+    "Telecommunication": {"color": "#1976D2"}, // Blue 700
+    "Finance": {"color": "#455A64"}, // Blue Grey 700
+    "Salary": {"color": "#9E7C0C"}, // Dark Gold
+    "Analyzing": {"color": "#757575"}, // Grey 600
+    "Not Identifiable": {"color": "#9E9E9E"}, // Grey 500
   };
 
   static Color getCategoryColor(String category) {

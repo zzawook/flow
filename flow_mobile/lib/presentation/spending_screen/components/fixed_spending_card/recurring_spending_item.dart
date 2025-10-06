@@ -58,8 +58,11 @@ class _RecurringSpendingItemState extends State<RecurringSpendingItem> {
         : widget.recurring.displayName;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final assetLogo =
-        "assets/icons/category_icons/${widget.recurring.category.toLowerCase()}${isDark ? '_dark' : ''}.png";
+    final logoService = getIt<LogoService>();
+    final assetLogo = logoService.getCategoryIcon(
+      widget.recurring.category,
+      isDark,
+    );
 
     Widget logoWidget;
     if (_tryNetwork && !_networkFailed && networkLogoUrl != null) {

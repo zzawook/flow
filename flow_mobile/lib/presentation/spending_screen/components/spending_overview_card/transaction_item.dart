@@ -59,8 +59,8 @@ class _TransactionItemState extends State<TransactionItem> {
         : widget.name.replaceAll("\n", " ");
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final assetLogo =
-        "assets/icons/category_icons/${widget.category.toLowerCase()}${isDark ? '_dark' : ''}.png";
+    final logoService = getIt<LogoService>();
+    final assetLogo = logoService.getCategoryIcon(widget.category, isDark);
 
     Widget logoWidget;
     if (_tryNetwork && !_networkFailed && networkLogoUrl != null) {

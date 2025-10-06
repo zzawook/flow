@@ -5,6 +5,10 @@ class LogoService {
     return generateLogoSearchUrl(brandDomain);
   }
 
+  String getCategoryIcon(String category, bool isDark) {
+    return "assets/icons/category_icons/${category.toLowerCase()}${isDark ? '_dark' : '_dark'}.png";
+  }
+
   String getBankLogoUri(Bank bank) {
     return "assets/bank_logos/${bank.name.toUpperCase()}.png";
   }
