@@ -123,6 +123,13 @@ class TransactionHistoryServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$1.TransactionHistoryList> getTransactionsByIds(
+    $0.GetTransactionsByIdRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getTransactionsByIds, request, options: options);
+  }
+
   // method descriptors
 
   static final _$getLast30DaysHistoryList = $grpc.ClientMethod<
@@ -182,6 +189,11 @@ class TransactionHistoryServiceClient extends $grpc.Client {
       '/sg.flow.transaction.v1.TransactionHistoryService/GetSpendingMedianForAgeGroup',
       ($0.GetSpendingMedianRequest value) => value.writeToBuffer(),
       $0.GetSpendingMedianResponse.fromBuffer);
+  static final _$getTransactionsByIds = $grpc.ClientMethod<
+          $0.GetTransactionsByIdRequest, $1.TransactionHistoryList>(
+      '/sg.flow.transaction.v1.TransactionHistoryService/GetTransactionsByIds',
+      ($0.GetTransactionsByIdRequest value) => value.writeToBuffer(),
+      $1.TransactionHistoryList.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.transaction.v1.TransactionHistoryService')
@@ -288,6 +300,15 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.GetSpendingMedianRequest.fromBuffer(value),
         ($0.GetSpendingMedianResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetTransactionsByIdRequest,
+            $1.TransactionHistoryList>(
+        'GetTransactionsByIds',
+        getTransactionsByIds_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetTransactionsByIdRequest.fromBuffer(value),
+        ($1.TransactionHistoryList value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.TransactionHistoryList> getLast30DaysHistoryList_Pre(
@@ -388,4 +409,13 @@ abstract class TransactionHistoryServiceBase extends $grpc.Service {
 
   $async.Future<$0.GetSpendingMedianResponse> getSpendingMedianForAgeGroup(
       $grpc.ServiceCall call, $0.GetSpendingMedianRequest request);
+
+  $async.Future<$1.TransactionHistoryList> getTransactionsByIds_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetTransactionsByIdRequest> $request) async {
+    return getTransactionsByIds($call, await $request);
+  }
+
+  $async.Future<$1.TransactionHistoryList> getTransactionsByIds(
+      $grpc.ServiceCall call, $0.GetTransactionsByIdRequest request);
 }

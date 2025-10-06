@@ -1129,6 +1129,62 @@ class GetSpendingMedianResponse extends $pb.GeneratedMessage {
   $2.Timestamp ensureCalculatedAt() => $_ensure(5);
 }
 
+class GetTransactionsByIdRequest extends $pb.GeneratedMessage {
+  factory GetTransactionsByIdRequest({
+    $core.Iterable<$fixnum.Int64>? transactionIds,
+  }) {
+    final result = create();
+    if (transactionIds != null) result.transactionIds.addAll(transactionIds);
+    return result;
+  }
+
+  GetTransactionsByIdRequest._();
+
+  factory GetTransactionsByIdRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetTransactionsByIdRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetTransactionsByIdRequest',
+      package: const $pb.PackageName(
+          _omitMessageNames ? '' : 'sg.flow.transaction.v1'),
+      createEmptyInstance: create)
+    ..p<$fixnum.Int64>(
+        1, _omitFieldNames ? '' : 'transactionIds', $pb.PbFieldType.K6,
+        protoName: 'transactionIds')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetTransactionsByIdRequest clone() =>
+      GetTransactionsByIdRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetTransactionsByIdRequest copyWith(
+          void Function(GetTransactionsByIdRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetTransactionsByIdRequest))
+          as GetTransactionsByIdRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetTransactionsByIdRequest create() => GetTransactionsByIdRequest._();
+  @$core.override
+  GetTransactionsByIdRequest createEmptyInstance() => create();
+  static $pb.PbList<GetTransactionsByIdRequest> createRepeated() =>
+      $pb.PbList<GetTransactionsByIdRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetTransactionsByIdRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetTransactionsByIdRequest>(create);
+  static GetTransactionsByIdRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<$fixnum.Int64> get transactionIds => $_getList(0);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

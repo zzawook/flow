@@ -20,7 +20,7 @@ service TransactionHistoryService {
   rpc SetTransactionInclusion  (SetTransactionInclusionRequest)  returns (SetTransactionInclusionResponse);
   rpc GetTransactionForAccount (GetTransactionForAccountRequest) returns (sg.flow.common.v1.TransactionHistoryList);
   rpc GetSpendingMedianForAgeGroup (GetSpendingMedianRequest)    returns (GetSpendingMedianResponse);
-  rpc GetTransactionsByIds     (GetTransactionsByIdRequest)      returns (sg.flow.common.v1.TransactionHistoryList)
+  rpc GetTransactionsByIds     (GetTransactionsByIdRequest)      returns (sg.flow.common.v1.TransactionHistoryList);
 }
 
 /* ── Requests ── */
@@ -101,5 +101,5 @@ message GetSpendingMedianResponse {
 }
 
 message GetTransactionsByIdRequest {
-  repeated int64 transactionIds
+  repeated int64 transactionIds = 1;
 }

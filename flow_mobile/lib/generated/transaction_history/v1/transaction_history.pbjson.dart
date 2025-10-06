@@ -291,3 +291,17 @@ final $typed_data.Uint8List getSpendingMedianResponseDescriptor = $convert.base6
     'UgR5ZWFyEhQKBW1vbnRoGAQgASgFUgVtb250aBIdCgp1c2VyX2NvdW50GAUgASgFUgl1c2VyQ2'
     '91bnQSPwoNY2FsY3VsYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBS'
     'DGNhbGN1bGF0ZWRBdA==');
+
+@$core.Deprecated('Use getTransactionsByIdRequestDescriptor instead')
+const GetTransactionsByIdRequest$json = {
+  '1': 'GetTransactionsByIdRequest',
+  '2': [
+    {'1': 'transactionIds', '3': 1, '4': 3, '5': 3, '10': 'transactionIds'},
+  ],
+};
+
+/// Descriptor for `GetTransactionsByIdRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getTransactionsByIdRequestDescriptor =
+    $convert.base64Decode(
+        'ChpHZXRUcmFuc2FjdGlvbnNCeUlkUmVxdWVzdBImCg50cmFuc2FjdGlvbklkcxgBIAMoA1IOdH'
+        'JhbnNhY3Rpb25JZHM=');
