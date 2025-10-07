@@ -82,23 +82,13 @@ class AuthManagerImpl implements AuthManager {
 
   @override
   Future<bool> attemptTokenValidation() async {
-    String? accessToken = await getAccessTokenFromLocal();
     String? refreshToken = await getRefreshTokenFromLocal();
 
-    // Refactored to use switch statement
-    switch ([accessToken != null, refreshToken != null]) {
-      case [false, false]:
-        return false;
-      case [true, false]:
-        return false;
-      case [false, true]:
-        String? accessToken = await getAndSaveAccessTokenFromRemote(refreshToken!);
-        return accessToken != null;
-      default:
-        break;
+    if (refreshToken == null) {
+      return false;
     }
 
-    // return false;
-    return true;
+    String? accessToken = await getAndSaveAccessTokenFromRemote(refreshToken);
+    return accessToken != null;
   }
 }
