@@ -22,7 +22,8 @@ class SpendingMedianCalculationService(
      * Scheduled task that runs every hour at minute 0. Calculates spending medians for the current
      * month and backfills missing historical months.
      */
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 25 * * * *") // TEST
+//    @Scheduled(cron = "0 0 * * * *") // PROD
     fun calculateSpendingMedians() {
         if (!properties.enabled) {
             logger.debug("Spending median calculation is disabled")

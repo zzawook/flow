@@ -29,7 +29,8 @@ class RecurringSpendingAnalysisService(
 
     private val logger = LoggerFactory.getLogger(RecurringSpendingAnalysisService::class.java)
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 25 * * * *") // TEST
+//    @Scheduled(cron = "0 0 0 * * *") // PROD
     fun analyzeAllUsers() {
         val userIds = userRepository.getAllUserIds()
         for (userId in userIds) {

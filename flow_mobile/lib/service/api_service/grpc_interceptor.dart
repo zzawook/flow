@@ -9,7 +9,7 @@ class GrpcInterceptor extends ClientInterceptor {
 
   CallOptions _withAuth(CallOptions options) {
     return options.mergedWith(
-      CallOptions(metadata: {'authorization': 'Bearer $_accessToken'}),
+      CallOptions(metadata: {'Authorization': 'Bearer $_accessToken'}),
     );
   }
 

@@ -48,7 +48,9 @@ class FlowApplication extends StatelessWidget {
         // Start once; survives rebuilds & hot reload thanks to the top-level var
         unprocessedTxnPoller ??= UnprocessedTxnPoller(store);
         unprocessedTxnPoller!.start();
-        store.dispatch(initUserOnLoginThunk());
+        if (store.state.authState.isAuthenticated) {
+          store.dispatch(initUserOnLoginThunk());
+        }
       },
       onDispose: (store) {
         // Stop cleanly when the widget tree goes away (e.g., app exit)

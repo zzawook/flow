@@ -75,8 +75,7 @@ object Validator {
         lengthBetween(notBlank(password, "Password"), 6, 100, "Password")
     }
 
-    fun validateRefreshToken(token: String) =
-        exactLength(notBlank(token, "Refresh token"), 64, "Refresh token")
+    fun validateRefreshToken(token: String) = token
 
     fun validateEmail(email: String) {
         val pattern =

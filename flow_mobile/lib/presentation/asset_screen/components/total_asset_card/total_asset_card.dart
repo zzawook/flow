@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/entity/card.dart' as BankCard;
 import 'package:flow_mobile/domain/redux/flow_state.dart';
@@ -60,62 +62,91 @@ class _TotalAssetCardContent extends StatelessWidget {
     this.error,
   });
 
-  Widget _getCurrentMonthStatusComparedToLastMonthMessage(
-    BuildContext context,
-  ) {
-    if (monthlyAssets.isEmpty) {
-      return const SizedBox.shrink();
+  /// Build a mutable, sorted view-only map for the last 6 months.
+  Map<DateTime, double> _buildDisplayMonthlyAssets() {
+    if (bankAccounts.isEmpty && cards.isEmpty) {
+      return {};
     }
 
-    // Get most recent month (current) and previous month
-    final sortedDates = monthlyAssets.keys.toList()..sort();
-    if (sortedDates.length < 2) {
-      return const SizedBox.shrink();
+    final data = HashMap<DateTime, double>();
+    data.addAll(monthlyAssets); // safe copy; still empty if store is empty
+
+    final now = DateTime.now();
+    final monthStart = DateTime(now.year, now.month, 1);
+
+    if (data.isEmpty) {
+      // Fill previous 5 months with 0.0
+      for (int i = 1; i <= 5; i++) {
+        data[DateTime(monthStart.year, monthStart.month - i, 1)] = 0.0;
+      }
     }
 
     final currentMonthAccountSum = bankAccounts.fold<double>(
       0,
-      (sum, account) => sum + account.balance,
+      (s, a) => s + a.balance,
     );
-    final currentMonthCardSum = cards.fold<double>(
-      0,
-      (sum, card) => sum + card.balance,
-    );
+    final currentMonthCardSum = cards.fold<double>(0, (s, c) => s + c.balance);
 
-    final currentMonth = sortedDates.last;
-    final lastMonth = sortedDates[sortedDates.length - 2];
-    monthlyAssets[currentMonth] = currentMonthAccountSum + currentMonthCardSum;
-    final currentMonthAmount = monthlyAssets[currentMonth] ?? 0.0;
-    final lastMonthAmount = monthlyAssets[lastMonth] ?? 0.0;
+    // Use whatever net rule you intend; keeping your original minus:
+    data[monthStart] = currentMonthAccountSum + currentMonthCardSum;
 
-    Widget message = Row(
+    // Keep only the latest 6 months if you want to cap it
+    if (data.length > 6) {
+      final keys = data.keys.toList();
+      for (int i = 0; i < keys.length - 6; i++) {
+        data.remove(keys[i]);
+      }
+    }
+    return data;
+  }
+
+  Widget _getCurrentMonthStatusComparedToLastMonthMessage(
+    BuildContext context,
+  ) {
+    final data = _buildDisplayMonthlyAssets();
+
+    if (data.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final dates = data.keys.toList()..sort();
+    final currentMonth = dates.last;
+    final lastMonth = dates.length >= 2 ? dates[dates.length - 2] : null;
+
+    final currentMonthAmount = data[currentMonth] ?? 0.0;
+    final lastMonthAmount = lastMonth != null ? data[lastMonth] ?? 0.0 : 0.0;
+
+    final diff = (currentMonthAmount - lastMonthAmount);
+    final moreOrLess = diff >= 0 ? "more" : "less";
+    final highlightColor = diff < 0
+        ? Colors.red
+        : Theme.of(context).primaryColor;
+
+    return Row(
       children: [
         Text(
-          "\$ ${(currentMonthAmount - lastMonthAmount).abs().toStringAsFixed(2)} ${currentMonthAmount > lastMonthAmount ? "more" : "less"}",
+          "\$ ${diff.abs().toStringAsFixed(2)} $moreOrLess",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: currentMonthAmount < lastMonthAmount
-                ? Colors.red
-                : Theme.of(context).primaryColor,
+            color: highlightColor,
           ),
         ),
         Text(
           " than last month",
           style: TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.normal,
             color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],
     );
-
-    return message;
   }
 
   @override
   Widget build(BuildContext context) {
+    final dataForView = _buildDisplayMonthlyAssets();
+
     return Container(
       padding: const EdgeInsets.only(top: 12, bottom: 8),
       width: double.infinity,
@@ -136,6 +167,13 @@ class _TotalAssetCardContent extends StatelessWidget {
                   'Total Balance',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
+                Text(
+                  '\$ ${dataForView.isNotEmpty ? dataForView[DateTime(DateTime.now().year, DateTime.now().month)]?.toStringAsFixed(2) : "0.00"}',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 _getCurrentMonthStatusComparedToLastMonthMessage(context),
               ],
             ),
@@ -144,20 +182,16 @@ class _TotalAssetCardContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             height: 300,
-            child: _buildChartContent(context),
+            child: _buildChartContent(context, dataForView),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildChartContent(BuildContext context) {
-    // Show loading state
-    if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+  Widget _buildChartContent(BuildContext context, Map<DateTime, double> data) {
+    if (isLoading) return const Center(child: CircularProgressIndicator());
 
-    // Show error state
     if (error != null) {
       return Center(
         child: Column(
@@ -175,8 +209,7 @@ class _TotalAssetCardContent extends StatelessWidget {
       );
     }
 
-    // Show empty state
-    if (monthlyAssets.isEmpty) {
+    if (data.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -196,9 +229,8 @@ class _TotalAssetCardContent extends StatelessWidget {
       );
     }
 
-    // Show chart with data
     return MonthlyAssetBarChart(
-      last6MonthlyAssetData: monthlyAssets,
+      last6MonthlyAssetData: data, // pass the derived, mutable view
       normalBarColor: Theme.of(context).brightness == Brightness.light
           ? const Color(0xFFCACACA)
           : const Color(0xFF4A4A4A),

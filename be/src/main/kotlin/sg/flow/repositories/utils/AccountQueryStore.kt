@@ -7,15 +7,15 @@ object AccountQueryStore {
             a.account_name AS card_name,
             c.card_number,
             c.card_type,
-            b.bank_id,
+            b.id as bank_id,
             b.bank_name,
             b.bank_code,
             b.finverse_id,
             b.countries,
-            a.balance,
-            FROM accounts a
+            a.balance
+            FROM cards c
+            JOIN accounts a ON a.account_number = c.card_number
             JOIN banks b ON a.bank_id = b.id
-            JOIN cards c ON a.account_number = c.card_number
             WHERE a.user_id = $1
         """
     const val SAVE_ACCOUNT =

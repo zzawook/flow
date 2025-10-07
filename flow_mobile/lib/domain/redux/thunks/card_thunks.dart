@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/entity/card.dart' as BankCard;
 import 'package:flow_mobile/domain/manager/card_manager.dart';
 import 'package:flow_mobile/domain/redux/actions/card_actions.dart';
+import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/utils/debug_config.dart';
@@ -20,23 +21,23 @@ ThunkAction<FlowState> getCardDetailThunk({
 
     if (DebugConfig.isDebugMode) {
       switch (DebugConfig.cardTestMode) {
-      case CardTestMode.none:
-        await cardManager.fetchCardsFromRemote();
-        cards = await cardManager.getCards();
-        break;
-      case CardTestMode.multipleItems:
-        cards = CardTestData.getMultipleCards();
-        break;
-      case CardTestMode.singleItem:
-        cards = CardTestData.getSingleCard();
-        break;
-      case CardTestMode.empty:
-        cards = CardTestData.getNoCards();
-        break;
-      case CardTestMode.edgeCases:
-        cards = CardTestData.getEdgeCases();
-        break;
-    }
+        case CardTestMode.none:
+          await cardManager.fetchCardsFromRemote();
+          cards = await cardManager.getCards();
+          break;
+        case CardTestMode.multipleItems:
+          cards = CardTestData.getMultipleCards();
+          break;
+        case CardTestMode.singleItem:
+          cards = CardTestData.getSingleCard();
+          break;
+        case CardTestMode.empty:
+          cards = CardTestData.getNoCards();
+          break;
+        case CardTestMode.edgeCases:
+          cards = CardTestData.getEdgeCases();
+          break;
+      }
     } else {
       await cardManager.fetchCardsFromRemote();
       cards = await cardManager.getCards();
@@ -44,14 +45,10 @@ ThunkAction<FlowState> getCardDetailThunk({
 
     await cardManager.fetchCardsFromRemote();
 
-      store.dispatch(
-        SetCardStateAction(
-          store.state.cardState.copyWith(
-            cards: cards
-          ),
-        ),
-      );
-      return;
+    store.dispatch(
+      SetCardStateAction(store.state.cardState.copyWith(cards: cards)),
+    );
+    return;
   };
 }
 
@@ -62,10 +59,11 @@ ThunkAction<FlowState> getCardTransactionsThunk({
 }) {
   return (Store<FlowState> store) async {
     final cardManager = getIt<CardManager>();
-    await cardManager.fetchTransactionForCardFromRemote(
+    final transactionList = await cardManager.fetchTransactionForCardFromRemote(
       card,
       limit,
       oldestTransactionId: oldestTransactionId,
     );
+    store.dispatch(AddTransaction(transactionList));
   };
 }

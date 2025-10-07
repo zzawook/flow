@@ -6,7 +6,6 @@ import 'package:flow_mobile/initialization/manager_registry.dart';
 import 'package:flow_mobile/presentation/account_detail_screen/account_transaction_list.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
-import 'package:flow_mobile/presentation/shared/flow_snackbar.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flutter/material.dart';
@@ -164,36 +163,10 @@ class BalanceSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    // Capture messenger & snackbar synchronously
-                    final messenger = ScaffoldMessenger.of(context);
-                    final snack = FlowSnackbar(
-                      content: const Text(
-                        "Copied to clipboard",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.white,
-                        ),
-                      ),
-                      duration: 2,
-                    ).build(context);
-
-                    // Now do the async, then show using the captured messenger
-                    Clipboard.setData(
-                      ClipboardData(
-                        text: "${card.bank.name} ${card.cardNumber}",
-                      ),
-                    ).then((_) {
-                      messenger.showSnackBar(snack);
-                    });
-                  },
-                  child: Text(
-                    "${card.bank.name} ${card.cardNumber}",
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      decoration: TextDecoration.underline,
-                    ),
+                Text(
+                  "${card.bank.name} ${card.cardNumber}",
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    decoration: TextDecoration.underline,
                   ),
                 ),
                 const FlowSeparatorBox(height: 12),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flow_mobile/domain/manager/auth_manager.dart';
 import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
 import 'package:flow_mobile/initialization/manager_registry.dart';
@@ -37,12 +39,13 @@ class AuthManagerImpl implements AuthManager {
 
   @override
   Future<String?> getAndSaveAccessTokenFromRemote(String refreshToken) async {
-    String accessToken = 'access_token';
+    
     final apiService = getIt<ApiService>();
     TokenSet tokenSet;
     try {
       tokenSet = await apiService.refreshAccessToken(refreshToken);
     } catch (e) {
+      log('Error refreshing access token: $e');
       return null;
     }
 
@@ -52,9 +55,7 @@ class AuthManagerImpl implements AuthManager {
 
     saveAccessTokenToLocal(tokenSet.accessToken);
     saveRefreshTokenToLocal(tokenSet.refreshToken);
-
-    await _localSecureStorage.saveData('accessToken', accessToken);
-    return accessToken;
+    return tokenSet.accessToken;
   }
 
   @override
@@ -82,13 +83,31 @@ class AuthManagerImpl implements AuthManager {
 
   @override
   Future<bool> attemptTokenValidation() async {
-    String? refreshToken = await getRefreshTokenFromLocal();
+    String? refreshToken;
+    try {
+      refreshToken = await getRefreshTokenFromLocal();
+    } catch (e) {
+      return false;
+    }
 
     if (refreshToken == null) {
       return false;
     }
 
-    String? accessToken = await getAndSaveAccessTokenFromRemote(refreshToken);
-    return accessToken != null;
+    if (refreshToken.isEmpty) {
+      return false;
+    } else {
+      try {
+        String? accessToken = await getAndSaveAccessTokenFromRemote(
+          refreshToken,
+        );
+        if (accessToken == null) {
+          return false;
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/card.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
 
 import '../../generated/common/v1/transaction.pb.dart';
@@ -33,5 +34,13 @@ abstract class TransactionManager {
     String? oldestTransactionId,
   });
 
-  Future<List<Transaction>> fetchTransactionsByIdsFromRemote(List<String> idsToFetch);
+  Future<List<Transaction>> getTransactionForCard(
+    Card card,
+    int limit, {
+    String? oldestTransactionId,
+  });
+
+  Future<List<Transaction>> fetchTransactionsByIdsFromRemote(
+    List<String> idsToFetch,
+  );
 }

@@ -57,7 +57,7 @@ object RecurringSpendingQueryStore {
             r.confidence,
             r.transaction_ids,
             r.updated_at
-            FROM recurring_spending_monthly
+            FROM recurring_spending_monthly r
             WHERE r.user_id = $1
         """
 }

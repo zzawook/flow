@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/card.dart';
 import 'package:flow_mobile/domain/manager/transaction_manager.dart';
 import 'package:flow_mobile/generated/common/v1/transaction.pb.dart';
 import 'package:flow_mobile/initialization/manager_registry.dart';
@@ -305,6 +306,35 @@ class TransactionManagerImpl implements TransactionManager {
         })
         .catchError((error) {
           log("Error fetching transactions for account: $error");
+          return List<Transaction>.empty();
+        });
+  }
+
+  @override
+  Future<List<Transaction>> getTransactionForCard(
+    Card card,
+    int limit, {
+    String? oldestTransactionId,
+  }) {
+    ApiService apiService = getIt<ApiService>();
+    return apiService
+        .fetchCardTransactions(
+          card,
+          limit,
+          oldestTransactionId: oldestTransactionId,
+        )
+        .then((response) {
+          List<Transaction> fetchedTransactions = [];
+          for (var transactionHistoryDetail in response.transactions) {
+            Transaction transaction = fromTransactionHistoryDetail(
+              transactionHistoryDetail,
+            );
+            fetchedTransactions.add(transaction);
+          }
+          return fetchedTransactions;
+        })
+        .catchError((error) {
+          log("Error fetching transactions for card: $error");
           return List<Transaction>.empty();
         });
   }

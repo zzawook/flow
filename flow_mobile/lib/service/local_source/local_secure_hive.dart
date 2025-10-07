@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/entity/bank_account.dart';
+import 'package:flow_mobile/domain/entity/card.dart';
 import 'package:flow_mobile/domain/entity/notification.dart';
 import 'package:flow_mobile/domain/entity/notification_setting.dart';
 import 'package:flow_mobile/domain/entity/paynow_recipient.dart';
@@ -36,6 +37,7 @@ class SecureHive {
     Hive.registerAdapter(PayNowRecipientAdapter());
     Hive.registerAdapter(NotificationAdapter());
     Hive.registerAdapter(NotificationSettingAdapter());
+    Hive.registerAdapter(CardAdapter());
 
     // ADD ADAPTERS FOR BOTH LEGACY AND NEW ENTITIES
 
