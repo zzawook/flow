@@ -30,6 +30,7 @@ import 'package:flow_mobile/presentation/setting_screen/manage_notification_scre
 import 'package:flow_mobile/presentation/setting_screen/setting_screen.dart';
 import 'package:flow_mobile/presentation/transaction_detail_screen/category_selection_screen.dart';
 import 'package:flow_mobile/presentation/transaction_detail_screen/transaction_detail_screen.dart';
+import 'package:flow_mobile/presentation/transfer_screen/transfer_coming_soon.dart';
 import 'package:flow_mobile/presentation/welcome_screen/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -47,6 +48,7 @@ import '../spending_screen/spending_screen.dart';
 import '../transfer_screen/transfer_amount_screen.dart';
 import '../transfer_screen/transfer_confirm.dart';
 import '../transfer_screen/transfer_result_screen.dart';
+// ignore: unused_import - WILL BE IN USE WHEN TRANSFER FEATURE IS READY
 import '../transfer_screen/transfer_screen.dart';
 import '../transfer_screen/transfer_to_screen/transfer_to_screen.dart';
 import 'app_transitions.dart';
@@ -162,7 +164,8 @@ class AppRoutes {
         break;
 
       case transfer:
-        page = const TransferScreen();
+        // page = const TransferScreen();
+        page = const TransferComingSoon();
         break;
       case transferAmount:
         page = const TransferAmountScreen();
