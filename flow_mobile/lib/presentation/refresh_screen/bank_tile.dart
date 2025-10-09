@@ -77,9 +77,23 @@ class _BankTileState extends State<BankTile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${widget.bank.name} (${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''})",
-                    style: Theme.of(context).textTheme.bodyLarge
+                  Row(
+                    children: [
+                      Text(
+                        widget.bank.name,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: widget.shouldDisplayAccountDetails
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                      widget.shouldDisplayAccountDetails
+                          ? Text(
+                              "(${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''})",
+                              style: Theme.of(context).textTheme.bodyLarge
+                            )
+                          : Container(),
+                    ],
                   ),
                   ...widget.bankAccountNames.map(
                     (accountName) => Text(

@@ -54,7 +54,8 @@ object AccountQueryStore {
         u.phone_number, 
         u.date_of_birth, 
         u.address,
-        u.setting_json 
+        u.setting_json,
+        u.gender 
         FROM accounts a 
         JOIN banks b ON a.bank_id = b.id 
         JOIN users u ON a.user_id = u.id 
@@ -119,6 +120,7 @@ object AccountQueryStore {
         u.phone_number, 
         u.date_of_birth, 
         u.address,
+        u.gender,
         u.setting_json 
         FROM accounts a 
         JOIN banks b ON a.bank_id = b.id 

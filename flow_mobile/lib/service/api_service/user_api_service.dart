@@ -3,6 +3,7 @@ import 'package:flow_mobile/generated/user/v1/user.pbgrpc.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:grpc/grpc_connection_interface.dart';
+import 'package:flow_mobile/generated/google/protobuf/timestamp.pb.dart' as gp;
 
 class UserApiService {
   final UserServiceClient client;
@@ -46,6 +47,24 @@ class UserApiService {
       return response;
     } catch (e) {
       throw Exception('Failed to update user profile: $e');
+    }
+  }
+
+  gp.Timestamp ts(DateTime dt) => gp.Timestamp.fromDateTime(dt.toUtc());
+
+  Future<SetConstantUserFieldsResponse> setConstantUserFields(
+    DateTime dateOfBirth,
+    bool isGenderMale,
+  ) async {
+    final request = SetConstantUserFieldsRequest()
+      ..dateOfBirth = ts(dateOfBirth)
+      ..genderIsMale = isGenderMale;
+
+    try {
+      final response = await client.setConstantUserFields(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to set constant user fields: $e');
     }
   }
 }

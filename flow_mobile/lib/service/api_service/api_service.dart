@@ -232,4 +232,14 @@ class ApiService {
   Future<CanLinkBankResponse> checkUserCanLinkBank() async {
     return await _refreshApiService.checkUserCanLinkBank();
   }
+
+  Future<SetConstantUserFieldsResponse> setConstantUserFields(
+    DateTime dateOfBirth,
+    bool isGenderMale,
+  ) async {
+    return await _userApiService.setConstantUserFields(
+      dateOfBirth,
+      isGenderMale,
+    );
+  }
 }
