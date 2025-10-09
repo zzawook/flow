@@ -138,15 +138,11 @@ class SignUpRequest extends $pb.GeneratedMessage {
   factory SignUpRequest({
     $core.String? email,
     $core.String? password,
-    $core.String? phoneNumber,
-    $core.String? dateOfBirth,
     $core.String? name,
   }) {
     final result = create();
     if (email != null) result.email = email;
     if (password != null) result.password = password;
-    if (phoneNumber != null) result.phoneNumber = phoneNumber;
-    if (dateOfBirth != null) result.dateOfBirth = dateOfBirth;
     if (name != null) result.name = name;
     return result;
   }
@@ -167,9 +163,7 @@ class SignUpRequest extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'email')
     ..aOS(2, _omitFieldNames ? '' : 'password')
-    ..aOS(3, _omitFieldNames ? '' : 'phoneNumber')
-    ..aOS(4, _omitFieldNames ? '' : 'dateOfBirth')
-    ..aOS(5, _omitFieldNames ? '' : 'name')
+    ..aOS(3, _omitFieldNames ? '' : 'name')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -212,31 +206,13 @@ class SignUpRequest extends $pb.GeneratedMessage {
   void clearPassword() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get phoneNumber => $_getSZ(2);
+  $core.String get name => $_getSZ(2);
   @$pb.TagNumber(3)
-  set phoneNumber($core.String value) => $_setString(2, value);
+  set name($core.String value) => $_setString(2, value);
   @$pb.TagNumber(3)
-  $core.bool hasPhoneNumber() => $_has(2);
+  $core.bool hasName() => $_has(2);
   @$pb.TagNumber(3)
-  void clearPhoneNumber() => $_clearField(3);
-
-  @$pb.TagNumber(4)
-  $core.String get dateOfBirth => $_getSZ(3);
-  @$pb.TagNumber(4)
-  set dateOfBirth($core.String value) => $_setString(3, value);
-  @$pb.TagNumber(4)
-  $core.bool hasDateOfBirth() => $_has(3);
-  @$pb.TagNumber(4)
-  void clearDateOfBirth() => $_clearField(4);
-
-  @$pb.TagNumber(5)
-  $core.String get name => $_getSZ(4);
-  @$pb.TagNumber(5)
-  set name($core.String value) => $_setString(4, value);
-  @$pb.TagNumber(5)
-  $core.bool hasName() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearName() => $_clearField(5);
+  void clearName() => $_clearField(3);
 }
 
 class SignInRequest extends $pb.GeneratedMessage {

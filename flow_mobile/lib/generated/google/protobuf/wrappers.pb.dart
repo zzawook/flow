@@ -22,9 +22,6 @@ export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 /// Wrapper message for `double`.
 ///
 /// The JSON representation for `DoubleValue` is JSON number.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class DoubleValue extends $pb.GeneratedMessage with $mixin.DoubleValueMixin {
   factory DoubleValue({
     $core.double? value,
@@ -87,9 +84,6 @@ class DoubleValue extends $pb.GeneratedMessage with $mixin.DoubleValueMixin {
 /// Wrapper message for `float`.
 ///
 /// The JSON representation for `FloatValue` is JSON number.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class FloatValue extends $pb.GeneratedMessage with $mixin.FloatValueMixin {
   factory FloatValue({
     $core.double? value,
@@ -151,9 +145,6 @@ class FloatValue extends $pb.GeneratedMessage with $mixin.FloatValueMixin {
 /// Wrapper message for `int64`.
 ///
 /// The JSON representation for `Int64Value` is JSON string.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class Int64Value extends $pb.GeneratedMessage with $mixin.Int64ValueMixin {
   factory Int64Value({
     $fixnum.Int64? value,
@@ -215,9 +206,6 @@ class Int64Value extends $pb.GeneratedMessage with $mixin.Int64ValueMixin {
 /// Wrapper message for `uint64`.
 ///
 /// The JSON representation for `UInt64Value` is JSON string.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class UInt64Value extends $pb.GeneratedMessage with $mixin.UInt64ValueMixin {
   factory UInt64Value({
     $fixnum.Int64? value,
@@ -281,9 +269,6 @@ class UInt64Value extends $pb.GeneratedMessage with $mixin.UInt64ValueMixin {
 /// Wrapper message for `int32`.
 ///
 /// The JSON representation for `Int32Value` is JSON number.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class Int32Value extends $pb.GeneratedMessage with $mixin.Int32ValueMixin {
   factory Int32Value({
     $core.int? value,
@@ -345,9 +330,6 @@ class Int32Value extends $pb.GeneratedMessage with $mixin.Int32ValueMixin {
 /// Wrapper message for `uint32`.
 ///
 /// The JSON representation for `UInt32Value` is JSON number.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class UInt32Value extends $pb.GeneratedMessage with $mixin.UInt32ValueMixin {
   factory UInt32Value({
     $core.int? value,
@@ -410,9 +392,6 @@ class UInt32Value extends $pb.GeneratedMessage with $mixin.UInt32ValueMixin {
 /// Wrapper message for `bool`.
 ///
 /// The JSON representation for `BoolValue` is JSON `true` and `false`.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class BoolValue extends $pb.GeneratedMessage with $mixin.BoolValueMixin {
   factory BoolValue({
     $core.bool? value,
@@ -474,9 +453,6 @@ class BoolValue extends $pb.GeneratedMessage with $mixin.BoolValueMixin {
 /// Wrapper message for `string`.
 ///
 /// The JSON representation for `StringValue` is JSON string.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class StringValue extends $pb.GeneratedMessage with $mixin.StringValueMixin {
   factory StringValue({
     $core.String? value,
@@ -539,9 +515,6 @@ class StringValue extends $pb.GeneratedMessage with $mixin.StringValueMixin {
 /// Wrapper message for `bytes`.
 ///
 /// The JSON representation for `BytesValue` is JSON string.
-///
-/// Not recommended for use in new APIs, but still useful for legacy APIs and
-/// has no plan to be removed.
 class BytesValue extends $pb.GeneratedMessage with $mixin.BytesValueMixin {
   factory BytesValue({
     $core.List<$core.int>? value,

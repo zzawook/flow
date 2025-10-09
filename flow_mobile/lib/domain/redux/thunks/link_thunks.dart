@@ -22,9 +22,18 @@ import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
 ThunkAction<FlowState> openAddAccountScreenThunk() {
-  return (Store<FlowState> store) {
+  return (Store<FlowState> store) async {
     final apiService = getIt<ApiService>();
     final nav = getIt<NavigationService>();
+    final canLink = await apiService.checkUserCanLinkBank().then((response) {
+      return response.canLink;
+    });
+
+    if (!canLink) {
+      nav.pushNamed(AppRoutes.signupDateOfBirth);
+      return;
+    }
+
     apiService.getBanksForLink().then((response) {
       final bankList = response.banks
           .map((bank) => Bank(name: bank.name, bankId: bank.id))
@@ -257,20 +266,18 @@ Future<void> _updateStateForBankDataCompletion(Store<FlowState> store) async {
     );
     store.dispatch(
       SetCardStateAction(
-        store.state.cardState.copyWith(
-          cards: await cardManager.getCards(),
-        ),
+        store.state.cardState.copyWith(cards: await cardManager.getCards()),
       ),
     );
     // If displayed month is older than one year ago, fetch transactionManager.fetchPastOverYearTransactionsAroundFromRemote of the displayed month
-    if (store.state.screenState.spendingScreenState.displayedMonth
-            .isBefore(DateTime.now().subtract(Duration(days: 365)))) {
+    if (store.state.screenState.spendingScreenState.displayedMonth.isBefore(
+      DateTime.now().subtract(Duration(days: 365)),
+    )) {
       final displayMonthtransactionFuture = await transactionManager
           .fetchPastOverYearTransactionsAroundFromRemote(
-              store.state.screenState.spendingScreenState.displayedMonth);
-      store.dispatch(
-        AddTransaction(displayMonthtransactionFuture),
-      );
+            store.state.screenState.spendingScreenState.displayedMonth,
+          );
+      store.dispatch(AddTransaction(displayMonthtransactionFuture));
     }
   });
 }

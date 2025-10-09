@@ -30,14 +30,11 @@ class AuthApiService {
     String email,
     String password,
     String name,
-    DateTime dateOfBirth,
   ) async {
     final request = SignUpRequest(
       email: email,
       password: password,
       name: name,
-      dateOfBirth:
-          "${dateOfBirth.year.toString().padLeft(4, '0')}-${dateOfBirth.month.toString().padLeft(2, '0')}-${dateOfBirth.day.toString().padLeft(2, '0')}",
     );
 
     try {

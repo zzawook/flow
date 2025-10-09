@@ -46,17 +46,14 @@ const SignUpRequest$json = {
   '2': [
     {'1': 'email', '3': 1, '4': 1, '5': 9, '10': 'email'},
     {'1': 'password', '3': 2, '4': 1, '5': 9, '10': 'password'},
-    {'1': 'phone_number', '3': 3, '4': 1, '5': 9, '10': 'phoneNumber'},
-    {'1': 'date_of_birth', '3': 4, '4': 1, '5': 9, '10': 'dateOfBirth'},
-    {'1': 'name', '3': 5, '4': 1, '5': 9, '10': 'name'},
+    {'1': 'name', '3': 3, '4': 1, '5': 9, '10': 'name'},
   ],
 };
 
 /// Descriptor for `SignUpRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List signUpRequestDescriptor = $convert.base64Decode(
     'Cg1TaWduVXBSZXF1ZXN0EhQKBWVtYWlsGAEgASgJUgVlbWFpbBIaCghwYXNzd29yZBgCIAEoCV'
-    'IIcGFzc3dvcmQSIQoMcGhvbmVfbnVtYmVyGAMgASgJUgtwaG9uZU51bWJlchIiCg1kYXRlX29m'
-    'X2JpcnRoGAQgASgJUgtkYXRlT2ZCaXJ0aBISCgRuYW1lGAUgASgJUgRuYW1l');
+    'IIcGFzc3dvcmQSEgoEbmFtZRgDIAEoCVIEbmFtZQ==');
 
 @$core.Deprecated('Use signInRequestDescriptor instead')
 const SignInRequest$json = {

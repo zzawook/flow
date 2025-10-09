@@ -57,23 +57,42 @@ class RefreshApiService {
     }
   }
 
-  Future<GetInstitutionAuthenticationResultResponse> getInstitutionAuthenticationResult(Bank bank) async {
-    final request = GetInstitutionAuthenticationResultRequest(institutionId: fx.Int64(bank.bankId));
+  Future<GetInstitutionAuthenticationResultResponse>
+  getInstitutionAuthenticationResult(Bank bank) async {
+    final request = GetInstitutionAuthenticationResultRequest(
+      institutionId: fx.Int64(bank.bankId),
+    );
     try {
-      final response = await _channel.getInstitutionAuthenticationResult(request);
+      final response = await _channel.getInstitutionAuthenticationResult(
+        request,
+      );
       return response;
     } catch (e) {
       throw Exception('Failed to get institution authentication result: $e');
     }
   }
 
-  Future<GetDataRetrievalResultResponse> getDataRetrievalResult(Bank bank) async {
-    final request = GetDataRetrievalResultRequest(institutionId: fx.Int64(bank.bankId));
+  Future<GetDataRetrievalResultResponse> getDataRetrievalResult(
+    Bank bank,
+  ) async {
+    final request = GetDataRetrievalResultRequest(
+      institutionId: fx.Int64(bank.bankId),
+    );
     try {
       final response = await _channel.getDataRetrievalResult(request);
       return response;
     } catch (e) {
       throw Exception('Failed to get data retrieval result: $e');
+    }
+  }
+
+  Future<CanLinkBankResponse> checkUserCanLinkBank() async {
+    final request = CanLinkBankRequest();
+    try {
+      final response = await _channel.canLinkBank(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to check if user can link bank: $e');
     }
   }
 }

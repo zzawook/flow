@@ -20,6 +20,116 @@ import '../../common/v1/bank.pb.dart' as $1;
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
 /// ── Requests ──
+class CanLinkBankRequest extends $pb.GeneratedMessage {
+  factory CanLinkBankRequest() => create();
+
+  CanLinkBankRequest._();
+
+  factory CanLinkBankRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory CanLinkBankRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'CanLinkBankRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CanLinkBankRequest clone() => CanLinkBankRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CanLinkBankRequest copyWith(void Function(CanLinkBankRequest) updates) =>
+      super.copyWith((message) => updates(message as CanLinkBankRequest))
+          as CanLinkBankRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CanLinkBankRequest create() => CanLinkBankRequest._();
+  @$core.override
+  CanLinkBankRequest createEmptyInstance() => create();
+  static $pb.PbList<CanLinkBankRequest> createRepeated() =>
+      $pb.PbList<CanLinkBankRequest>();
+  @$core.pragma('dart2js:noInline')
+  static CanLinkBankRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<CanLinkBankRequest>(create);
+  static CanLinkBankRequest? _defaultInstance;
+}
+
+class CanLinkBankResponse extends $pb.GeneratedMessage {
+  factory CanLinkBankResponse({
+    $core.bool? canLink,
+    $core.String? message,
+  }) {
+    final result = create();
+    if (canLink != null) result.canLink = canLink;
+    if (message != null) result.message = message;
+    return result;
+  }
+
+  CanLinkBankResponse._();
+
+  factory CanLinkBankResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory CanLinkBankResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'CanLinkBankResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'canLink')
+    ..aOS(2, _omitFieldNames ? '' : 'message')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CanLinkBankResponse clone() => CanLinkBankResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CanLinkBankResponse copyWith(void Function(CanLinkBankResponse) updates) =>
+      super.copyWith((message) => updates(message as CanLinkBankResponse))
+          as CanLinkBankResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CanLinkBankResponse create() => CanLinkBankResponse._();
+  @$core.override
+  CanLinkBankResponse createEmptyInstance() => create();
+  static $pb.PbList<CanLinkBankResponse> createRepeated() =>
+      $pb.PbList<CanLinkBankResponse>();
+  @$core.pragma('dart2js:noInline')
+  static CanLinkBankResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<CanLinkBankResponse>(create);
+  static CanLinkBankResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get canLink => $_getBF(0);
+  @$pb.TagNumber(1)
+  set canLink($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasCanLink() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearCanLink() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get message => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set message($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasMessage() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMessage() => $_clearField(2);
+}
+
 class GetRefreshUrlRequest extends $pb.GeneratedMessage {
   factory GetRefreshUrlRequest({
     $fixnum.Int64? institutionId,

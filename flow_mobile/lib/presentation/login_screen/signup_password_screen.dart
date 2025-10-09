@@ -1,7 +1,6 @@
-import 'package:flow_mobile/domain/redux/actions/auth_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/initialization/manager_registry.dart';
-import 'package:flow_mobile/presentation/navigation/app_routes.dart';
+import 'package:flow_mobile/domain/redux/states/auth_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/auth_thunks.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
@@ -9,9 +8,9 @@ import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_string_checker.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
 import 'package:flow_mobile/presentation/transfer_screen/input.dart';
-import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class SignupPasswordScreen extends StatefulWidget {
   const SignupPasswordScreen({super.key});
@@ -29,7 +28,7 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
   final bool _isPasswordShown = false;
   String message = '';
 
-  void _onNext(String email) {
+  void _onNext(String email, String name) {
     if (_passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       setState(() {
@@ -56,9 +55,7 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
     StoreProvider.of<FlowState>(
       context,
       listen: false,
-    ).dispatch(SetSignupPasswordAction(password: _passwordController.text));
-    final nav = getIt<NavigationService>();
-    nav.pushNamed(AppRoutes.signupName);
+    ).dispatch(signupThunk(email, _passwordController.text, name));
   }
 
   @override
@@ -134,13 +131,20 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
                     FlowSeparatorBox(height: 30),
                     Padding(
                       padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: FlowCTAButton(
+                  child: StoreConnector<FlowState, AuthState>(
+                    builder: (BuildContext context, AuthState vm) {
+                      return FlowCTAButton(
                         text: "Next",
                         onPressed: () {
                           if (_passwordController.text.isNotEmpty) {
-                            _onNext(email);
+                            _onNext(vm.loginEmail ?? '', vm.signupName ?? '');
                           }
                         },
+                      );
+                    },
+                    converter: (Store<FlowState> store) {
+                      return store.state.authState;
+                    },
                       ),
                     ),
                     FlowSeparatorBox(height: 15),

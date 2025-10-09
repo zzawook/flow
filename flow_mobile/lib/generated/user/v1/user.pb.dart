@@ -19,6 +19,155 @@ import '../../google/protobuf/wrappers.pb.dart' as $2;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
+class SetConstantUserFieldsRequest extends $pb.GeneratedMessage {
+  factory SetConstantUserFieldsRequest({
+    $1.Timestamp? dateOfBirth,
+    $core.bool? genderIsMale,
+  }) {
+    final result = create();
+    if (dateOfBirth != null) result.dateOfBirth = dateOfBirth;
+    if (genderIsMale != null) result.genderIsMale = genderIsMale;
+    return result;
+  }
+
+  SetConstantUserFieldsRequest._();
+
+  factory SetConstantUserFieldsRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SetConstantUserFieldsRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SetConstantUserFieldsRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.user.v1'),
+      createEmptyInstance: create)
+    ..aOM<$1.Timestamp>(1, _omitFieldNames ? '' : 'dateOfBirth',
+        subBuilder: $1.Timestamp.create)
+    ..aOB(2, _omitFieldNames ? '' : 'genderIsMale')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetConstantUserFieldsRequest clone() =>
+      SetConstantUserFieldsRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetConstantUserFieldsRequest copyWith(
+          void Function(SetConstantUserFieldsRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as SetConstantUserFieldsRequest))
+          as SetConstantUserFieldsRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SetConstantUserFieldsRequest create() =>
+      SetConstantUserFieldsRequest._();
+  @$core.override
+  SetConstantUserFieldsRequest createEmptyInstance() => create();
+  static $pb.PbList<SetConstantUserFieldsRequest> createRepeated() =>
+      $pb.PbList<SetConstantUserFieldsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SetConstantUserFieldsRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SetConstantUserFieldsRequest>(create);
+  static SetConstantUserFieldsRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $1.Timestamp get dateOfBirth => $_getN(0);
+  @$pb.TagNumber(1)
+  set dateOfBirth($1.Timestamp value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasDateOfBirth() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearDateOfBirth() => $_clearField(1);
+  @$pb.TagNumber(1)
+  $1.Timestamp ensureDateOfBirth() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.bool get genderIsMale => $_getBF(1);
+  @$pb.TagNumber(2)
+  set genderIsMale($core.bool value) => $_setBool(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasGenderIsMale() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearGenderIsMale() => $_clearField(2);
+}
+
+class SetConstantUserFieldsResponse extends $pb.GeneratedMessage {
+  factory SetConstantUserFieldsResponse({
+    $core.bool? success,
+    $core.String? message,
+  }) {
+    final result = create();
+    if (success != null) result.success = success;
+    if (message != null) result.message = message;
+    return result;
+  }
+
+  SetConstantUserFieldsResponse._();
+
+  factory SetConstantUserFieldsResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SetConstantUserFieldsResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SetConstantUserFieldsResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.user.v1'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..aOS(2, _omitFieldNames ? '' : 'message')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetConstantUserFieldsResponse clone() =>
+      SetConstantUserFieldsResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SetConstantUserFieldsResponse copyWith(
+          void Function(SetConstantUserFieldsResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as SetConstantUserFieldsResponse))
+          as SetConstantUserFieldsResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SetConstantUserFieldsResponse create() =>
+      SetConstantUserFieldsResponse._();
+  @$core.override
+  SetConstantUserFieldsResponse createEmptyInstance() => create();
+  static $pb.PbList<SetConstantUserFieldsResponse> createRepeated() =>
+      $pb.PbList<SetConstantUserFieldsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static SetConstantUserFieldsResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SetConstantUserFieldsResponse>(create);
+  static SetConstantUserFieldsResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get message => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set message($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasMessage() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMessage() => $_clearField(2);
+}
+
 class GetUserProfileRequest extends $pb.GeneratedMessage {
   factory GetUserProfileRequest() => create();
 

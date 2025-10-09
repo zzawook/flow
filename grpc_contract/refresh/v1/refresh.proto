@@ -8,6 +8,7 @@ option java_outer_classname = "RefreshServiceProto";
 import "common/v1/bank.proto";
 
 service RefreshService {
+    rpc CanLinkBank (CanLinkBankRequest) returns (CanLinkBankResponse);
     rpc CanStartRefreshSession (CanStartRefreshSessionRequest) returns (CanStartRefreshSessionResponse);
     rpc GetRefreshUrl (GetRefreshUrlRequest) returns (GetRefreshUrlResponse);
     rpc GetRelinkUrl (GetRelinkUrlRequest) returns (GetRelinkUrlResponse);
@@ -18,6 +19,13 @@ service RefreshService {
 }
 
 /* ── Requests ── */
+message CanLinkBankRequest {}
+
+message CanLinkBankResponse {
+    bool can_link = 1;
+    string message = 2;
+}
+
 message GetRefreshUrlRequest {
     int64 institution_id = 1; // Institution ID for which the refresh link is requested
     optional string country_code = 2;

@@ -48,7 +48,7 @@ ThunkAction<FlowState> setLoginEmailThunk(String email) {
       if (hasUserWithEmail.exists) {
         nav.pushNamed(AppRoutes.loginPassword);
       } else {
-        nav.pushNamed(AppRoutes.signupPassword);
+        nav.pushNamed(AppRoutes.signupName);
       }
     } catch (error) {
       log('Error setting login email: $error');
@@ -270,7 +270,6 @@ ThunkAction<FlowState> signupThunk(
   String email,
   String password,
   String name,
-  DateTime dateOfBirth,
 ) {
   ApiService apiService = getIt<ApiService>();
   AuthManager authManager = getIt<AuthManager>();
@@ -280,8 +279,7 @@ ThunkAction<FlowState> signupThunk(
       final tokenSet = await apiService.signup(
         email,
         password,
-        name,
-        dateOfBirth,
+        name
       );
       authManager.saveAccessTokenToLocal(tokenSet.accessToken);
       authManager.saveRefreshTokenToLocal(tokenSet.refreshToken);

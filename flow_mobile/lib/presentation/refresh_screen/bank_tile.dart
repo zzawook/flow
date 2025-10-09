@@ -36,17 +36,6 @@ class _BankTileState extends State<BankTile> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedTextStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      // fontWeight: FontWeight.bold,
-      color: Theme.of(context).colorScheme.onSurface,
-    );
-
-    final unselectedTextStyle = Theme.of(
-      context,
-    ).textTheme.bodyMedium?.copyWith(
-      color: Theme.of(context).colorScheme.onSurface,
-      fontWeight: FontWeight.normal,
-    );
 
     final selectedTileColor =
         Theme.of(context).brightness == Brightness.light

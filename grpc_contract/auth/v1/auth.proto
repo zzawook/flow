@@ -27,9 +27,7 @@ message CheckUserExistsResponse {
 message SignUpRequest {
   string email = 1;  // validated: not blank, size 1-100
   string password = 2;  // validated: not blank, size 6-100
-  string phone_number = 3; // validated: not blank, size 1-15
-  string date_of_birth = 4; // validated: not blank, format YYYY-MM-DD
-  string name = 5; // validated: not blank, size 1-100
+  string name = 3; // validated: not blank, size 1-100
 }
 
 message SignInRequest {

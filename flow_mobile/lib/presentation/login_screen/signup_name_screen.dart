@@ -1,6 +1,5 @@
 import 'package:flow_mobile/domain/redux/actions/auth_action.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
-import 'package:flow_mobile/domain/redux/states/auth_state.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
@@ -25,7 +24,7 @@ class _SignupNameScreenState extends State<SignupNameScreen> {
 
   String message = "";
 
-  void _onNext(String email, String password) {
+  void _onNext() {
     if (_nameController.text.isEmpty) {
       setState(() {
         message = 'Please enter your name';
@@ -36,9 +35,9 @@ class _SignupNameScreenState extends State<SignupNameScreen> {
     StoreProvider.of<FlowState>(
       context,
       listen: false,
-    ).dispatch(SetSignupNameAction(name:  _nameController.text));
+    ).dispatch(SetSignupNameAction(name: _nameController.text));
     final navService = getIt<NavigationService>();
-    navService.pushNamed(AppRoutes.signupDateOfBirth);
+    navService.pushNamed(AppRoutes.signupPassword);
   }
 
   @override
@@ -54,6 +53,15 @@ class _SignupNameScreenState extends State<SignupNameScreen> {
             children: [
               FlowTopBar(title: Center(child: Text('')), showBackButton: true),
               FlowSeparatorBox(height: 50),
+              Padding(
+                padding: EdgeInsetsGeometry.only(left: 10, right: 10),
+                child: Text(
+                  "Nice to meet you!",
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Text(
@@ -83,18 +91,10 @@ class _SignupNameScreenState extends State<SignupNameScreen> {
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.only(left: 8, right: 8),
-                child: StoreConnector<FlowState, AuthState>(
-                  converter: (store) => store.state.authState,
-                  builder: (context, authState) {
-                    return FlowCTAButton(
-                      text: "Next",
-                      onPressed: () {
-                        _onNext(
-                          authState.loginEmail ?? '',
-                          authState.signupPassword ?? '',
-                        );
-                      },
-                    );
+                child: FlowCTAButton(
+                  text: "Next",
+                  onPressed: () {
+                    _onNext();
                   },
                 ),
               ),

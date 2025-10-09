@@ -138,13 +138,8 @@ class ApiService {
     return await _authApiService.login(email, password);
   }
 
-  Future<TokenSet> signup(
-    String email,
-    String password,
-    String name,
-    DateTime dateOfBirth,
-  ) async {
-    return await _authApiService.signup(email, password, name, dateOfBirth);
+  Future<TokenSet> signup(String email, String password, String name) async {
+    return await _authApiService.signup(email, password, name);
   }
 
   Future<SignOutResponse> signout() async {
@@ -228,7 +223,13 @@ class ApiService {
     return await _accountApiService.getLast6MonthsAssets();
   }
 
-  Future<TransactionHistoryList> getTransactionsByIds(List<String> idsToFetch) async {
+  Future<TransactionHistoryList> getTransactionsByIds(
+    List<String> idsToFetch,
+  ) async {
     return await _transactionHistoryApiService.getTransactionsByIds(idsToFetch);
+  }
+
+  Future<CanLinkBankResponse> checkUserCanLinkBank() async {
+    return await _refreshApiService.checkUserCanLinkBank();
   }
 }

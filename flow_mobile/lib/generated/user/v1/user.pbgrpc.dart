@@ -53,6 +53,13 @@ class UserServiceClient extends $grpc.Client {
     return $createUnaryCall(_$updateUserProfile, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.SetConstantUserFieldsResponse> setConstantUserFields(
+    $0.SetConstantUserFieldsRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$setConstantUserFields, request, options: options);
+  }
+
   // method descriptors
 
   static final _$getUserProfile =
@@ -70,6 +77,11 @@ class UserServiceClient extends $grpc.Client {
           '/sg.flow.user.v1.UserService/UpdateUserProfile',
           ($0.UpdateUserProfileRequest value) => value.writeToBuffer(),
           $0.UserProfile.fromBuffer);
+  static final _$setConstantUserFields = $grpc.ClientMethod<
+          $0.SetConstantUserFieldsRequest, $0.SetConstantUserFieldsResponse>(
+      '/sg.flow.user.v1.UserService/SetConstantUserFields',
+      ($0.SetConstantUserFieldsRequest value) => value.writeToBuffer(),
+      $0.SetConstantUserFieldsResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.user.v1.UserService')
@@ -102,6 +114,15 @@ abstract class UserServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.UpdateUserProfileRequest.fromBuffer(value),
         ($0.UserProfile value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.SetConstantUserFieldsRequest,
+            $0.SetConstantUserFieldsResponse>(
+        'SetConstantUserFields',
+        setConstantUserFields_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.SetConstantUserFieldsRequest.fromBuffer(value),
+        ($0.SetConstantUserFieldsResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.UserProfile> getUserProfile_Pre($grpc.ServiceCall $call,
@@ -128,4 +149,13 @@ abstract class UserServiceBase extends $grpc.Service {
 
   $async.Future<$0.UserProfile> updateUserProfile(
       $grpc.ServiceCall call, $0.UpdateUserProfileRequest request);
+
+  $async.Future<$0.SetConstantUserFieldsResponse> setConstantUserFields_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.SetConstantUserFieldsRequest> $request) async {
+    return setConstantUserFields($call, await $request);
+  }
+
+  $async.Future<$0.SetConstantUserFieldsResponse> setConstantUserFields(
+      $grpc.ServiceCall call, $0.SetConstantUserFieldsRequest request);
 }

@@ -14,6 +14,29 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use canLinkBankRequestDescriptor instead')
+const CanLinkBankRequest$json = {
+  '1': 'CanLinkBankRequest',
+};
+
+/// Descriptor for `CanLinkBankRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List canLinkBankRequestDescriptor =
+    $convert.base64Decode('ChJDYW5MaW5rQmFua1JlcXVlc3Q=');
+
+@$core.Deprecated('Use canLinkBankResponseDescriptor instead')
+const CanLinkBankResponse$json = {
+  '1': 'CanLinkBankResponse',
+  '2': [
+    {'1': 'can_link', '3': 1, '4': 1, '5': 8, '10': 'canLink'},
+    {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+  ],
+};
+
+/// Descriptor for `CanLinkBankResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List canLinkBankResponseDescriptor = $convert.base64Decode(
+    'ChNDYW5MaW5rQmFua1Jlc3BvbnNlEhkKCGNhbl9saW5rGAEgASgIUgdjYW5MaW5rEhgKB21lc3'
+    'NhZ2UYAiABKAlSB21lc3NhZ2U=');
+
 @$core.Deprecated('Use getRefreshUrlRequestDescriptor instead')
 const GetRefreshUrlRequest$json = {
   '1': 'GetRefreshUrlRequest',

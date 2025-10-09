@@ -13,9 +13,20 @@ service UserService {
   rpc GetUserProfile        (GetUserProfileRequest)         returns (UserProfile);
   rpc GetUserPreferenceJson (GetUserPreferenceJsonRequest)  returns (GetUserPreferenceJsonResponse);
   rpc UpdateUserProfile     (UpdateUserProfileRequest)      returns (UserProfile);
+  rpc SetConstantUserFields (SetConstantUserFieldsRequest) returns (SetConstantUserFieldsResponse);
 }
 
 /* ── Requests & Responses ── */
+
+message SetConstantUserFieldsRequest {
+  google.protobuf.Timestamp date_of_birth        = 1;
+  bool gender_is_male = 2;
+}
+
+message SetConstantUserFieldsResponse {
+  bool success = 1;
+  string message = 2;
+}
 
 message GetUserProfileRequest {}            // userId via metadata
 message GetUserPreferenceJsonRequest {}     // userId via metadata

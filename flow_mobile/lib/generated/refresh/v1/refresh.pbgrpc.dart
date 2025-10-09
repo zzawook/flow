@@ -32,6 +32,13 @@ class RefreshServiceClient extends $grpc.Client {
 
   RefreshServiceClient(super.channel, {super.options, super.interceptors});
 
+  $grpc.ResponseFuture<$0.CanLinkBankResponse> canLinkBank(
+    $0.CanLinkBankRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$canLinkBank, request, options: options);
+  }
+
   $grpc.ResponseFuture<$0.CanStartRefreshSessionResponse>
       canStartRefreshSession(
     $0.CanStartRefreshSessionRequest request, {
@@ -89,6 +96,11 @@ class RefreshServiceClient extends $grpc.Client {
 
   // method descriptors
 
+  static final _$canLinkBank =
+      $grpc.ClientMethod<$0.CanLinkBankRequest, $0.CanLinkBankResponse>(
+          '/sg.flow.refresh.v1.RefreshService/CanLinkBank',
+          ($0.CanLinkBankRequest value) => value.writeToBuffer(),
+          $0.CanLinkBankResponse.fromBuffer);
   static final _$canStartRefreshSession = $grpc.ClientMethod<
           $0.CanStartRefreshSessionRequest, $0.CanStartRefreshSessionResponse>(
       '/sg.flow.refresh.v1.RefreshService/CanStartRefreshSession',
@@ -133,6 +145,15 @@ abstract class RefreshServiceBase extends $grpc.Service {
   $core.String get $name => 'sg.flow.refresh.v1.RefreshService';
 
   RefreshServiceBase() {
+    $addMethod(
+        $grpc.ServiceMethod<$0.CanLinkBankRequest, $0.CanLinkBankResponse>(
+            'CanLinkBank',
+            canLinkBank_Pre,
+            false,
+            false,
+            ($core.List<$core.int> value) =>
+                $0.CanLinkBankRequest.fromBuffer(value),
+            ($0.CanLinkBankResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.CanStartRefreshSessionRequest,
             $0.CanStartRefreshSessionResponse>(
         'CanStartRefreshSession',
@@ -198,6 +219,14 @@ abstract class RefreshServiceBase extends $grpc.Service {
             $0.GetBanksForLinkRequest.fromBuffer(value),
         ($0.GetBanksForLinkResponse value) => value.writeToBuffer()));
   }
+
+  $async.Future<$0.CanLinkBankResponse> canLinkBank_Pre($grpc.ServiceCall $call,
+      $async.Future<$0.CanLinkBankRequest> $request) async {
+    return canLinkBank($call, await $request);
+  }
+
+  $async.Future<$0.CanLinkBankResponse> canLinkBank(
+      $grpc.ServiceCall call, $0.CanLinkBankRequest request);
 
   $async.Future<$0.CanStartRefreshSessionResponse> canStartRefreshSession_Pre(
       $grpc.ServiceCall $call,

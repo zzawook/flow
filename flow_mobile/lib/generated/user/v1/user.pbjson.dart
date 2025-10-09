@@ -14,6 +14,44 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use setConstantUserFieldsRequestDescriptor instead')
+const SetConstantUserFieldsRequest$json = {
+  '1': 'SetConstantUserFieldsRequest',
+  '2': [
+    {
+      '1': 'date_of_birth',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'dateOfBirth'
+    },
+    {'1': 'gender_is_male', '3': 2, '4': 1, '5': 8, '10': 'genderIsMale'},
+  ],
+};
+
+/// Descriptor for `SetConstantUserFieldsRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List setConstantUserFieldsRequestDescriptor =
+    $convert.base64Decode(
+        'ChxTZXRDb25zdGFudFVzZXJGaWVsZHNSZXF1ZXN0Ej4KDWRhdGVfb2ZfYmlydGgYASABKAsyGi'
+        '5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wUgtkYXRlT2ZCaXJ0aBIkCg5nZW5kZXJfaXNfbWFs'
+        'ZRgCIAEoCFIMZ2VuZGVySXNNYWxl');
+
+@$core.Deprecated('Use setConstantUserFieldsResponseDescriptor instead')
+const SetConstantUserFieldsResponse$json = {
+  '1': 'SetConstantUserFieldsResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+    {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+  ],
+};
+
+/// Descriptor for `SetConstantUserFieldsResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List setConstantUserFieldsResponseDescriptor =
+    $convert.base64Decode(
+        'Ch1TZXRDb25zdGFudFVzZXJGaWVsZHNSZXNwb25zZRIYCgdzdWNjZXNzGAEgASgIUgdzdWNjZX'
+        'NzEhgKB21lc3NhZ2UYAiABKAlSB21lc3NhZ2U=');
+
 @$core.Deprecated('Use getUserProfileRequestDescriptor instead')
 const GetUserProfileRequest$json = {
   '1': 'GetUserProfileRequest',
