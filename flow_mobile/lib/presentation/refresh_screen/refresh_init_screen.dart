@@ -104,7 +104,7 @@ class _RefreshInitScreenContainerState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'To refresh your data,\nwe need MFAs from ${newBankDatas.where((bankData) => bankData.isSelected).length} banks',
+                        'Flow will refresh your data \nfrom ${newBankDatas.where((bankData) => bankData.isSelected).length} banks',
                         style: Theme.of(
                           context,
                         ).textTheme.headlineLarge?.copyWith(

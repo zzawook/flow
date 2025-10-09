@@ -1,5 +1,7 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/shared/flow_button.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -51,6 +53,8 @@ class _BankTileState extends State<BankTile> {
             ? Theme.of(context).primaryColor.withAlpha(150)
             : Theme.of(context).primaryColorLight.withAlpha(150);
 
+    final logoService = getIt<LogoService>();
+
     return FlowButton(
       onPressed: () {
         widget.onTap();
@@ -74,7 +78,7 @@ class _BankTileState extends State<BankTile> {
               height: 50,
               // child: Image.asset("assets/bank_logos/${widget.bank.name}.png", fit: BoxFit.contain),
               child: Image.asset(
-                "assets/bank_logos/DBS.png",
+                logoService.getBankLogoUri(widget.bank),
                 fit: BoxFit.contain,
               ),
             ),
@@ -85,22 +89,17 @@ class _BankTileState extends State<BankTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.bank.name,
-                    style: isSelected ? selectedTextStyle : unselectedTextStyle,
+                    "${widget.bank.name} (${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''})",
+                    style: Theme.of(context).textTheme.bodyLarge
                   ),
-                  if (widget.shouldDisplayAccountDetails) ...[
-                    Text(
-                      "${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''}",
-                      style:
-                          isSelected ? selectedTextStyle : unselectedTextStyle,
-                    ),
-                    const SizedBox(height: 4),
-                  ],
                   ...widget.bankAccountNames.map(
                     (accountName) => Text(
                       accountName,
-                      style:
-                          isSelected ? selectedTextStyle : unselectedTextStyle,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).textTheme.labelMedium?.color?.withValues(alpha: 0.65),
+                      ),
                     ),
                   ),
                 ],
