@@ -3,6 +3,7 @@ package sg.flow.grpc.mapper
 import com.google.protobuf.StringValue
 import com.google.protobuf.Timestamp
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import sg.flow.models.user.UpdateUserProfile as DomainUpdateUserProfile
 import sg.flow.user.v1.UpdateUserProfileRequest as ProtoUpdateUserProfileRequest
 import sg.flow.user.v1.UserProfile as ProtoUserProfile
@@ -19,11 +20,15 @@ class UserMapper {
             .setIdentificationNumber(domain.identificationNumber)
             .setPhoneNumber(domain.phoneNumber)
             .setDateOfBirth(
-                Timestamp.newBuilder()
-                    // Convert LocalDate at start of day UTC to epoch seconds
-                    .setSeconds(domain.dateOfBirth.atStartOfDay(ZoneOffset.UTC).toEpochSecond())
-                    .setNanos(0)
-                    .build()
+                if (domain.dateOfBirth == null) {
+                    null
+                } else {
+                    Timestamp.newBuilder()
+                        // Convert LocalDate at start of day UTC to epoch seconds
+                        .setSeconds(domain.dateOfBirth.atStartOfDay(ZoneOffset.UTC).toEpochSecond())
+                        .setNanos(0)
+                        .build()
+                }
             )
             .also { if (domain.settingJson != null) it.settingJson = StringValue.of(domain.settingJson) }
             .build()

@@ -4,6 +4,9 @@ import io.grpc.Status
 import org.springframework.grpc.server.service.GrpcService
 import sg.flow.auth.GrpcSecurityContext
 import sg.flow.common.v1.CommonBankProto
+import sg.flow.grpc.exception.UserCannotLinkBankException
+import sg.flow.refresh.v1.CanLinkBankRequest
+import sg.flow.refresh.v1.CanLinkBankResponse
 import sg.flow.refresh.v1.CanStartRefreshSessionRequest
 import sg.flow.refresh.v1.CanStartRefreshSessionResponse
 import sg.flow.refresh.v1.GetBanksForLinkRequest
@@ -20,10 +23,12 @@ import sg.flow.refresh.v1.GetRelinkUrlRequest
 import sg.flow.refresh.v1.GetRelinkUrlResponse
 import sg.flow.refresh.v1.RefreshServiceGrpcKt
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseQueryService
+import sg.flow.services.UserServices.UserService
 
 @GrpcService
 class RefreshGrpcService(
-    private val finverseQueryService: FinverseQueryService
+    private val finverseQueryService: FinverseQueryService,
+    private val userService : UserService
 ) : RefreshServiceGrpcKt.RefreshServiceCoroutineImplBase() {
 
     private final val ALREADY_HAS_RUNNING_SESSION_MESSAGE = "ALREADY HAS RUNNING REFRESH SESSION"
@@ -76,13 +81,15 @@ class RefreshGrpcService(
 
         val resp = GetBanksForLinkResponse.newBuilder()
         banks.forEach { bank ->
-            resp.addBanks(
-                CommonBankProto.Bank.newBuilder()
-                    .setName(bank.name)
-                    .setBankCode(bank.bankCode)
-                    .setId(bank.id ?: -1)
-                    .build()
-            )
+            if (! finverseQueryService.hasRunningRefreshSession(userId, bank.finverseId ?: bank.bankCode)) {
+                resp.addBanks(
+                    CommonBankProto.Bank.newBuilder()
+                        .setName(bank.name)
+                        .setBankCode(bank.bankCode)
+                        .setId(bank.id ?: -1)
+                        .build()
+                )
+            }
         }
 
         return resp.build()
@@ -91,6 +98,9 @@ class RefreshGrpcService(
 
     override suspend fun getRefreshUrl(request: GetRefreshUrlRequest): GetRefreshUrlResponse {
         val userId = currentUserId()
+        if (!userService.canLinkBank(userId)) {
+            throw UserCannotLinkBankException("")
+        }
         val institutionId = request.institutionId
         val finverseInstitutionId = finverseQueryService.getFinverseInstitutionId(institutionId)
 
@@ -105,6 +115,11 @@ class RefreshGrpcService(
 
     override suspend fun getRelinkUrl(request: GetRelinkUrlRequest): GetRelinkUrlResponse {
         val userId = currentUserId()
+
+        if (!userService.canLinkBank(userId)) {
+            throw UserCannotLinkBankException("")
+        }
+
         val institutionId = request.institutionId
         val finverseInstitutionId = finverseQueryService.getFinverseInstitutionId(institutionId)
 
@@ -131,6 +146,13 @@ class RefreshGrpcService(
         val result = finverseQueryService.getUserDataRetrievalResult(userId, finverseInstitutionId)
 
         return GetDataRetrievalResultResponse.newBuilder().setSuccess(result.success).setMessage(result.message) .build()
+    }
+
+    override suspend fun canLinkBank(request: CanLinkBankRequest): CanLinkBankResponse {
+        val userId = currentUserId()
+
+        val result = userService.canLinkBank(userId);
+        return CanLinkBankResponse.newBuilder().setCanLink(result).build()
     }
 
 }

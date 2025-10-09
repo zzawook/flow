@@ -29,7 +29,7 @@ class UserServiceImpl(
             userProfile: UpdateUserProfile
     ): UserProfile = userRepository.updateUserProfile(userId, userProfile)
 
-    override suspend fun saveUser(name: String, email: String, passwordEncoded: String, dateOfBirth: LocalDate): User? {
+    override suspend fun saveUser(name: String, email: String, passwordEncoded: String): User? {
         try {
             val user = User(
                 name = name,
@@ -37,9 +37,10 @@ class UserServiceImpl(
                 id = null,
                 identificationNumber = "",
                 phoneNumber = "",
-                dateOfBirth = dateOfBirth,
+                dateOfBirth = null,
                 address = "",
-                passwordHash = passwordEncoded
+                passwordHash = passwordEncoded,
+                gender_is_male = null
             )
             userRepository.save(user)
             return user
@@ -56,5 +57,13 @@ class UserServiceImpl(
 
     override suspend fun isUserVerified(email: String): Boolean {
         return userRepository.fetchIsUserEmailVerified(email)
+    }
+
+    override suspend fun canLinkBank(userId: Int): Boolean {
+        return userRepository.canLinkBank(userId);
+    }
+
+    override suspend fun setConstantUserFields(userId: Int, dateOfBirth: LocalDate, genderIsMale: Boolean): Boolean {
+        return userRepository.setConstantUserFields(userId, dateOfBirth, genderIsMale)
     }
 }

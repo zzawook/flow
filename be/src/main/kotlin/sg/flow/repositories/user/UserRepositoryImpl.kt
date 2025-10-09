@@ -26,28 +26,40 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
         val queryString = if (hasId) UserQueryStore.SAVE_USER_WITH_ID else UserQueryStore.SAVE_USER
 
         if (hasId) {
-            databaseClient
+            var spec = databaseClient
                     .sql(queryString)
                     .bind(0, entity.id)
                     .bind(1, entity.name)
                     .bind(2, entity.email)
                     .bind(3, entity.identificationNumber)
                     .bind(4, entity.phoneNumber)
-                    .bind(5, entity.dateOfBirth)
-                    .bind(6, entity.address)
+
+            spec = if (entity.dateOfBirth == null) {
+                spec.bindNull(5, LocalDate::class.java)
+            } else {
+                spec.bind(5, entity.dateOfBirth)
+            }
+
+            spec.bind(6, entity.address)
                     .bind(7, entity.passwordHash)
                     .bind(8, entity.settingJson)
                     .fetch()
                     .awaitRowsUpdated()
         } else {
-            databaseClient
+            var spec = databaseClient
                     .sql(queryString)
                     .bind(0, entity.name)
                     .bind(1, entity.email)
                     .bind(2, entity.identificationNumber)
                     .bind(3, entity.phoneNumber)
-                    .bind(4, entity.dateOfBirth)
-                    .bind(5, entity.address)
+
+            spec = if (entity.dateOfBirth == null) {
+                spec.bindNull(4, LocalDate::class.java)
+            } else {
+                spec.bind(4, entity.dateOfBirth)
+            }
+
+            spec.bind(5, entity.address)
                     .bind(6, entity.passwordHash)
                     .bind(7, entity.settingJson)
                     .fetch()
@@ -71,12 +83,15 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
                             phoneNumber = row.get("phone_number", String::class.java)!!,
                             dateOfBirth = row.get("date_of_birth", LocalDate::class.java)!!,
                             address = row.get("address", String::class.java)!!,
-                            settingJson = row.get("setting_json", String::class.java)!!
+                            settingJson = row.get("setting_json", String::class.java)!!,
+                            gender_is_male = getGenderFromDBText(row.get("gender", String::class.java)!!)
                     )
                 }
                 .one()
                 .awaitFirstOrNull()
     }
+
+
 
     override suspend fun deleteAll(): Boolean {
         return try {
@@ -116,10 +131,11 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
                         name = row.get("name", String::class.java)!!,
                         email = row.get("email", String::class.java)!!,
                         phoneNumber = row.get("phone_number", String::class.java)!!,
-                        dateOfBirth = row.get("date_of_birth", LocalDate::class.java)!!,
+                        dateOfBirth = row.get("date_of_birth", LocalDate::class.java),
                         identificationNumber =
                             row.get("identification_number", String::class.java)!!,
-                        settingJson = null
+                        settingJson = null,
+                        genderIsMale = getGenderFromDBText(row.get("gender", String::class.java))
                     )
                 }
                 .one()
@@ -251,5 +267,68 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
         return false
     }
 
+    override suspend fun canLinkBank(userId: Int): Boolean {
+        val sql = UserQueryStore.CHECK_USER_CAN_LINK_BANK;
 
+        val result = databaseClient.sql(sql)
+            .bind(0, userId)
+            .map { row ->
+                println(row.get("date_of_birth", LocalDate::class.java))
+                println(row.get("gender", String::class.java))
+                val dateOfBirth = row.get("date_of_birth", LocalDate::class.java)
+                val gender = getGenderFromDBText(row.get("gender", String::class.java))
+
+                if (dateOfBirth == null || gender == null) {
+                    false
+                } else {
+                    true
+                }
+            }
+            .one()
+            .awaitFirstOrNull()
+
+        if (result != null) {
+            return result
+        }
+        return false
+    }
+
+    override suspend fun setConstantUserFields(
+        userId: Int,
+        dateOfBirth: LocalDate,
+        genderIsMale: Boolean
+    ): Boolean {
+        val sql = UserQueryStore.SET_CONSTANT_USER_FIELDS
+
+        val result = databaseClient.sql(sql)
+            .bind(0, userId)
+            .bind(1, dateOfBirth)
+            .bind(2, getDBGenderTextFromGenderBoolean(genderIsMale))
+            .fetch()
+            .awaitRowsUpdated()
+
+        return result == 1L
+    }
+
+    companion object {
+        fun getGenderFromDBText(genderText: String): Boolean? {
+            if (genderText.isEmpty()) {
+                return null
+            }
+
+            if (genderText == "MALE") {
+                return true;
+            } else if (genderText == "FEMALE") {
+                return false
+            }
+            return null
+        }
+
+        fun getDBGenderTextFromGenderBoolean(genderBool: Boolean) : String {
+            if (genderBool) {
+                return "MALE"
+            }
+            return "FEMALE"
+        }
+    }
 }

@@ -1,6 +1,19 @@
 package sg.flow.repositories.utils
 
 object UserQueryStore {
+    const val SET_CONSTANT_USER_FIELDS =
+        """
+            UPDATE users 
+            SET date_of_birth = $2, gender = $3
+            WHERE id = $1
+        """
+    const val CHECK_USER_CAN_LINK_BANK =
+        """
+            SELECT u.date_of_birth,
+            u.gender
+            FROM users u
+            WHERE u.id = $1
+        """
     const val FIND_ALL_USER_IDS =
         """
             SELECT u.id
@@ -29,7 +42,8 @@ object UserQueryStore {
         u.phone_number, 
         u.date_of_birth, 
         u.address, 
-        u.setting_json
+        u.setting_json,
+        u.gender
         FROM users u 
         WHERE u.id = $1
     """
@@ -43,7 +57,8 @@ object UserQueryStore {
         u.phone_number, 
         u.date_of_birth, 
         u.identification_number, 
-        u.address
+        u.address,
+        u.gender
         FROM users u 
         WHERE u.id = $1
     """

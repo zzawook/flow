@@ -17,6 +17,7 @@ import sg.flow.entities.utils.CardType
 import sg.flow.models.account.AccountWithTransactionHistory
 import sg.flow.models.account.BriefAccount as BriefAccount
 import sg.flow.repositories.transactionHistory.TransactionHistoryRepository
+import sg.flow.repositories.user.UserRepositoryImpl
 import sg.flow.repositories.utils.AccountQueryStore
 
 @Repository
@@ -146,6 +147,9 @@ class AccountRepositoryImpl(
                                                                         String::class.java
                                                                 )
                                                                         ?: "",
+                                                        gender_is_male = UserRepositoryImpl.getGenderFromDBText(
+                                                                row.get("gender", String::class.java) ?: ""
+                                                        ),
                                                         settingJson =
                                                                 row.get(
                                                                         "setting_json",
@@ -386,6 +390,9 @@ class AccountRepositoryImpl(
                                                                 String::class.java
                                                         )
                                                                 ?: "",
+                                                gender_is_male = UserRepositoryImpl.getGenderFromDBText(
+                                                        row.get("gender", String::class.java) ?: ""
+                                                ),
                                                 settingJson =
                                                         row.get(
                                                                 "setting_json",

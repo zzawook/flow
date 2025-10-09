@@ -12,6 +12,7 @@ data class User(
         @field:NotBlank val identificationNumber: String,
         @field:NotBlank val phoneNumber: String,
         val dateOfBirth: LocalDate?,
+        val gender_is_male: Boolean?,
         @field:NotBlank val address: String,
         val settingJson: String = "{}",
         val passwordHash: String = ""

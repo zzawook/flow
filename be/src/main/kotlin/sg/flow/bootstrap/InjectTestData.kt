@@ -110,6 +110,7 @@ class InjectTestData(
                                 phoneNumber = data[4],
                                 dateOfBirth = LocalDate.parse(data[5]),
                                 address = data[6],
+                                gender_is_male = null,
                                 settingJson = data[7]
                         )
 

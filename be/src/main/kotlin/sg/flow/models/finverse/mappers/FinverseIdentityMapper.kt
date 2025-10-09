@@ -39,6 +39,7 @@ class FinverseIdentityMapper : Mapper<FinverseIdentityData, User> {
                 dateOfBirth = input.dateOfBirth
                                 ?: throw IllegalArgumentException("Date of birth is required"),
                 address = fullAddress,
+                gender_is_male = null,
                 settingJson = "{}"
         )
     }

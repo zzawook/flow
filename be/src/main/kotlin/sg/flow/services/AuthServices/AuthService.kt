@@ -8,7 +8,7 @@ import java.time.LocalDate
 import java.util.Date
 
 interface AuthService {
-    suspend fun registerUser(email: String, name: String, password: String, dateOfBirth: LocalDate): TokenSet
+    suspend fun registerUser(email: String, name: String, password: String): TokenSet
     suspend fun getTokenSetForUser(email: String, password: String): TokenSet
     suspend fun getAccessTokenByRefreshToken(request: AccessTokenRefreshRequest): TokenSet?
     suspend fun checkUserExists(email: String): Boolean

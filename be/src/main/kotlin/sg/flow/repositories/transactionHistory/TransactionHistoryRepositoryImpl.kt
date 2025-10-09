@@ -21,6 +21,7 @@ import sg.flow.entities.utils.CardType
 import sg.flow.models.card.BriefCard
 import sg.flow.models.transaction.TransactionHistoryDetail
 import sg.flow.models.transaction.TransactionHistoryList
+import sg.flow.repositories.user.UserRepositoryImpl
 import sg.flow.repositories.utils.TransactionHistoryQueryStore
 
 @Repository
@@ -272,6 +273,9 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                                 String::class
                                                                                                         .java
                                                                                         )!!,
+                                                                                gender_is_male = UserRepositoryImpl.getGenderFromDBText(
+                                                                                        row.get("gender", String::class.java) ?: ""
+                                                                                ),
                                                                                 settingJson =
                                                                                         row.get(
                                                                                                 "setting_json",
@@ -519,6 +523,9 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                                         .java
                                                                                         )
                                                                                                 ?: "",
+                                                                                gender_is_male = UserRepositoryImpl.getGenderFromDBText(
+                                                                                        row.get("gender", String::class.java) ?: ""
+                                                                                ),
                                                                                 settingJson =
                                                                                         row.get(
                                                                                                 "setting_json",
@@ -780,6 +787,9 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                                         .java
                                                                         )
                                                                                 ?: "",
+                                                                gender_is_male = UserRepositoryImpl.getGenderFromDBText(
+                                                                        row.get("gender", String::class.java) ?: ""
+                                                                ),
                                                                 settingJson =
                                                                         row.get(
                                                                                 "setting_json",
@@ -1270,6 +1280,9 @@ class TransactionHistoryRepositoryImpl(private val databaseClient: DatabaseClien
                                                                 "identification_number",
                                                                 String::class.java
                                                         )!!,
+                                                gender_is_male = UserRepositoryImpl.getGenderFromDBText(
+                                                        row.get("gender", String::class.java) ?: ""
+                                                ),
                                                 settingJson =
                                                         row.get("setting_json", String::class.java)
                                                                 ?: "{}"

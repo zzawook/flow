@@ -12,7 +12,9 @@ interface UserService {
     suspend fun getUserProfile(userId: Int): UserProfile
     suspend fun getUserPreferenceJson(userId: Int): String
     suspend fun updateUserProfile(userId: Int, userProfile: UpdateUserProfile): UserProfile
-    suspend fun saveUser(name: String, email: String, passwordEncoded: String, dateOfBirth: LocalDate): User?
+    suspend fun saveUser(name: String, email: String, passwordEncoded: String): User?
     suspend fun markUserEmailVerified(email: String)
     suspend fun isUserVerified(email: String): Boolean
+    suspend fun canLinkBank(userId: Int): Boolean
+    suspend fun setConstantUserFields(userId: Int, dateOfBirth: LocalDate, genderIsMale: Boolean): Boolean
 }

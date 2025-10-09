@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     identification_number TEXT DEFAULT '',
     phone_number TEXT DEFAULT '',
     date_of_birth DATE DEFAULT NULL,
+    gender TEXT DEFAULT '',
     address TEXT DEFAULT '',
     setting_json JSONB DEFAULT '{}',
     password_hash TEXT DEFAULT '',

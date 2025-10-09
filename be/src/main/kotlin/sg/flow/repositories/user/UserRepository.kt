@@ -5,6 +5,7 @@ import sg.flow.grpc.UserIdAndPasswordHash
 import sg.flow.models.user.UpdateUserProfile
 import sg.flow.models.user.UserProfile
 import sg.flow.repositories.Repository
+import java.time.LocalDate
 
 interface UserRepository : Repository<User, Long> {
     fun getAllUserIds(): List<Int>
@@ -17,4 +18,6 @@ interface UserRepository : Repository<User, Long> {
     suspend fun getUserIdAndPasswordHashWithEmail(email: String): UserIdAndPasswordHash
     suspend fun markUserEmailVerified(email: String): Boolean
     suspend fun fetchIsUserEmailVerified(email: String): Boolean
+    suspend fun canLinkBank(userId: Int): Boolean
+    suspend fun setConstantUserFields(userId: Int, dateOfBirth: LocalDate, genderIsMale: Boolean): Boolean
 }

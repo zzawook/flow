@@ -72,11 +72,8 @@ class AuthGrpcService(
                         throw InvalidSignupCredentialException(e.message ?: "")
                 }
 
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val dateOfBirth = LocalDate.parse(request.dateOfBirth, formatter)
-
                 val token = authService.registerUser(
-                        request.email, request.name, request.password, dateOfBirth
+                        request.email, request.name, request.password
                 )
                 return authMapper.toProto(token)
         }

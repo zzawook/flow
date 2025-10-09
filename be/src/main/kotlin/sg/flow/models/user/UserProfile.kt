@@ -8,6 +8,7 @@ data class UserProfile(
         val email: String,
         val identificationNumber: String,
         val phoneNumber: String,
-        val dateOfBirth: LocalDate,
+        val dateOfBirth: LocalDate?,
+        val genderIsMale: Boolean?,
         val settingJson: String?
 )

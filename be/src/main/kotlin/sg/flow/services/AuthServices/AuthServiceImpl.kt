@@ -51,7 +51,7 @@ class AuthServiceImpl(
 
     val logger = LoggerFactory.getLogger(AuthServiceImpl::class.java)
 
-    override suspend fun registerUser(email: String, name: String, password: String, dateOfBirth: LocalDate): TokenSet =
+    override suspend fun registerUser(email: String, name: String, password: String): TokenSet =
             withContext(Dispatchers.IO) {
                 if (checkUserExists(email)) {
                     return@withContext getTokenSetForUser(email, password)
@@ -66,7 +66,7 @@ passwordEncoded = passwordEncoder.encode(password)
                     throw TokenGenerationException("Failed to encode given password")
                 }
 
-                val savedEntity = userService.saveUser(name, email, passwordEncoded, dateOfBirth)
+                val savedEntity = userService.saveUser(name, email, passwordEncoded)
                 if (savedEntity == null) {
                     return@withContext TokenSet(
                         "", ""
