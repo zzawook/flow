@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class EmailValidationScreen extends StatefulWidget {
-  const EmailValidationScreen({super.key});
+  final bool showBackButton;
+  const EmailValidationScreen({super.key, this.showBackButton = false});
 
   @override
   State<EmailValidationScreen> createState() => _EmailValidationScreenState();
@@ -50,8 +51,8 @@ class _EmailValidationScreenState extends State<EmailValidationScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && mounted) {
       // App returned to foreground: re-check verification
-      final store = StoreProvider.of<FlowState>(context, listen: false);
-      store.dispatch(checkEmailVerifiedThunk());
+      final store = StoreProvider.of<FlowState>(context, listen: true);
+      store.dispatch(monitorEmailVerifiedThunk());
     }
   }
 
@@ -72,7 +73,10 @@ class _EmailValidationScreenState extends State<EmailValidationScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FlowTopBar(title: const Center(child: Text(''))),
+              FlowTopBar(
+                title: const Center(child: Text('')),
+                showBackButton: widget.showBackButton,
+              ),
               const FlowSeparatorBox(height: 50),
               Text(
                 "Seems you're new here!",

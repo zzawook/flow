@@ -48,8 +48,12 @@ class FlowApplication extends StatelessWidget {
         // Start once; survives rebuilds & hot reload thanks to the top-level var
         unprocessedTxnPoller ??= UnprocessedTxnPoller(store);
         unprocessedTxnPoller!.start();
-        if (store.state.authState.isAuthenticated) {
+        if (store.state.authState.isAuthenticated &&
+            store.state.authState.isEmailVerified) {
           store.dispatch(initUserOnLoginThunk());
+        } else if (store.state.authState.isAuthenticated &&
+            !store.state.authState.isEmailVerified) {
+          store.dispatch(monitorEmailVerifiedThunk());
         }
       },
       onDispose: (store) {
@@ -59,6 +63,9 @@ class FlowApplication extends StatelessWidget {
       converter: (store) => store.state.settingsState.settings.theme,
       builder: (context, themeName) {
         final theme = ThemeStore.buildTheme(store.state.settingsState.settings);
+
+        
+
         return MaterialApp(
           title: 'Flow',
           theme: theme,
@@ -76,7 +83,9 @@ class FlowApplication extends StatelessWidget {
           ),
 
           initialRoute: initialState.authState.isAuthenticated
-              ? AppRoutes.home
+              ? initialState.authState.isEmailVerified
+                    ? AppRoutes.home
+                    : AppRoutes.emailVerification
               : AppRoutes.welcome,
           onGenerateRoute: (settings) =>
               AppRoutes.generate(settings, store.dispatch),

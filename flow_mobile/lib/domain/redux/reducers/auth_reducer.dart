@@ -23,6 +23,9 @@ AuthState authReducer(AuthState state, dynamic action) {
   if (action is SetSignupNameAction) {
     return state.copyWith(signupName: action.name);
   }
+  if (action is EmailVerifiedAction) {
+    return state.copyWith(isEmailVerified: true);
+  }
   if (action is SignupSuccessAction) {
     return state.copyWith(
       isAuthenticated: true,

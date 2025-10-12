@@ -10,4 +10,6 @@ abstract class AuthManager {
   Future<void> getAndSaveRefreshTokenFromRemote();
 
   Future<bool> attemptTokenValidation();
+
+  Future<bool> isEmailVerified(String email);
 }

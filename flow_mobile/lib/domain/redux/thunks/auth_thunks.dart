@@ -20,6 +20,8 @@ import 'package:flow_mobile/generated/auth/v1/auth.pb.dart';
 import 'package:flow_mobile/initialization/flow_state_initializer.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
+import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
+import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
@@ -32,9 +34,11 @@ import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
 ThunkAction<FlowState> setLoginEmailThunk(String email) {
-  final ApiService apiService = getIt<ApiService>();
-  final nav = getIt<NavigationService>();
   return (Store<FlowState> store) async {
+    final ApiService apiService = getIt<ApiService>();
+    final userManager = getIt<UserManager>();
+    final nav = getIt<NavigationService>();
+
     try {
       if (DebugConfig.isDebugMode &&
           DebugConfig.authTestMode == AuthTestMode.testAccount) {
@@ -45,6 +49,11 @@ ThunkAction<FlowState> setLoginEmailThunk(String email) {
       }
       final hasUserWithEmail = await apiService.checkUserExists(email);
       store.dispatch(SetLoginEmailAction(email: email));
+      userManager.updateUser(
+        await userManager.getUser().then(
+          (user) => user?.copyWith(email: email) ?? UserTestData.getTestUser(),
+        ),
+      );
       if (hasUserWithEmail.exists) {
         nav.pushNamed(AppRoutes.loginPassword);
       } else {
@@ -101,6 +110,7 @@ ThunkAction<FlowState> loginThunk(
       onFailure();
       return;
     }
+
     authManager.saveAccessTokenToLocal(tokenSet.accessToken);
     authManager.saveRefreshTokenToLocal(tokenSet.refreshToken);
     GrpcInterceptor.setAccessToken(tokenSet.accessToken);
@@ -294,7 +304,13 @@ ThunkAction<FlowState> signupThunk(
       );
       _clearState(store);
       store.dispatch(sendVerificationEmailThunk());
-      nav.pushNamed(AppRoutes.emailVerification);
+      nav.pushNamed(
+        AppRoutes.emailVerification,
+        arguments: CustomPageRouteArguments(
+          transitionType: TransitionType.slideLeft,
+          extraData: true,
+        ),
+      );
     } catch (error) {
       store.dispatch(SignupErrorAction(error.toString()));
     }
@@ -331,7 +347,7 @@ ThunkAction<FlowState> sendVerificationEmailThunk() {
         store.state.authState.loginEmail,
       );
       if (emailSendResult) {
-        store.dispatch(checkEmailVerifiedThunk());
+        store.dispatch(monitorEmailVerifiedThunk());
       }
     } catch (error) {
       log('Error sending verification email: $error');
@@ -349,7 +365,27 @@ ThunkAction<FlowState> checkEmailVerifiedThunk() {
         store.state.authState.loginEmail ?? '',
       );
       if (emailVerifyResult.verified) {
-        nav.pushNamedAndRemoveUntil(AppRoutes.home);
+        store.dispatch(EmailVerifiedAction());
+        nav.pushNamedAndRemoveUntil(AppRoutes.signupDateOfBirth);
+      }
+    } catch (error) {
+      log('Error sending verification email: $error');
+    }
+  };
+}
+
+ThunkAction<FlowState> monitorEmailVerifiedThunk() {
+  print("Monitoring email verification");
+  ApiService apiService = getIt<ApiService>();
+  final nav = getIt<NavigationService>();
+  return (Store<FlowState> store) async {
+    try {
+      final emailVerifyResult = await apiService.monitorEmailVerified(
+        store.state.authState.loginEmail ?? '',
+      );
+      if (emailVerifyResult.verified) {
+        store.dispatch(EmailVerifiedAction());
+        nav.pushNamedAndRemoveUntil(AppRoutes.signupDateOfBirth);
       }
     } catch (error) {
       log('Error sending verification email: $error');

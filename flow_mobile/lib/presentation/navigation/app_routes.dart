@@ -217,7 +217,8 @@ class AppRoutes {
         page = const SignupDateOfBirthScreen();
         break;
       case emailVerification:
-        page = const EmailValidationScreen();
+        final bool showBackButton = args?.extraData as bool? ?? false;
+        page = EmailValidationScreen(showBackButton: showBackButton);
         break;
 
       case setting:

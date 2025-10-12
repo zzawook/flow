@@ -25,14 +25,6 @@ ThunkAction<FlowState> openAddAccountScreenThunk() {
   return (Store<FlowState> store) async {
     final apiService = getIt<ApiService>();
     final nav = getIt<NavigationService>();
-    final canLink = await apiService.checkUserCanLinkBank().then((response) {
-      return response.canLink;
-    });
-
-    if (!canLink) {
-      nav.pushNamed(AppRoutes.signupDateOfBirth);
-      return;
-    }
 
     apiService.getBanksForLink().then((response) {
       final bankList = response.banks

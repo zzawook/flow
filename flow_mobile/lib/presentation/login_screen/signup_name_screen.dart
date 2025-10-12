@@ -56,7 +56,7 @@ class _SignupNameScreenState extends State<SignupNameScreen> {
               Padding(
                 padding: EdgeInsetsGeometry.only(left: 10, right: 10),
                 child: Text(
-                  "Nice to meet you!",
+                  "Seems like you're new here!",
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.normal,
                   ),

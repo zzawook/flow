@@ -95,12 +95,26 @@ class AuthApiService {
 
   Future<CheckEmailVerifiedResponse> checkEmailVerified(String email) async {
     final request = CheckEmailVerifiedRequest(email: email);
+    
 
     try {
       final response = await client.checkEmailVerified(request);
       return response;
     } catch (e) {
       throw Exception('Check email verified failed: $e');
+    }
+  }
+
+  Future<MonitorEmailVerifiedResponse> monitorEmailVerified(
+    String email,
+  ) async {
+    final request = MonitorEmailVerifiedRequest(email: email);
+
+    try {
+      final response = await client.monitorEmailVerified(request);
+      return response;
+    } catch (e) {
+      throw Exception('Monitor email verified failed: $e');
     }
   }
 }

@@ -46,8 +46,6 @@ class BankAccountManagerImpl implements BankAccountManager {
 
   @override
   Future<List<BankAccount>> getBankAccounts() async {
-    final temp = _bankAccountBox.values.toList();
-    print("length of bank accounts: ${temp.length}");
     return _bankAccountBox.values.toList();
   }
 

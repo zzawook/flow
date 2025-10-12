@@ -38,7 +38,7 @@ class AddAccountCard extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'Link Bank',
+                'Link a bank',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),

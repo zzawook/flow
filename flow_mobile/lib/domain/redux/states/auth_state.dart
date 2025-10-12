@@ -1,5 +1,6 @@
 class AuthState {
   final bool isAuthenticated;
+  final bool isEmailVerified;
   
   final String? loginEmail;
   final String? loginPassword;
@@ -14,6 +15,7 @@ class AuthState {
     this.loginEmail,
     this.loginPassword,
     this.isAuthenticated = false,
+    this.isEmailVerified = false,
     this.loginError,
     this.signupName,
     this.signupPassword,
@@ -25,6 +27,7 @@ class AuthState {
     String? loginEmail,
     String? loginPassword,
     bool? isAuthenticated,
+    bool? isEmailVerified,
     String? loginError,
     String? signupName,
     String? signupPassword,
@@ -40,12 +43,13 @@ class AuthState {
       signupPassword: signupPassword ?? this.signupPassword,
       signupEmail: signupEmail ?? this.signupEmail,
       signupDateOfBirth: signupDateOfBirth ?? this.signupDateOfBirth,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
     );
   }
 
   @override
   String toString() {
-    return 'AuthState{loginEmail: $loginEmail, loginPassword: $loginPassword, isAuthenticated: $isAuthenticated, loginError: $loginError, signupName: $signupName, signupPassword: $signupPassword, signupEmail: $signupEmail, signupDateOfBirth: $signupDateOfBirth}';
+    return 'AuthState{loginEmail: $loginEmail, loginPassword: $loginPassword, isAuthenticated: $isAuthenticated, loginError: $loginError, signupName: $signupName, signupPassword: $signupPassword, signupEmail: $signupEmail, signupDateOfBirth: $signupDateOfBirth, isEmailVerified: $isEmailVerified}';
   }
 
   factory AuthState.initial() {
@@ -58,6 +62,7 @@ class AuthState {
       signupPassword: null,
       signupEmail: null,
       signupDateOfBirth: null,
+      isEmailVerified: false,
     );
   }
 }

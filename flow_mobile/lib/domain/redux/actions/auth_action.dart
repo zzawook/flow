@@ -58,3 +58,7 @@ class LoginErrorAction {
 class LogoutAction {
   LogoutAction();
 }
+
+class EmailVerifiedAction {
+  EmailVerifiedAction();
+}

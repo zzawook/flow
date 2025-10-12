@@ -14,6 +14,7 @@ service AuthService {
   rpc GetAccessTokenByRefreshToken (AccessTokenRefreshRequest) returns (TokenSet);
   rpc SendVerificationEmail (SendVerificationEmailRequest) returns (SendVerificationEmailResponse);
   rpc CheckEmailVerified (CheckEmailVerifiedRequest) returns (CheckEmailVerifiedResponse);
+  rpc MonitorEmailVerified (MonitorEmailVerifiedRequest) returns (MonitorEmailVerifiedResponse);
 }
 
 message CheckUserExistsRequest {
@@ -65,5 +66,13 @@ message CheckEmailVerifiedRequest {
 }
 
 message CheckEmailVerifiedResponse {
+  bool verified = 1; // true if email is verified
+}
+
+message MonitorEmailVerifiedRequest {
+  string email = 1; // validated: not blank, size 1-100
+}
+
+message MonitorEmailVerifiedResponse {
   bool verified = 1; // true if email is verified
 }

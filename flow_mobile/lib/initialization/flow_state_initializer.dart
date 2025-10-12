@@ -39,7 +39,7 @@ class FlowStateInitializer {
       transactionState: await getTransactionState(),
       transferReceivableState: await getTransferReceivableState(bankState),
       notificationState: await getNotificationState(),
-      authState: await getAuthState()
+      authState: await getAuthState(),
     );
   }
 
@@ -51,6 +51,7 @@ class FlowStateInitializer {
 
   static Future<AuthState> getAuthState() async {
     final authManager = getIt<AuthManager>();
+    final usermanager = getIt<UserManager>();
 
     final credentialCheck = await authManager.attemptTokenValidation();
     if (credentialCheck) {
@@ -58,9 +59,20 @@ class FlowStateInitializer {
       if (accessToken != null) {
         GrpcInterceptor.setAccessToken(accessToken);
       }
-      return AuthState(isAuthenticated: true);
+      final loginEmail = await usermanager.getUser().then(
+        (user) => user?.email ?? '',
+      );
+      final isEmailVerified = await authManager.isEmailVerified(loginEmail);
+      if (!isEmailVerified) {
+        return AuthState(
+          isAuthenticated: true,
+          isEmailVerified: false,
+          loginEmail: loginEmail,
+        );
+      }
+      return AuthState(isAuthenticated: true, isEmailVerified: true);
     } else {
-      return AuthState(isAuthenticated: false);
+      return AuthState(isAuthenticated: false, isEmailVerified: false);
     }
   }
 

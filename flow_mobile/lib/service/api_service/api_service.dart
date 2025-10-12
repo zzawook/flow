@@ -203,6 +203,13 @@ class ApiService {
     return response;
   }
 
+  Future<MonitorEmailVerifiedResponse> monitorEmailVerified(
+    String loginEmail,
+  ) async {
+    final response = await _authApiService.monitorEmailVerified(loginEmail);
+    return response;
+  }
+
   Future<GetCardsResponse> fetchCards() async {
     return await _cardApiService.fetchCards();
   }

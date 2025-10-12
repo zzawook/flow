@@ -765,6 +765,128 @@ class CheckEmailVerifiedResponse extends $pb.GeneratedMessage {
   void clearVerified() => $_clearField(1);
 }
 
+class MonitorEmailVerifiedRequest extends $pb.GeneratedMessage {
+  factory MonitorEmailVerifiedRequest({
+    $core.String? email,
+  }) {
+    final result = create();
+    if (email != null) result.email = email;
+    return result;
+  }
+
+  MonitorEmailVerifiedRequest._();
+
+  factory MonitorEmailVerifiedRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory MonitorEmailVerifiedRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'MonitorEmailVerifiedRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.auth.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'email')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  MonitorEmailVerifiedRequest clone() =>
+      MonitorEmailVerifiedRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  MonitorEmailVerifiedRequest copyWith(
+          void Function(MonitorEmailVerifiedRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as MonitorEmailVerifiedRequest))
+          as MonitorEmailVerifiedRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static MonitorEmailVerifiedRequest create() =>
+      MonitorEmailVerifiedRequest._();
+  @$core.override
+  MonitorEmailVerifiedRequest createEmptyInstance() => create();
+  static $pb.PbList<MonitorEmailVerifiedRequest> createRepeated() =>
+      $pb.PbList<MonitorEmailVerifiedRequest>();
+  @$core.pragma('dart2js:noInline')
+  static MonitorEmailVerifiedRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<MonitorEmailVerifiedRequest>(create);
+  static MonitorEmailVerifiedRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get email => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set email($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasEmail() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearEmail() => $_clearField(1);
+}
+
+class MonitorEmailVerifiedResponse extends $pb.GeneratedMessage {
+  factory MonitorEmailVerifiedResponse({
+    $core.bool? verified,
+  }) {
+    final result = create();
+    if (verified != null) result.verified = verified;
+    return result;
+  }
+
+  MonitorEmailVerifiedResponse._();
+
+  factory MonitorEmailVerifiedResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory MonitorEmailVerifiedResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'MonitorEmailVerifiedResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.auth.v1'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'verified')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  MonitorEmailVerifiedResponse clone() =>
+      MonitorEmailVerifiedResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  MonitorEmailVerifiedResponse copyWith(
+          void Function(MonitorEmailVerifiedResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as MonitorEmailVerifiedResponse))
+          as MonitorEmailVerifiedResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static MonitorEmailVerifiedResponse create() =>
+      MonitorEmailVerifiedResponse._();
+  @$core.override
+  MonitorEmailVerifiedResponse createEmptyInstance() => create();
+  static $pb.PbList<MonitorEmailVerifiedResponse> createRepeated() =>
+      $pb.PbList<MonitorEmailVerifiedResponse>();
+  @$core.pragma('dart2js:noInline')
+  static MonitorEmailVerifiedResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<MonitorEmailVerifiedResponse>(create);
+  static MonitorEmailVerifiedResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get verified => $_getBF(0);
+  @$pb.TagNumber(1)
+  set verified($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasVerified() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearVerified() => $_clearField(1);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

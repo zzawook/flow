@@ -174,3 +174,30 @@ final $typed_data.Uint8List checkEmailVerifiedResponseDescriptor =
     $convert.base64Decode(
         'ChpDaGVja0VtYWlsVmVyaWZpZWRSZXNwb25zZRIaCgh2ZXJpZmllZBgBIAEoCFIIdmVyaWZpZW'
         'Q=');
+
+@$core.Deprecated('Use monitorEmailVerifiedRequestDescriptor instead')
+const MonitorEmailVerifiedRequest$json = {
+  '1': 'MonitorEmailVerifiedRequest',
+  '2': [
+    {'1': 'email', '3': 1, '4': 1, '5': 9, '10': 'email'},
+  ],
+};
+
+/// Descriptor for `MonitorEmailVerifiedRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List monitorEmailVerifiedRequestDescriptor =
+    $convert.base64Decode(
+        'ChtNb25pdG9yRW1haWxWZXJpZmllZFJlcXVlc3QSFAoFZW1haWwYASABKAlSBWVtYWls');
+
+@$core.Deprecated('Use monitorEmailVerifiedResponseDescriptor instead')
+const MonitorEmailVerifiedResponse$json = {
+  '1': 'MonitorEmailVerifiedResponse',
+  '2': [
+    {'1': 'verified', '3': 1, '4': 1, '5': 8, '10': 'verified'},
+  ],
+};
+
+/// Descriptor for `MonitorEmailVerifiedResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List monitorEmailVerifiedResponseDescriptor =
+    $convert.base64Decode(
+        'ChxNb25pdG9yRW1haWxWZXJpZmllZFJlc3BvbnNlEhoKCHZlcmlmaWVkGAEgASgIUgh2ZXJpZm'
+        'llZA==');

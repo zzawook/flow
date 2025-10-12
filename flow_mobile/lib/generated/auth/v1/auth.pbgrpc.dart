@@ -82,6 +82,13 @@ class AuthServiceClient extends $grpc.Client {
     return $createUnaryCall(_$checkEmailVerified, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.MonitorEmailVerifiedResponse> monitorEmailVerified(
+    $0.MonitorEmailVerifiedRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$monitorEmailVerified, request, options: options);
+  }
+
   // method descriptors
 
   static final _$checkUserExists =
@@ -117,6 +124,11 @@ class AuthServiceClient extends $grpc.Client {
       '/sg.flow.auth.v1.AuthService/CheckEmailVerified',
       ($0.CheckEmailVerifiedRequest value) => value.writeToBuffer(),
       $0.CheckEmailVerifiedResponse.fromBuffer);
+  static final _$monitorEmailVerified = $grpc.ClientMethod<
+          $0.MonitorEmailVerifiedRequest, $0.MonitorEmailVerifiedResponse>(
+      '/sg.flow.auth.v1.AuthService/MonitorEmailVerified',
+      ($0.MonitorEmailVerifiedRequest value) => value.writeToBuffer(),
+      $0.MonitorEmailVerifiedResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.auth.v1.AuthService')
@@ -180,6 +192,15 @@ abstract class AuthServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.CheckEmailVerifiedRequest.fromBuffer(value),
         ($0.CheckEmailVerifiedResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.MonitorEmailVerifiedRequest,
+            $0.MonitorEmailVerifiedResponse>(
+        'MonitorEmailVerified',
+        monitorEmailVerified_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.MonitorEmailVerifiedRequest.fromBuffer(value),
+        ($0.MonitorEmailVerifiedResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.CheckUserExistsResponse> checkUserExists_Pre(
@@ -241,4 +262,13 @@ abstract class AuthServiceBase extends $grpc.Service {
 
   $async.Future<$0.CheckEmailVerifiedResponse> checkEmailVerified(
       $grpc.ServiceCall call, $0.CheckEmailVerifiedRequest request);
+
+  $async.Future<$0.MonitorEmailVerifiedResponse> monitorEmailVerified_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.MonitorEmailVerifiedRequest> $request) async {
+    return monitorEmailVerified($call, await $request);
+  }
+
+  $async.Future<$0.MonitorEmailVerifiedResponse> monitorEmailVerified(
+      $grpc.ServiceCall call, $0.MonitorEmailVerifiedRequest request);
 }

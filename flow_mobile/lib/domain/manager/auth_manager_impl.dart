@@ -110,4 +110,12 @@ class AuthManagerImpl implements AuthManager {
       }
     }
   }
+  
+  @override
+  Future<bool> isEmailVerified(String email) {
+    final apiService = getIt<ApiService>();
+    return apiService.checkEmailVerified(email).then((response) {
+      return response.verified;
+    });
+  }
 }
