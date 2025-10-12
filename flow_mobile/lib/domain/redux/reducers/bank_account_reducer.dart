@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/entity/bank_account.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
+import 'package:flow_mobile/domain/redux/actions/demo_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/states/bank_account_state.dart';
 
@@ -39,6 +40,12 @@ BankAccountState bankAccountReducer(BankAccountState state, dynamic action) {
   }
   if (action is DeleteUserAction || action is ClearBankAccountStateAction) {
     return BankAccountState.initial();
+  }
+  if (action is SetDemoDataAction) {
+    return state.copyWith(bankAccounts: action.bankAccounts);
+  }
+  if (action is ClearDemoDataAction) {
+    return state.copyWith(bankAccounts: []);
   }
   return state;
 }

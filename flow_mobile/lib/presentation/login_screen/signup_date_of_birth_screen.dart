@@ -55,7 +55,7 @@ class _SignupDateOfBirthScreenState extends State<SignupDateOfBirthScreen> {
           children: [
             FlowTopBar(
               title: const Center(child: Text('')),
-              showBackButton: true,
+              showBackButton: false,
             ),
 
             const FlowSeparatorBox(height: 36),

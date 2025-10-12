@@ -1,4 +1,5 @@
 import 'package:flow_mobile/domain/entity/transaction.dart';
+import 'package:flow_mobile/domain/redux/actions/demo_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/states/transaction_state.dart';
@@ -9,6 +10,12 @@ TransactionState transactionReducer(
 ) {
   if (action is DeleteUserAction || action is ClearTransactionStateAction) {
     return TransactionState.initial();
+  }
+  if (action is SetDemoDataAction) {
+    return prevState.copyWith(transactions: action.transactions);
+  }
+  if (action is ClearDemoDataAction) {
+    return prevState.copyWith(transactions: []);
   }
   if (action is SetTransactionStateAction) {
     return action.transactionHistoryState;

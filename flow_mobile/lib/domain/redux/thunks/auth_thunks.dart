@@ -11,6 +11,7 @@ import 'package:flow_mobile/domain/manager/user_manager.dart';
 import 'package:flow_mobile/domain/redux/actions/auth_action.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flow_mobile/domain/redux/actions/card_actions.dart';
+import 'package:flow_mobile/domain/redux/actions/demo_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/notification_action.dart';
 import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
@@ -24,6 +25,7 @@ import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:flow_mobile/service/api_service/grpc_interceptor.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flow_mobile/utils/debug_config.dart';
+import 'package:flow_mobile/utils/demo_data_generator.dart';
 import 'package:flow_mobile/utils/test_data/bank_account_test_data.dart';
 import 'package:flow_mobile/utils/test_data/card_test_data.dart';
 import 'package:flow_mobile/utils/test_data/transaction_history_test_data.dart';
@@ -349,7 +351,37 @@ ThunkAction<FlowState> checkEmailVerifiedThunk() {
         store.state.authState.loginEmail ?? '',
       );
       if (emailVerifyResult.verified) {
-        nav.pushNamedAndRemoveUntil(AppRoutes.home);
+        // Check if this is a new signup (has signupName in auth state)
+        final isNewSignup =
+            store.state.authState.signupName != null &&
+            store.state.authState.signupName!.isNotEmpty;
+
+        if (isNewSignup) {
+          // Generate and dispatch demo data
+          final bankAccounts = DemoDataGenerator.generateBankAccounts();
+          final transactions = DemoDataGenerator.generateTransactions(
+            bankAccounts,
+          );
+          final cards = DemoDataGenerator.generateCards();
+          final recurringSpending =
+              DemoDataGenerator.generateRecurringSpending();
+
+          store.dispatch(
+            SetDemoDataAction(
+              transactions: transactions,
+              bankAccounts: bankAccounts,
+              cards: cards,
+              recurringSpending: recurringSpending,
+              isDemoMode: true,
+            ),
+          );
+
+          // Navigate to demo flow
+          nav.pushNamedAndRemoveUntil(AppRoutes.demoHome);
+        } else {
+          // Existing user login - go to home
+          nav.pushNamedAndRemoveUntil(AppRoutes.home);
+        }
       }
     } catch (error) {
       log('Error sending verification email: $error');

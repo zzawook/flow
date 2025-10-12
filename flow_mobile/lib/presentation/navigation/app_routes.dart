@@ -2,6 +2,8 @@ import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/entity/card.dart' as BankCard;
 import 'package:flow_mobile/domain/entity/recurring_spending.dart';
 import 'package:flow_mobile/domain/entity/transaction.dart';
+import 'package:flow_mobile/presentation/onboarding_demo/demo_flow_coordinator.dart';
+import 'package:flow_mobile/presentation/onboarding_demo/demo_screen_wrapper.dart';
 import 'package:flow_mobile/presentation/add_account_screen/add_account_screen.dart';
 import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
 import 'package:flow_mobile/presentation/card_detail_screen/card_detail_screen.dart';
@@ -96,6 +98,14 @@ class AppRoutes {
   static const bankAccountsSetting = '/bank_accounts/setting';
   static const accountSetting = '/account/setting';
   static const asset = '/asset';
+  
+  // Demo flow routes
+  static const demoHome = '/demo/home';
+  static const demoSpending1 = '/demo/spending/1';
+  static const demoSpending2 = '/demo/spending/2';
+  static const demoSpending3 = '/demo/spending/3';
+  static const demoCalendar = '/demo/calendar';
+  static const demoAsset = '/demo/asset';
 
   static Route<dynamic> generate(
     RouteSettings settings,
@@ -259,6 +269,26 @@ class AppRoutes {
         page = ManageBankAccountScreen(bankAccount: data);
         break;
 
+      // Demo flow cases
+      case demoHome:
+        page = _buildDemoHome();
+        break;
+      case demoSpending1:
+        page = _buildDemoSpending1();
+        break;
+      case demoSpending2:
+        page = _buildDemoSpending2();
+        break;
+      case demoSpending3:
+        page = _buildDemoSpending3();
+        break;
+      case demoCalendar:
+        page = _buildDemoCalendar();
+        break;
+      case demoAsset:
+        page = _buildDemoAsset();
+        break;
+
       default:
         page = const FlowHomeScreen();
     }
@@ -277,6 +307,104 @@ class AppRoutes {
       ),
       transitionsBuilder: (ctx, anim, sec, child) =>
           AppTransitions.build(transition, anim, child),
+    );
+  }
+
+  // Helper methods to build demo screens
+  static Widget _buildDemoHome() {
+    return Builder(
+      builder: (context) => DemoScreenWrapper(
+        interactiveZones: DemoFlowCoordinator.getHomeScreenZones(
+          context,
+          () => DemoFlowCoordinator.navigateToNextDemoScreen(
+            context,
+            demoSpending1,
+          ),
+        ),
+        child: const FlowHomeScreen(),
+      ),
+    );
+  }
+
+  static Widget _buildDemoSpending1() {
+    return Builder(
+      builder: (context) => DemoScreenWrapper(
+        initialScrollOffset: 0.0,
+        interactiveZones: DemoFlowCoordinator.getSpendingScreenStep1Zones(
+          context,
+          () => DemoFlowCoordinator.navigateToNextDemoScreen(
+            context,
+            demoSpending2,
+          ),
+        ),
+        child: const SpendingScreen(),
+      ),
+    );
+  }
+
+  static Widget _buildDemoSpending2() {
+    return Builder(
+      builder: (context) => DemoScreenWrapper(
+        initialScrollOffset: 400.0,
+        interactiveZones: DemoFlowCoordinator.getSpendingScreenStep2Zones(
+          context,
+          () => DemoFlowCoordinator.navigateToNextDemoScreen(
+            context,
+            demoSpending3,
+          ),
+        ),
+        child: const SpendingScreen(),
+      ),
+    );
+  }
+
+  static Widget _buildDemoSpending3() {
+    return Builder(
+      builder: (context) => DemoScreenWrapper(
+        initialScrollOffset: 800.0,
+        interactiveZones: DemoFlowCoordinator.getSpendingScreenStep3Zones(
+          context,
+          () => DemoFlowCoordinator.navigateToNextDemoScreen(
+            context,
+            demoCalendar,
+          ),
+        ),
+        child: const SpendingScreen(),
+      ),
+    );
+  }
+
+  static Widget _buildDemoCalendar() {
+    final now = DateTime.now();
+    return Builder(
+      builder: (context) => DemoScreenWrapper(
+        interactiveZones: DemoFlowCoordinator.getSpendingCalendarZones(
+          context,
+          () =>
+              DemoFlowCoordinator.navigateToNextDemoScreen(context, demoAsset),
+        ),
+        child: SpendingCalendarScreen(
+          displayedMonth: DateTime(now.year, now.month),
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildDemoAsset() {
+    return Builder(
+      builder: (context) {
+        // After viewing asset screen for a moment, automatically navigate to DOB screen
+        Future.delayed(const Duration(seconds: 3), () {
+          if (context.mounted) {
+            DemoFlowCoordinator.completeDemoAndNavigateToDOB(context);
+          }
+        });
+
+        return DemoScreenWrapper(
+          interactiveZones: const [], // No interactive zones, just wait
+          child: const AssetScreen(),
+        );
+      },
     );
   }
 }

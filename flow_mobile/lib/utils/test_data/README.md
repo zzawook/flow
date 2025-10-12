@@ -200,3 +200,4 @@ To add more test scenarios:
 - **QA Testing**: Use `edgeCases` mode for comprehensive QA testing
 - **Demo Mode**: Use `multipleItems` for demos when backend is unavailable
 
+

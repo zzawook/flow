@@ -1,3 +1,4 @@
+import 'package:flow_mobile/domain/redux/actions/demo_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/spending_screen_actions.dart';
 import 'package:flow_mobile/domain/redux/states/spending_screen_state.dart';
 import 'package:flow_mobile/domain/entity/recurring_spending.dart';
@@ -62,6 +63,35 @@ SpendingScreenState spendingScreenReducer(
     );
   } else if (action is SetSpendingMedianErrorAction) {
     return state.copyWith(isLoadingMedian: false, medianError: action.error);
+  }
+
+  // Handle demo data actions
+  if (action is SetDemoDataAction) {
+    // Group recurring spending by month
+    final Map<String, List<RecurringSpending>> groupedByMonth = {};
+    
+    for (final recurring in action.recurringSpending) {
+      final monthKey =
+          '${recurring.year}-${recurring.month.toString().padLeft(2, '0')}';
+      if (!groupedByMonth.containsKey(monthKey)) {
+        groupedByMonth[monthKey] = [];
+      }
+      groupedByMonth[monthKey]!.add(recurring);
+    }
+    
+    return state.copyWith(
+      recurringByMonth: groupedByMonth,
+      isLoadingRecurring: false,
+      recurringLastFetched: DateTime.now(),
+    );
+  }
+  
+  if (action is ClearDemoDataAction) {
+    return state.copyWith(
+      recurringByMonth: {},
+      isLoadingRecurring: false,
+      recurringLastFetched: null,
+    );
   }
 
   // Handle existing actions

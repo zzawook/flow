@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/entity/card.dart';
 import 'package:flow_mobile/domain/redux/actions/card_actions.dart';
+import 'package:flow_mobile/domain/redux/actions/demo_actions.dart';
 import 'package:flow_mobile/domain/redux/states/card_state.dart';
 
 CardState cardReducer(CardState prevState, dynamic action) {
@@ -41,6 +42,12 @@ CardState cardReducer(CardState prevState, dynamic action) {
       return card;
     }).toList();
     return prevState.copyWith(cards: updatedCards);
+  }
+  if (action is SetDemoDataAction) {
+    return prevState.copyWith(cards: action.cards);
+  }
+  if (action is ClearDemoDataAction) {
+    return prevState.copyWith(cards: []);
   }
   return prevState;
 }
