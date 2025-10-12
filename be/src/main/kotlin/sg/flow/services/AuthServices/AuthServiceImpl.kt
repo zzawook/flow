@@ -60,7 +60,7 @@ class AuthServiceImpl(
                 // POSSIBLY IMPLEMENT SINGPASS INTEGRATION
                 var passwordEncoded: String
                 try {
-passwordEncoded = passwordEncoder.encode(password)
+                    passwordEncoded = passwordEncoder.encode(password)
 
                 } catch (e: Exception) {
                     throw TokenGenerationException("Failed to encode given password")
@@ -134,8 +134,17 @@ passwordEncoded = passwordEncoder.encode(password)
             request: AccessTokenRefreshRequest
     ): TokenSet? =
             withContext(Dispatchers.IO) {
-                tokenService.getAccessTokenByRefreshToken(request.refreshToken)
+                val token = tokenService.getAccessTokenByRefreshToken(request.refreshToken)
+
+                token
             }
+
+    suspend fun getIsEmailVerifiedWithAccessToken(accessToken: String): Boolean {
+        val userId = tokenService.getUserDetailByAccessToken(accessToken)?.userId ?: -1
+        val user = userRepository.getUserProfile(userId)
+        val emailVerified = userRepository.fetchIsUserEmailVerified(user.email)
+        return emailVerified
+    }
 
     override suspend fun checkUserExists(email: String): Boolean {
         val result = withContext(Dispatchers.IO) {
@@ -208,6 +217,10 @@ passwordEncoded = passwordEncoder.encode(password)
     }
 
     override suspend fun checkEmailVerified(email: String): Boolean {
+        return userService.isUserVerified(email)
+    }
+
+    override suspend fun monitorEmailVerified(email: String): Boolean {
         val timeout = 3.minutes
 
         if (userService.isUserVerified(email)) {

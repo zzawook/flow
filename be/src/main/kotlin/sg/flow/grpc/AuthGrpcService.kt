@@ -10,6 +10,8 @@ import sg.flow.auth.v1.CheckEmailVerifiedRequest
 import sg.flow.auth.v1.CheckEmailVerifiedResponse
 import sg.flow.auth.v1.CheckUserExistsRequest
 import sg.flow.auth.v1.CheckUserExistsResponse
+import sg.flow.auth.v1.MonitorEmailVerifiedRequest
+import sg.flow.auth.v1.MonitorEmailVerifiedResponse
 import sg.flow.auth.v1.SendVerificationEmailRequest
 import sg.flow.auth.v1.SendVerificationEmailResponse
 import sg.flow.auth.v1.SignInRequest
@@ -97,6 +99,7 @@ class AuthGrpcService(
                 }
 
 
+
                 val token = authService.getAccessTokenByRefreshToken(
                         sg.flow.models.auth.AccessTokenRefreshRequest(request.refreshToken)
                 ) ?: throw Status.NOT_FOUND
@@ -112,5 +115,9 @@ class AuthGrpcService(
 
         override suspend fun checkEmailVerified(request: CheckEmailVerifiedRequest): CheckEmailVerifiedResponse {
                 return CheckEmailVerifiedResponse.newBuilder().setVerified(authService.checkEmailVerified(request.email)).build()
+        }
+
+        override suspend fun monitorEmailVerified(request: MonitorEmailVerifiedRequest): MonitorEmailVerifiedResponse {
+                return MonitorEmailVerifiedResponse.newBuilder().setVerified(authService.monitorEmailVerified((request.email))).build()
         }
 }

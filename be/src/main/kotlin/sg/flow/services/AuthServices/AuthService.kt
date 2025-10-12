@@ -16,4 +16,5 @@ interface AuthService {
     suspend fun sendVerificationEmail(email: String): Boolean
     suspend fun verifyEmail(token: String): Boolean
     suspend fun checkEmailVerified(email: String): Boolean
+    suspend fun monitorEmailVerified(email: String): Boolean
 }
