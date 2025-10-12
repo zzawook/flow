@@ -21,6 +21,8 @@ class TransactionHistoryTestData {
     'Telecommunication',
     'Health',
     'Grocery',
+    'Others',
+    'Not Identifiable'
   ];
 
   /// Merchant names for realistic transactions
@@ -93,6 +95,13 @@ class TransactionHistoryTestData {
       'Sheng Siong',
       'Prime Supermarket'
     ],
+    'Others': [
+      'Charity Donation',
+      'Petrol Station',
+      'Bookstore',
+      'Stationery Shop',
+    ],
+    'Not Identifiable': ['COFFEE', 'TRANSFER THANK YOU', 'POS PURCHASE'],
   };
 
   /// Get a single transaction per month for the last 6 months

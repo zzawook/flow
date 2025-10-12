@@ -143,4 +143,14 @@ class TransactionState {
       return transaction.bankAccount.accountNumber == card.cardNumber;
     }).toList();
   }
+
+  List<Transaction> getUncategorizedTransactions(DateTime month) {
+    return transactions.where((transaction) {
+      final transactionDate = transaction.date;
+      return transactionDate.year == month.year &&
+          transactionDate.month == month.month &&
+          (transaction.category.replaceAll(" ", "").toLowerCase() ==
+              'notidentifiable');
+    }).toList();
+  }
 }

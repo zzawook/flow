@@ -6,6 +6,9 @@ class LogoService {
   }
 
   String getCategoryIcon(String category, bool isDark) {
+    if (category.replaceAll(" ", "").toLowerCase() == "notidentifiable") {
+      return "assets/icons/category_icons/not_identifiable${isDark ? '_dark' : ''}.png";
+    }
     return "assets/icons/category_icons/${category.toLowerCase()}${isDark ? '_dark' : '_dark'}.png";
   }
 

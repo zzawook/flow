@@ -1,5 +1,6 @@
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/thunks/spending_screen_thunks.dart';
+import 'package:flow_mobile/presentation/category_classification_screen/category_classification_screen.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
@@ -15,6 +16,7 @@ import 'package:flow_mobile/presentation/spending_screen/components/spending_by_
 import 'package:flow_mobile/presentation/spending_screen/components/spending_overview_card/spending_overview_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/spending_trend_card/spending_trend_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/components/top_spending_cluster_card/top_spending_cluster_card.dart';
+import 'package:flow_mobile/presentation/spending_screen/components/user_category_classification_card/user_category_classification_card.dart';
 import 'package:flow_mobile/presentation/spending_screen/spending_screen_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -95,6 +97,11 @@ class _SpendingScreenState extends State<SpendingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const FlowMainTopBar(),
+
+                        const UserCategoryClassificationCard(),
+                        const FlowSeparatorBox(
+                          height: SpendingScreenStyles.sectionSpacing,
+                        ),
 
                         // Monthly overview
                         const MonthlySpendingOverview(),

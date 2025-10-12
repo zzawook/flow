@@ -12,10 +12,7 @@ class SpendingCategoryUtil {
     "Shopping": {"color": "#C2185B"}, // Pink 700
     "Utilities": {"color": "#E64A19"}, // Deep Orange 600
     "Health": {"color": "#00ACC1"}, // Cyan 600
-    "Education": {"color": "#303F9F"}, // Indigo 700
     "Telecommunication": {"color": "#1976D2"}, // Blue 700
-    "Finance": {"color": "#455A64"}, // Blue Grey 700
-    "Salary": {"color": "#9E7C0C"}, // Dark Gold
     "Analyzing": {"color": "#757575"}, // Grey 600
     "Not Identifiable": {"color": "#9E9E9E"}, // Grey 500
   };

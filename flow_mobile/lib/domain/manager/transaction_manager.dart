@@ -43,4 +43,8 @@ abstract class TransactionManager {
   Future<List<Transaction>> fetchTransactionsByIdsFromRemote(
     List<String> idsToFetch,
   );
+
+  Future<List<Transaction>> getUncategorizedTransactions(
+    DateTime month
+  );
 }

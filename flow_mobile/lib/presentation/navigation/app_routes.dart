@@ -5,6 +5,8 @@ import 'package:flow_mobile/domain/entity/transaction.dart';
 import 'package:flow_mobile/presentation/add_account_screen/add_account_screen.dart';
 import 'package:flow_mobile/presentation/asset_screen/asset_screen.dart';
 import 'package:flow_mobile/presentation/card_detail_screen/card_detail_screen.dart';
+import 'package:flow_mobile/presentation/category_classification_screen/category_classification_screen.dart';
+import 'package:flow_mobile/presentation/category_classification_screen/category_classification_success_screen.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/all_link_success_screen.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen.dart';
 import 'package:flow_mobile/presentation/link_bank_screen/link_bank_screen_argument.dart';
@@ -96,6 +98,9 @@ class AppRoutes {
   static const bankAccountsSetting = '/bank_accounts/setting';
   static const accountSetting = '/account/setting';
   static const asset = '/asset';
+  static const categoryClassification = '/category_classification';
+  static const categoryClassificationSuccess =
+      '/category_classification/success';
 
   static Route<dynamic> generate(
     RouteSettings settings,
@@ -258,6 +263,12 @@ class AppRoutes {
       case bankAccountSetting:
         final data = args!.extraData as BankAccount;
         page = ManageBankAccountScreen(bankAccount: data);
+        break;
+      case categoryClassification:
+        page = const CategoryClassificationScreen();
+        break;
+      case categoryClassificationSuccess:
+        page = const CategoryClassificationSuccessScreen();
         break;
 
       default:

@@ -24,12 +24,15 @@ class FlowButtonState extends State<FlowButton> {
       onTapCancel: () => setState(() => _pressed = false),
       onTap:
           () => {
-            widget.onPressed(),
+            
             setState(() => _pressed = true),
             Timer(
               Duration(milliseconds: 50),
-              () => setState(() => _pressed = false),
+              () {
+          if (mounted) setState(() => _pressed = false);
+        },
             ),
+        widget.onPressed(),
           },
       child: AnimatedScale(
         scale: _pressed ? 0.99 : 1.0,

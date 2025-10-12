@@ -368,4 +368,15 @@ class TransactionManagerImpl implements TransactionManager {
           return List<Transaction>.empty();
         });
   }
+  
+  @override
+  Future<List<Transaction>> getUncategorizedTransactions(DateTime month) {
+    return Future.value(
+      _transactionList.where((element) {
+        return DateTimeUtil.isSameMonth(element.date, month) &&
+            (element.category.replaceAll(" ", "").toLowerCase() ==
+                'notidentifiable');
+      }).toList(),
+    );
+  }
 }

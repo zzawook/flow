@@ -107,7 +107,7 @@ enum UserProfileTestMode {
 }
 
 class DebugConfig {
-  static const bool isDebugMode = false;
+  static const bool isDebugMode = true;
 
   static const RecurringSpendingTestMode recurringSpendingMode =
       RecurringSpendingTestMode.multipleItems;
