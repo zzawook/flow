@@ -1,7 +1,8 @@
 class AuthState {
   final bool isAuthenticated;
   final bool isEmailVerified;
-  
+  final bool isConstantUserFieldSubmitted;
+
   final String? loginEmail;
   final String? loginPassword;
   final String? loginError;
@@ -16,6 +17,7 @@ class AuthState {
     this.loginPassword,
     this.isAuthenticated = false,
     this.isEmailVerified = false,
+    this.isConstantUserFieldSubmitted = false,
     this.loginError,
     this.signupName,
     this.signupPassword,
@@ -28,6 +30,7 @@ class AuthState {
     String? loginPassword,
     bool? isAuthenticated,
     bool? isEmailVerified,
+    bool? isConstantUserFieldSubmitted,
     String? loginError,
     String? signupName,
     String? signupPassword,
@@ -38,6 +41,8 @@ class AuthState {
       loginEmail: loginEmail ?? this.loginEmail,
       loginPassword: loginPassword ?? this.loginPassword,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
+      isConstantUserFieldSubmitted:
+          isConstantUserFieldSubmitted ?? this.isConstantUserFieldSubmitted,
       loginError: loginError ?? this.loginError,
       signupName: signupName ?? this.signupName,
       signupPassword: signupPassword ?? this.signupPassword,
@@ -49,7 +54,7 @@ class AuthState {
 
   @override
   String toString() {
-    return 'AuthState{loginEmail: $loginEmail, loginPassword: $loginPassword, isAuthenticated: $isAuthenticated, loginError: $loginError, signupName: $signupName, signupPassword: $signupPassword, signupEmail: $signupEmail, signupDateOfBirth: $signupDateOfBirth, isEmailVerified: $isEmailVerified}';
+    return 'AuthState{loginEmail: $loginEmail, loginPassword: $loginPassword, isAuthenticated: $isAuthenticated, loginError: $loginError, signupName: $signupName, signupPassword: $signupPassword, signupEmail: $signupEmail, signupDateOfBirth: $signupDateOfBirth, isEmailVerified: $isEmailVerified, isConstantUserFieldSubmitted: $isConstantUserFieldSubmitted}';
   }
 
   factory AuthState.initial() {
@@ -63,6 +68,7 @@ class AuthState {
       signupEmail: null,
       signupDateOfBirth: null,
       isEmailVerified: false,
+      isConstantUserFieldSubmitted: false,
     );
   }
 }

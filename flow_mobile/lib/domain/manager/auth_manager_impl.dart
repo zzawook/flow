@@ -39,7 +39,6 @@ class AuthManagerImpl implements AuthManager {
 
   @override
   Future<String?> getAndSaveAccessTokenFromRemote(String refreshToken) async {
-    
     final apiService = getIt<ApiService>();
     TokenSet tokenSet;
     try {
@@ -110,12 +109,20 @@ class AuthManagerImpl implements AuthManager {
       }
     }
   }
-  
+
   @override
   Future<bool> isEmailVerified(String email) {
     final apiService = getIt<ApiService>();
     return apiService.checkEmailVerified(email).then((response) {
       return response.verified;
+    });
+  }
+
+  @override
+  Future<bool> isConstantUserFieldSubmitted() {
+    final apiService = getIt<ApiService>();
+    return apiService.checkUserCanLinkBank().then((response) {
+      return response.canLink;
     });
   }
 }

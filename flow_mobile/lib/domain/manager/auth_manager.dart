@@ -12,4 +12,6 @@ abstract class AuthManager {
   Future<bool> attemptTokenValidation();
 
   Future<bool> isEmailVerified(String email);
+
+  Future<bool> isConstantUserFieldSubmitted();
 }

@@ -54,26 +54,25 @@ class FlowStateInitializer {
     final usermanager = getIt<UserManager>();
 
     final credentialCheck = await authManager.attemptTokenValidation();
-    if (credentialCheck) {
-      final accessToken = await authManager.getAccessTokenFromLocal();
-      if (accessToken != null) {
-        GrpcInterceptor.setAccessToken(accessToken);
-      }
-      final loginEmail = await usermanager.getUser().then(
-        (user) => user?.email ?? '',
-      );
-      final isEmailVerified = await authManager.isEmailVerified(loginEmail);
-      if (!isEmailVerified) {
-        return AuthState(
-          isAuthenticated: true,
-          isEmailVerified: false,
-          loginEmail: loginEmail,
-        );
-      }
-      return AuthState(isAuthenticated: true, isEmailVerified: true);
-    } else {
+    if (!credentialCheck) {
       return AuthState(isAuthenticated: false, isEmailVerified: false);
     }
+    final accessToken = await authManager.getAccessTokenFromLocal();
+    if (accessToken != null) {
+      GrpcInterceptor.setAccessToken(accessToken);
+    }
+    final loginEmail = await usermanager.getUser().then(
+      (user) => user?.email ?? '',
+    );
+    final isEmailVerified = await authManager.isEmailVerified(loginEmail);
+    final isConstantUserFieldSubmitted = await authManager
+        .isConstantUserFieldSubmitted();
+    return AuthState(
+      isAuthenticated: true,
+      isEmailVerified: isEmailVerified,
+      isConstantUserFieldSubmitted: isConstantUserFieldSubmitted,
+      loginEmail: loginEmail,
+    );
   }
 
   static Future<UserState> getUserState() async {

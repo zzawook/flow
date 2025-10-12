@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/thunks/auth_thunks.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
+import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/shared/flow_cta_button.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
 import 'package:flow_mobile/presentation/shared/flow_separator_box.dart';
 import 'package:flow_mobile/presentation/shared/flow_top_bar.dart';
+import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -77,17 +80,17 @@ class _EmailValidationScreenState extends State<EmailValidationScreen>
                 title: const Center(child: Text('')),
                 showBackButton: widget.showBackButton,
               ),
-              const FlowSeparatorBox(height: 50),
+              const FlowSeparatorBox(height: 48),
               Text(
                 "Seems you're new here!",
                 style: Theme.of(context).textTheme.displayLarge,
               ),
-              const FlowSeparatorBox(height: 30),
+              const FlowSeparatorBox(height: 18),
               Text(
                 "Check your email to verify your account.",
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const FlowSeparatorBox(height: 15),
+              const FlowSeparatorBox(height: 36),
               Row(
                 children: [
                   Expanded(
@@ -104,6 +107,34 @@ class _EmailValidationScreenState extends State<EmailValidationScreen>
                     ),
                   ),
                 ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FlowCTAButton(
+                      onPressed: () {
+                        final navService = getIt<NavigationService>();
+                        navService.pushNamedAndRemoveUntil(AppRoutes.welcome);
+                      },
+                      text: "Sign in/up with a different email",
+                      color: resendCooldown > 0
+                          ? Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.12)
+                          : Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              const FlowSeparatorBox(height: 10),
+              Center(
+                child: Text(
+                  "Your email: ${StoreProvider.of<FlowState>(context, listen: true).state.authState.loginEmail}",
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
