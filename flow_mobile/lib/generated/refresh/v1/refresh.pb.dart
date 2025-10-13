@@ -19,7 +19,261 @@ import '../../common/v1/bank.pb.dart' as $1;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
-/// ── Requests ──
+class UpdateLoginMemoForBankRequest extends $pb.GeneratedMessage {
+  factory UpdateLoginMemoForBankRequest({
+    $fixnum.Int64? institutionId,
+    $core.String? loginMemo,
+  }) {
+    final result = create();
+    if (institutionId != null) result.institutionId = institutionId;
+    if (loginMemo != null) result.loginMemo = loginMemo;
+    return result;
+  }
+
+  UpdateLoginMemoForBankRequest._();
+
+  factory UpdateLoginMemoForBankRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory UpdateLoginMemoForBankRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'UpdateLoginMemoForBankRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'institutionId')
+    ..aOS(2, _omitFieldNames ? '' : 'loginMemo')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateLoginMemoForBankRequest clone() =>
+      UpdateLoginMemoForBankRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateLoginMemoForBankRequest copyWith(
+          void Function(UpdateLoginMemoForBankRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as UpdateLoginMemoForBankRequest))
+          as UpdateLoginMemoForBankRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static UpdateLoginMemoForBankRequest create() =>
+      UpdateLoginMemoForBankRequest._();
+  @$core.override
+  UpdateLoginMemoForBankRequest createEmptyInstance() => create();
+  static $pb.PbList<UpdateLoginMemoForBankRequest> createRepeated() =>
+      $pb.PbList<UpdateLoginMemoForBankRequest>();
+  @$core.pragma('dart2js:noInline')
+  static UpdateLoginMemoForBankRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<UpdateLoginMemoForBankRequest>(create);
+  static UpdateLoginMemoForBankRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get institutionId => $_getI64(0);
+  @$pb.TagNumber(1)
+  set institutionId($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasInstitutionId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearInstitutionId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get loginMemo => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set loginMemo($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasLoginMemo() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearLoginMemo() => $_clearField(2);
+}
+
+class UpdateLoginMemoForBankResponse extends $pb.GeneratedMessage {
+  factory UpdateLoginMemoForBankResponse({
+    $core.bool? success,
+  }) {
+    final result = create();
+    if (success != null) result.success = success;
+    return result;
+  }
+
+  UpdateLoginMemoForBankResponse._();
+
+  factory UpdateLoginMemoForBankResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory UpdateLoginMemoForBankResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'UpdateLoginMemoForBankResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateLoginMemoForBankResponse clone() =>
+      UpdateLoginMemoForBankResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateLoginMemoForBankResponse copyWith(
+          void Function(UpdateLoginMemoForBankResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as UpdateLoginMemoForBankResponse))
+          as UpdateLoginMemoForBankResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static UpdateLoginMemoForBankResponse create() =>
+      UpdateLoginMemoForBankResponse._();
+  @$core.override
+  UpdateLoginMemoForBankResponse createEmptyInstance() => create();
+  static $pb.PbList<UpdateLoginMemoForBankResponse> createRepeated() =>
+      $pb.PbList<UpdateLoginMemoForBankResponse>();
+  @$core.pragma('dart2js:noInline')
+  static UpdateLoginMemoForBankResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<UpdateLoginMemoForBankResponse>(create);
+  static UpdateLoginMemoForBankResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => $_clearField(1);
+}
+
+class GetLoginMemoForBankRequest extends $pb.GeneratedMessage {
+  factory GetLoginMemoForBankRequest({
+    $fixnum.Int64? institutionId,
+  }) {
+    final result = create();
+    if (institutionId != null) result.institutionId = institutionId;
+    return result;
+  }
+
+  GetLoginMemoForBankRequest._();
+
+  factory GetLoginMemoForBankRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetLoginMemoForBankRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetLoginMemoForBankRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'institutionId')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLoginMemoForBankRequest clone() =>
+      GetLoginMemoForBankRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLoginMemoForBankRequest copyWith(
+          void Function(GetLoginMemoForBankRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetLoginMemoForBankRequest))
+          as GetLoginMemoForBankRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetLoginMemoForBankRequest create() => GetLoginMemoForBankRequest._();
+  @$core.override
+  GetLoginMemoForBankRequest createEmptyInstance() => create();
+  static $pb.PbList<GetLoginMemoForBankRequest> createRepeated() =>
+      $pb.PbList<GetLoginMemoForBankRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetLoginMemoForBankRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetLoginMemoForBankRequest>(create);
+  static GetLoginMemoForBankRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get institutionId => $_getI64(0);
+  @$pb.TagNumber(1)
+  set institutionId($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasInstitutionId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearInstitutionId() => $_clearField(1);
+}
+
+class GetLoginMemoForBankResponse extends $pb.GeneratedMessage {
+  factory GetLoginMemoForBankResponse({
+    $core.String? loginMemo,
+  }) {
+    final result = create();
+    if (loginMemo != null) result.loginMemo = loginMemo;
+    return result;
+  }
+
+  GetLoginMemoForBankResponse._();
+
+  factory GetLoginMemoForBankResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetLoginMemoForBankResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetLoginMemoForBankResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'loginMemo')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLoginMemoForBankResponse clone() =>
+      GetLoginMemoForBankResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetLoginMemoForBankResponse copyWith(
+          void Function(GetLoginMemoForBankResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as GetLoginMemoForBankResponse))
+          as GetLoginMemoForBankResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetLoginMemoForBankResponse create() =>
+      GetLoginMemoForBankResponse._();
+  @$core.override
+  GetLoginMemoForBankResponse createEmptyInstance() => create();
+  static $pb.PbList<GetLoginMemoForBankResponse> createRepeated() =>
+      $pb.PbList<GetLoginMemoForBankResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetLoginMemoForBankResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetLoginMemoForBankResponse>(create);
+  static GetLoginMemoForBankResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get loginMemo => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set loginMemo($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasLoginMemo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLoginMemo() => $_clearField(1);
+}
+
 class CanLinkBankRequest extends $pb.GeneratedMessage {
   factory CanLinkBankRequest() => create();
 

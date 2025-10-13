@@ -249,4 +249,18 @@ class ApiService {
       isGenderMale,
     );
   }
+
+  Future<GetLoginMemoForBankResponse> getLoginMemoForBank(Bank bank) async {
+    return await _refreshApiService.getLoginMemoForBank(bank.bankId);
+  }
+
+  Future<UpdateLoginMemoForBankResponse> updateLoginMemoForBank(
+    Bank bank,
+    String newMemo,
+  ) async {
+    return await _refreshApiService.updateLoginMemoForBank(
+      bank.bankId,
+      newMemo,
+    );
+  }
 }

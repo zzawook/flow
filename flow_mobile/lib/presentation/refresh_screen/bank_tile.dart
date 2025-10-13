@@ -89,7 +89,7 @@ class _BankTileState extends State<BankTile> {
                       ),
                       widget.shouldDisplayAccountDetails
                           ? Text(
-                              "(${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''})",
+                              " (${widget.bankAccountNames.length} account${widget.bankAccountNames.length > 1 ? 's' : ''})",
                               style: Theme.of(context).textTheme.bodyLarge
                             )
                           : Container(),

@@ -95,4 +95,34 @@ class RefreshApiService {
       throw Exception('Failed to check if user can link bank: $e');
     }
   }
+
+  Future<GetLoginMemoForBankResponse> getLoginMemoForBank(
+    int institutionId,
+  ) async {
+    final request = GetLoginMemoForBankRequest(
+      institutionId: fx.Int64(institutionId),
+    );
+    try {
+      final response = await _channel.getLoginMemoForBank(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to get login memo for bank: $e');
+    }
+  }
+
+  Future<UpdateLoginMemoForBankResponse> updateLoginMemoForBank(
+    int bankId,
+    String newMemo,
+  ) async {
+    final request = UpdateLoginMemoForBankRequest(
+      institutionId: fx.Int64(bankId),
+      loginMemo: newMemo,
+    );
+    try {
+      final response = await _channel.updateLoginMemoForBank(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to update login memo for bank: $e');
+    }
+  }
 }

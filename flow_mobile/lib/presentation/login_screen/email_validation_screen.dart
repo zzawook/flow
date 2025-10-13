@@ -108,6 +108,7 @@ class _EmailValidationScreenState extends State<EmailValidationScreen>
                   ),
                 ],
               ),
+              const FlowSeparatorBox(height: 12),
               Row(
                 children: [
                   Expanded(
@@ -116,12 +117,10 @@ class _EmailValidationScreenState extends State<EmailValidationScreen>
                         final navService = getIt<NavigationService>();
                         navService.pushNamedAndRemoveUntil(AppRoutes.welcome);
                       },
-                      text: "Sign in/up with a different email",
-                      color: resendCooldown > 0
-                          ? Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withOpacity(0.12)
-                          : Theme.of(context).primaryColor,
+                      text: "Use a different email",
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.3)
                     ),
                   ),
                 ],

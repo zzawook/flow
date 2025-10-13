@@ -7,12 +7,15 @@ class RefreshScreenState {
   String? linkStartTimestamp;
   Bank? linkingBank;
 
+  Map<String, String> bankLoginMemo = {};
+
   RefreshScreenState({
     required this.banksToRefresh,
     this.banksOnLink = const [],
     this.isLinking = false,
     this.linkStartTimestamp,
     this.linkingBank,
+    this.bankLoginMemo = const {},
   });
 
   RefreshScreenState.initial()
@@ -20,7 +23,8 @@ class RefreshScreenState {
       banksOnLink = const [],
       isLinking = false,
       linkingBank = null,
-      linkStartTimestamp = null;
+      linkStartTimestamp = null,
+      bankLoginMemo = const {};
 
   RefreshScreenState copyWith({
     List<Bank>? banksToRefresh,
@@ -28,6 +32,7 @@ class RefreshScreenState {
     bool? isLinking,
     Bank? linkingBank,
     String? linkStartTimestamp,
+    Map<String, String>? bankLoginMemo,
   }) {
     return RefreshScreenState(
       banksToRefresh: banksToRefresh ?? this.banksToRefresh,
@@ -35,12 +40,13 @@ class RefreshScreenState {
       isLinking: isLinking ?? this.isLinking,
       linkingBank: linkingBank ?? this.linkingBank,
       linkStartTimestamp: linkStartTimestamp ?? this.linkStartTimestamp,
+      bankLoginMemo: bankLoginMemo ?? this.bankLoginMemo,
     );
   }
 
   @override
   String toString() {
-    return 'RefreshScreenState{banksToRefresh: $banksToRefresh, banksOnLink: $banksOnLink, isLinking: $isLinking, linkingBank: $linkingBank, linkStartTimestamp: $linkStartTimestamp}';
+    return 'RefreshScreenState{banksToRefresh: $banksToRefresh, banksOnLink: $banksOnLink, isLinking: $isLinking, linkingBank: $linkingBank, linkStartTimestamp: $linkStartTimestamp, bankLoginMemo: $bankLoginMemo}';
   }
 
   @override
@@ -52,7 +58,8 @@ class RefreshScreenState {
         other.banksOnLink == banksOnLink &&
         other.isLinking == isLinking &&
         other.linkingBank == linkingBank &&
-        other.linkStartTimestamp == linkStartTimestamp;
+        other.linkStartTimestamp == linkStartTimestamp &&
+        other.bankLoginMemo == bankLoginMemo;
   }
 
   @override
@@ -61,5 +68,6 @@ class RefreshScreenState {
       banksOnLink.hashCode ^
       isLinking.hashCode ^
       (linkingBank?.hashCode ?? 0) ^
-      (linkStartTimestamp?.hashCode ?? 0);
+      (linkStartTimestamp?.hashCode ?? 0) ^
+      bankLoginMemo.hashCode;
 }

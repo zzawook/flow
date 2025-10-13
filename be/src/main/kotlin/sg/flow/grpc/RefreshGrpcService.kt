@@ -17,18 +17,24 @@ import sg.flow.refresh.v1.GetDataRetrievalResultRequest
 import sg.flow.refresh.v1.GetDataRetrievalResultResponse
 import sg.flow.refresh.v1.GetInstitutionAuthenticationResultRequest
 import sg.flow.refresh.v1.GetInstitutionAuthenticationResultResponse
+import sg.flow.refresh.v1.GetLoginMemoForBankRequest
+import sg.flow.refresh.v1.GetLoginMemoForBankResponse
 import sg.flow.refresh.v1.GetRefreshUrlRequest
 import sg.flow.refresh.v1.GetRefreshUrlResponse
 import sg.flow.refresh.v1.GetRelinkUrlRequest
 import sg.flow.refresh.v1.GetRelinkUrlResponse
 import sg.flow.refresh.v1.RefreshServiceGrpcKt
+import sg.flow.refresh.v1.UpdateLoginMemoForBankRequest
+import sg.flow.refresh.v1.UpdateLoginMemoForBankResponse
 import sg.flow.services.BankQueryServices.FinverseQueryService.FinverseQueryService
+import sg.flow.services.LoginMemoServices.LoginMemoService
 import sg.flow.services.UserServices.UserService
 
 @GrpcService
 class RefreshGrpcService(
     private val finverseQueryService: FinverseQueryService,
-    private val userService : UserService
+    private val userService : UserService,
+    private val loginMemoService: LoginMemoService
 ) : RefreshServiceGrpcKt.RefreshServiceCoroutineImplBase() {
 
     private final val ALREADY_HAS_RUNNING_SESSION_MESSAGE = "ALREADY HAS RUNNING REFRESH SESSION"
@@ -155,4 +161,17 @@ class RefreshGrpcService(
         return CanLinkBankResponse.newBuilder().setCanLink(result).build()
     }
 
+    override suspend fun getLoginMemoForBank(request: GetLoginMemoForBankRequest): GetLoginMemoForBankResponse {
+        val userId = currentUserId()
+
+        val result = loginMemoService.getLoginMemo(userId, request.institutionId.toString())
+        return GetLoginMemoForBankResponse.newBuilder().setLoginMemo(result).build()
+    }
+
+    override suspend fun updateLoginMemoForBank(request: UpdateLoginMemoForBankRequest): UpdateLoginMemoForBankResponse {
+        val userId = currentUserId()
+
+        val result = loginMemoService.setLoginMemo(userId, request.institutionId.toString(), request.loginMemo)
+        return UpdateLoginMemoForBankResponse.newBuilder().setSuccess(result).build()
+    }
 }

@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS spending_medians_by_age_group;
+DROP TABLE IF EXISTS login_memo;
 DROP TABLE IF EXISTS recurring_spending_monthly;
 DROP TABLE IF EXISTS daily_user_assets;
 DROP TABLE IF EXISTS transaction_histories;
@@ -146,3 +147,13 @@ CREATE TABLE IF NOT EXISTS daily_user_assets (
 
 CREATE INDEX IF NOT EXISTS idx_daily_assets_user_date ON daily_user_assets(user_id, asset_date DESC);
 CREATE INDEX IF NOT EXISTS idx_daily_assets_date ON daily_user_assets(asset_date);
+
+DROP TABLE IF EXISTS login_memo;
+CREATE TABLE IF NOT EXISTS login_memo (
+    user_id INT REFERENCES users(id) NOT NULL,
+    bank_id INT REFERENCES banks(id) NOT NULL,
+    memo TEXT DEFAULT '',
+    PRIMARY KEY(user_id, bank_id)
+);
+
+CREATE INDEX IF NOT EXISTS login_memo_index ON login_memo(user_id, bank_id DESC);

@@ -11,9 +11,9 @@ RefreshScreenState refreshScreenReducer(
   }
   if (action is SelectBankAction) {
     List<Bank> banks = state.banksToRefresh;
-    if (banks.contains(action.bank)) {
-      banks.remove(action.bank);
-    } else {
+    int initialLength = banks.length;
+    banks = banks.where((bank) => bank.bankId != action.bank.bankId).toList();
+    if (banks.length == initialLength) {
       banks.add(action.bank);
     }
     return state.copyWith(banksToRefresh: banks);
@@ -41,6 +41,11 @@ RefreshScreenState refreshScreenReducer(
   }
   if (action is FinishBankDataFetchMonitoringAction) {
     return state.copyWith(banksOnLink: state.banksOnLink.where((bank) => bank != action.bank).toList());
+  }
+  if (action is UpdateBankLoginMemoAction) {
+    final updatedMemo = Map<String, String>.from(state.bankLoginMemo);
+    updatedMemo[action.bank.bankId.toString()] = action.memo;
+    return state.copyWith(bankLoginMemo: updatedMemo);
   }
 
   return state;

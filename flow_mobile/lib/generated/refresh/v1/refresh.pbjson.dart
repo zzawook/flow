@@ -14,6 +14,63 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use updateLoginMemoForBankRequestDescriptor instead')
+const UpdateLoginMemoForBankRequest$json = {
+  '1': 'UpdateLoginMemoForBankRequest',
+  '2': [
+    {'1': 'institution_id', '3': 1, '4': 1, '5': 3, '10': 'institutionId'},
+    {'1': 'login_memo', '3': 2, '4': 1, '5': 9, '10': 'loginMemo'},
+  ],
+};
+
+/// Descriptor for `UpdateLoginMemoForBankRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List updateLoginMemoForBankRequestDescriptor =
+    $convert.base64Decode(
+        'Ch1VcGRhdGVMb2dpbk1lbW9Gb3JCYW5rUmVxdWVzdBIlCg5pbnN0aXR1dGlvbl9pZBgBIAEoA1'
+        'INaW5zdGl0dXRpb25JZBIdCgpsb2dpbl9tZW1vGAIgASgJUglsb2dpbk1lbW8=');
+
+@$core.Deprecated('Use updateLoginMemoForBankResponseDescriptor instead')
+const UpdateLoginMemoForBankResponse$json = {
+  '1': 'UpdateLoginMemoForBankResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+  ],
+};
+
+/// Descriptor for `UpdateLoginMemoForBankResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List updateLoginMemoForBankResponseDescriptor =
+    $convert.base64Decode(
+        'Ch5VcGRhdGVMb2dpbk1lbW9Gb3JCYW5rUmVzcG9uc2USGAoHc3VjY2VzcxgBIAEoCFIHc3VjY2'
+        'Vzcw==');
+
+@$core.Deprecated('Use getLoginMemoForBankRequestDescriptor instead')
+const GetLoginMemoForBankRequest$json = {
+  '1': 'GetLoginMemoForBankRequest',
+  '2': [
+    {'1': 'institution_id', '3': 1, '4': 1, '5': 3, '10': 'institutionId'},
+  ],
+};
+
+/// Descriptor for `GetLoginMemoForBankRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getLoginMemoForBankRequestDescriptor =
+    $convert.base64Decode(
+        'ChpHZXRMb2dpbk1lbW9Gb3JCYW5rUmVxdWVzdBIlCg5pbnN0aXR1dGlvbl9pZBgBIAEoA1INaW'
+        '5zdGl0dXRpb25JZA==');
+
+@$core.Deprecated('Use getLoginMemoForBankResponseDescriptor instead')
+const GetLoginMemoForBankResponse$json = {
+  '1': 'GetLoginMemoForBankResponse',
+  '2': [
+    {'1': 'login_memo', '3': 1, '4': 1, '5': 9, '10': 'loginMemo'},
+  ],
+};
+
+/// Descriptor for `GetLoginMemoForBankResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getLoginMemoForBankResponseDescriptor =
+    $convert.base64Decode(
+        'ChtHZXRMb2dpbk1lbW9Gb3JCYW5rUmVzcG9uc2USHQoKbG9naW5fbWVtbxgBIAEoCVIJbG9naW'
+        '5NZW1v');
+
 @$core.Deprecated('Use canLinkBankRequestDescriptor instead')
 const CanLinkBankRequest$json = {
   '1': 'CanLinkBankRequest',

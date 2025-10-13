@@ -80,7 +80,7 @@ flow:
     templates:
       en: FlowVerifyEn
   magiclink:
-    baseUrl: https://3ede23e52fd3.ngrok-free.app/api/auth/email/verify
+    baseUrl: https://344a8dd0f51b.ngrok-free.app/api/auth/email/verify
     issuer: flowfinancials.io
     ttlMinutes: 5
     hmacSecret: test

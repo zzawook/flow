@@ -16,9 +16,29 @@ service RefreshService {
     rpc GetDataRetrievalResult (GetDataRetrievalResultRequest) returns (GetDataRetrievalResultResponse);
     rpc GetBanksForRefresh (GetBanksForRefreshRequest) returns (GetBanksForRefreshResponse);
     rpc GetBanksForLink (GetBanksForLinkRequest) returns (GetBanksForLinkResponse);
+    rpc GetLoginMemoForBank (GetLoginMemoForBankRequest) returns (GetLoginMemoForBankResponse);
+    rpc UpdateLoginMemoForBank (UpdateLoginMemoForBankRequest) returns (UpdateLoginMemoForBankResponse);
 }
 
 /* ── Requests ── */
+
+message UpdateLoginMemoForBankRequest {
+    int64 institution_id = 1; // Institution ID for which the login memo is to be updated
+    string login_memo = 2; // List of login memo strings to be updated for the specified bank
+}
+
+message UpdateLoginMemoForBankResponse {
+    bool success = 1; // Indicates whether the update was successful
+}
+
+message GetLoginMemoForBankRequest {
+    int64 institution_id = 1; // Institution ID for which the login memo is requested
+}
+
+message GetLoginMemoForBankResponse {
+    string login_memo = 1; // List of login memo strings for the specified bank
+}
+
 message CanLinkBankRequest {}
 
 message CanLinkBankResponse {

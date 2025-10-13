@@ -6,6 +6,8 @@ class InitSelectedBankAction {
   InitSelectedBankAction(this.banks);
 }
 
+class ClearSelectedBanksAction {}
+
 class SelectBankAction {
   final Bank bank;
 
@@ -37,6 +39,13 @@ class StartBankDataFetchMonitoringAction {
 class FinishBankDataFetchMonitoringAction {
   final Bank bank;
   FinishBankDataFetchMonitoringAction({required this.bank});
+}
+
+class UpdateBankLoginMemoAction {
+  final Bank bank;
+  final String memo;
+
+  UpdateBankLoginMemoAction({required this.bank, required this.memo});
 }
 
 class RemoveCurrentLinkingBankAction {}

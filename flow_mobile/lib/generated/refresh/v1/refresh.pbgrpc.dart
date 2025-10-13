@@ -94,6 +94,22 @@ class RefreshServiceClient extends $grpc.Client {
     return $createUnaryCall(_$getBanksForLink, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.GetLoginMemoForBankResponse> getLoginMemoForBank(
+    $0.GetLoginMemoForBankRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getLoginMemoForBank, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.UpdateLoginMemoForBankResponse>
+      updateLoginMemoForBank(
+    $0.UpdateLoginMemoForBankRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$updateLoginMemoForBank, request,
+        options: options);
+  }
+
   // method descriptors
 
   static final _$canLinkBank =
@@ -138,6 +154,16 @@ class RefreshServiceClient extends $grpc.Client {
           '/sg.flow.refresh.v1.RefreshService/GetBanksForLink',
           ($0.GetBanksForLinkRequest value) => value.writeToBuffer(),
           $0.GetBanksForLinkResponse.fromBuffer);
+  static final _$getLoginMemoForBank = $grpc.ClientMethod<
+          $0.GetLoginMemoForBankRequest, $0.GetLoginMemoForBankResponse>(
+      '/sg.flow.refresh.v1.RefreshService/GetLoginMemoForBank',
+      ($0.GetLoginMemoForBankRequest value) => value.writeToBuffer(),
+      $0.GetLoginMemoForBankResponse.fromBuffer);
+  static final _$updateLoginMemoForBank = $grpc.ClientMethod<
+          $0.UpdateLoginMemoForBankRequest, $0.UpdateLoginMemoForBankResponse>(
+      '/sg.flow.refresh.v1.RefreshService/UpdateLoginMemoForBank',
+      ($0.UpdateLoginMemoForBankRequest value) => value.writeToBuffer(),
+      $0.UpdateLoginMemoForBankResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('sg.flow.refresh.v1.RefreshService')
@@ -218,6 +244,24 @@ abstract class RefreshServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.GetBanksForLinkRequest.fromBuffer(value),
         ($0.GetBanksForLinkResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetLoginMemoForBankRequest,
+            $0.GetLoginMemoForBankResponse>(
+        'GetLoginMemoForBank',
+        getLoginMemoForBank_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetLoginMemoForBankRequest.fromBuffer(value),
+        ($0.GetLoginMemoForBankResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.UpdateLoginMemoForBankRequest,
+            $0.UpdateLoginMemoForBankResponse>(
+        'UpdateLoginMemoForBank',
+        updateLoginMemoForBank_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.UpdateLoginMemoForBankRequest.fromBuffer(value),
+        ($0.UpdateLoginMemoForBankResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.CanLinkBankResponse> canLinkBank_Pre($grpc.ServiceCall $call,
@@ -293,4 +337,22 @@ abstract class RefreshServiceBase extends $grpc.Service {
 
   $async.Future<$0.GetBanksForLinkResponse> getBanksForLink(
       $grpc.ServiceCall call, $0.GetBanksForLinkRequest request);
+
+  $async.Future<$0.GetLoginMemoForBankResponse> getLoginMemoForBank_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetLoginMemoForBankRequest> $request) async {
+    return getLoginMemoForBank($call, await $request);
+  }
+
+  $async.Future<$0.GetLoginMemoForBankResponse> getLoginMemoForBank(
+      $grpc.ServiceCall call, $0.GetLoginMemoForBankRequest request);
+
+  $async.Future<$0.UpdateLoginMemoForBankResponse> updateLoginMemoForBank_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.UpdateLoginMemoForBankRequest> $request) async {
+    return updateLoginMemoForBank($call, await $request);
+  }
+
+  $async.Future<$0.UpdateLoginMemoForBankResponse> updateLoginMemoForBank(
+      $grpc.ServiceCall call, $0.UpdateLoginMemoForBankRequest request);
 }
