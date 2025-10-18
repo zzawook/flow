@@ -81,8 +81,6 @@ class AuthGrpcService(
         }
 
         override suspend fun signOut(request: SignOutRequest): SignOutResponse {
-                val userId = currentUserId()
-
                 val result = authService.signOutUser(
                         request.accessToken
                 )

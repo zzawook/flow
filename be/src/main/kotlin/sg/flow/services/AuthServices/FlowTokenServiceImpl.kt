@@ -26,10 +26,19 @@ class FlowTokenServiceImpl(
 
     override suspend fun getUserDetailByAccessToken(accessToken: String): FlowUserDetails? =
             withContext(Dispatchers.IO) {
-                val userId =
+                var userId =
                         cacheService
                                 .getUserIdByAccessToken(accessToken).orElse(null)
-                                ?: return@withContext null
+
+                if (userId == null) {
+                    userId = jwtTokenProvider.verifyToken(accessToken).claims["userId"]?.asInt()
+
+                    if (userId != null) {
+                        cacheService.storeAccessToken(userId, accessToken)
+                    } else {
+                        return@withContext null
+                    }
+                }
 
                 val profile = userService.getUserProfile(userId)
                 FlowUserDetails(
@@ -58,7 +67,7 @@ class FlowTokenServiceImpl(
     override suspend fun generateAndStoreRefreshTokenAndAccessToken(userId: Int): TokenSet? =
             withContext(Dispatchers.IO) {
                 val refreshToken = jwtTokenProvider.generateRefreshToken(userId)
-                val accessToken = jwtTokenProvider.generateAccessToken(refreshToken)
+                val accessToken = jwtTokenProvider.generateAccessToken(refreshToken, userId)
 
                 cacheService.storeAccessToken(userId, accessToken)
                 vaultService.storeRefreshToken(userId, refreshToken)

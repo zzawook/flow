@@ -42,11 +42,12 @@ open class JwtTokenProvider(
      * Generate an Access Token containing user info. Typically valid for a short period (e.g. 15
      * minutes).
      */
-    fun generateAccessToken(refreshToken: String): String {
+    fun generateAccessToken(refreshToken: String, userId: Int): String {
         val now = System.currentTimeMillis()
         val expiry = now + accessTokenValidity * 1000
         return JWT.create()
                 .withSubject(refreshToken)
+                .withClaim("userId", userId)
                 .withIssuedAt(Date(now))
                 .withExpiresAt(Date(expiry))
                 .sign(algorithm)
