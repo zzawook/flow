@@ -42,4 +42,11 @@ interface CacheService {
 
     suspend fun getEmailValidationSessionData(email: String, sessionId: String): String
     suspend fun removeEmailValidationSessionData(email: String, sid: String): Boolean
+// Generic key-value operations
+suspend fun get(key: String): String?
+
+suspend fun setex(key: String, ttlSeconds: Long, value: String)
+
+suspend fun delete(key: String)
+
 }

@@ -74,6 +74,8 @@ flow:
       finverse-auth-complete: finverse-auth-complete-events
       finverse-product-complete: finverse-product-complete-events
       transaction-analysis-trigger: transaction-analysis-trigger
+      appstore-notifications: appstore-subscription-notifications
+      googleplay-notifications: googleplay-subscription-notifications
   email:
     region: ap-southeast-1
     sender: noreply@flowfinancials.io
@@ -120,6 +122,34 @@ flow:
     backfill-months: 60  # 5 years
   daily-asset:
     enabled: true
+
+subscription:
+  price:
+    sgd: 2.99
+  ios:
+    product-id: com.flowfinancials.subscription.monthly
+    shared-secret: ""  # Add your Apple shared secret here
+    verify-receipt-url:
+      production: https://buy.itunes.apple.com/verifyReceipt
+      sandbox: https://sandbox.itunes.apple.com/verifyReceipt
+  android:
+    package-name: com.flowfinancials.app
+    product-id: monthly_subscription
+  trial:
+    duration-days: 30
+  cache:
+    ttl-seconds: 900  # 15 minutes
+
+google:
+  cloud:
+    project-id: ${GOOGLE_CLOUD_PROJECT_ID:flow-subscriptions}
+    pubsub:
+      subscription-id: flow-backend-subscription
+      topic-id: play-subscription-events
+    credentials-path: vault://secret/google-cloud-credentials
+  play:
+    package-name: com.flowfinancials.app
+    service-account-path: vault://secret/google-play-service-account
 
 aws:
   region: us-east-1

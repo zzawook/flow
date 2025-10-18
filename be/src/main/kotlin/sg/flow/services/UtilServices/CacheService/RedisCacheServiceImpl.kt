@@ -447,4 +447,32 @@ class RedisCacheServiceImpl(
             return false
         }
     }
+override suspend fun get(key: String): String? {
+    return try {
+        redisTemplate.opsForValue().get(key).awaitSingleOrNull()
+    } catch (e: Exception) {
+        logger.error("Failed to get value for key: $key", e)
+        null
+    }
+}
+
+override suspend fun setex(key: String, ttlSeconds: Long, value: String) {
+    try {
+        redisTemplate
+                .opsForValue()
+                .set(key, value, Duration.ofSeconds(ttlSeconds))
+                .awaitSingleOrNull()
+    } catch (e: Exception) {
+        logger.error("Failed to set value for key: $key", e)
+    }
+}
+
+override suspend fun delete(key: String) {
+    try {
+        redisTemplate.opsForValue().delete(key).awaitSingleOrNull()
+    } catch (e: Exception) {
+        logger.error("Failed to delete key: $key", e)
+    }
+}
+
 }

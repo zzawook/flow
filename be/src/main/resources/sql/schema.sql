@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS subscription_events;
+DROP TABLE IF EXISTS user_subscriptions;
+DROP TABLE IF EXISTS trial_usage_tracking;
 DROP TABLE IF EXISTS spending_medians_by_age_group;
 DROP TABLE IF EXISTS login_memo;
 DROP TABLE IF EXISTS recurring_spending_monthly;
@@ -147,6 +150,85 @@ CREATE TABLE IF NOT EXISTS daily_user_assets (
 
 CREATE INDEX IF NOT EXISTS idx_daily_assets_user_date ON daily_user_assets(user_id, asset_date DESC);
 CREATE INDEX IF NOT EXISTS idx_daily_assets_date ON daily_user_assets(asset_date);
+
+-- Trial usage tracking for preventing trial abuse (one trial per email)
+DROP TABLE IF EXISTS trial_usage_tracking;
+CREATE TABLE IF NOT EXISTS trial_usage_tracking (
+    id BIGSERIAL PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    platform TEXT NOT NULL,
+    first_trial_started_at TIMESTAMP NOT NULL,
+    user_id INT REFERENCES users(id),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_trial_tracking_email ON trial_usage_tracking(email);
+CREATE INDEX IF NOT EXISTS idx_trial_tracking_user_id ON trial_usage_tracking(user_id);
+
+-- User subscriptions (one per user per platform)
+DROP TABLE IF EXISTS user_subscriptions;
+CREATE TABLE IF NOT EXISTS user_subscriptions (
+    id BIGSERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) NOT NULL,
+    platform TEXT NOT NULL,
+    subscription_status TEXT NOT NULL,
+    
+    trial_start_date TIMESTAMP,
+    trial_end_date TIMESTAMP,
+    
+    current_period_start TIMESTAMP,
+    current_period_end TIMESTAMP,
+    auto_renewing BOOLEAN DEFAULT true,
+    
+    expired_at TIMESTAMP,
+    expiration_reason TEXT,
+    
+    canceled_at TIMESTAMP,
+    cancellation_reason TEXT,
+    
+    ios_original_transaction_id TEXT,
+    ios_product_id TEXT,
+    ios_environment TEXT,
+    
+    android_purchase_token TEXT,
+    android_product_id TEXT,
+    android_order_id TEXT,
+    
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    UNIQUE(user_id, platform)
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_subscriptions_user_id ON user_subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_subscriptions_status ON user_subscriptions(subscription_status);
+CREATE INDEX IF NOT EXISTS idx_user_subscriptions_platform ON user_subscriptions(platform);
+CREATE INDEX IF NOT EXISTS idx_user_subscriptions_period_end ON user_subscriptions(current_period_end) 
+    WHERE subscription_status IN ('TRIAL', 'ACTIVE', 'CANCELED');
+
+-- Subscription events audit log
+DROP TABLE IF EXISTS subscription_events;
+CREATE TABLE IF NOT EXISTS subscription_events (
+    id BIGSERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) NOT NULL,
+    platform TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    
+    old_status TEXT,
+    new_status TEXT,
+    
+    notification_type TEXT,
+    transaction_id TEXT,
+    
+    raw_notification JSONB NOT NULL,
+    error_message TEXT,
+    
+    processed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscription_events_user_id ON subscription_events(user_id, processed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_subscription_events_type ON subscription_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_subscription_events_platform ON subscription_events(platform, processed_at DESC);
 
 DROP TABLE IF EXISTS login_memo;
 CREATE TABLE IF NOT EXISTS login_memo (

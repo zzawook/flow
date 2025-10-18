@@ -20,7 +20,11 @@ class KafkaEventProducerService(
         private val authCallbackTopic: String,
         @Value("\${flow.kafka.topics.finverse-timeout}") private val timeoutTopic: String,
         @Value("\${flow.kafka.topics.transaction-analysis-trigger}")
-        private val transactionAnalysisTriggerTopic: String
+        private val transactionAnalysisTriggerTopic: String,
+        @Value("\${flow.kafka.topics.appstore-notifications}")
+        private val appStoreNotificationTopic: String,
+        @Value("\${flow.kafka.topics.googleplay-notifications}")
+        private val googlePlayNotificationTopic: String
 ) {
 
     private val logger = LoggerFactory.getLogger(KafkaEventProducerService::class.java)
@@ -128,6 +132,70 @@ class KafkaEventProducerService(
                     event.institutionId,
                     e
             )
+            throw e
+        }
+    }
+    
+    suspend fun publishAppStoreEvent(event: sg.flow.events.AppStoreNotificationEvent) {
+        try {
+            val future: CompletableFuture<SendResult<String, Any>> =
+                    kafkaTemplate.send(
+                            appStoreNotificationTopic,
+                            event.eventId,
+                            event
+                    )
+            
+            future.whenComplete { result, exception ->
+                if (exception == null) {
+                    logger.info(
+                            "Published App Store notification event to topic: {} with key: {} at offset: {}",
+                            appStoreNotificationTopic,
+                            event.eventId,
+                            result?.recordMetadata?.offset()
+                    )
+                } else {
+                    logger.error(
+                            "Failed to publish App Store notification event to topic: {} with key: {}",
+                            appStoreNotificationTopic,
+                            event.eventId,
+                            exception
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            logger.error("Error publishing App Store notification event", e)
+            throw e
+        }
+    }
+    
+    suspend fun publishGooglePlayEvent(event: sg.flow.events.GooglePlayNotificationEvent) {
+        try {
+            val future: CompletableFuture<SendResult<String, Any>> =
+                    kafkaTemplate.send(
+                            googlePlayNotificationTopic,
+                            event.eventId,
+                            event
+                    )
+            
+            future.whenComplete { result, exception ->
+                if (exception == null) {
+                    logger.info(
+                            "Published Google Play notification event to topic: {} with key: {} at offset: {}",
+                            googlePlayNotificationTopic,
+                            event.eventId,
+                            result?.recordMetadata?.offset()
+                    )
+                } else {
+                    logger.error(
+                            "Failed to publish Google Play notification event to topic: {} with key: {}",
+                            googlePlayNotificationTopic,
+                            event.eventId,
+                            exception
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            logger.error("Error publishing Google Play notification event", e)
             throw e
         }
     }

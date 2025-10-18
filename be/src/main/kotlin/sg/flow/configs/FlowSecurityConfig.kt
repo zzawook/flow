@@ -16,6 +16,7 @@ import sg.flow.auth.AccessTokenValidationInterceptor
 import sg.flow.services.AuthServices.FlowTokenService
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.beans.factory.annotation.Autowired
 
 @EnableWebFluxSecurity
 @Configuration
@@ -25,8 +26,9 @@ class FlowSecurityConfig {
     @Order(0)
     @GlobalServerInterceptor
     fun accessTokenValidationInterceptor(
-        flowTokenService: FlowTokenService
-    ): ServerInterceptor = AccessTokenValidationInterceptor(flowTokenService)
+        flowTokenService: FlowTokenService,
+        @Autowired(required = false) subscriptionEntitlementService: sg.flow.services.SubscriptionServices.SubscriptionEntitlementService?
+    ): ServerInterceptor = AccessTokenValidationInterceptor(flowTokenService, subscriptionEntitlementService)
 
     @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
@@ -43,6 +45,9 @@ class FlowSecurityConfig {
                     .pathMatchers(HttpMethod.GET, "/finverse/callback").permitAll()
                     .pathMatchers(HttpMethod.POST, "/finverse/callback").permitAll()
                     .pathMatchers(HttpMethod.GET, "/auth/email/verify").permitAll()
+                    .pathMatchers(HttpMethod.POST, "/subscription/apple").permitAll()
+                    .pathMatchers(HttpMethod.POST, "/subscription/apple-sandbox").permitAll()
+                    .pathMatchers(HttpMethod.POST, "/subscription/google-pubsub").permitAll()
                     .anyExchange().authenticated()
             }
             .build()

@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package subscription.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_package = "sg.flow.grpc.subscription.v1";
+
+service SubscriptionService {
+  rpc CheckEntitlement(CheckEntitlementRequest) returns (CheckEntitlementResponse);
+  rpc GetSubscriptionStatus(GetSubscriptionStatusRequest) returns (GetSubscriptionStatusResponse);
+  rpc StartTrial(StartTrialRequest) returns (StartTrialResponse);
+  rpc LinkPurchase(LinkPurchaseRequest) returns (LinkPurchaseResponse);
+}
+
+message CheckEntitlementRequest {
+  int32 user_id = 1;
+  string platform = 2;  // "IOS" or "ANDROID"
+}
+
+message CheckEntitlementResponse {
+  bool has_access = 1;
+  string status = 2;  // "TRIAL", "ACTIVE", "EXPIRED", "CANCELED"
+  google.protobuf.Timestamp access_expires_at = 3;
+  string message = 4;
+}
+
+message GetSubscriptionStatusRequest {
+  int32 user_id = 1;
+  string platform = 2;
+}
+
+message GetSubscriptionStatusResponse {
+  string status = 1;
+  string platform = 2;
+  google.protobuf.Timestamp trial_start_date = 3;
+  google.protobuf.Timestamp trial_end_date = 4;
+  google.protobuf.Timestamp current_period_start = 5;
+  google.protobuf.Timestamp current_period_end = 6;
+  bool auto_renewing = 7;
+  string product_id = 8;
+}
+
+message StartTrialRequest {
+  int32 user_id = 1;
+  string platform = 2;
+}
+
+message StartTrialResponse {
+  bool success = 1;
+  string message = 2;
+  google.protobuf.Timestamp trial_end_date = 3;
+  string already_used_platform = 4;
+  google.protobuf.Timestamp already_used_date = 5;
+}
+
+message LinkPurchaseRequest {
+  int32 user_id = 1;
+  string platform = 2;
+  PurchaseData purchase_data = 3;
+}
+
+message PurchaseData {
+  // iOS fields
+  string ios_receipt_data = 1;
+  string ios_transaction_id = 2;
+  
+  // Android fields
+  string android_purchase_token = 3;
+  string android_product_id = 4;
+  string android_order_id = 5;
+}
+
+message LinkPurchaseResponse {
+  bool success = 1;
+  string message = 2;
+  string new_status = 3;
+  google.protobuf.Timestamp period_end = 4;
+}
+

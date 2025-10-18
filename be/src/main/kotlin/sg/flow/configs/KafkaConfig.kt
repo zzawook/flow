@@ -175,6 +175,68 @@ class KafkaConfig(
                 return factory
         }
 
+@Bean
+fun appStoreConsumerFactory(): ConsumerFactory<String, sg.flow.events.AppStoreNotificationEvent> {
+        val configProps =
+                mapOf<String, Any>(
+                        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
+                        ConsumerConfig.GROUP_ID_CONFIG to groupId,
+                        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to
+                                StringDeserializer::class.java,
+                        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to
+                                JsonDeserializer::class.java,
+                        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
+                        JsonDeserializer.TRUSTED_PACKAGES to "sg.flow.events",
+                        JsonDeserializer.VALUE_DEFAULT_TYPE to
+                                "sg.flow.events.AppStoreNotificationEvent",
+                        JsonDeserializer.USE_TYPE_INFO_HEADERS to false
+                )
+        return DefaultKafkaConsumerFactory(configProps)
+}
+
+@Bean
+fun googlePlayConsumerFactory():
+        ConsumerFactory<String, sg.flow.events.GooglePlayNotificationEvent> {
+        val configProps =
+                mapOf<String, Any>(
+                        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
+                        ConsumerConfig.GROUP_ID_CONFIG to groupId,
+                        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to
+                                StringDeserializer::class.java,
+                        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to
+                                JsonDeserializer::class.java,
+                        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
+                        JsonDeserializer.TRUSTED_PACKAGES to "sg.flow.events",
+                        JsonDeserializer.VALUE_DEFAULT_TYPE to
+                                "sg.flow.events.GooglePlayNotificationEvent",
+                        JsonDeserializer.USE_TYPE_INFO_HEADERS to false
+                )
+        return DefaultKafkaConsumerFactory(configProps)
+}
+
+@Bean
+fun appStoreKafkaListenerContainerFactory():
+        ConcurrentKafkaListenerContainerFactory<String, sg.flow.events.AppStoreNotificationEvent> {
+        val factory =
+                ConcurrentKafkaListenerContainerFactory<
+                        String, sg.flow.events.AppStoreNotificationEvent>()
+        factory.consumerFactory = appStoreConsumerFactory()
+        factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
+        return factory
+}
+
+@Bean
+fun googlePlayKafkaListenerContainerFactory():
+        ConcurrentKafkaListenerContainerFactory<
+                String, sg.flow.events.GooglePlayNotificationEvent> {
+        val factory =
+                ConcurrentKafkaListenerContainerFactory<
+                        String, sg.flow.events.GooglePlayNotificationEvent>()
+        factory.consumerFactory = googlePlayConsumerFactory()
+        factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL_IMMEDIATE
+        return factory
+}
+
         @Bean
         fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
                 val factory = ConcurrentKafkaListenerContainerFactory<String, Any>()

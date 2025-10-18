@@ -111,7 +111,17 @@ dependencies {
 	// Coroutines bridge for CompletableFuture.await()
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8") // version comes from your BOM (1.7.3)
 
-
+	// Google Cloud Pub/Sub
+	implementation("com.google.cloud:google-cloud-pubsub:1.125.0")
+	
+	// Google Play Developer API (using Google HTTP client)
+	implementation("com.google.api-client:google-api-client:2.0.0")
+	implementation("com.google.auth:google-auth-library-oauth2-http:1.20.0")
+	
+	// JWT parsing for Apple JWS
+	implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+	implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
 
 	// Spring gRPC integration
 	implementation("org.springframework.grpc:spring-grpc-spring-boot-starter:0.8.0")
