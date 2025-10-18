@@ -44,6 +44,34 @@ class SettingsV1 {
     );
   }
 
+  String toJson() {
+    return '''{
+      "language": "$language",
+      "theme": "$theme",
+      "font_scale": $fontScale,
+      "notification": {
+        "master_enabled": ${notification.masterEnabled},
+        "insight_notification_enabled": ${notification.insightNotificationEnabled},
+        "periodic_notification_enabled": ${notification.periodicNotificationEnabled},
+        "periodic_notification_auto_enabled": ${notification.periodicNotificationAutoEnabled},
+        "periodic_notification_cron": [${notification.periodicNotificationCron.map((e) => '"$e"').join(', ')}]
+      },
+      "display_balance_on_home": $displayBalanceOnHome
+    }''';
+  }
+
+  factory SettingsV1.fromJson(Map<String, dynamic> json) {
+    return SettingsV1(
+      language: json['language'] as String,
+      theme: json['theme'] as String,
+      fontScale: (json['font_scale'] as num).toDouble(),
+      notification: NotificationSetting.fromJson(
+        json['notification'] as Map<String, dynamic>,
+      ),
+      displayBalanceOnHome: json['display_balance_on_home'] as bool,
+    );
+  }
+
   factory SettingsV1.initial() {
     return SettingsV1(
       language: 'en',

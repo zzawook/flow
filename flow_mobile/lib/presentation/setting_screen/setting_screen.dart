@@ -1,5 +1,5 @@
-import 'package:flow_mobile/domain/redux/actions/setting_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/setting_thunks.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';
 import 'package:flow_mobile/presentation/navigation/transition_type.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
@@ -154,7 +154,9 @@ class SettingScreen extends StatelessWidget {
                             if (index != null) {
                               StoreProvider.of<FlowState>(
                                 context,
-                              ).dispatch(ToggleThemeAction());
+                              ).dispatch(
+                            updateThemeAction(index == 0 ? 'light' : 'dark'),
+                          );
                             }
                           },
                         ),

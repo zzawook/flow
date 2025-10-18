@@ -1,5 +1,6 @@
 package sg.flow.repositories.user
 
+import io.r2dbc.postgresql.codec.Json
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asFlow
 import java.time.LocalDate
@@ -40,11 +41,17 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
                 spec.bind(5, entity.dateOfBirth)
             }
 
-            spec.bind(6, entity.address)
+            try {
+                spec.bind(6, entity.address)
                     .bind(7, entity.passwordHash)
-                    .bind(8, entity.settingJson)
+                    .bind(8, Json.of(entity.settingJson))
                     .fetch()
                     .awaitRowsUpdated()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                logger.error("Error while saving user: ${entity.id}")
+            }
+
         } else {
             var spec = databaseClient
                     .sql(queryString)
@@ -59,11 +66,17 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
                 spec.bind(4, entity.dateOfBirth)
             }
 
-            spec.bind(5, entity.address)
+            try {
+                spec.bind(5, entity.address)
                     .bind(6, entity.passwordHash)
-                    .bind(7, entity.settingJson)
+                    .bind(7, Json.of(entity.settingJson))
                     .fetch()
                     .awaitRowsUpdated()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                logger.error("Error while saving user with name: ${entity.name}")
+            }
+
         }
 
         return entity
@@ -134,7 +147,7 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
                         dateOfBirth = row.get("date_of_birth", LocalDate::class.java),
                         identificationNumber =
                             row.get("identification_number", String::class.java)!!,
-                        settingJson = null,
+                        settingJson = row.get("setting_json", String::class.java)!!,
                         genderIsMale = getGenderFromDBText(row.get("gender", String::class.java))
                     )
                 }
@@ -167,23 +180,23 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
         userId: Int,
         userProfile: UpdateUserProfile
     ): UserProfile {
-        val updateQuery = """
-        UPDATE users 
-        SET email = COALESCE($1, email), 
-            phone_number = COALESCE($2, phone_number)
-        WHERE id = $3
-    """.trimIndent()
-
 
         // 2) bind & execute, without .fetch()
-        val rowsUpdated = databaseClient
-            .sql(updateQuery)
-            .bind(0, userProfile.email ?: "")
-            .bind(1, userProfile.phoneNumber ?: "")
-            .bind(2, userId)
-            .fetch()
-            .rowsUpdated()
-            .awaitSingle()
+        var rowsUpdated: Long = -1L;
+        try {
+            rowsUpdated = databaseClient
+                .sql(UserQueryStore.UPDATE_USER_PROFILE)
+                .bind(0, userProfile.email ?: "")
+                .bind(1, userProfile.phoneNumber ?: "")
+                .bind(2, Json.of(userProfile.settingsJson))
+                .bind(3, userId)
+                .fetch()
+                .rowsUpdated()
+                .awaitSingle()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Error while updating user profile for user ID $userId")
+        }
 
 
         if (rowsUpdated == 0L) {

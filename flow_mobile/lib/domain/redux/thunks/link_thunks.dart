@@ -26,7 +26,12 @@ ThunkAction<FlowState> openAddAccountScreenThunk() {
     final apiService = getIt<ApiService>();
     final nav = getIt<NavigationService>();
 
-    apiService.getBanksForLink().then((response) {
+    final canLink = await apiService.checkUserCanLinkBank();
+    if (!canLink.canLink) {
+      nav.pushNamed(AppRoutes.signupDateOfBirth);
+      return;
+    } else {
+      apiService.getBanksForLink().then((response) {
       final bankList = response.banks
           .map((bank) => Bank(name: bank.name, bankId: bank.id))
           .toList();
@@ -38,6 +43,9 @@ ThunkAction<FlowState> openAddAccountScreenThunk() {
         ),
       );
     });
+    }
+
+    
   };
 }
 

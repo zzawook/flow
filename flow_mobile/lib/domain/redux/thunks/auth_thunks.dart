@@ -6,12 +6,14 @@ import 'package:flow_mobile/domain/manager/bank_account_manager.dart';
 import 'package:flow_mobile/domain/manager/bank_manager.dart';
 import 'package:flow_mobile/domain/manager/card_manager.dart';
 import 'package:flow_mobile/domain/manager/notification_manager.dart';
+import 'package:flow_mobile/domain/manager/setting_manager.dart';
 import 'package:flow_mobile/domain/manager/transaction_manager.dart';
 import 'package:flow_mobile/domain/manager/user_manager.dart';
 import 'package:flow_mobile/domain/redux/actions/auth_action.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flow_mobile/domain/redux/actions/card_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/notification_action.dart';
+import 'package:flow_mobile/domain/redux/actions/setting_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
@@ -138,12 +140,15 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   TransactionManager transactionManager = getIt<TransactionManager>();
   UserManager userManager = getIt<UserManager>();
   CardManager cardManager = getIt<CardManager>();
+  SettingManager settingManager = getIt<SettingManager>();
 
   final bankClearFuture = bankManager.clearBanks();
   final bankAccountClearFuture = bankAccountManager.clearBankAccounts();
   final transactionManagerClearFuture = transactionManager.clearTransactions();
   final cardClearFuture = cardManager.clearCards();
   final notificationClearFuture = notificationManager.clearNotifications();
+  final settingClearFuture = settingManager.clearSettings();
+  
 
   final successList =
       await Future.wait([
@@ -152,12 +157,14 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
         transactionManagerClearFuture,
         cardClearFuture,
         notificationClearFuture,
+        settingClearFuture
       ]).then((_) {
         store.dispatch(ClearBankAccountStateAction());
         store.dispatch(ClearTransactionStateAction());
         store.dispatch(ClearNotificationStateAction());
         store.dispatch(ClearUserStateAction());
         store.dispatch(ClearCardStateAction());
+        store.dispatch(ClearSettingStateAction());
       });
 
   if (successList == null) {
@@ -232,6 +239,7 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
       .fetchLastYearTransactionsFromRemote();
   final notificationFuture = notificationManager.fetchNotificationsFromRemote();
   final cardFuture = cardManager.fetchCardsFromRemote();
+  final settingFuture = settingManager.fetchSettingsFromRemote();
 
   final fetchResults = Future.wait([
     userFuture,
@@ -240,6 +248,7 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
     transactionFuture,
     notificationFuture,
     cardFuture,
+    settingFuture
   ]);
 
   fetchResults.then((_) async {
@@ -264,6 +273,11 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
     );
     store.dispatch(
       SetCardStateAction(await FlowStateInitializer.getCardState()),
+    );
+    store.dispatch(
+      SetSettingStateAction(
+        settingState: await FlowStateInitializer.getSettingState(),
+      ),
     );
   });
 }
@@ -355,27 +369,7 @@ ThunkAction<FlowState> sendVerificationEmailThunk() {
   };
 }
 
-ThunkAction<FlowState> checkEmailVerifiedThunk() {
-  print("Checking email verification");
-  ApiService apiService = getIt<ApiService>();
-  final nav = getIt<NavigationService>();
-  return (Store<FlowState> store) async {
-    try {
-      final emailVerifyResult = await apiService.checkEmailVerified(
-        store.state.authState.loginEmail ?? '',
-      );
-      if (emailVerifyResult.verified) {
-        store.dispatch(EmailVerifiedAction());
-        nav.pushNamedAndRemoveUntil(AppRoutes.signupDateOfBirth);
-      }
-    } catch (error) {
-      log('Error sending verification email: $error');
-    }
-  };
-}
-
 ThunkAction<FlowState> monitorEmailVerifiedThunk() {
-  print("Monitoring email verification");
   ApiService apiService = getIt<ApiService>();
   final nav = getIt<NavigationService>();
   return (Store<FlowState> store) async {
@@ -385,7 +379,7 @@ ThunkAction<FlowState> monitorEmailVerifiedThunk() {
       );
       if (emailVerifyResult.verified) {
         store.dispatch(EmailVerifiedAction());
-        nav.pushNamedAndRemoveUntil(AppRoutes.signupDateOfBirth);
+        nav.pushNamedAndRemoveUntil(AppRoutes.home);
       }
     } catch (error) {
       log('Error sending verification email: $error');

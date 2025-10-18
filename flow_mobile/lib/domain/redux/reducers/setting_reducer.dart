@@ -3,6 +3,15 @@ import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/states/setting_state.dart';
 
 SettingsState settingsReducer(SettingsState state, dynamic action) {
+  if (action is ClearSettingStateAction) {
+    return SettingsState.initial();
+  }
+  if (action is SetSettingStateAction) {
+    return action.settingState;
+  }
+  if (action is UpdateSettingStateAction) {
+    return SettingsState(settings: action.setting);
+  }
   if (action is ToggleThemeAction) {
     if (state.settings.theme == "light") {
       return SettingsState(settings: state.settings.copyWith(theme: "dark"));

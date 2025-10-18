@@ -1,6 +1,7 @@
 import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/thunks/auth_thunks.dart';
+import 'package:flow_mobile/domain/redux/thunks/user_thunks.dart';
 import 'package:flow_mobile/initialization/manager_registry.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/setting_screen/shared.dart';
@@ -98,7 +99,7 @@ class ManageAccountScreen extends StatelessWidget {
                                     StoreProvider.of<FlowState>(
                                       context,
                                     ).dispatch(
-                                      UpdateUserNicknameAction(newName),
+                                      updateUserNameThunk(newName),
                                     );
                                   },
                                 ),

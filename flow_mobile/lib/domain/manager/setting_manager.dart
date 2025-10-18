@@ -11,4 +11,8 @@ abstract class SettingManager {
   Future<NotificationSetting> getNotificationSetting();
   Future<void> setDisplayBalanceOnHome(bool displayBalanceOnHome);
   Future<bool> getDisplayBalanceOnHome();
+
+  Future<void> clearSettings();
+
+  Future<void> fetchSettingsFromRemote();
 }

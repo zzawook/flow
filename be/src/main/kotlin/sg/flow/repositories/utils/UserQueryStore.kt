@@ -58,7 +58,8 @@ object UserQueryStore {
         u.date_of_birth, 
         u.identification_number, 
         u.address,
-        u.gender
+        u.gender,
+        u.setting_json
         FROM users u 
         WHERE u.id = $1
     """
@@ -73,7 +74,7 @@ object UserQueryStore {
     const val UPDATE_USER_PROFILE =
             """
         UPDATE users 
-        SET email = $1, phone_number = $2, address = $3 
+        SET email = $1, phone_number = $2, setting_json = $3
         WHERE id = $4
     """
 

@@ -324,6 +324,7 @@ class UpdateUserProfileRequest extends $pb.GeneratedMessage {
     $core.String? identificationNumber,
     $core.String? phoneNumber,
     $core.String? address,
+    $core.String? settingsJson,
   }) {
     final result = create();
     if (name != null) result.name = name;
@@ -332,6 +333,7 @@ class UpdateUserProfileRequest extends $pb.GeneratedMessage {
       result.identificationNumber = identificationNumber;
     if (phoneNumber != null) result.phoneNumber = phoneNumber;
     if (address != null) result.address = address;
+    if (settingsJson != null) result.settingsJson = settingsJson;
     return result;
   }
 
@@ -354,6 +356,7 @@ class UpdateUserProfileRequest extends $pb.GeneratedMessage {
     ..aOS(3, _omitFieldNames ? '' : 'identificationNumber')
     ..aOS(4, _omitFieldNames ? '' : 'phoneNumber')
     ..aOS(5, _omitFieldNames ? '' : 'address')
+    ..aOS(6, _omitFieldNames ? '' : 'settingsJson')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -423,6 +426,15 @@ class UpdateUserProfileRequest extends $pb.GeneratedMessage {
   $core.bool hasAddress() => $_has(4);
   @$pb.TagNumber(5)
   void clearAddress() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.String get settingsJson => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set settingsJson($core.String value) => $_setString(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasSettingsJson() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearSettingsJson() => $_clearField(6);
 }
 
 class UserProfile extends $pb.GeneratedMessage {

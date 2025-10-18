@@ -39,6 +39,7 @@ class UserMapper {
             email                 = if (proto.hasEmail()) proto.email else null,
             identificationNumber  = if (proto.hasIdentificationNumber()) proto.identificationNumber else null,
             phoneNumber           = if (proto.hasPhoneNumber()) proto.phoneNumber else null,
+            settingsJson          = if (proto.hasSettingsJson()) proto.settingsJson else null,
         )
 
 }

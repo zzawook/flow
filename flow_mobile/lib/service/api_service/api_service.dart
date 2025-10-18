@@ -168,8 +168,12 @@ class ApiService {
     return response;
   }
 
-  Future<UserProfile> updateUserProfile(User user) async {
-    final response = await _userApiService.updateUserProfile(user);
+  Future<UserProfile> updateUserProfile(
+    User user, {
+    String? settingsJson,
+  }) async {
+    settingsJson ??= '';
+    final response = await _userApiService.updateUserProfile(user, settingsJson: settingsJson);
     return response;
   }
 
@@ -262,5 +266,9 @@ class ApiService {
       bank.bankId,
       newMemo,
     );
+  }
+
+  Future<GetUserPreferenceJsonResponse> getUserPreferenceJson() async {
+    return await _userApiService.getUserPreferenceJson();
   }
 }

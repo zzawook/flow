@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flow_mobile/domain/manager/setting_manager.dart';
 import 'package:flow_mobile/domain/entity/notification_setting.dart';
 import 'package:flow_mobile/domain/entity/setting_v1.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
+import 'package:flow_mobile/service/api_service/api_service.dart';
 import 'package:flow_mobile/service/local_source/local_secure_hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -118,5 +122,29 @@ class SettingManagerImpl implements SettingManager {
       displayBalanceOnHome: displayBalanceOnHome,
     );
     await _settingsBox.put('settings', updated);
+  }
+  
+  @override
+  Future<void> clearSettings() {
+    return _settingsBox.put('settings', SettingsV1.initial());
+  }
+
+  @override
+  Future<void> fetchSettingsFromRemote() async {
+    final apiService = getIt<ApiService>();
+    final response = await apiService.getUserPreferenceJson();
+    final settings = SettingsV1.fromJson(
+      Map<String, dynamic>.from(
+        response.preferenceJson.isNotEmpty
+            ? await Future.value(jsonDecode(response.preferenceJson))
+            : {},
+      ),
+    );
+
+    setFontScale(settings.fontScale);
+    setLanguage(settings.language);
+    setTheme(settings.theme);
+    setNotificationSetting(settings.notification);
+    setDisplayBalanceOnHome(settings.displayBalanceOnHome);
   }
 }

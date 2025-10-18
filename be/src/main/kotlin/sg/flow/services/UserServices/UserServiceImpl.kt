@@ -40,7 +40,8 @@ class UserServiceImpl(
                 dateOfBirth = null,
                 address = "",
                 passwordHash = passwordEncoded,
-                gender_is_male = null
+                gender_is_male = null,
+                settingJson = createInitialSettingJson()
             )
             userRepository.save(user)
             return user
@@ -49,6 +50,30 @@ class UserServiceImpl(
             logger.error("Failed to save user: $email, $name")
             return null;
         }
+    }
+
+    private suspend fun createInitialSettingJson(): String {
+        return """
+            {
+                "language": "en",
+                "theme": "light",
+                "fontScale": 1.0,
+                "notification": ${createInitialNotificationSettingJson()},
+                "displayBalanceOnHome": true
+            }
+        """.trimIndent()
+    }
+
+    private suspend fun createInitialNotificationSettingJson(): String {
+        return """
+            {
+                "masterEnabled": true,
+                "insightNotificationEnabled": true,
+                "periodicNotificationEnabled": true,
+                "periodicNotificationAutoEnabled": true,
+                "periodicNotificationCron": ["0 0 0 0 * *"]
+            }
+        """.trimIndent()
     }
 
     override suspend fun markUserEmailVerified(email: String) {

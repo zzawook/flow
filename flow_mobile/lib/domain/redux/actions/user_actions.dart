@@ -24,3 +24,9 @@ class SetUserStateAction {
 }
 
 class ClearUserStateAction {}
+
+class UpdateUserPreferenceJsonAction {
+  final String preferenceJson;
+
+  UpdateUserPreferenceJsonAction(this.preferenceJson);
+}

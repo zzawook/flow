@@ -14,6 +14,7 @@ UserState userReducer(UserState state, dynamic action) {
   if (action is UpdateUserNicknameAction) {
     return UserState(user: state.user?.copyWith(nickname: action.nickname));
   }
+
   if (action is DeleteUserAction) {
     return UserState(user: null);
   }

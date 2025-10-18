@@ -82,7 +82,7 @@ class LinkSuccessScreen extends StatelessWidget {
                     text: "Leave a memo for next time",
                     color: Theme.of(
                       context,
-                    ).colorScheme.onSurface.withValues(alpha: 0.4),
+                    ).colorScheme.onSurface.withValues(alpha: 0.3),
                     onPressed: () async {
                       await showModalBottomSheet(
                         context: context,

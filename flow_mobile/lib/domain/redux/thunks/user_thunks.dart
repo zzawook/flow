@@ -1,8 +1,8 @@
+import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/domain/redux/thunks/link_thunks.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
-import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/service/api_service/api_service.dart';
-import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
@@ -12,17 +12,34 @@ ThunkAction<FlowState> setConstantUserFieldsThunk(
 ) {
   return (Store store) async {
     final apiService = getIt<ApiService>();
-    final navigationService = getIt<NavigationService>();
     final result = await apiService.setConstantUserFields(
       dateOfBirth,
       isGenderMale,
     );
 
     if (result.success) {
-      // store.dispatch(openAddAccountScreenThunk());
-      navigationService.pushNamed(AppRoutes.home);
+      store.dispatch(openAddAccountScreenThunk());
     } else {
       // Handle failure
+    }
+  };
+}
+
+ThunkAction<FlowState> updateUserNameThunk(String newName) {
+  return (Store store) async {
+    final apiService = getIt<ApiService>();
+    final user = store.state.userState.user;
+    if (user == null) {
+      throw Exception('No user found in state');
+    }
+
+    final updatedUser = user.copyWith(name: newName);
+
+    final result = await apiService.updateUserProfile(updatedUser);
+
+    // Optionally, update the Redux store with the new user profile
+    if (result.hasId()) {
+      store.dispatch(UpdateUserNicknameAction(newName));
     }
   };
 }

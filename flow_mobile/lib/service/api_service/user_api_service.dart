@@ -31,16 +31,24 @@ class UserApiService {
     }
   }
 
-  Future<UserProfile> updateUserProfile(User user, {String settingJson = ''}) async {
+  Future<GetUserPreferenceJsonResponse> getUserPreferenceJson() async {
+    final request = GetUserPreferenceJsonRequest();
+    try {
+      final response = await client.getUserPreferenceJson(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to fetch user preference JSON: $e');
+    }
+  }
+
+  Future<UserProfile> updateUserProfile(User user, {String settingsJson = ''}) async {
     final request = UpdateUserProfileRequest();
     request.name = user.name;
     request.email = user.email;
     request.phoneNumber = user.phoneNumber;
-    // if (settingJson.isNotEmpty) {
-    //   request.settingJson = settingJson;
-    // }
-    // request.address = user.address;
-    // request.nickname = user.nickname;
+    if (settingsJson.isNotEmpty) {
+      request.settingsJson = settingsJson;
+    }
 
     try {
       final response = await client.updateUserProfile(request);

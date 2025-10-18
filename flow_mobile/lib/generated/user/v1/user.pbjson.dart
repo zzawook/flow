@@ -117,6 +117,15 @@ const UpdateUserProfileRequest$json = {
       '10': 'address',
       '17': true
     },
+    {
+      '1': 'settings_json',
+      '3': 6,
+      '4': 1,
+      '5': 9,
+      '9': 5,
+      '10': 'settingsJson',
+      '17': true
+    },
   ],
   '8': [
     {'1': '_name'},
@@ -124,6 +133,7 @@ const UpdateUserProfileRequest$json = {
     {'1': '_identification_number'},
     {'1': '_phone_number'},
     {'1': '_address'},
+    {'1': '_settings_json'},
   ],
 };
 
@@ -132,9 +142,10 @@ final $typed_data.Uint8List updateUserProfileRequestDescriptor = $convert.base64
     'ChhVcGRhdGVVc2VyUHJvZmlsZVJlcXVlc3QSFwoEbmFtZRgBIAEoCUgAUgRuYW1liAEBEhkKBW'
     'VtYWlsGAIgASgJSAFSBWVtYWlsiAEBEjgKFWlkZW50aWZpY2F0aW9uX251bWJlchgDIAEoCUgC'
     'UhRpZGVudGlmaWNhdGlvbk51bWJlcogBARImCgxwaG9uZV9udW1iZXIYBCABKAlIA1ILcGhvbm'
-    'VOdW1iZXKIAQESHQoHYWRkcmVzcxgFIAEoCUgEUgdhZGRyZXNziAEBQgcKBV9uYW1lQggKBl9l'
-    'bWFpbEIYChZfaWRlbnRpZmljYXRpb25fbnVtYmVyQg8KDV9waG9uZV9udW1iZXJCCgoIX2FkZH'
-    'Jlc3M=');
+    'VOdW1iZXKIAQESHQoHYWRkcmVzcxgFIAEoCUgEUgdhZGRyZXNziAEBEigKDXNldHRpbmdzX2pz'
+    'b24YBiABKAlIBVIMc2V0dGluZ3NKc29uiAEBQgcKBV9uYW1lQggKBl9lbWFpbEIYChZfaWRlbn'
+    'RpZmljYXRpb25fbnVtYmVyQg8KDV9waG9uZV9udW1iZXJCCgoIX2FkZHJlc3NCEAoOX3NldHRp'
+    'bmdzX2pzb24=');
 
 @$core.Deprecated('Use userProfileDescriptor instead')
 const UserProfile$json = {

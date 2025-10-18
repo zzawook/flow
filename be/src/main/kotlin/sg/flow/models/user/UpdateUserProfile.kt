@@ -5,4 +5,5 @@ data class UpdateUserProfile(
         val email: String?,
         val identificationNumber: String?,
         val phoneNumber: String?,
+        val settingsJson: String?,
 )
