@@ -22,6 +22,7 @@ import sg.flow.repositories.account.AccountRepository
 import sg.flow.repositories.bank.BankRepository
 import sg.flow.repositories.user.UserRepository
 import sg.flow.services.BankQueryServices.FinverseQueryService.exceptions.FinverseException
+import sg.flow.services.UtilServices.CacheService.CacheService
 import sg.flow.services.UtilServices.VaultService
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
@@ -36,6 +37,7 @@ class FinverseQueryService(
     private val accountRepository: AccountRepository,
     private val finverseWebclientService: FinverseWebclientService,
     private val finverseResponseProcessor: FinverseResponseProcessor,
+    private val cacheService: CacheService
 ) {
     private val logger = LoggerFactory.getLogger(FinverseQueryService::class.java)
 
@@ -175,6 +177,11 @@ class FinverseQueryService(
     }
 
     suspend fun getInstitutionAuthenticationResult(userId: Int, institutionId: String): FinverseAuthenticationStatus {
+        val postAuth = cacheService.getFinalAuth(userId, institutionId)
+        if (postAuth != null) {
+            return postAuth
+        }
+
         val timeout = 5.minutes
         val status = finverseTimeoutWatcher.watchAuthentication(
             userId,
@@ -185,15 +192,40 @@ class FinverseQueryService(
         return status
     }
 
-    suspend fun getUserDataRetrievalResult(userId: Int, institutionId: String): FinverseOverallRetrievalStatus {
-        val timeout = 2.minutes
-        val loginIdentityId = finverseLoginIdentityService.getLoginIdentityIdWithUserIdAndInstitutionId(userId, institutionId)
-        val status = finverseTimeoutWatcher.watchDataRetrievalCompletion(
-            loginIdentityId,
-            timeout
-        )
+    suspend fun getAllInstitutionIdThatHasRunningRefreshSessions(userId: Int): List<Int> {
+        val allBanks = bankRepository.findAllBanksInCountry("SGP")
 
-        return status
+        val bankCodes = allBanks.map{ bank ->
+            bank.bankCode
+        }
+
+        val running = cacheService.getInstitutionIdOfRunningRefreshSession(userId, bankCodes)
+
+        val result = mutableListOf<Int>()
+        for (id in running) {
+            print(id)
+            if (id.isEmpty()) {
+                continue
+            }
+            for (bank in allBanks) {
+                if (bank.bankCode == id) {
+                    result.add(bank.id ?: -1);
+                }
+            }
+        }
+        return result
+    }
+
+    suspend fun getUserDataRetrievalResult(userId: Int, institutionId: String): FinverseOverallRetrievalStatus {
+        val loginIdentityId = finverseLoginIdentityService.getLoginIdentityIdWithUserIdAndInstitutionId(userId, institutionId)
+
+        val hasFinishedSession = cacheService.getFinishedRefreshSession(loginIdentityId)
+        return if (hasFinishedSession) {
+            cacheService.clearFinishedRefreshSession(loginIdentityId)
+            FinverseOverallRetrievalStatus(loginIdentityId, true, "")
+        } else {
+            FinverseOverallRetrievalStatus(loginIdentityId, false, "HAS NO PENDING FINISHED REFRESH SESSION")
+        }
     }
 
     suspend fun getFinverseInstitutionId(institutionId: Long): String {

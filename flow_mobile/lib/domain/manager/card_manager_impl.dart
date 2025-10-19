@@ -70,10 +70,8 @@ class CardManagerImpl implements CardManager {
     ApiService apiService = getIt<ApiService>();
     try {
       final remoteCardResponse = await apiService.fetchCards();
-      print('Fetched ${remoteCardResponse.cards.length} cards from remote');
       for (var protoCard in remoteCardResponse.cards) {
         final card = fromProtoCard(protoCard);
-        print("Adding card: ${card.cardNumber}, ${card.cardName}");
         await addCard(card);
       }
     } catch (e) {

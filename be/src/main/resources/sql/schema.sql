@@ -4,9 +4,13 @@ DROP TABLE IF EXISTS recurring_spending_monthly;
 DROP TABLE IF EXISTS daily_user_assets;
 DROP TABLE IF EXISTS transaction_histories;
 DROP TABLE IF EXISTS cards;
-DROP TABLE IF EXISTS login_identities;
 DROP TABLE IF EXISTS accounts;
 DROP TABLE IF EXISTS banks;
+
+DROP TABLE IF EXISTS subscription_events;
+DROP TABLE IF EXISTS trial_usage_tracking;
+DROP TABLE IF EXISTS user_subscriptions;
+
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users (

@@ -32,17 +32,17 @@ ThunkAction<FlowState> openAddAccountScreenThunk() {
       return;
     } else {
       apiService.getBanksForLink().then((response) {
-      final bankList = response.banks
-          .map((bank) => Bank(name: bank.name, bankId: bank.id))
-          .toList();
-      nav.pushNamed(
-        AppRoutes.addAccount,
-        arguments: CustomPageRouteArguments(
-          transitionType: TransitionType.slideLeft,
-          extraData: bankList,
-        ),
-      );
-    });
+        final bankList = response.banks
+            .map((bank) => Bank(name: bank.name, bankId: bank.id))
+            .toList();
+        nav.pushNamed(
+          AppRoutes.addAccount,
+          arguments: CustomPageRouteArguments(
+            transitionType: TransitionType.slideLeft,
+            extraData: bankList,
+          ),
+        );
+      });
     }
   };
 }
@@ -150,6 +150,7 @@ ThunkAction<FlowState> monitorBankRefreshThunk(
         refreshStartTimestamp,
       )) {
         store.dispatch(BankLinkingSuccessAction(bank: bankToRefresh));
+        store.dispatch(StartBankDataFetchMonitoringAction(bank: bankToRefresh));
         nav.pushNamed(
           AppRoutes.refreshSuccess,
           arguments: CustomPageRouteArguments(
@@ -157,7 +158,6 @@ ThunkAction<FlowState> monitorBankRefreshThunk(
             extraData: bankToRefresh,
           ),
         );
-        store.dispatch(monitorBankDataFetchThunk(bankToRefresh));
       }
     } else {
       if (isLinkingThisBank(
@@ -188,6 +188,7 @@ ThunkAction<FlowState> monitorBankLinkThunk(
         linkStartTimestamp,
       )) {
         store.dispatch(BankLinkingSuccessAction(bank: bankToLink));
+        store.dispatch(StartBankDataFetchMonitoringAction(bank: bankToLink));
         nav.pushNamed(
           AppRoutes.linkSuccess,
           arguments: CustomPageRouteArguments(
@@ -195,8 +196,8 @@ ThunkAction<FlowState> monitorBankLinkThunk(
             extraData: bankToLink,
           ),
         );
+        
       }
-      store.dispatch(monitorBankDataFetchThunk(bankToLink));
     } else {
       if (isLinkingThisBank(
         store.state.screenState.refreshScreenState,
@@ -210,9 +211,20 @@ ThunkAction<FlowState> monitorBankLinkThunk(
   };
 }
 
+ThunkAction<FlowState> queryBankLinkStatus(Bank bank) {
+  return (Store<FlowState> store) async {
+    final apiService = getIt<ApiService>();
+    final dataResultResponse = await apiService.getDataRetrievalResult(bank);
+    if (dataResultResponse.success) {
+      _updateStateForBankDataCompletion(store);
+      store.dispatch(FinishBankDataFetchMonitoringAction(bank: bank));
+    }
+  };
+}
+
 ThunkAction<FlowState> monitorBankDataFetchThunk(Bank bank) {
   return (Store<FlowState> store) async {
-    store.dispatch(StartBankDataFetchMonitoringAction(bank: bank));
+    
     final apiService = getIt<ApiService>();
     final dataFetchResultResponse = await apiService.getDataRetrievalResult(
       bank,

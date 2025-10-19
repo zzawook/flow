@@ -10,6 +10,7 @@ import "common/v1/bank.proto";
 service RefreshService {
     rpc CanLinkBank (CanLinkBankRequest) returns (CanLinkBankResponse);
     rpc CanStartRefreshSession (CanStartRefreshSessionRequest) returns (CanStartRefreshSessionResponse);
+    rpc GetAllRunningRefreshSessions (GetAllRunningRefreshSessionsRequest) returns (GetAllRunningRefreshSessionsResponse);
     rpc GetRefreshUrl (GetRefreshUrlRequest) returns (GetRefreshUrlResponse);
     rpc GetRelinkUrl (GetRelinkUrlRequest) returns (GetRelinkUrlResponse);
     rpc GetInstitutionAuthenticationResult (GetInstitutionAuthenticationResultRequest) returns (GetInstitutionAuthenticationResultResponse);
@@ -21,6 +22,12 @@ service RefreshService {
 }
 
 /* ── Requests ── */
+
+message GetAllRunningRefreshSessionsRequest {}
+
+message GetAllRunningRefreshSessionsResponse {
+    repeated int64 institution_ids = 1; // List of institution IDs with running refresh sessions
+}
 
 message UpdateLoginMemoForBankRequest {
     int64 institution_id = 1; // Institution ID for which the login memo is to be updated

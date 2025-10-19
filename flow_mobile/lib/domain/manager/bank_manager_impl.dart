@@ -31,7 +31,7 @@ class BankManagerImpl implements BankManager {
 
   @override
   Future<void> clearBanks() {
-    banks.clear();
+    // banks.clear();
     return Future.value();
   }
 
@@ -43,5 +43,16 @@ class BankManagerImpl implements BankManager {
   @override
   Future<void> fetchBanksFromRemote() async {
     //TODO: Implement fetching banks from remote API
+  }
+
+  @override
+  Bank getBankById(int id) {
+    for (var bank in banks) {
+      if (bank.bankId == id) {
+        return bank;
+      }
+    }
+    // ignore: null_argument_to_non_null_type
+    return banks[0];
   }
 }

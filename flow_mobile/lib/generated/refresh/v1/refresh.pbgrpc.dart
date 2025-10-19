@@ -48,6 +48,15 @@ class RefreshServiceClient extends $grpc.Client {
         options: options);
   }
 
+  $grpc.ResponseFuture<$0.GetAllRunningRefreshSessionsResponse>
+      getAllRunningRefreshSessions(
+    $0.GetAllRunningRefreshSessionsRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getAllRunningRefreshSessions, request,
+        options: options);
+  }
+
   $grpc.ResponseFuture<$0.GetRefreshUrlResponse> getRefreshUrl(
     $0.GetRefreshUrlRequest request, {
     $grpc.CallOptions? options,
@@ -122,6 +131,12 @@ class RefreshServiceClient extends $grpc.Client {
       '/sg.flow.refresh.v1.RefreshService/CanStartRefreshSession',
       ($0.CanStartRefreshSessionRequest value) => value.writeToBuffer(),
       $0.CanStartRefreshSessionResponse.fromBuffer);
+  static final _$getAllRunningRefreshSessions = $grpc.ClientMethod<
+          $0.GetAllRunningRefreshSessionsRequest,
+          $0.GetAllRunningRefreshSessionsResponse>(
+      '/sg.flow.refresh.v1.RefreshService/GetAllRunningRefreshSessions',
+      ($0.GetAllRunningRefreshSessionsRequest value) => value.writeToBuffer(),
+      $0.GetAllRunningRefreshSessionsResponse.fromBuffer);
   static final _$getRefreshUrl =
       $grpc.ClientMethod<$0.GetRefreshUrlRequest, $0.GetRefreshUrlResponse>(
           '/sg.flow.refresh.v1.RefreshService/GetRefreshUrl',
@@ -189,6 +204,16 @@ abstract class RefreshServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.CanStartRefreshSessionRequest.fromBuffer(value),
         ($0.CanStartRefreshSessionResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetAllRunningRefreshSessionsRequest,
+            $0.GetAllRunningRefreshSessionsResponse>(
+        'GetAllRunningRefreshSessions',
+        getAllRunningRefreshSessions_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetAllRunningRefreshSessionsRequest.fromBuffer(value),
+        ($0.GetAllRunningRefreshSessionsResponse value) =>
+            value.writeToBuffer()));
     $addMethod(
         $grpc.ServiceMethod<$0.GetRefreshUrlRequest, $0.GetRefreshUrlResponse>(
             'GetRefreshUrl',
@@ -280,6 +305,18 @@ abstract class RefreshServiceBase extends $grpc.Service {
 
   $async.Future<$0.CanStartRefreshSessionResponse> canStartRefreshSession(
       $grpc.ServiceCall call, $0.CanStartRefreshSessionRequest request);
+
+  $async.Future<$0.GetAllRunningRefreshSessionsResponse>
+      getAllRunningRefreshSessions_Pre(
+          $grpc.ServiceCall $call,
+          $async.Future<$0.GetAllRunningRefreshSessionsRequest>
+              $request) async {
+    return getAllRunningRefreshSessions($call, await $request);
+  }
+
+  $async.Future<$0.GetAllRunningRefreshSessionsResponse>
+      getAllRunningRefreshSessions($grpc.ServiceCall call,
+          $0.GetAllRunningRefreshSessionsRequest request);
 
   $async.Future<$0.GetRefreshUrlResponse> getRefreshUrl_Pre(
       $grpc.ServiceCall $call,

@@ -14,6 +14,30 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use getAllRunningRefreshSessionsRequestDescriptor instead')
+const GetAllRunningRefreshSessionsRequest$json = {
+  '1': 'GetAllRunningRefreshSessionsRequest',
+};
+
+/// Descriptor for `GetAllRunningRefreshSessionsRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getAllRunningRefreshSessionsRequestDescriptor =
+    $convert
+        .base64Decode('CiNHZXRBbGxSdW5uaW5nUmVmcmVzaFNlc3Npb25zUmVxdWVzdA==');
+
+@$core.Deprecated('Use getAllRunningRefreshSessionsResponseDescriptor instead')
+const GetAllRunningRefreshSessionsResponse$json = {
+  '1': 'GetAllRunningRefreshSessionsResponse',
+  '2': [
+    {'1': 'institution_ids', '3': 1, '4': 3, '5': 3, '10': 'institutionIds'},
+  ],
+};
+
+/// Descriptor for `GetAllRunningRefreshSessionsResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getAllRunningRefreshSessionsResponseDescriptor =
+    $convert.base64Decode(
+        'CiRHZXRBbGxSdW5uaW5nUmVmcmVzaFNlc3Npb25zUmVzcG9uc2USJwoPaW5zdGl0dXRpb25faW'
+        'RzGAEgAygDUg5pbnN0aXR1dGlvbklkcw==');
+
 @$core.Deprecated('Use updateLoginMemoForBankRequestDescriptor instead')
 const UpdateLoginMemoForBankRequest$json = {
   '1': 'UpdateLoginMemoForBankRequest',

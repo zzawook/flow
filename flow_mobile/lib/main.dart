@@ -3,6 +3,7 @@ import 'package:flow_mobile/initialization/app_initializer.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/initialization/theme_store.dart';
 import 'package:flow_mobile/presentation/global_hud.dart';
+import 'package:flow_mobile/service/bank_link_session_poller.dart';
 import 'package:flow_mobile/service/navigation_service.dart';
 import 'package:flow_mobile/service/unprocessed_transaction_poller.dart';
 import 'package:flutter/material.dart' hide Notification;
@@ -41,13 +42,19 @@ class FlowApplication extends StatelessWidget {
   Widget build(BuildContext context) {
     // Grab store once
     final store = StoreProvider.of<FlowState>(context);
+    
     UnprocessedTxnPoller? unprocessedTxnPoller;
+    BankLinkSessionPoller? bankLinkSessionPoller;
 
     return StoreConnector<FlowState, String>(
       onInit: (store) {
         // Start once; survives rebuilds & hot reload thanks to the top-level var
         unprocessedTxnPoller ??= UnprocessedTxnPoller(store);
         unprocessedTxnPoller!.start();
+
+        bankLinkSessionPoller ??= BankLinkSessionPoller(store);
+        bankLinkSessionPoller!.start();
+
         if (store.state.authState.isAuthenticated &&
             store.state.authState.isEmailVerified) {
           store.dispatch(initUserOnLoginThunk());
@@ -56,10 +63,12 @@ class FlowApplication extends StatelessWidget {
           store.dispatch(sendVerificationEmailThunk());
           store.dispatch(monitorEmailVerifiedThunk());
         }
+        
       },
       onDispose: (store) {
         // Stop cleanly when the widget tree goes away (e.g., app exit)
-        unprocessedTxnPoller?.stop();
+        unprocessedTxnPoller?.dispose();
+        bankLinkSessionPoller?.dispose();
       },
       converter: (store) => store.state.settingsState.settings.theme,
       builder: (context, themeName) {
@@ -82,9 +91,7 @@ class FlowApplication extends StatelessWidget {
 
           initialRoute: initialState.authState.isAuthenticated
               ? initialState.authState.isEmailVerified
-                    ? initialState.authState.isConstantUserFieldSubmitted
-                          ? AppRoutes.home
-                          : AppRoutes.signupDateOfBirth
+                    ? AppRoutes.home
                     : AppRoutes.emailVerification
               : AppRoutes.welcome,
           onGenerateRoute: (settings) =>

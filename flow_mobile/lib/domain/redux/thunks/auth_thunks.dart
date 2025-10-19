@@ -13,6 +13,7 @@ import 'package:flow_mobile/domain/redux/actions/auth_action.dart';
 import 'package:flow_mobile/domain/redux/actions/bank_account_action.dart';
 import 'package:flow_mobile/domain/redux/actions/card_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/notification_action.dart';
+import 'package:flow_mobile/domain/redux/actions/refresh_screen_action.dart';
 import 'package:flow_mobile/domain/redux/actions/setting_actions.dart';
 import 'package:flow_mobile/domain/redux/actions/transaction_action.dart';
 import 'package:flow_mobile/domain/redux/actions/user_actions.dart';
@@ -147,8 +148,6 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
   final transactionManagerClearFuture = transactionManager.clearTransactions();
   final cardClearFuture = cardManager.clearCards();
   final notificationClearFuture = notificationManager.clearNotifications();
-  final settingClearFuture = settingManager.clearSettings();
-  
 
   final successList =
       await Future.wait([
@@ -157,14 +156,12 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
         transactionManagerClearFuture,
         cardClearFuture,
         notificationClearFuture,
-        settingClearFuture
       ]).then((_) {
         store.dispatch(ClearBankAccountStateAction());
         store.dispatch(ClearTransactionStateAction());
         store.dispatch(ClearNotificationStateAction());
         store.dispatch(ClearUserStateAction());
         store.dispatch(ClearCardStateAction());
-        store.dispatch(ClearSettingStateAction());
       });
 
   if (successList == null) {
@@ -248,7 +245,7 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
     transactionFuture,
     notificationFuture,
     cardFuture,
-    settingFuture
+    settingFuture,
   ]);
 
   fetchResults.then((_) async {
@@ -279,6 +276,20 @@ Future<void> _initStateForLoggedInUser(Store<FlowState> store) async {
         settingState: await FlowStateInitializer.getSettingState(),
       ),
     );
+
+    final apiService = getIt<ApiService>();
+
+    final refreshFuture = await apiService.getAllRunningRefreshSessions();
+    for (final bank in refreshFuture.institutionIds) {
+      log("Bank with ongoing refresh session: ${bank.toInt()}");
+    }
+    final banksToMonitor = refreshFuture.institutionIds
+        .map((id) => bankManager.getBankById(id.toInt()))
+        .toList();
+
+    for (final bank in banksToMonitor) {
+      store.dispatch(StartBankDataFetchMonitoringAction(bank: bank));
+    }
   });
 }
 
@@ -290,21 +301,13 @@ Future<void> _clearState(Store<FlowState> store) async {
   store.dispatch(ClearCardStateAction());
 }
 
-ThunkAction<FlowState> signupThunk(
-  String email,
-  String password,
-  String name,
-) {
+ThunkAction<FlowState> signupThunk(String email, String password, String name) {
   ApiService apiService = getIt<ApiService>();
   AuthManager authManager = getIt<AuthManager>();
   final nav = getIt<NavigationService>();
   return (Store<FlowState> store) async {
     try {
-      final tokenSet = await apiService.signup(
-        email,
-        password,
-        name
-      );
+      final tokenSet = await apiService.signup(email, password, name);
       authManager.saveAccessTokenToLocal(tokenSet.accessToken);
       authManager.saveRefreshTokenToLocal(tokenSet.refreshToken);
       GrpcInterceptor.setAccessToken(tokenSet.accessToken);

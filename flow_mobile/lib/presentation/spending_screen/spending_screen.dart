@@ -1,6 +1,5 @@
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/domain/redux/thunks/spending_screen_thunks.dart';
-import 'package:flow_mobile/presentation/category_classification_screen/category_classification_screen.dart';
 import 'package:flow_mobile/presentation/home_screen/components/balance_card/balance_card.dart';
 import 'package:flow_mobile/presentation/navigation/app_routes.dart';
 import 'package:flow_mobile/presentation/navigation/custom_page_route_arguments.dart';

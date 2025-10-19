@@ -19,6 +19,111 @@ import '../../common/v1/bank.pb.dart' as $1;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
+class GetAllRunningRefreshSessionsRequest extends $pb.GeneratedMessage {
+  factory GetAllRunningRefreshSessionsRequest() => create();
+
+  GetAllRunningRefreshSessionsRequest._();
+
+  factory GetAllRunningRefreshSessionsRequest.fromBuffer(
+          $core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetAllRunningRefreshSessionsRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetAllRunningRefreshSessionsRequest',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetAllRunningRefreshSessionsRequest clone() =>
+      GetAllRunningRefreshSessionsRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetAllRunningRefreshSessionsRequest copyWith(
+          void Function(GetAllRunningRefreshSessionsRequest) updates) =>
+      super.copyWith((message) =>
+              updates(message as GetAllRunningRefreshSessionsRequest))
+          as GetAllRunningRefreshSessionsRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetAllRunningRefreshSessionsRequest create() =>
+      GetAllRunningRefreshSessionsRequest._();
+  @$core.override
+  GetAllRunningRefreshSessionsRequest createEmptyInstance() => create();
+  static $pb.PbList<GetAllRunningRefreshSessionsRequest> createRepeated() =>
+      $pb.PbList<GetAllRunningRefreshSessionsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetAllRunningRefreshSessionsRequest getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<
+          GetAllRunningRefreshSessionsRequest>(create);
+  static GetAllRunningRefreshSessionsRequest? _defaultInstance;
+}
+
+class GetAllRunningRefreshSessionsResponse extends $pb.GeneratedMessage {
+  factory GetAllRunningRefreshSessionsResponse({
+    $core.Iterable<$fixnum.Int64>? institutionIds,
+  }) {
+    final result = create();
+    if (institutionIds != null) result.institutionIds.addAll(institutionIds);
+    return result;
+  }
+
+  GetAllRunningRefreshSessionsResponse._();
+
+  factory GetAllRunningRefreshSessionsResponse.fromBuffer(
+          $core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetAllRunningRefreshSessionsResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetAllRunningRefreshSessionsResponse',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'sg.flow.refresh.v1'),
+      createEmptyInstance: create)
+    ..p<$fixnum.Int64>(
+        1, _omitFieldNames ? '' : 'institutionIds', $pb.PbFieldType.K6)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetAllRunningRefreshSessionsResponse clone() =>
+      GetAllRunningRefreshSessionsResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetAllRunningRefreshSessionsResponse copyWith(
+          void Function(GetAllRunningRefreshSessionsResponse) updates) =>
+      super.copyWith((message) =>
+              updates(message as GetAllRunningRefreshSessionsResponse))
+          as GetAllRunningRefreshSessionsResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetAllRunningRefreshSessionsResponse create() =>
+      GetAllRunningRefreshSessionsResponse._();
+  @$core.override
+  GetAllRunningRefreshSessionsResponse createEmptyInstance() => create();
+  static $pb.PbList<GetAllRunningRefreshSessionsResponse> createRepeated() =>
+      $pb.PbList<GetAllRunningRefreshSessionsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetAllRunningRefreshSessionsResponse getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<
+          GetAllRunningRefreshSessionsResponse>(create);
+  static GetAllRunningRefreshSessionsResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<$fixnum.Int64> get institutionIds => $_getList(0);
+}
+
 class UpdateLoginMemoForBankRequest extends $pb.GeneratedMessage {
   factory UpdateLoginMemoForBankRequest({
     $fixnum.Int64? institutionId,

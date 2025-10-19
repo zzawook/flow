@@ -167,6 +167,7 @@ class FinverseLoginIdentityService(
     }
 
     suspend fun finishRefreshSession(loginIdentityId: String) {
+        cacheService.storeFinishedRefreshSession(loginIdentityId)
         cacheService.clearRefreshSession(loginIdentityId)
     }
 

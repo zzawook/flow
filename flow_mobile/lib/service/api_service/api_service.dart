@@ -271,4 +271,8 @@ class ApiService {
   Future<GetUserPreferenceJsonResponse> getUserPreferenceJson() async {
     return await _userApiService.getUserPreferenceJson();
   }
+
+  Future<GetAllRunningRefreshSessionsResponse> getAllRunningRefreshSessions() async {
+    return await _refreshApiService.getAllRunningRefreshSessions();
+  }
 }

@@ -125,4 +125,15 @@ class RefreshApiService {
       throw Exception('Failed to update login memo for bank: $e');
     }
   }
+
+  Future<GetAllRunningRefreshSessionsResponse>
+  getAllRunningRefreshSessions() async {
+    final request = GetAllRunningRefreshSessionsRequest();
+    try {
+      final response = await _channel.getAllRunningRefreshSessions(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to get all running refresh sessions: $e');
+    }
+  }
 }

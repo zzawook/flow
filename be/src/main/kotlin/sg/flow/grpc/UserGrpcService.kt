@@ -50,15 +50,20 @@ class UserGrpcService(
     ): ProtoUserProfile {
         try {
             Validator.validateEmail(request.email)
-            Validator.validatePhoneNumber(request.phoneNumber)
-            Validator.validateAddress(request.address)
         } catch (e : ValidationException) {
             throw InvalidUpdateUserProfileRequestException(e.message ?: "Unable to process provided user profile")
         }
 
         val update = userMapper.toDomain(request)
         val updated = userService.updateUserProfile(currentUserId(), update)
-        return userMapper.toProto(updated)
+        try {
+            val proto = userMapper.toProto(updated)
+            return proto
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ProtoUserProfile.newBuilder().build()
+        }
+
     }
 
     override suspend fun setConstantUserFields(request: SetConstantUserFieldsRequest): SetConstantUserFieldsResponse {

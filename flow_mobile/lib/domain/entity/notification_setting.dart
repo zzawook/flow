@@ -50,13 +50,13 @@ class NotificationSetting {
 
   factory NotificationSetting.fromJson(Map<String, dynamic> json) {
     return NotificationSetting(
-      masterEnabled: json['master_enabled'] as bool,
-      insightNotificationEnabled: json['insight_notification_enabled'] as bool,
-      periodicNotificationEnabled: json['periodic_notification_enabled'] as bool,
+      masterEnabled: json['masterEnabled'] as bool,
+      insightNotificationEnabled: json['insightNotificationEnabled'] as bool,
+      periodicNotificationEnabled: json['periodicNotificationEnabled'] as bool,
       periodicNotificationAutoEnabled:
-          json['periodic_notification_auto_enabled'] as bool,
+          json['periodicNotificationAutoEnabled'] as bool,
       periodicNotificationCron:
-          (json['periodic_notification_cron'] as List<dynamic>)
+          (json['periodicNotificationCron'] as List<dynamic>)
               .map((e) => e as String)
               .toList(),
     );

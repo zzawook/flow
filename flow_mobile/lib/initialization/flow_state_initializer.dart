@@ -83,6 +83,7 @@ class FlowStateInitializer {
 
   static Future<SettingsState> getSettingState() async {
     SettingManager settingManager = getIt<SettingManager>();
+    print(await settingManager.getTheme());
     return SettingsState(
       settings: SettingsV1(
         fontScale: await settingManager.getFontScale(),

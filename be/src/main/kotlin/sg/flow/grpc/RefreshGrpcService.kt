@@ -9,6 +9,8 @@ import sg.flow.refresh.v1.CanLinkBankRequest
 import sg.flow.refresh.v1.CanLinkBankResponse
 import sg.flow.refresh.v1.CanStartRefreshSessionRequest
 import sg.flow.refresh.v1.CanStartRefreshSessionResponse
+import sg.flow.refresh.v1.GetAllRunningRefreshSessionsRequest
+import sg.flow.refresh.v1.GetAllRunningRefreshSessionsResponse
 import sg.flow.refresh.v1.GetBanksForLinkRequest
 import sg.flow.refresh.v1.GetBanksForLinkResponse
 import sg.flow.refresh.v1.GetBanksForRefreshRequest
@@ -173,5 +175,12 @@ class RefreshGrpcService(
 
         val result = loginMemoService.setLoginMemo(userId, request.institutionId.toString(), request.loginMemo)
         return UpdateLoginMemoForBankResponse.newBuilder().setSuccess(result).build()
+    }
+
+    override suspend fun getAllRunningRefreshSessions(request: GetAllRunningRefreshSessionsRequest): GetAllRunningRefreshSessionsResponse {
+        val userId = currentUserId()
+
+        val result = finverseQueryService.getAllInstitutionIdThatHasRunningRefreshSessions(userId).map { res -> res.toLong() }
+        return GetAllRunningRefreshSessionsResponse.newBuilder().addAllInstitutionIds(result).build()
     }
 }

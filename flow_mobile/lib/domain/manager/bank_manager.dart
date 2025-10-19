@@ -6,4 +6,6 @@ abstract class BankManager {
   Future<void> clearBanks();
 
   Future<void> fetchBanksFromRemote() async {}
+
+  Bank getBankById(int id);
 }

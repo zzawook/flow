@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flow_mobile/domain/entity/setting_v1.dart';
+import 'package:flow_mobile/domain/manager/setting_manager.dart';
 import 'package:flow_mobile/domain/redux/actions/setting_actions.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
 import 'package:flow_mobile/initialization/service_registry.dart';
@@ -38,6 +39,8 @@ ThunkAction<FlowState> updateThemeAction(String newTheme) {
     }
 
     final apiService = getIt<ApiService>();
+    final settingManager = getIt<SettingManager>();
+    settingManager.setTheme(newTheme);
     final updatedSettings = currentSetting.copyWith(theme: newTheme);
     final user = store.state.userState.user;
 

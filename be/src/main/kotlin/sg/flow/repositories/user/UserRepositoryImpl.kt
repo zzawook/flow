@@ -286,8 +286,6 @@ class UserRepositoryImpl(private val databaseClient: DatabaseClient) : UserRepos
         val result = databaseClient.sql(sql)
             .bind(0, userId)
             .map { row ->
-                println(row.get("date_of_birth", LocalDate::class.java))
-                println(row.get("gender", String::class.java))
                 val dateOfBirth = row.get("date_of_birth", LocalDate::class.java)
                 val gender = getGenderFromDBText(row.get("gender", String::class.java))
 

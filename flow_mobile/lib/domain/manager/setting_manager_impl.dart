@@ -21,7 +21,6 @@ class SettingManagerImpl implements SettingManager {
   static Future<SettingManagerImpl> getInstance() async {
     if (_instance == null) {
       final box = await SecureHive.getBox<SettingsV1>('settingsBox');
-      await box.put('settings', SettingsV1.initial());
       _instance = SettingManagerImpl._(box);
     }
     return _instance!;
@@ -123,7 +122,7 @@ class SettingManagerImpl implements SettingManager {
     );
     await _settingsBox.put('settings', updated);
   }
-  
+
   @override
   Future<void> clearSettings() {
     return _settingsBox.put('settings', SettingsV1.initial());

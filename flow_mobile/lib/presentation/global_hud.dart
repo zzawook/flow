@@ -1,6 +1,8 @@
 import 'package:flow_mobile/domain/entity/bank.dart';
 import 'package:flow_mobile/domain/redux/flow_state.dart';
+import 'package:flow_mobile/initialization/service_registry.dart';
 import 'package:flow_mobile/presentation/shared/flow_safe_area.dart';
+import 'package:flow_mobile/service/logo_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -47,6 +49,7 @@ class _HudPill extends StatelessWidget {
   Widget build(BuildContext context) {
     // Semi-transparent pill with stadium shape (semi-circles top & bottom given narrow width)
     final bg = Theme.of(context).primaryColor.withValues(alpha: 0.2);
+    final logoService = getIt<LogoService>();
     return Padding(
       padding: const EdgeInsets.only(left: 14, right: 14, bottom: 100),
       child: Material(
@@ -66,7 +69,9 @@ class _HudPill extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   for (final bankOnLink in banksOnLink) ...[
-                    _LogoSpinner(assetPath: bankOnLink.assetPath),
+                    _LogoSpinner(
+                      assetPath: logoService.getBankLogoUri(bankOnLink),
+                    ),
                     if (bankOnLink != banksOnLink.last)
                       const SizedBox(height: 10),
                   ],

@@ -269,7 +269,7 @@ class _SignupDateOfBirthScreenState extends State<SignupDateOfBirthScreen> {
 
             // CTA
             Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 36),
+              padding: const EdgeInsets.only(left: 18, right: 18, bottom: 36),
               child: StoreConnector<FlowState, AuthState>(
                 converter: (store) => store.state.authState,
                 builder: (context, authState) {

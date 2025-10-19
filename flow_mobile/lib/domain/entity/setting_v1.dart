@@ -48,15 +48,15 @@ class SettingsV1 {
     return '''{
       "language": "$language",
       "theme": "$theme",
-      "font_scale": $fontScale,
+      "fontScale": $fontScale,
       "notification": {
-        "master_enabled": ${notification.masterEnabled},
-        "insight_notification_enabled": ${notification.insightNotificationEnabled},
-        "periodic_notification_enabled": ${notification.periodicNotificationEnabled},
-        "periodic_notification_auto_enabled": ${notification.periodicNotificationAutoEnabled},
-        "periodic_notification_cron": [${notification.periodicNotificationCron.map((e) => '"$e"').join(', ')}]
+        "masterEnabled": ${notification.masterEnabled},
+        "insightNotificationEnabled": ${notification.insightNotificationEnabled},
+        "periodicNotificationEnabled": ${notification.periodicNotificationEnabled},
+        "periodicNotificationAutoEnabled": ${notification.periodicNotificationAutoEnabled},
+        "periodicNotificationCron": [${notification.periodicNotificationCron.map((e) => '"$e"').join(', ')}]
       },
-      "display_balance_on_home": $displayBalanceOnHome
+      "displayBalanceOnHome": $displayBalanceOnHome
     }''';
   }
 
@@ -64,11 +64,11 @@ class SettingsV1 {
     return SettingsV1(
       language: json['language'] as String,
       theme: json['theme'] as String,
-      fontScale: (json['font_scale'] as num).toDouble(),
+      fontScale: (json['fontScale'] as num).toDouble(),
       notification: NotificationSetting.fromJson(
         json['notification'] as Map<String, dynamic>,
       ),
-      displayBalanceOnHome: json['display_balance_on_home'] as bool,
+      displayBalanceOnHome: json['displayBalanceOnHome'] as bool? ?? false,
     );
   }
 

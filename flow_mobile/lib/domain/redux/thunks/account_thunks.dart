@@ -15,8 +15,6 @@ ThunkAction<FlowState> getAccountTransactionsThunk({
   return (Store<FlowState> store) async {
     final transactionManager = getIt<TransactionManager>();
 
-    print(oldestTransactionId);
-
     // Set loading state
     store.dispatch(
       SetAccountDetailLoadingAction(
@@ -31,8 +29,6 @@ ThunkAction<FlowState> getAccountTransactionsThunk({
         limit,
         oldestTransactionId: oldestTransactionId,
       );
-
-      print(transactions);
 
       // Add transactions to state (reducer handles deduplication)
       store.dispatch(AddTransaction(transactions));

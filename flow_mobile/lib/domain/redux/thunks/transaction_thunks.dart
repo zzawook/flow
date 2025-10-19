@@ -63,7 +63,6 @@ ThunkAction<FlowState> toggleTransactionIncludeInSpendingOrIncomeThunk(
 
     future
         .then((success) {
-          print(success ? "Success" : "Failed");
           if (!success) {
             // Revert the change if the API call failed
             store.dispatch(
@@ -101,7 +100,6 @@ ThunkAction<FlowState> fetchTransactionsIfNotOnLocalThunk(List<String> ids) {
           .fetchTransactionsByIdsFromRemote(idsToFetch);
       store.dispatch(AddTransaction(fetchedTransactions));
     } else {
-      print("All transactions are already on local");
     }
   };
 }

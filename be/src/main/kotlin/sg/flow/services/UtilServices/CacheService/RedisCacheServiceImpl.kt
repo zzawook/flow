@@ -23,6 +23,7 @@ class RedisCacheServiceImpl(
     private val FINVERSE_USER_INSTITUTION_PREFIX = "finverse:user:"
     private val FINVERSE_LOGIN_IDENTITY_PREFIX = "finverse:login_identity:"
     private val REFRESH_SESSION_PREFIX = "refresh_session:"
+    private val COMPLETE_SESSION_PREFIX = "complet_refresh_session:"
     private val PRE_AUTH_SESSION_PREFIX = "preauth:"
     private val POST_AUTH_RESULT_PREFIX = "postauth:"
     private val EMAIL_VERIFICATION_SESSION_PREFIX = "email_verification:"
@@ -32,6 +33,10 @@ class RedisCacheServiceImpl(
 
     fun getRefreshSessionPrefix(loginIdentityId: String): String {
         return "$REFRESH_SESSION_PREFIX{$loginIdentityId}"
+    }
+
+    fun getCompleteRefreshSessionPrefix(loginIdentityId: String): String {
+        return "$COMPLETE_SESSION_PREFIX{$loginIdentityId}"
     }
 
     fun getPreAuthSessionKey(state: String): String {
@@ -210,15 +215,32 @@ class RedisCacheServiceImpl(
                 return false
             }
             val sessionKey = getRefreshSessionPrefix(loginIdentity.loginIdentityId)
-            val session = redisTemplate.opsForValue()
-                .get(sessionKey)
+            val session = redisTemplate.opsForHash<String, String>()
+                .get(sessionKey, "value")
                 .awaitSingleOrNull()
 
             session != null
         } catch (e: Exception) {
-            logger.error("Error checking refresh session status from Redis: ${e.message}")
+            e.printStackTrace()
+            logger.error("Error checking refresh session status from Redis: User ID: $userId, institution Id: $institutionId")
             false
         }
+    }
+
+    override suspend fun getInstitutionIdOfRunningRefreshSession(
+        userId: Int,
+        allInstitutionIds: List<String>
+    ): List<String> {
+        val result: MutableList<String> = mutableListOf()
+        for (institutionId in allInstitutionIds) {
+            if (doesUserHasRunningRefreshSession(userId, institutionId)) {
+                result.add(institutionId)
+            } else {
+                result.add("")
+            }
+        }
+
+        return result
     }
 
     override suspend fun clearRefreshSession(loginIdentityId: String) {
@@ -236,8 +258,8 @@ class RedisCacheServiceImpl(
     ): FinverseDataRetrievalRequest? {
         try {
             val sessionKey = getRefreshSessionPrefix(loginIdentityId)
-            val sessionJson = redisTemplate.opsForValue()
-                .get(sessionKey)
+            val sessionJson = redisTemplate.opsForHash<String, String>()
+                .get(sessionKey, "value")
                 .awaitSingleOrNull()
 
             return if (sessionJson != null) {
@@ -290,6 +312,17 @@ class RedisCacheServiceImpl(
         } catch (e: Exception) {
             logger.error("Failed to get UserId and InstitutionId for given state: ${e.message} FOR: $state")
             return UserIdAndInstitutionId(-1, "")
+        }
+    }
+
+    override suspend fun checkIfPreAuthExists(userId: Int, institutionId: String): Boolean {
+        try {
+            val json = getPreAuthStateFor(userId, institutionId)
+            return !json.isEmpty()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Failed to check if pre auth exists for user: $userId $institutionId")
+            return false
         }
     }
 
@@ -371,7 +404,7 @@ class RedisCacheServiceImpl(
         }
     }
 
-    override suspend fun getFinalAuth(userId: Int, institutionId: String): FinverseAuthenticationStatus {
+    override suspend fun getFinalAuth(userId: Int, institutionId: String): FinverseAuthenticationStatus? {
         return try {
             val key = getPostAuthKey(userId, institutionId)
 
@@ -382,13 +415,26 @@ class RedisCacheServiceImpl(
             if (jsonString != null) {
                objectMapper.readValue(jsonString, FinverseAuthenticationStatus::class.java)
             } else {
-                FinverseAuthenticationStatus.FAILED
+                null
             }
 
         } catch (e: Exception) {
             e.printStackTrace()
             logger.error("Failed to get final authentication result: ${e.message} FOR $userId, $institutionId")
             FinverseAuthenticationStatus.FAILED
+        }
+    }
+
+    override suspend fun clearFinalAuth(userId: Int, institutionId: String) {
+        try {
+            val key = getPostAuthKey(userId, institutionId)
+
+            redisTemplate.opsForValue()
+                .delete(key)
+                .awaitSingleOrNull()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Failed to delete post auth key for $userId:$institutionId")
         }
     }
 
@@ -445,6 +491,52 @@ class RedisCacheServiceImpl(
             e.printStackTrace()
             logger.error("Error removing stored email validation session payload: email: $email, session ID: $sid")
             return false
+        }
+    }
+
+    override suspend fun storeFinishedRefreshSession(loginIdentityId: String) {
+        try {
+            val key = getCompleteRefreshSessionPrefix(loginIdentityId)
+
+            redisTemplate.opsForValue()
+                .set(key, "true")
+                .awaitSingleOrNull()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Error while storing finished refresh session")
+        }
+    }
+
+    override suspend fun getFinishedRefreshSession(loginIdentityId: String): Boolean {
+        try {
+            val key = getCompleteRefreshSessionPrefix(loginIdentityId)
+
+            val result = redisTemplate.opsForValue()
+                .get(key)
+                .awaitSingleOrNull()
+
+            if (result == null) {
+                return false
+            }
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Error while fetching finished refresh session")
+            return false
+        }
+    }
+
+    override suspend fun clearFinishedRefreshSession(loginIdentityId: String) {
+        try {
+            val key = getCompleteRefreshSessionPrefix(loginIdentityId)
+
+            redisTemplate.opsForValue()
+                .delete(key)
+                .awaitSingleOrNull()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.error("Error while clearing finished refresh session")
+            return
         }
     }
 }

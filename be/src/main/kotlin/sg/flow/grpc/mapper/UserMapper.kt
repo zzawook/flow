@@ -4,6 +4,7 @@ import com.google.protobuf.StringValue
 import com.google.protobuf.Timestamp
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.time.LocalDateTime
 import sg.flow.models.user.UpdateUserProfile as DomainUpdateUserProfile
 import sg.flow.user.v1.UpdateUserProfileRequest as ProtoUpdateUserProfileRequest
 import sg.flow.user.v1.UserProfile as ProtoUserProfile
@@ -21,7 +22,7 @@ class UserMapper {
             .setPhoneNumber(domain.phoneNumber)
             .setDateOfBirth(
                 if (domain.dateOfBirth == null) {
-                    null
+                    Timestamp.newBuilder().setSeconds(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).build()
                 } else {
                     Timestamp.newBuilder()
                         // Convert LocalDate at start of day UTC to epoch seconds
